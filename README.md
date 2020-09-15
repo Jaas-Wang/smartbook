@@ -1,5 +1,6 @@
 # smartbook
 This is a translation object for fastai book.
+
 A lot of people assume that you need all kinds of hard-to-find stuff to get great results with deep learning, but as you'll see in this book, those people are wrong. Here's a few things you absolutely don't need to do world-class deep learning:
 
 很多人认为，你需要所有很难找到的东西才能在机器学习上取得很好的结果，然而在你读完本书后，你会发现那些人是不正确的。相对于世界级深度学习，有些事情你是绝对不需要做的：
@@ -27,3 +28,8 @@ A lot of people assume that you need all kinds of hard-to-find stuff to get grea
 **What you will need to do to succeed however is to apply what you learn in this book to a personal project, and always persevere.**
 
 **如果你希望在深度学习上取得成功，你需要做的事情是：把你在这本书里所学到的东西应用到个人的项目中去，并坚持不懈！**
+
+## contents
+## 目录
+[第一章 深度学习简介](./chapter_one/Fastai-01.md)[（01_intro.ipynb）](./chapter_one/01_intro.ipynb)
+
