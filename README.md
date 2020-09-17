@@ -18,5 +18,5 @@
 
 ## 目录
 
-[第一章 深度学习简介](./chapter_one/Fastai-01.md)[（01_intro.ipynb）](./chapter_one/01_intro.ipynb)
+[第一章 深度学习简介](./smartbook/Fastai-01.md)[（01_intro.ipynb）](./englishbook/01_intro.ipynb)
 
