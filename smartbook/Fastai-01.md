@@ -457,3 +457,21 @@ You will probably not see exactly the same results that are in the book. There a
 >
 > 重要提示：训练时间：根据你的网速，它可能会花些时间下载预训练模型和数据集。运行`微调`可能会花1分钟或更多。在本书中做为你将拥有的模型通常会花费几分钟的时间去训练，所以想出好的方法充分利用这段时间是一个很好的想法。例如，在你训练模型的同时你可以阅读后面的章节，或打开别一个笔记本并用它做一些代码实验。
 
+### Sidebar: This Book Was Written in Jupyter Notebooks
+
+### 侧边栏：这本书是在 Jupyter Notebooks 中编写
+
+We wrote this book using Jupyter notebooks, so for nearly every chart, table, and calculation in this book, we'll be showing you the exact code required to replicate it yourself. That's why very often in this book, you will see some code immediately followed by a table, a picture or just some text. If you go on the [book's website](https://book.fast.ai/) you will find all the code, and you can try running and modifying every example yourself.
+
+我们使用 Jupyter notebooks 工具编写的这本书，所以在书中几乎每一个图、表和计算我们都会给你呈现你自己可需复制的精确代码。这就是为什么你会经常看到在一个表、图或相关文本后面立刻会跟随一些代码。如果你前往[本书的网站](https://book.fast.ai/)你会看到所有代码，你能够尝试运行和修改你的每一个例子。
+
+You just saw how a cell that outputs a table looks inside the book. Here is an example of a cell that outputs text:
+
+你刚看了书里面一个单元格如何输出一个表，这里有一个单元输出实例：
+
+```python
+1+1
+```
+
+2
+
