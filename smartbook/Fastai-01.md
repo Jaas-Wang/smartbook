@@ -379,7 +379,7 @@ The notebooks are labeled by chapter and then by notebook number, so that they a
 
 To open a notebook, just click on it. The notebook will open, and it will look something like <> (note that there may be slight differences in details across different platforms; you can ignore those differences).
 
-要打开一个笔记只需要用鼠标点击它即可。笔记将会打开并且它会展现如下图的内容。（在不同的平台笔记可能做有小小的差别，你可以忽略这些小小的不同。）
+要打开一个笔记只需要用鼠标点击它即可。笔记将会打开并且它会展现如下图的内容（不同的平台笔记展示可能做有少许细小差别，你可以忽略这些差异）。
 
 <div style="text-align:center">
   <p align="center">
@@ -387,4 +387,23 @@ To open a notebook, just click on it. The notebook will open, and it will look s
   </p>
   <p align="center">图：一个Jupyter Notebook显示页面</p>
 </div>
+A notebook consists of *cells*. There are two main types of cell:
 
+一个笔记本的单元构成主要有两种类型：
+
+- Cells containing formatted text, images, and so forth. These use a format called *markdown*, which you will learn about soon.
+- 一类单元包含格式：正式文本、图像，以及常用的markdown文本编辑格式，这类编辑格式后面我们会很快学到。
+- Cells containing code that can be executed, and outputs will appear immediately underneath (which could be plain text, tables, images, animations, sounds, or even interactive applications).
+- 另一类单元包含可以执行的代码，并能在单元下面立即显示输出结果（输出的内容可以是纯文本、表格、图片、动画、声音，甚至交互应用）
+
+Jupyter notebooks can be in one of two modes: edit mode or command mode. In edit mode typing on your keyboard enters the letters into the cell in the usual way. However, in command mode, you will not see any flashing cursor, and the keys on your keyboard will each have a special function.
+
+Jupyter notebook 可以处于以下两种模式之一：编辑模式或命令模式 。在编辑模式下以常用的方式用键盘在笔记单元中录入文本。然而，在命令模式下，你不会看到任何光标，在你拍键盘上相关的键都有一个特定的功能。
+
+Before continuing, press the Escape key on your keyboard to switch to command mode (if you are already in command mode, this does nothing, so press it now just in case). To see a complete list of all of the functions available, press H; press Escape to remove this help screen. Notice that in command mode, unlike most programs, commands do not require you to hold down Control, Alt, or similar—you simply press the required letter key.
+
+继续之前，按你键盘上的ESC键切换到命令模式（如果你已经处于命令模式下不会有任何变化。防万一，现在按一下ESC键以确保处于命令模式），按H键可以看到所有有效功能的完整列表；按ESC按退出帮助页面。请注意，不像其它大多数程序，在命令模式下，不需要你保持按住Control，Alt或其它类似的功能键去控制，你只需要简单的按相关字母键即可。
+
+You can make a copy of a cell by pressing C (the cell needs to be selected first, indicated with an outline around it; if it is not already selected, click on it once). Then press V to paste a copy of it.
+
+你能通过按 C 键拷贝一个单元内容（需要拷贝的笔记单元要首先被选中，有一个指示轮廓线围绕这个单元格，如果没有只需要点击一下它），然后按V键就可以粘贴这个拷贝了。
