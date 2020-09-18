@@ -467,11 +467,27 @@ We wrote this book using Jupyter notebooks, so for nearly every chart, table, an
 
 You just saw how a cell that outputs a table looks inside the book. Here is an example of a cell that outputs text:
 
-你刚看了书里面一个单元格如何输出一个表，这里有一个单元输出实例：
+如书里面的样子，你刚看了一个单元格如何输出一个表，这里有一个单元输出实例：
 
 ```python
 1+1
 ```
 
 2
+
+Jupyter will always print or show the result of the last line (if there is one). For instance, here is an example of a cell that outputs an image:
+
+Jupyter会一直打印或显示最后一行的输出结果（如果有一个的话）。例如，这里有个单元格输出一张图片的例子：
+
+```python
+img = PILImage.create('images/chapter1_cat_example.jpg')
+img.to_thumb(192)
+```
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/chapter1_cat_example.png" alt="An example of cat"  width=20% id="cat" />
+  </p>
+  <p align="center">图：一个猫输出的例子</p>
+</div>
 
