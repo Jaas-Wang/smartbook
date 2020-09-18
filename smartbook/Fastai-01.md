@@ -406,4 +406,54 @@ Before continuing, press the Escape key on your keyboard to switch to command mo
 
 You can make a copy of a cell by pressing C (the cell needs to be selected first, indicated with an outline around it; if it is not already selected, click on it once). Then press V to paste a copy of it.
 
-你能通过按 C 键拷贝一个单元内容（需要拷贝的笔记单元要首先被选中，有一个指示轮廓线围绕这个单元格，如果没有只需要点击一下它），然后按V键就可以粘贴这个拷贝了。
+你通过按字母 C 键能拷贝一个单元内容（需要拷贝的笔记单元要首先被选中，有一个指示轮廓线围绕这个单元格，如果没有只需要点击一下它），然后按字母V键粘贴这个拷贝。
+
+Click on the cell that begins with the line "# CLICK ME" to select it. The first character in that line indicates that what follows is a comment in Python, so it is ignored when executing the cell. The rest of the cell is, believe it or not, a complete system for creating and training a state-of-the-art model for recognizing cats versus dogs. So, let's train it now! To do so, just press Shift-Enter on your keyboard, or press the Play button on the toolbar. Then wait a few minutes while the following things happen:
+
+点击笔记单元去选中它，里面的内容第一行是“#CLICK ME”。这一行的首字母#指示这一行的内容是Python的注释，所以在执行本单元格代码时它会被忽略。不管你信不信，单元格的剩余内容是一个完整系统，为了创建和训练一个最先进的狗猫识别模型。所以，让我们开始训练模式吧！只用按你键盘上的Shift+Enter组合键或按单元工具条上的运行按钮就可以开始了。然后等上几分钟接下来会发生下面的事情：
+
+1. A dataset called the [Oxford-IIIT Pet Dataset](http://www.robots.ox.ac.uk/~vgg/data/pets/) that contains 7,349 images of cats and dogs from 37 different breeds will be downloaded from the fast.ai datasets collection to the GPU server you are using, and will then be extracted.
+1. A *pretrained model* that has already been trained on 1.3 million images, using a competition-winning model will be downloaded from the internet.
+3. The pretrained model will be *fine-tuned* using the latest advances in transfer learning, to create a model that is specially customized for recognizing dogs and cats.
+
+
+1. 将会从fast.ai数据集仓库下载一个被称为[牛津IIIT宠物数据集](http://www.robots.ox.ac.uk/~vgg/data/pets/)，里面包含了37种不同品种的7349张狗和猫的图片收集到你正在使用的GPU服务器，然后抽取 图片。
+1. 利用一百三十万张图片训练出的一个*预训练模型* 将会从因特网上被下载，这是一个用于赢得比赛的模式。
+3. 使用最进展的迁移学习对这个预训练模型进行微调*，去生成一个为识别狗和猫而特制的模型。
+
+The first two steps only need to be run once on your GPU server. If you run the cell again, it will use the dataset and model that have already been downloaded, rather than downloading them again. Let's take a look at the contents of the cell, and the results (<>):
+
+头两步只会在你的GPU服务器上运行一次。如果你再次运行这个单元格，它将会使用已经下载过的数据集和模型，而还是再次下载一遍。让我们看一下单元格里内容和运行结果。
+
+```python
+# CLICK ME
+#id first_training
+#caption Results from the first training
+from fastai.vision.all import *
+path = untar_data(URLs.PETS)/'images'
+
+def is_cat(x): return x[0].isupper()
+dls = ImageDataLoaders.from_name_func(
+    path, get_image_files(path), valid_pct=0.2, seed=42,
+    label_func=is_cat, item_tfms=Resize(224))
+
+learn = cnn_learner(dls, resnet34, metrics=error_rate)
+learn.fine_tune(1)
+```
+
+| epoch（轮次） | train_loss（训练损失） | valid_loss（验证损失） | error_rate（错误率） | time（时间） |
+| ------------: | ---------------------: | ---------------------: | -------------------: | -----------: |
+|             0 |               0.169390 |               0.021388 |             0.005413 |        00:14 |
+
+| epoch（轮次） | train_loss（训练损失） | valid_loss（验证损失） | error_rate（错误率） | time（时间） |
+| ------------: | ---------------------: | ---------------------: | -------------------: | -----------: |
+|             0 |               0.058748 |               0.009240 |             0.002706 |        00:19 |
+
+You will probably not see exactly the same results that are in the book. There are a lot of sources of small random variation involved in training models. We generally see an error rate of well less than 0.02 in this example, however.
+
+在这本书你可能不会看到同样精度的结果。训练模型存在相当多小的随机变化。然而在这个例子中我们通常看小于0.02的错误率。
+
+> important: Trianing Time: Depending on your network speed, it might take a few minutes to download the pretrained model and dataset. Running `fine_tune` might take a minute or so. Often models in this book take a few minutes to train, as will your own models, so it's a good idea to come up with good techniques to make the most of this time. For instance, keep reading the next section while your model trains, or open up another notebook and use it for some coding experiments.
+>
+> 重要提示：训练时间：根据你的网速，它可能会花些时间下载预训练模型和数据集。运行`微调`可能会花1分钟或更多。在本书中做为你将拥有的模型通常会花费几分钟的时间去训练，所以想出好的方法充分利用这段时间是一个很好的想法。例如，在你训练模型的同时你可以阅读后面的章节，或打开别一个笔记本并用它做一些代码实验。
+
