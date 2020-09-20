@@ -493,7 +493,7 @@ img.to_thumb(192)
 
 ### End sidebar
 
-### 侧边栏
+### 侧边栏结尾
 
 So, how do we know if this model is any good? In the last column of the table you can see the error rate, which is the proportion of images that were incorrectly identified. The error rate serves as our metric—our measure of model quality, chosen to be intuitive and comprehensible. As you can see, the model is nearly perfect, even though the training time was only a few seconds (not including the one-time downloading of the dataset and the pretrained model). In fact, the accuracy you've achieved already is far better than anybody had ever achieved just 10 years ago!
 
@@ -520,3 +520,31 @@ A Jupyter widget could not be displayed because the widget state could not be fo
   <p align="center">图：一个上传按钮例子</p>
 </div>
 
+Now you can pass the uploaded file to the model. Make sure that it is a clear photo of a single dog or a cat, and not a line drawing, cartoon, or similar. The notebook will tell you whether it thinks it is a dog or a cat, and how confident it is. Hopefully, you'll find that your model did a great job:
+
+现在你能够通过点击上传按钮上传文件给模型。确保上传的图片只有一只狗或猫的清晰图片，并且不是素描、卡通或其它类似的内容。Jupyter笔记本将会告诉你上传的图片它认为是否是一个狗或猫，以及如何确认它的结果。令人高兴的是，你将会发现你的模型做的非常好：
+
+```python
+#hide
+# For the book, we can't actually click an upload button, so we fake it
+uploader = SimpleNamespace(data = ['images/chapter1_cat_example.jpg'])
+img = PILImage.create(uploader.data[0])
+is_cat,_,probs = learn.predict(img)
+print(f"Is this a cat?: {is_cat}.")
+print(f"Probability it's a cat: {probs[1].item():.6f}")
+```
+
+```
+Is this a cat?: True.
+这是一只猫吗？ 是。
+Probability it's a cat: 0.999986
+它是一只猫的概率：0.999986
+```
+
+Congratulations on your first classifier!
+
+庆祝你的第一个分类器！
+
+But what does this mean? What did you actually do? In order to explain this, let's zoom out again to take in the big picture.
+
+但这意味着什么？你到底做了什么？为了解释这一切，让我们再次缩小一下以看清整体。
