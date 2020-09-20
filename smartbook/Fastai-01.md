@@ -491,3 +491,32 @@ img.to_thumb(192)
   <p align="center">图：一个猫输出的例子</p>
 </div>
 
+### End sidebar
+
+### 侧边栏
+
+So, how do we know if this model is any good? In the last column of the table you can see the error rate, which is the proportion of images that were incorrectly identified. The error rate serves as our metric—our measure of model quality, chosen to be intuitive and comprehensible. As you can see, the model is nearly perfect, even though the training time was only a few seconds (not including the one-time downloading of the dataset and the pretrained model). In fact, the accuracy you've achieved already is far better than anybody had ever achieved just 10 years ago!
+
+那么我们如何知道这个模型是否是好的呢？在表格的最后一列你能够看到错误率，这是识别图片正确率的部分。错误率用于我们测量模型质量的直观和易于理解的手段。正如你看到的这个模型近乎完美，即使训练时间只有短短的几秒钟（这个训练过程没有包含一次性下载的数据集和预训练模型）。事实上，你完成的这个精确率已经远好于 10 年前任何人的成就。
+
+Finally, let's check that this model actually works. Go and get a photo of a dog, or a cat; if you don't have one handy, just search Google Images and download an image that you find there. Now execute the cell with `uploader` defined. It will output a button you can click, so you can select the image you want to classify:
+
+最后让我们检查这个模型的实际工作效果。去获取一张狗或猫的图片；如果你手头上没有，可以通过 Google 图片搜索功能去找并下载你你认为合适的图片。现在在单元格中执行 `uploader`命令，它会输出一个你能够点击的按钮，你能够选择你想分类的图片：
+
+```python
+#hide_output
+uploader = widgets.FileUpload()
+uploader
+```
+
+A Jupyter widget could not be displayed because the widget state could not be found. This could happen if the kernel storing the widget is no longer available, or if the widget state was not saved in the notebook. You may be able to create the widget by running the appropriate cells.
+
+一个 Jupyter 部件不能够被显示，因为部件状态不能被发现。如果内核存储的部件不再有效或部件状态没有在笔记中保存这种情况就会发生。你可通过运行一个合适的单元格能够创建一个部件。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00008.png" alt="uploader button"  width=20% id="uploader" />
+  </p>
+  <p align="center">图：一个上传按钮例子</p>
+</div>
+
