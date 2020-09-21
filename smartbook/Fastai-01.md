@@ -24,7 +24,7 @@ A lot of people assume that you need all kinds of hard-to-find stuff to get grea
 |        Lots of data         |  We've seen record-breaking results with <50 items of data   |
 | Lots of expensive computers | You can get what you need for state of the art work for free |
 
-|     神秘（不需要）     |                     真相                     |
+|    神秘（并不需要）    |                     真相                     |
 | :--------------------: | :------------------------------------------: |
 |   大量的数学专业知识   |         只需要高中的数学水平就可以了         |
 |       海量的数据       | 我们可以用不到50条数据就可以看到突破行的结果 |
@@ -215,7 +215,7 @@ Paul Lockhart, a Columbia math PhD, former Brown professor, and K-12 math teache
 
 Unfortunately, this is where many teaching resources on deep learning begin–-**<font color=#A52A2A>asking learners to follow along with the definition of the Hessian and theorems for the Taylor approximation of your loss functions</font>**, without ever giving examples of actual working code. We're not knocking calculus. We love calculus, and Sylvain has even taught it at the college level, but we don't think it's the best place to start when learning deep learning!
 
-不幸的是，很多入门深度学习教学资源就是这样的：要求学习者遵循海森和原理的定义以了解损失函数的泰勒近似，而不提供可以实际运行的代码实例。我们不是在抨击微积分，我们很喜爱它，并且西尔维亚在大学教授微积分，但我们不认为在学习深度学习的时候它是最佳的切入点。
+不幸的是，很多入门深度学习教学资源就是这样的：要求学习者遵循海森的定义和定理以对你损失函数进行泰勒逼近，而不提供可以实际运行的代码实例。我们不是在抨击微积分，我们很喜爱它，并且西尔维亚在大学教授微积分，但我们不认为在学习深度学习的时候它是最佳的切入点。
 
 In deep learning, it really helps if you have the motivation to fix your model to get it to do better. That's when you start learning the relevant theory. But you need to have the model in the first place. We teach almost everything through real examples. As we build out those examples, we go deeper and deeper, and we'll show you how to make your projects better and better. This means that you'll be gradually learning all the theoretical foundations you need, in context, in such a way that you'll see why it matters and how it works.
 
@@ -614,7 +614,7 @@ His basic idea was this: instead of telling the computer the exact steps require
 
 > : Suppose we arrange for some automatic means of testing the effectiveness of any current weight assignment in terms of actual performance and provide a mechanism for altering the weight assignment so as to maximize the performance. We need not go into the details of such a procedure to see that it could be made entirely automatic and to see that a machine so programmed would "learn" from its experience.
 >
-> ：假设我们安排了一些自动化工具测试在实际执行中当前权重分配的有效性，并提供一种机制改变权重分配以达到最大化的执行效果。我们不需要进入这个程序的细节去看它是如何实现的整个自动化，而是看这样编程的机器将从它的经验中“学习”。
+> ：假设我们安排了一些自动化工具依据实际表现测试当前权重分配的有效性，并提供一种机制改变权重分配以达到最大化的执行效果。我们不需要进入这个程序的细节去看它是如何实现的整个自动化，而是看这样编程的机器将从它的经验中“学习”。
 
 There are a number of powerful concepts embedded in this short statement:
 
@@ -669,4 +669,69 @@ B --> D
 C --> D
 D --> E
 ```
+
+We've changed the name of our box from *program* to *model*. This is to follow modern terminology and to reflect that the *model* is a special kind of program: it's one that can do *many different things*, depending on the *weights*. It can be implemented in many different ways. For instance, in Samuel's checkers program, different values of the weights would result in different checkers-playing strategies.
+
+我们已经把小盒子的名字从*程序*变为了*模型*。这沿用的是现代术语和参考的*模型*是一个特殊的程序：它依赖*权重*能够做很多不同的事情。它能以许多不同的方法实施。例如，在塞缪尔的跳棋程序，不同权重值将会在不同的跳棋策略中有不同的结果。
+
+(By the way, what Samuel called "weights" are most generally refered to as model *parameters* these days, in case you have encountered that term. The term *weights* is reserved for a particular type of model parameter.)
+
+（顺便说一下，如果你已经碰到那个术语，塞缪尔命名的“权重”最普遍是现在称为的模型*参数*。术语*权重*保留了模型参数的一个特指类型）
+
+Next, Samuel said we need an *automatic means of testing the effectiveness of any current weight assignment in terms of actual performance*. In the case of his checkers program, the "actual performance" of a model would be how well it plays. And you could automatically test the performance of two models by setting them to play against each other, and seeing which one usually wins.
+
+接下来，塞缪尔说我们需要一个*自动工具依据实际表现测试当前权重分配的有效性*。在他跳棋程序例子中，一个模型的*实际表现*将决定它玩的多么好。你能够通过它们相互间打比赛自动化测试两个模型的性能，并看哪一个会常胜。
+
+Finally, he says we need *a mechanism for altering the weight assignment so as to maximize the performance*. For instance, we could look at the difference in weights between the winning model and the losing model, and adjust the weights a little further in the winning direction.
+
+最后，他说到我们需要*一个改变权重分配的机制以便性能最大化*。例如，你能够看在战胜模型和失败模型之间权重方面的差异，并向胜利的方向进一步调整权重。
+
+We can now see why he said that such a procedure *could be made entirely automatic and... a machine so programmed would "learn" from its experience*. Learning would become entirely automatic when the adjustment of the weights was also automatic—when instead of us improving a model by adjusting its weights manually, we relied on an automated mechanism that produced adjustments based on performance.
+
+你现在能够明白为什么他说这么一个程序：*能够实现完全的自动化并且...这种程序的机器将从它的经验中“学习”*。当权重调整是这样的自动化（这种自动化是当我们依赖一个自动化机制基于表现产生调整，替代通过手工调整权重改善模型的时候）学习将变的全自动。
+
+<> shows the full picture of Samuel's idea of training a machine learning model.
+
+下图展示了塞缪尔对于机器学习模型想法的全景图。
+
+```python
+#hide_input
+#caption Training a machine learning model
+#id training_loop
+#alt The basic training loop
+gv('''ordering=in
+model[shape=box3d width=1 height=0.7]
+inputs->model->results; weights->model; results->performance
+performance->weights[constraint=false label=update]''')
+```
+
+```mermaid
+graph LR
+
+B(inputs)
+C(weights)
+D[model]
+E(results)
+F(performence)
+B --> D
+C --> D
+D --> E
+E --> F --update--> C
+```
+
+```mermaid
+graph LR
+
+B(输入集)
+C(权重集)
+D[模型]
+E(结果集)
+F(表现/性能)
+B --> D
+C --> D
+D --> E
+E --> F --更新--> C
+```
+
+
 
