@@ -614,5 +614,59 @@ His basic idea was this: instead of telling the computer the exact steps require
 
 > : Suppose we arrange for some automatic means of testing the effectiveness of any current weight assignment in terms of actual performance and provide a mechanism for altering the weight assignment so as to maximize the performance. We need not go into the details of such a procedure to see that it could be made entirely automatic and to see that a machine so programmed would "learn" from its experience.
 >
-> ：假设我们安排了一些自动化工具测试在实际工作执行中当前重量分配的有效性，并提供机械装置改变重量分配以达到最大化的工作执行。我们不需要进入这个程序的细节去看它是如何实现的整个自动化，而是看这样编程的机器将从它的经验中“学习”。
+> ：假设我们安排了一些自动化工具测试在实际执行中当前权重分配的有效性，并提供一种机制改变权重分配以达到最大化的执行效果。我们不需要进入这个程序的细节去看它是如何实现的整个自动化，而是看这样编程的机器将从它的经验中“学习”。
+
+There are a number of powerful concepts embedded in this short statement:
+
+在这个短文中包含了一系列核心概念：
+
+- The idea of a "weight assignment"
+- The fact that every weight assignment has some "actual performance"
+- The requirement that there be an "automatic means" of testing that performance,
+- The need for a "mechanism" (i.e., another automatic process) for improving the performance by changing the weight assignments
+- 一个“权重分配”的想法
+- 每个权重分配对“实际执行”有一些影响
+- 这里有一个测量执行的“自动化工具”需求
+- 需要一个“机制”（即：别一个自动化工序）通过改变权重分配以优化执行
+
+Let us take these concepts one by one, in order to understand how they fit together in practice. First, we need to understand what Samuel means by a *weight assignment*.
+
+让我们一个个的对这些概念进行理解，以弄懂实际上他们是怎么有效的聚合在一起的。首先，我们需要去理解塞缪尔对*一个权重分配*的意思。
+
+Weights are just variables, and a weight assignment is a particular choice of values for those variables. The program's inputs are values that it processes in order to produce its results—for instance, taking image pixels as inputs, and returning the classification "dog" as a result. The program's weight assignments are other values that define how the program will operate.
+
+权重只是变量，一个权重是那些变量一个特定选择的值。程序输入的是变量，对它处理以产生结果。例如，以图片像素做为输入，然后返回狗的分类做为结果。程序的权重分配是定义程序将如何进行操作的其它值。
+
+Since they will affect the program they are in a sense another kind of input, so we will update our basic picture in <> and replace it with <> in order to take this into account.
+
+```python
+#hide_input
+#caption A program using weight assignment
+#id weight_assignment
+gv('''model[shape=box3d width=1 height=0.7]
+inputs->model->results; weights->model''')
+```
+
+```mermaid
+graph LR
+
+B(inputs)
+C(weights)
+D[program]
+E(results)
+B --> D
+C --> D
+D --> E
+```
+
+```mermaid
+graph LR
+B(输入集)
+C(权重集)
+D[程序处理]
+E(结果集)
+B --> D
+C --> D
+D --> E
+```
 
