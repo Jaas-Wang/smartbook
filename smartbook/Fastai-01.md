@@ -320,7 +320,7 @@ Let's see it in practice and train our first model.
 
 As we said before, we will teach you how to do things before we explain why they work. Following this top-down approach, we will begin by actually training an image classifier to recognize dogs and cats with almost 100% accuracy. To train this model and run our experiments, you will need to do some initial setup. Don't worry, it's not as hard as it looks.
 
-正如我们之前所说，在我们解释为什么他们这样之前我们先教你如何去做事。遵循这事从顶向下的方法，我们将从实际训练一个图像分类模型以近乎100%的准确率识别狗和猫开始。去训练这个模型并运行我们的实验，你需要去做一些初始设置。不要担心，它没有看起来那么难。
+正如我们之前所说，在我们解释为什么他们这样之前我们先教你如何去做事。遵循这事从顶向下的方法，我们将通过实际训练一个图像分类器开始，去以近乎100%准确率识别狗和猫。去训练这个模型并运行我们的实验，你需要去做一些初始设置。不要担心，它没有看起来那么难。
 
 > s: Do not skip the setup part even if it looks intimidating at first, especially if you have little or no experience using things like a terminal or the command line. Most of that is actually not necessary and you will find that the easiest servers can be set up with just your usual web browser. It is crucial that you run your own experiments in parallel with this book in order to learn.
 >
@@ -548,3 +548,51 @@ Congratulations on your first classifier!
 But what does this mean? What did you actually do? In order to explain this, let's zoom out again to take in the big picture.
 
 但这意味着什么？你到底做了什么？为了解释这一切，让我们再次缩小一下以看清整体。
+
+### What Is Machine Learning?
+
+### 机器学习是什么？
+
+Your classifier is a deep learning model. As was already mentioned, deep learning models use neural networks, which originally date from the 1950s and have become powerful very recently thanks to recent advancements.
+
+你的分类器是一个深度学习模型。上面已经提到过，深度学习模型使用的起源于 20 世纪 50 年代的神经网络，并且感谢于最近的发展当前它已经变的相当具有影响力。
+
+Another key piece of context is that deep learning is just a modern area in the more general discipline of *machine learning*. To understand the essence of what you did when you trained your own classification model, you don't need to understand deep learning. It is enough to see how your model and your training process are examples of the concepts that apply to machine learning in general.
+
+别一个关键内容部分，深度学习在机器学习的绝大多数学科中只是一个现代领域。当训练你自己的分类模型时你不需要理解深度学习，但要去理解你做的工作的本质，去看你的模型和训练过程通常情况下是如何应用到机器学习的概念例子就足够了。
+
+So in this section, we will describe what machine learning is. We will look at the key concepts, and show how they can be traced back to the original essay that introduced them.
+
+所以在这一部分，我们会描述机器学习是什么。我们将会看到关键概念和展示如何他们能够回溯到那些引出他们的原始文章。
+
+*Machine learning* is, like regular programming, a way to get computers to complete a specific task. But how would we use regular programming to do what we just did in the last section: recognize dogs versus cats in photos? We would have to write down for the computer the exact steps necessary to complete the task.
+
+就常规程序一样，机器学习是一种让计算机去完成一个特定任务的方法。但我们如何使用常规程序去做类似上一部门我们刚刚做的事情：在图片中识别狗和猫？我们不得不为计算机写下确切的步骤去完成这个任务。
+
+Normally, it's easy enough for us to write down the steps to complete a task when we're writing a program. We just think about the steps we'd take if we had to do the task by hand, and then we translate them into code. For instance, we can write a function that sorts a list. In general, we'd write a function that looks something like <> (where *inputs* might be an unsorted list, and *results* a sorted list).
+
+正常情况下，在我们编写一个程序时，对我们来说很容易写下完成一个任务的步骤。我们只用思考如果我们必须通过手工做这个任务的步骤就可以了。例如，我们能够写一个列表分类函数。通过来说，我们写的函数就像下面流程图显示的样子（*输入*一个未分类列表，和输出一个分类*结果*列表）
+
+``` python
+#hide_input
+#caption A traditional program
+#id basic_program
+#alt Pipeline inputs, program, results
+gv('''program[shape=box3d width=1 height=0.7]
+inputs->program->results''')
+```
+
+```flow
+st=>start: inputs
+op=>operation: program
+e=>end: results
+st(right)->op(right)->e(right)
+```
+
+```flow
+st=>start: 输入集
+op=>operation: 程序处理
+e=>end: 结果集
+st(right)->op(right)->e(right)
+```
+
