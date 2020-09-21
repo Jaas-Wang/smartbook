@@ -614,5 +614,5 @@ His basic idea was this: instead of telling the computer the exact steps require
 
 > : Suppose we arrange for some automatic means of testing the effectiveness of any current weight assignment in terms of actual performance and provide a mechanism for altering the weight assignment so as to maximize the performance. We need not go into the details of such a procedure to see that it could be made entirely automatic and to see that a machine so programmed would "learn" from its experience.
 >
-> ：假设我们安排了一些自动化工具测试在实际工作执行中当前重量分配的有效性，并提供机械装置改变重量分配以达到最大化的工作执行。我们不需要进入这个程序的细节去看它是如何实现的整个自动化，而是看一个机器程度如何从它们的经验中学习。
+> ：假设我们安排了一些自动化工具测试在实际工作执行中当前重量分配的有效性，并提供机械装置改变重量分配以达到最大化的工作执行。我们不需要进入这个程序的细节去看它是如何实现的整个自动化，而是看这样编程的机器将从它的经验中“学习”。
 
