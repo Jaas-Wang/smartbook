@@ -607,3 +607,12 @@ Right back at the dawn of computing, in 1949, an IBM researcher named Arthur Sam
 > : Programming a computer for such computations is, at best, a difficult task, not primarily because of any inherent complexity in the computer itself but, rather, because of the need to spell out every minute step of the process in the most exasperating detail. Computers, as any programmer will tell you, are giant morons, not giant brains.
 >
 > ：安排计算机做类似计算的是一个困难的任务，主要不是因为计算机自身内在的复杂性，而因为需要在最令人恼火的细节中讲清楚处理的每一个微小步骤。任务一个程序员都会告诉你，计算机不是天才，而是大笨蛋。
+
+His basic idea was this: instead of telling the computer the exact steps required to solve a problem, show it examples of the problem to solve, and let it figure out how to solve it itself. This turned out to be very effective: by 1961 his checkers-playing program had learned so much that it beat the Connecticut state champion! Here's how he described his idea (from the same essay as above):
+
+他基本的思想是：与其告诉计算机解决问题所需要的精确的每一步，不如给它展示一个所要解决这个问题的例子，并让它想出如何自己解决这个问题。这种生产是非常有效率的：在 1961 年，他的跳棋程序已经学了很多，获得了康涅狄格州的冠军！下面描述了他的想法是什么（内容来自上述的同一篇论文）
+
+> : Suppose we arrange for some automatic means of testing the effectiveness of any current weight assignment in terms of actual performance and provide a mechanism for altering the weight assignment so as to maximize the performance. We need not go into the details of such a procedure to see that it could be made entirely automatic and to see that a machine so programmed would "learn" from its experience.
+>
+> ：假设我们安排了一些自动化工具测试在实际工作执行中当前重量分配的有效性，并提供机械装置改变重量分配以达到最大化的工作执行。我们不需要进入这个程序的细节去看它是如何实现的整个自动化，而是看一个机器程度如何从它们的经验中学习。
+
