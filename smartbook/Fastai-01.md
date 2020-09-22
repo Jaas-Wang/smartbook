@@ -582,18 +582,14 @@ gv('''program[shape=box3d width=1 height=0.7]
 inputs->program->results''')
 ```
 
-```flow
-st=>start: inputs
-op=>operation: program
-e=>end: results
-st(right)->op(right)->e(right)
+```mermaid
+graph LR
+in((inputs)) --> op[program] --> en((results))
 ```
 
-```flow
-st=>start: 输入集
-op=>operation: 程序处理
-e=>end: 结果集
-st(right)->op(right)->e(right)
+```mermaid
+graph LR
+in((输入)) --> op[程序] --> en((结果))
 ```
 
 But for recognizing objects in a photo that's a bit tricky; what *are* the steps we take when we recognize an object in a picture? We really don't know, since it all happens in our brain without us being consciously aware of it!
@@ -650,21 +646,21 @@ inputs->model->results; weights->model''')
 ```mermaid
 graph LR
 
-B(inputs)
-C(weights)
-D[program]
-E(results)
-B --> D
-C --> D
+B((inputs))
+C((weights))
+D[model]
+E((results))
+B --> D;
+C --> D;
 D --> E
 ```
 
 ```mermaid
 graph LR
-B(输入集)
-C(权重集)
-D[程序处理]
-E(结果集)
+B((输入))
+C((权重))
+D[模型]
+E((结果))
 B --> D
 C --> D
 D --> E
@@ -708,30 +704,74 @@ performance->weights[constraint=false label=update]''')
 ```mermaid
 graph LR
 
-B(inputs)
-C(weights)
+B((inputs))
+C((weights))
 D[model]
-E(results)
-F(performence)
+E((results))
+F((performence))
+subgraph Flowchat
 B --> D
 C --> D
 D --> E
-E --> F --update--> C
+end
+subgraph Flowchat
+E --> F --> |update| C
+end
 ```
 
 ```mermaid
 graph LR
 
-B(输入集)
-C(权重集)
+B((输入))
+C((权重))
 D[模型]
-E(结果集)
-F(表现/性能)
-B --> D
-C --> D
-D --> E
+E((结果))
+F((表现/性能))
+subgraph 流程图
+B --> D;
+C --> D;
+D --> E;
+end
+subgraph 流程图
 E --> F --更新--> C
+end
 ```
 
+Notice the distinction between the model's *results* (e.g., the moves in a checkers game) and its *performance* (e.g., whether it wins the game, or how quickly it wins).
 
+注意模型*结果*（即：跳棋走的第一步）和它的*表现*（即：它是否赢得比赛，或如何快速的胜利）之间的区别。
+
+Also note that once the model is trained—that is, once we've chosen our final, best, favorite weight assignment—then we can think of the weights as being *part of the model*, since we're not varying them any more.
+
+也要注意一旦模型被训练了（一旦我们选择了最终的、最好的、中意的权重分配），我们就会把权重视为模型的一部分，到此为止我们就不会对它进行任何变更了。
+
+Therefore, actually *using* a model after it's trained looks like <>.
+
+因此，实际使用一个被训练后的模型如下图所示。
+
+```python
+#hide_input
+#caption Using a trained model as a program
+#id using_model
+gv('''model[shape=box3d width=1 height=0.7]
+inputs->model->results''')
+```
+
+```mermaid
+graph LR
+in((inputs)) --> op[model] --> en((results))
+```
+
+```mermaid
+graph LR
+in((输入)) --> op[模型] --> en((结果))
+```
+
+This looks identical to our original diagram in <>, just with the word *program* replaced with *model*. This is an important insight: *a trained model can be treated just like a regular computer program*.
+
+这看起来与我们的原始图是相同的，只是把*程序* 替换为*模型*。这是一个重要的点：一个训练的模型能够被看待为像一个普通的计算机程序。
+
+> jargon: Machine Learning: The training of programs developed by allowing a computer to learn from its experience, rather than through manually coding the individual steps.
+>
+> 行业术语（黑话）：机器学习：开发训练程序以允许一台计算机从它的经验中进行学习，而不是通过手工写代码具体的每一步。
 
