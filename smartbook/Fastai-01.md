@@ -610,7 +610,7 @@ His basic idea was this: instead of telling the computer the exact steps require
 
 > : Suppose we arrange for some automatic means of testing the effectiveness of any current weight assignment in terms of actual performance and provide a mechanism for altering the weight assignment so as to maximize the performance. We need not go into the details of such a procedure to see that it could be made entirely automatic and to see that a machine so programmed would "learn" from its experience.
 >
-> ：假设我们安排了一些自动化工具依据实际表现测试当前权重分配的有效性，并提供一种机制改变权重分配以达到最大化的执行效果。我们不需要进入这个程序的细节去看它是如何实现的整个自动化，而是看这样编程的机器将从它的经验中“学习”。
+> ：假设我们安排了一些自动化工具依据实际表现测试当前权重分配的有效性，并提供一种机制改变权重分配以达到最大化的执行效果。我们不需要进入这个程序的细节去看它是如何实现的全自动化，而是看这样编程的机器将从它的经验中“学习”。
 
 There are a number of powerful concepts embedded in this short statement:
 
@@ -774,4 +774,28 @@ This looks identical to our original diagram in <>, just with the word *program*
 > jargon: Machine Learning: The training of programs developed by allowing a computer to learn from its experience, rather than through manually coding the individual steps.
 >
 > 行业术语（黑话）：机器学习：开发训练程序以允许一台计算机从它的经验中进行学习，而不是通过手工写代码具体的每一步。
+
+### What Is a Neural Network?
+
+### 什么是神经网络？
+
+It's not too hard to imagine what the model might look like for a checkers program. There might be a range of checkers strategies encoded, and some kind of search mechanism, and then the weights could vary how strategies are selected, what parts of the board are focused on during a search, and so forth. But it's not at all obvious what the model might look like for an image recognition program, or for understanding text, or for many other interesting problems we might imagine.
+
+把模型想像为可能看起来像一个跳棋程序不是太困难。可能有一系列的跳棋策略的编码和某种搜索机制，然后权重能够改变策略如何被选择，在搜索期间关注于那些可接受的部分，等等。模型可以看起来像一个图像识别程序，或文本理解，或我们可以想像到的其它有趣的问题，模型就不是那么完全清晰了。
+
+What we would like is some kind of function that is so flexible that it could be used to solve any given problem, just by varying its weights. Amazingly enough, this function actually exists! It's the neural network, which we already discussed. That is, if you regard a neural network as a mathematical function, it turns out to be a function which is extremely flexible depending on its weights. A mathematical proof called the *universal approximation theorem* shows that this function can solve any problem to any level of accuracy, in theory. The fact that neural networks are so flexible means that, in practice, they are often a suitable kind of model, and you can focus your effort on the process of training them—that is, of finding good weight assignments.
+
+我们想要某种功能，只通过变化它的权重就能非常灵活的用来解决任何给出的问题。太奇妙了，这种功能事实上是存在的！它就是我们之前讨论过的神经网络。也就是说，如果你把神经网络视为一种数学函数，它就是依赖权重极度灵活的函数。在理论层面，一个数学证明名为*通用近似定理（或万能逼近定理）*显示这个函数能够在任何精度水平解决任何问题。事实上神经网络是一个非常灵活的工作，实际上他们通常是一个合适的模型。你可以聚焦于模型训练过程的效果，即找到一个好的权重分配。
+
+But what about that process? One could imagine that you might need to find a new "mechanism" for automatically updating weight for every problem. This would be laborious. What we'd like here as well is a completely general way to update the weights of a neural network, to make it improve at any given task. Conveniently, this also exists!
+
+但那个过程是什么呢？一种设想是：你可能需要去找一个为每一个问题自动更新权重的新“机制”。这也许是一个艰辛的工作。我们也想要一个完全通用的方式去更新神经网络权重，使它在任何给定的任务中得到完善，这种方式方便的也是存在的！
+
+This is called *stochastic gradient descent* (SGD). We'll see how neural networks and SGD work in detail in <>, as well as explaining the universal approximation theorem. For now, however, we will instead use Samuel's own words: *We need not go into the details of such a procedure to see that it could be made entirely automatic and to see that a machine so programmed would "learn" from its experience.*
+
+这称之为*随机梯度下降*（SGD）。我们在下图会看到神经网络和 SGD 如何工作细节，同时解释通用近似定理。不管怎么样截至目前我们会替换塞缪尔的专用描述：*我们不需要进入这个程序的细节去看它能够实现全自动化，而去看一个这样编程的机器将从它的经验中“学习”*
+
+> J: Don't worry, neither SGD nor neural nets are mathematically complex. Both nearly entirely rely on addition and multiplication to do their work (but they do a *lot* of addition and multiplication!). The main reaction we hear from students when they see the details is: "Is that all it is?"
+>
+> 杰：不要急，SGD 和神经网络都没有复杂的数学。两者几乎完全依赖加法和乘法去做他们的工作（只是它们需要做大量的加法和乘法）。当学生看到细节的时候，我们听到来自他们的主要反馈是：“这就是全部吗？”
 
