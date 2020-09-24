@@ -336,7 +336,7 @@ To do nearly everything in this book, you'll need access to a computer with an N
 
 > jargon: Graphics Processing Unit (GPU): Also known as a *graphics card*. A special kind of processor in your computer that can handle thousands of single tasks at the same time, especially designed for displaying 3D environments on a computer for playing games. These same basic tasks are very similar to what neural networks do, such that GPUs can run neural networks hundreds of times faster than regular CPUs. All modern computers contain a GPU, but few contain the right kind of GPU necessary for deep learning.
 >
-> 行业术语（行业黑话）：图形处理器（GPU）：又称为图形卡。在你计算机里的一种特殊处理器，它能同时处理数千个任务，这是为玩的游戏在计算机中显示3D环境而特别设计的。此类基础任务与神经网络做的事情是非常相似的，因此GPU运行神经网络能够比常规CPU快数百倍。所有现代计算机都包含一块GPU，但很少包含深度学习所必须的那种GPU。
+> 行话（黑话）：图形处理器（GPU）：又称为图形卡。在你计算机里的一种特殊处理器，它能同时处理数千个任务，这是为玩的游戏在计算机中显示3D环境而特别设计的。此类基础任务与神经网络做的事情是非常相似的，因此GPU运行神经网络能够比常规CPU快数百倍。所有现代计算机都包含一块GPU，但很少包含深度学习所必须的那种GPU。
 
 The best choice of GPU servers to use with this book will change over time, as companies come and go and prices change. We maintain a list of our recommended options on the [book's website](https://book.fast.ai/), so go there now and follow the instructions to get connected to a GPU deep learning server. Don't worry, it only takes about two minutes to get set up on most platforms, and many don't even require any payment, or even a credit card, to get started.
 
@@ -363,7 +363,7 @@ You are now ready to run your first Jupyter notebook!
 
 > jargon: Jupyter Notebook: A piece of software that allows you to include formatted text, code, images, videos, and much more, all within a single interactive document. Jupyter received the highest honor for software, the ACM Software System Award, thanks to its wide use and enormous impact in many academic fields and in industry. Jupyter Notebook is the software most widely used by data scientists for developing and interacting with deep learning models.
 >
-> 行业术语（行业黑话）：Jupyter Notebook: 这是一款允许你包含格式文本、代码、图片、视频和更多内容的软件，所以内容都在单一的交互文档。Jupyter收到了软件方面的最高冗余：ACM软件系统奖。用于表彰在众多学术领域和工业领域广泛的使用和巨大的影响力。Jupyter Notebook是一款最广泛的被数据科学家用于深度模型开发和交互的软件。
+> 行话（黑话）：Jupyter Notebook: 这是一款允许你包含格式文本、代码、图片、视频和更多内容的软件，所以内容都在单一的交互文档。Jupyter收到了软件方面的最高冗余：ACM软件系统奖。用于表彰在众多学术领域和工业领域广泛的使用和巨大的影响力。Jupyter Notebook是一款最广泛的被数据科学家用于深度模型开发和交互的软件。
 
 ### Running Your First Notebook
 
@@ -569,9 +569,9 @@ So in this section, we will describe what machine learning is. We will look at t
 
 就常规程序一样，机器学习是一种让计算机去完成一个特定任务的方法。但我们如何使用常规程序去做类似上一部门我们刚刚做的事情：在图片中识别狗和猫？我们不得不为计算机写下确切的步骤去完成这个任务。
 
-Normally, it's easy enough for us to write down the steps to complete a task when we're writing a program. We just think about the steps we'd take if we had to do the task by hand, and then we translate them into code. For instance, we can write a function that sorts a list. In general, we'd write a function that looks something like <> (where *inputs* might be an unsorted list, and *results* a sorted list).
+Normally, it's easy enough for us to write down the steps to complete a task when we're writing a program. We just think about the steps we'd take if we had to do the task by hand, and then we translate them into code. For instance, we can write a function that sorts a list. In general, we'd write a function that looks something like <basic_program> (where *inputs* might be an unsorted list, and *results* a sorted list).
 
-正常情况下，在我们编写一个程序时，对我们来说很容易写下完成一个任务的步骤。我们只用思考如果我们必须通过手工做这个任务的步骤就可以了。例如，我们能够写一个列表分类函数。通过来说，我们写的函数就像下面流程图显示的样子（*输入*一个未分类列表，和输出一个分类*结果*列表）
+正常情况下，在我们编写一个程序时，对我们来说很容易写下完成一个任务的步骤。我们只用思考如果我们必须通过手工做这个任务的步骤就可以了。例如，我们能够写一个列表分类函数。通过来说，我们写的函数就像下面流程图<基础程序>显示的样子（*输入*一个未分类列表，和输出一个分类*结果*列表）
 
 ``` python
 #hide_input
@@ -584,12 +584,16 @@ inputs->program->results''')
 
 ```mermaid
 graph LR
+subgraph basic_program
 in((inputs)) --> op[program] --> en((results))
+end
 ```
 
 ```mermaid
 graph LR
+subgraph 基础程序
 in((输入)) --> op[程序] --> en((结果))
+end
 ```
 
 But for recognizing objects in a photo that's a bit tricky; what *are* the steps we take when we recognize an object in a picture? We really don't know, since it all happens in our brain without us being consciously aware of it!
@@ -633,7 +637,9 @@ Weights are just variables, and a weight assignment is a particular choice of va
 
 权重只是变量，一个权重是那些变量一个特定选择的值。程序输入的是变量，对它处理以产生结果。例如，以图片像素做为输入，然后返回狗的分类做为结果。程序的权重分配是定义程序将如何进行操作的其它值。
 
-Since they will affect the program they are in a sense another kind of input, so we will update our basic picture in <> and replace it with <> in order to take this into account.
+Since they will affect the program they are in a sense another kind of input, so we will update our basic picture in <basic_program> and replace it with <weight_assignment> in order to take this into account.
+
+因此他们将会影响程序，在某种程序上他们是其它类型的输入。考虑到这一点，所以我们会在<基础程序>中更新我们基础描述并把它替换为<权重分配>
 
 ```python
 #hide_input
@@ -650,9 +656,11 @@ B((inputs))
 C((weights))
 D[model]
 E((results))
+subgraph weight_assignment
 B --> D;
 C --> D;
 D --> E
+end
 ```
 
 ```mermaid
@@ -661,9 +669,11 @@ B((输入))
 C((权重))
 D[模型]
 E((结果))
+subgraph 权重分配
 B --> D
 C --> D
 D --> E
+end
 ```
 
 We've changed the name of our box from *program* to *model*. This is to follow modern terminology and to reflect that the *model* is a special kind of program: it's one that can do *many different things*, depending on the *weights*. It can be implemented in many different ways. For instance, in Samuel's checkers program, different values of the weights would result in different checkers-playing strategies.
@@ -686,9 +696,9 @@ We can now see why he said that such a procedure *could be made entirely automat
 
 你现在能够明白为什么他说这么一个程序：*能够实现完全的自动化并且...这种程序的机器将从它的经验中“学习”*。当权重调整是这样的自动化（这种自动化是当我们依赖一个自动化机制基于表现产生调整，替代通过手工调整权重改善模型的时候）学习将变的全自动。
 
-<> shows the full picture of Samuel's idea of training a machine learning model.
+<training_loop> shows the full picture of Samuel's idea of training a machine learning model.
 
-下图展示了塞缪尔对于机器学习模型想法的全景图。
+下图<训练循环>展示了塞缪尔对于机器学习模型想法的全景图。
 
 ```python
 #hide_input
@@ -709,12 +719,12 @@ C((weights))
 D[model]
 E((results))
 F((performence))
-subgraph Flowchat
+subgraph training_loop
 B --> D
 C --> D
 D --> E
 end
-subgraph Flowchat
+subgraph training_loop
 E --> F --> |update| C
 end
 ```
@@ -727,12 +737,12 @@ C((权重))
 D[模型]
 E((结果))
 F((表现/性能))
-subgraph 流程图
+subgraph 训练循环
 B --> D;
 C --> D;
 D --> E;
 end
-subgraph 流程图
+subgraph 训练循环
 E --> F --更新--> C
 end
 ```
@@ -745,9 +755,9 @@ Also note that once the model is trained—that is, once we've chosen our final,
 
 也要注意一旦模型被训练了（一旦我们选择了最终的、最好的、中意的权重分配），我们就会把权重视为模型的一部分，到此为止我们就不会对它进行任何变更了。
 
-Therefore, actually *using* a model after it's trained looks like <>.
+Therefore, actually *using* a model after it's trained looks like <using_model>.
 
-因此，实际使用一个被训练后的模型如下图所示。
+因此，实际使用一个被训练后的模型如下图<模型使用>所示。
 
 ```python
 #hide_input
@@ -759,12 +769,16 @@ inputs->model->results''')
 
 ```mermaid
 graph LR
+subgraph using_model
 in((inputs)) --> op[model] --> en((results))
+end
 ```
 
 ```mermaid
 graph LR
+subgraph 模型使用
 in((输入)) --> op[模型] --> en((结果))
+end
 ```
 
 This looks identical to our original diagram in <>, just with the word *program* replaced with *model*. This is an important insight: *a trained model can be treated just like a regular computer program*.
@@ -773,7 +787,7 @@ This looks identical to our original diagram in <>, just with the word *program*
 
 > jargon: Machine Learning: The training of programs developed by allowing a computer to learn from its experience, rather than through manually coding the individual steps.
 >
-> 行业术语（黑话）：机器学习：开发训练程序以允许一台计算机从它的经验中进行学习，而不是通过手工写代码具体的每一步。
+> 行话（黑话）：机器学习：开发训练程序以允许一台计算机从它的经验中进行学习，而不是通过手工写代码具体的每一步。
 
 ### What Is a Neural Network?
 
@@ -818,3 +832,79 @@ What about the next piece, an *automatic means of testing the effectiveness of a
 Putting this all together, and assuming that SGD is our mechanism for updating the weight assignments, we can see how our image classifier is a machine learning model, much like Samuel envisioned.
 
 综上所述，假定 SGD 是我们更新权重分配的机制，能看到我们图片分类器是一个更像塞缪尔想像的那种机器学习模型。
+
+### A Bit of Deep Learning Jargon
+
+### 一点深度学习术语
+
+Samuel was working in the 1960s, and since then terminology has changed. Here is the modern deep learning terminology for all the pieces we have discussed:
+
+塞缪尔的工作在 20 世纪 60 年代，从那之后术语已经变了。这里有我们已经讨论过的模型深度学习术语的所有部分：
+
+- The functional form of the *model* is called its *architecture* (but be careful—sometimes people use *model* as a synonym of *architecture*, so this can get confusing).
+- The *weights* are called *parameters*.
+- The *predictions* are calculated from the *independent variable*, which is the *data* not including the *labels*.
+- The *results* of the model are called *predictions*.
+- The measure of *performance* is called the *loss*.
+- The loss depends not only on the predictions, but also the correct *labels* (also known as *targets* or the *dependent variable*); e.g., "dog" or "cat."
+- *模型*的功能样式称之为*架构*（但请注意，有时候人家会用*模型*做为*架构*的同义词，所以会产生混淆）。
+- *权重*被称为*参数*。
+- *预测*是由那些不含*标签值数据的自变量*计算的。
+- 模型的*结果*称为*预测*。
+- *性能*的测量称为*损失*。
+- 损失不仅取决于预测，也取决于正确的*标签*（也叫*目标*或*因变量*）；例如“狗”或“猫”。
+
+After making these changes, our diagram in <training_loop> looks like <detailed_loop>.
+
+做了这些改变后，我们的在<训练循环>中的流程图看起来就像下图<循环细节>。
+
+```python
+#hide_input
+#caption Detailed training loop
+#id detailed_loop
+gv('''ordering=in
+model[shape=box3d width=1 height=0.7 label=architecture]
+inputs->model->predictions; parameters->model; labels->loss; predictions->loss
+loss->parameters[constraint=false label=update]''')
+```
+
+```mermaid
+graph LR
+inputs((inputs))
+parameters((parameters))
+architecture[architecture]
+predictions((predictions))
+labels((labels))
+loss((loss))
+subgraph detailed_loop
+inputs --> architecture
+parameters --> architecture
+architecture --> predictions
+labels --> loss
+predictions --> loss
+end
+subgraph detailed_loop
+loss -->|update| parameters
+end
+```
+
+```mermaid
+graph LR
+inputs((输入))
+parameters((参数))
+architecture[架构]
+predictions((预测))
+labels((标签))
+loss((损失))
+subgraph 循环细节
+inputs --> architecture
+parameters --> architecture
+architecture --> predictions
+labels --> loss
+predictions --> loss
+end
+subgraph 循环细节
+loss -->|更新| parameters
+end
+```
+
