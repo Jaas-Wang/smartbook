@@ -955,3 +955,21 @@ Feedback loops can also create problems in commercial settings. For instance, a 
 Now that you have seen the base of the theory, let's go back to our code example and see in detail how the code corresponds to the process we just described.
 
 现在你已经看到了这个理论基础，让我们返回到代码实例，并看代码如何反映到我们刚刚描述的过程细节。
+
+### How Our Image Recognizer Works
+
+### 我们的图像识别如何工作
+
+Let's see just how our image recognizer code maps to these ideas. We'll put each line into a separate cell, and look at what each one is doing (we won't explain every detail of every parameter yet, but will give a description of the important bits; full details will come later in the book).
+
+
+
+The first line imports all of the fastai.vision library.
+
+```python
+from fastai.vision.all import *
+```
+
+This gives us all of the functions and classes we will need to create a wide variety of computer vision models.
+
+> J: A lot of Python coders recommend avoiding importing a whole library like this (using the `import *` syntax), because in large software projects it can cause problems. However, for interactive work such as in a Jupyter notebook, it works great. The fastai library is specially designed to support this kind of interactive use, and it will only import the necessary pieces into your environment.
