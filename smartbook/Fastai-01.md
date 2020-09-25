@@ -88,9 +88,9 @@ In 1943 Warren McCulloch, a neurophysiologist, and Walter Pitts, a logician, tea
 >
 > ：由于神经处理具有“是或非”的活动特征，神经事件以及他们间的相互联系可以用命题逻辑的方法进行处理。发现可以利用这一特性来描述每一个网络的行为。
 
-McCulloch and Pitts realized that a simplified model of a real neuron could be represented using simple addition and thresholding, as shown in <>. Pitts was self-taught, and by age 12, had received an offer to study at Cambridge University with the great Bertrand Russell. He did not take up this invitation, and indeed throughout his life did not accept any offers of advanced degrees or positions of authority. Most of his famous work was done while he was homeless. Despite his lack of an officially recognized position and increasing social isolation, his work with McCulloch was influential, and was taken up by a psychologist named Frank Rosenblatt.
+McCulloch and Pitts realized that a simplified model of a real neuron could be represented using simple addition and thresholding, as shown in <neuron>. Pitts was self-taught, and by age 12, had received an offer to study at Cambridge University with the great Bertrand Russell. He did not take up this invitation, and indeed throughout his life did not accept any offers of advanced degrees or positions of authority. Most of his famous work was done while he was homeless. Despite his lack of an officially recognized position and increasing social isolation, his work with McCulloch was influential, and was taken up by a psychologist named Frank Rosenblatt.
 
-麦卡洛克和皮茨意识到可以利用简单的加法和阈值来表示一个真实神经元的一个简化模型，如下图神经元所示 。皮茨一直都是靠自学，在12岁的时候获得了剑桥大学提供了跟随伯特兰·罗素学习的机会。但他没有接受这个邀请。终生没有接受任何提供给他的高级学位和权威职位机会。他绝大多数著名的研究成果都是在他无家可归的情况下完成的。尽管他缺少权威官方认可的职位和日渐的社会隔离。但他与麦卡洛克的工作成果却有很大的影响力，并被美国著名的心理学家弗兰克·罗森布拉特采用。
+麦卡洛克和皮茨意识到可以利用简单的加法和阈值来表示一个真实神经元的一个简化模型，如下图<神经元>所示 。皮茨一直都是靠自学，在12岁的时候获得了剑桥大学提供了跟随伯特兰·罗素学习的机会。但他没有接受这个邀请。终生没有接受任何提供给他的高级学位和权威职位机会。他绝大多数著名的研究成果都是在他无家可归的情况下完成的。尽管他缺少权威官方认可的职位和日渐的社会隔离。但他与麦卡洛克的工作成果却有很大的影响力，并被美国著名的心理学家弗兰克·罗森布拉特采用。
 
 <div style="text-align:center">
   <p align="center">
@@ -346,9 +346,9 @@ The best choice of GPU servers to use with this book will change over time, as c
 >
 > 亚：我的两美分：听从这个建议！如果你喜爱计算机你可能会迷恋配置自己的工作平台。请注意！虽然这是可行的，但会被过度的牵扯和分散精力。基于这个原因这本书没有标题。*你希望知道所有的事情：乌班图系统管理、英伟达驱动安装、apt-get、conda和Jupyter Notebook的配置*。它们每一项也许都可以是一本书。设计和布置我们生产机器学习工作的基础设施，我能够证明它是满足的，但它与模型无关，就像维护一架飞行就是在驾驶一架飞机一样。
 
-Each option shown on the website includes a tutorial; after completing the tutorial, you will end up with a screen looking like <>.
+Each option shown on the website includes a tutorial; after completing the tutorial, you will end up with a screen looking like <notebook_init>.
 
-在网站上每一个操作都包含了一个指引，完成所有指引后你最终在屏幕上会看下图内容。
+在网站上每一个操作都包含了一个指引，完成所有指引后你最终在屏幕上会看到类似下图<笔记初始>。
 
 <div style="text-align:center">
   <p align="center">
@@ -377,9 +377,9 @@ The notebooks are labeled by chapter and then by notebook number, so that they a
 >
 > 注意：全版和简版笔记：这里有两个包含了不同版本笔记的目录。全版目录包含了正文和输出全部内容，用于你现在正在阅读的这本书。简版具有与全版相同的标题和代码单元，只是所有的输出和正文都被移除了。读完这本书的一个章节后，我们建议合上这本书，打开对应的简版笔记，看你在执行每一个代码单元前是否可以想像出他们的输出结果，还要尝试回想代码操作示范的内容。
 
-To open a notebook, just click on it. The notebook will open, and it will look something like <> (note that there may be slight differences in details across different platforms; you can ignore those differences).
+To open a notebook, just click on it. The notebook will open, and it will look something like <jupyter> (note that there may be slight differences in details across different platforms; you can ignore those differences).
 
-要打开一个笔记只需要用鼠标点击它即可。笔记将会打开并且它会展现如下图的内容（不同的平台笔记展示可能做有少许细小差别，你可以忽略这些差异）。
+要打开一个笔记只需要用鼠标点击它即可。笔记将会打开并且它看起来像<jupyter>（不同的平台笔记展示可能做有少许细小差别，你可以忽略这些差异）。
 
 <div style="text-align:center">
   <p align="center">
@@ -908,3 +908,50 @@ loss -->|更新| parameters
 end
 ```
 
+### Limitations Inherent To Machine Learning
+
+### 机器学习固有局限
+
+From this picture we can now see some fundamental things about training a deep learning model:
+
+从这个图片我们能够看到一些关于训练一个深度学习模型的基础要素：
+
+- A model cannot be created without data.
+- A model can only learn to operate on the patterns seen in the input data used to train it.
+- This learning approach only creates *predictions*, not recommended *actions*.
+- It's not enough to just have examples of input data; we need *labels* for that data too (e.g., pictures of dogs and cats aren't enough to train a model; we need a label for each one, saying which ones are dogs, and which are cats).
+- 模型不能在没有数据的情况下被创建。
+- 一个模型只能学习去操作那些用于训练它而输入的数据中所看到的模式。
+- 这个学习方法只能创建*预测*，不能推荐*活动*。
+- 只有输入数据样例是不够的，我们还需要对那些数据*标注*（例如：狗和猫的图片集不能满足训练一个模式，我们需要对每一张图片进行标注，区分出哪些是狗哪些是猫）
+
+Generally speaking, we've seen that most organizations that say they don't have enough data, actually mean they don't have enough *labeled* data. If any organization is interested in doing something in practice with a model, then presumably they have some inputs they plan to run their model against. And presumably they've been doing that some other way for a while (e.g., manually, or with some heuristic program), so they have data from those processes! For instance, a radiology practice will almost certainly have an archive of medical scans (since they need to be able to check how their patients are progressing over time), but those scans may not have structured labels containing a list of diagnoses or interventions (since radiologists generally create free-text natural language reports, not structured data). We'll be discussing labeling approaches a lot in this book, because it's such an important issue in practice.
+
+通常来说，我们看到大多数组织说他们没有足够的数据，真实的意思是他们没有足够的标注数据。如果有些组织有兴趣在实践中利用模型做一些事情，然后大概他们有一些输入集计划去运行模型来处理。同时大概他们用一些其它方法已经在做了。（例如，手工或一些启发式程序），所以通过那些过程他们已经有数据了！例如，几乎可以确定一个放射科会有医学影像档案（因为他们需要能够检查他们病人随着时间的推移怎样进展的），但是那些影像可能没有包含了诊断和干预列表的结构化标签（因为放射学家通常会写自然语言自由文本报告，而不是结构化数据）。在本书中我们会讨论一些标注方法，因为在实践中它是非常重要的问题。
+
+Since these kinds of machine learning models can only make *predictions* (i.e., attempt to replicate labels), this can result in a significant gap between organizational goals and model capabilities. For instance, in this book you'll learn how to create a *recommendation system* that can predict what products a user might purchase. This is often used in e-commerce, such as to customize products shown on a home page by showing the highest-ranked items. But such a model is generally created by looking at a user and their buying history (*inputs*) and what they went on to buy or look at (*labels*), which means that the model is likely to tell you about products the user already has or already knows about, rather than new products that they are most likely to be interested in hearing about. That's very different to what, say, an expert at your local bookseller might do, where they ask questions to figure out your taste, and then tell you about authors or series that you've never heard of before.
+
+因为这些类型的机器学习模型只能做预测（即尝试复制标签），这能导致在组织目标和模型能力间产品巨大的差异。例如，在本书你会学到怎么创建一个能预测哪些产品用户有可能购买的*推荐系统*。这经常用于电商，这样通过展示最高排名的条目来自定义产品显示在首页。但是这样一个模型通常是通过看用户他们购买历史（*输入*）和他们想要购买的商品或看了什么商品（*标签*）来创建的，这意味着模型可能告诉你关于用户已经购买或已经知道的产品，而不是他们极可能感兴趣于听到的那些全新的产品。这是非常不同的，好比说一个专家在你当地书店可能做的事情，他们问询问问题计算出你的偏好，然后告诉你以前你从未听过的作者或图书系列。
+
+Another critical insight comes from considering how a model interacts with its environment. This can create *feedback loops*, as described here:
+
+其它的评判来自一个模型如何与它的环境进行交互的思考。能够创建*反馈循环*，如下描述：
+
+- A *predictive policing* model is created based on where arrests have been made in the past. In practice, this is not actually predicting crime, but rather predicting arrests, and is therefore partially simply reflecting biases in existing policing processes.
+- Law enforcement officers then might use that model to decide where to focus their police activity, resulting in increased arrests in those areas.
+- Data on these additional arrests would then be fed back in to retrain future versions of the model.
+- 一个*治安预测* 模型是基于在过去某地已经发生的拘捕情况来创建的。事实上，这不是实际的犯罪预测，而是拘捕预测，因此一定程序上会简单的思考方面在已经存在的治安传票上。
+- 法律执行官员可能会使用模型去决策他们的警察活动聚焦的区域，结果是在增加拘捕的那些区域。
+- 增加拘捕的数据将会被反馈给再训练的未来模型版本。
+
+This is a *positive feedback loop*, where the more the model is used, the more biased the data becomes, making the model even more biased, and so forth.
+
+这是一个*正向的反馈循环*，更多的模型被使用，更多偏好数据产生，使得模型更加倾向偏好，等等。
+
+Feedback loops can also create problems in commercial settings. For instance, a video recommendation system might be biased toward recommending content consumed by the biggest watchers of video (e.g., conspiracy theorists and extremists tend to watch more online video content than the average), resulting in those users increasing their video consumption, resulting in more of those kinds of videos being recommended. We'll consider this topic more in detail in <chapter_ethics>.
+
+在商业环境中反馈循环也能产生一些问题。例如，一个视频推荐系统可能偏好推荐观看量最大的内容（例如，阴谋论和极端分子相比普通人倾向观看更多的在线视频），导致那些用户增加他们的视频观看量，进而导致更多那种类型的视频被推荐。我们会在<伦理章节>思考这个话题的更多细节。
+
+Now that you have seen the base of the theory, let's go back to our code example and see in detail how the code corresponds to the process we just described.
+
+现在你已经看到了这个理论基础，让我们返回到代码实例，并看代码如何反映到我们刚刚描述的过程细节。
