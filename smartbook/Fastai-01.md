@@ -962,9 +962,11 @@ Now that you have seen the base of the theory, let's go back to our code example
 
 Let's see just how our image recognizer code maps to these ideas. We'll put each line into a separate cell, and look at what each one is doing (we won't explain every detail of every parameter yet, but will give a description of the important bits; full details will come later in the book).
 
-
+让我们看一下我们的图像识别代码如何对映到这些想法上。我们会把每一行代码都在单独的单元格内，来看每一行做的什么（我们不会解释每一个参数的细节，但会给出重要部分的描述，所有细节会在本书后续部分出现）。
 
 The first line imports all of the fastai.vision library.
+
+第一行是引入 fastai视觉库的代码
 
 ```python
 from fastai.vision.all import *
@@ -972,4 +974,54 @@ from fastai.vision.all import *
 
 This gives us all of the functions and classes we will need to create a wide variety of computer vision models.
 
+这个库提供了我们创建的各类计算机视觉模型需要的所有函数和类，
+
 > J: A lot of Python coders recommend avoiding importing a whole library like this (using the `import *` syntax), because in large software projects it can cause problems. However, for interactive work such as in a Jupyter notebook, it works great. The fastai library is specially designed to support this kind of interactive use, and it will only import the necessary pieces into your environment.
+>
+> 杰：很多 Python 程序员建议避免引入整个库（例如 using the `import *`语句），因为在大型软件项目中它会引发很多问题。然而，对于类似在 Jupyter 中的交互性工作，它工作的非常好。fastai 库专门设计去支持这类的交互工作，它只会引入必要的部分进入你的工作环境。
+
+The second line downloads a standard dataset from the [fast.ai datasets collection](https://course.fast.ai/datasets) (if not previously downloaded) to your server, extracts it (if not previously extracted), and returns a `Path` object with the extracted location:
+
+第二行代码用于下载一个来自 fast.ai 收集的数据集的一个标准数据集（如果之前没有下载过）到你的服务器，抽取数据（如果之前没有抽取），并返回一个本地抽取后的`路径`：
+
+```python
+path = untar_data(URLs.PETS)/'images'
+```
+
+> S: Throughout my time studying at fast.ai, and even still today, I've learned a lot about productive coding practices. The fastai library and fast.ai notebooks are full of great little tips that have helped make me a better programmer. For instance, notice that the fastai library doesn't just return a string containing the path to the dataset, but a `Path` object. This is a really useful class from the Python 3 standard library that makes accessing files and directories much easier. If you haven't come across it before, be sure to check out its documentation or a tutorial and try it out. Note that the [https://book.fast.ai[website\]](https://book.fast.ai[website]/) contains links to recommended tutorials for each chapter. I'll keep letting you know about little coding tips I've found useful as we come across them.
+>
+> 西：贯穿我在fast.ai学习的历程，时至今日，我已经学到了很多富有成效的编码实践。fastai库和 fast.ai笔记遍布超好的小提示，这帮助我成为一个优秀的程序员。例如，注意 fastai 库不是只返回一个包含指向数据集的路径，而是一个*路径*对象。这是非常有用处的类，来自 Python3 标准库使得获取文件和目录更加方便。如果你之前没有不知道它，一定去查看它的文档或指引手册并尝试理解它。站点[[https:book.fast.ai]](https:book.fast.ai)包含了每一章节的建议指导链接。我会持续让你知道一些编程小技巧，当我们遇到它们时发现很有帮助。
+
+In the third line we define a function, `is_cat`, labels cats based on a filename rule provided by the dataset creators:
+
+在第三行我们定义了一个`is_cat`函数，通过数据集构建器基于提供的文件名规则来标记猫。
+
+```python
+def is_cat(x): return x[0].isupper()
+```
+
+We use that function in the fourth line, which tells fastai what kind of dataset we have, and how it is structured:
+
+我们在第四行使用这个函数，告诉 fastai 我们拥有数据集的类型和它是如何构造的。
+
+```python
+dls = ImageDataLoaders.from_name_func(
+    path, get_image_files(path), valid_pct=0.2, seed=42,
+    label_func=is_cat, item_tfms=Resize(224))
+```
+
+There are various different classes for different kinds of deep learning datasets and problems—here we're using `ImageDataLoaders`. The first part of the class name will generally be the type of data you have, such as image, or text.
+
+这里有各式各样不同的类来处理不同各类的深度学习数据集和问题，这里我们用的是`ImageDataLoaders`。类名的第一部分通常是你有的数据类型，例如图片或文本。
+
+The other important piece of information that we have to tell fastai is how to get the labels from the dataset. Computer vision datasets are normally structured in such a way that the label for an image is part of the filename, or path—most commonly the parent folder name. fastai comes with a number of standardised labeling methods, and ways to write your own. Here we're telling fastai to use the `is_cat` function we just defined.
+
+其它重点部分信息是我们要告诉 fastai 如果从数据集里获取标签。计算机视觉数据集通常用图片名部分或路径（通常大多数是父文件夹名）这种方式来结构标签。fastai 提供了许多标准化的标注方法，及编写你自己的方法。这里我们告诉 fastai 使用我们刚刚定义的`is_cat`函数。
+
+Finally, we define the `Transform`s that we need. A `Transform` contains code that is applied automatically during training; fastai includes many predefined `Transform`s, and adding new ones is as simple as creating a Python function. There are two kinds: `item_tfms` are applied to each item (in this case, each item is resized to a 224-pixel square), while `batch_tfms` are applied to a *batch* of items at a time using the GPU, so they're particularly fast (we'll see many examples of these throughout this book).
+
+最后，我们定义了一些我们需要的`Transform`，一个`Transform`所包含的代码是在训练期间自动应用的。fastai 包含了许多预定义`Transform`，只是简单创建一个 Python 函数就可以新定义一个。这里有两类：`item_tfms`这类被用于单个图片（在这个例子中，每张图片尺寸被转换为 224*224 像素的方形），而`batch_tfms`这类通过使用 GPU 在同一时间内批量处理多张图片，所以这种方式特别快（在整本书内我们会看到许多这样的例子）。
+
+Why 224 pixels? This is the standard size for historical reasons (old pretrained models require this size exactly), but you can pass pretty much anything. If you increase the size, you'll often get a model with better results (since it will be able to focus on more details), but at the price of speed and memory consumption; the opposite is true if you decrease the size.
+
+为什么是 224 像素？这是历史原因下的标准尺寸（老的预训练模型需要这个尺寸），但你能使用更好的方式。如果你增加尺寸，你通常会得到一个更好结果的模型（因为它能关注到更多细节），但会增加速度和内存的价格消耗，如果你缩小尺寸就是相反的结果。
