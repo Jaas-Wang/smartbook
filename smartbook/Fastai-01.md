@@ -375,7 +375,7 @@ The notebooks are labeled by chapter and then by notebook number, so that they a
 
 > note: Full and Stripped Notebooks: There are two folders containing different versions of the notebooks. The *full* folder contains the exact notebooks used to create the book you're reading now, with all the prose and outputs. The *stripped* version has the same headings and code cells, but all outputs and prose have been removed. After reading a section of the book, we recommend working through the stripped notebooks, with the book closed, and seeing if you can figure out what each cell will show before you execute it. Also try to recall what the code is demonstrating.
 >
-> 注意：全版和简版笔记：这里有两个包含了不同版本笔记的目录。全版目录包含了正文和输出全部内容，用于你现在正在阅读的这本书。简版具有与全版相同的标题和代码单元，只是所有的输出和正文都被移除了。读完这本书的一个章节后，我们建议合上这本书，打开对应的简版笔记，看你在执行每一个代码单元前是否可以想像出他们的输出结果，还要尝试回想代码操作示范的内容。
+> 注释：全版和简版笔记：这里有两个包含了不同版本笔记的目录。全版目录包含了正文和输出全部内容，用于你现在正在阅读的这本书。简版具有与全版相同的标题和代码单元，只是所有的输出和正文都被移除了。读完这本书的一个章节后，我们建议合上这本书，打开对应的简版笔记，看你在执行每一个代码单元前是否可以想像出他们的输出结果，还要尝试回想代码操作示范的内容。
 
 To open a notebook, just click on it. The notebook will open, and it will look something like <jupyter> (note that there may be slight differences in details across different platforms; you can ignore those differences).
 
@@ -1025,3 +1025,7 @@ Finally, we define the `Transform`s that we need. A `Transform` contains code th
 Why 224 pixels? This is the standard size for historical reasons (old pretrained models require this size exactly), but you can pass pretty much anything. If you increase the size, you'll often get a model with better results (since it will be able to focus on more details), but at the price of speed and memory consumption; the opposite is true if you decrease the size.
 
 为什么是 224 像素？这是历史原因下的标准尺寸（老的预训练模型需要这个尺寸），但你能使用更好的方式。如果你增加尺寸，你通常会得到一个更好结果的模型（因为它能关注到更多细节），但会增加速度和内存的价格消耗，如果你缩小尺寸就是相反的结果。
+
+> Note: Classification and Regression: *classification* and *regression* have very specific meanings in machine learning. These are the two main types of model that we will be investigating in this book. A classification model is one which attempts to predict a class, or category. That is, it's predicting from a number of discrete possibilities, such as "dog" or "cat." A regression model is one which attempts to predict one or more numeric quantities, such as a temperature or a location. Sometimes people use the word *regression* to refer to a particular kind of model called a *linear regression model*; this is a bad practice, and we won't be using that terminology in this book!
+>
+> 注释：分类和回归：*分类*和*回归*在机器学习中有非常具体的含义。在本书中这是我们要学习的两类主要模型。分类模型是一种尝试预测一个类别或种类。它的预测来自一组各自独立的概率（或可能性），例如“狗”或“猫”。回归模型是一种尝试去预测一个或一些数字量，例如温度或定位。有时候人们使用*回归*这个词去指代一种名为*线性回归模型*的特定模型。这是不好应用，在本书我们不会使用这个术语。
