@@ -1056,3 +1056,11 @@ Even when your model has not fully memorized all your data, earlier on in traini
   </p>
   <p align="center">图：过拟实例</p>
 </div>
+
+**Overfitting is the single most important and challenging issue** when training for all machine learning practitioners, and all algorithms. As you will see, it is very easy to create a model that does a great job at making predictions on the exact data it has been trained on, but it is much harder to make accurate predictions on data the model has never seen before. And of course, this is the data that will actually matter in practice. For instance, if you create a handwritten digit classifier (as we will very soon!) and use it to recognize numbers written on checks, then you are never going to see any of the numbers that the model was trained on—check will have slightly different variations of writing to deal with. You will learn many methods to avoid overfitting in this book. However, you should only use those methods after you have confirmed that overfitting is actually occurring (i.e., you have actually observed the validation accuracy getting worse during training). We often see practitioners using over-fitting avoidance techniques even when they have enough data that they didn't need to do so, ending up with a model that may be less accurate than what they could have achieved.
+
+所有机器学习预测者在训练模型时和所有的算法**过拟是一个非常重要并极巨挑战的问题**。正如你将要看到的，非常容易创建一个在它训练的确定数据上做的预测精度非常好，但在模型之前从来没见过的数据上做精确预测是非常难的事情。当然在现实中有些数据是可以准确处理的。例如，你创建了一个手写数字分类（我们很快就看到了！）并且用它去识别支票上的手写数字，然后去看训练后的模型从来没见过的数字----手写体只有很小的差异变化就能检查处理。在本书中你会学到很多避免过拟的方法。然而只有当你确定过拟已经实际发生了你才应该使用那些方法（即，训练期间你实际观测到验证精度开始变差了）。我们经常看到一些模型训练员在拥有足够多的数据的情况下依然使用过拟规避技术，事实上他们并不需要这样做，最终相对他能够完成的成果模型的精度可能会差一些。
+
+> important: Validation Set: When you train a model, you must *always* have both a training set and a validation set, and must measure the accuracy of your model only on the validation set. If you train for too long, with not enough data, you will see the accuracy of your model start to get worse; this is called *overfitting*. fastai defaults `valid_pct` to `0.2`, so even if you forget, fastai will create a validation set for you!
+>
+> 重要：验证集：当你训练一个模型，你必须*一直*拥有训练集和验证集，并必须用验证集测试你的模型精度。如果你在没有足够数据的情况下训练的时候过长，你会发现你的模型精度开始变差----这称之为*过拟*。fastai 默认`valid_pct`为`0.2`，所以即使你忘记 fastai 也会给你创建一个验证集！
