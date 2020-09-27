@@ -1029,3 +1029,30 @@ Why 224 pixels? This is the standard size for historical reasons (old pretrained
 > Note: Classification and Regression: *classification* and *regression* have very specific meanings in machine learning. These are the two main types of model that we will be investigating in this book. A classification model is one which attempts to predict a class, or category. That is, it's predicting from a number of discrete possibilities, such as "dog" or "cat." A regression model is one which attempts to predict one or more numeric quantities, such as a temperature or a location. Sometimes people use the word *regression* to refer to a particular kind of model called a *linear regression model*; this is a bad practice, and we won't be using that terminology in this book!
 >
 > 注释：分类和回归：*分类*和*回归*在机器学习中有非常具体的含义。在本书中这是我们要学习的两类主要模型。分类模型是一种尝试预测一个类别或种类。它的预测来自一组各自独立的概率（或可能性），例如“狗”或“猫”。回归模型是一种尝试去预测一个或一些数字量，例如温度或定位。有时候人们使用*回归*这个词去指代一种名为*线性回归模型*的特定模型。这是不好应用，在本书我们不会使用这个术语。
+
+The Pet dataset contains 7,390 pictures of dogs and cats, consisting of 37 different breeds. Each image is labeled using its filename: for instance the file *great_pyrenees_173.jpg* is the 173rd example of an image of a Great Pyrenees breed dog in the dataset. The filenames start with an uppercase letter if the image is a cat, and a lowercase letter otherwise. We have to tell fastai how to get labels from the filenames, which we do by calling `from_name_func` (which means that filenames can be extracted using a function applied to the filename), and passing `x[0].isupper()`, which evaluates to `True` if the first letter is uppercase (i.e., it's a cat).
+
+宠物数据集包含 7390 张狗和猫的图片，由37个不同品类组成。每一张图片用它的文件名进行了标注：例如文件*great_pyrenees_173.jpg*是在数据集中大比利牛斯犬的第 173 张例图。如果图片是一只猫文件名起始用一个大写字母，否则是一个小写字母。我们必须告诉 fastai 如何从文件名中获取标签，我们做了一个名为`from_name_func`的函数（意思这是应用于文件名的函数用来抽取文件名），如果通过评估`x[0].isupper()`中第一个字母大写为真，即：它是一只猫。
+
+The most important parameter to mention here is `valid_pct=0.2`. This tells fastai to hold out 20% of the data and *not use it for training the model at all*. This 20% of the data is called the *validation set*; the remaining 80% is called the *training set*. The validation set is used to measure the accuracy of the model. By default, the 20% that is held out is selected randomly. The parameter `seed=42` sets the *random seed* to the same value every time we run this code, which means we get the same validation set every time we run it—this way, if we change our model and retrain it, we know that any differences are due to the changes to the model, not due to having a different random validation set.
+
+在这里提到的最更要的参数是`valid_pct=0.2`。这是告诉 fastai 取出20%的数据并完成不能把它用于模型训练。这 20%的数据叫做*验证集*；剩下80%的数据称为*训练集*。验证集用来测量模型的精度。默认情况下取出的这 20%数据是随机选中的。参数`seed=42`设置随机种子，每次我们运行这段代码都是相同的值，意思是每次我们运行代码都会取同样的验证集。利用这个方法，如果我们改变我们的模型和重训练它，我们会知道这些差异是因为模型的改变，而不是因为不同的随机验证设置。
+
+fastai will *always* show you your model's accuracy using *only* the validation set, *never* the training set. This is absolutely critical, because if you train a large enough model for a long enough time, it will eventually memorize the label of every item in your dataset! The result will not actually be a useful model, because what we care about is how well our model works on *previously unseen images*. That is always our goal when creating a model: for it to be useful on data that the model only sees in the future, after it has been trained.
+
+fastai 将会*一直只用*验证集*永远不会*用训练集给你展示你的模型精度。这是绝对的评判标准，因为如果你用足够长的时间训练一个足够大的模型，它最终会记忆你的数据集里的每一个标签！其结果不会是实际有用的模型，因为我们关心我们的模型在之前看不到的图片集上工作的如何的好。当创建一个模型我们坚持的目标是：在一个模型被训练后，它在数据上是有用的，只关注未来。
+
+Even when your model has not fully memorized all your data, earlier on in training it may have memorized certain parts of it. As a result, the longer you train for, the better your accuracy will get on the training set; the validation set accuracy will also improve for a while, but eventually it will start getting worse as the model starts to memorize the training set, rather than finding generalisable underlying patterns in the data. When this happens, we say that the model is *overfitting*.
+
+即使你的模型没有记忆你的所有数据，在早先的训练中它可以记忆确定的部分。结果是，长时间训练你相对好的精度来自训练集，验证集精度会暂时得到改善，但最终在模型记忆了训练集后它的精度会开始变差，而不是在数据上发现了可归纳的基础模式。当这个事情发生后，我们称这个模型是*过拟*的。
+
+<img_overfit> shows what happens when you overfit, using a simplified example where we have just one parameter, and some randomly generated data based on the function `x**2`. As you can see, although the predictions in the overfit model are accurate for data near the observed data points, they are way off when outside of that range.
+
+<过拟图>展示了当你过拟时发生了什么，使用了一个简单例子：我们只用了一个参数，基于函数*x**2*生成随机数。你能看到，虽然过拟模型预测的精准度都在观测数据点附近，当在这个数据序列这外时精度就差的很远了。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00000.png" alt="Example of overfitting"  caption="Example of overfitting" id="img_overfit" width="700" />
+  </p>
+  <p align="center">图：过拟实例</p>
+</div>
