@@ -1064,3 +1064,27 @@ Even when your model has not fully memorized all your data, earlier on in traini
 > important: Validation Set: When you train a model, you must *always* have both a training set and a validation set, and must measure the accuracy of your model only on the validation set. If you train for too long, with not enough data, you will see the accuracy of your model start to get worse; this is called *overfitting*. fastai defaults `valid_pct` to `0.2`, so even if you forget, fastai will create a validation set for you!
 >
 > 重要：验证集：当你训练一个模型，你必须*一直*拥有训练集和验证集，并必须用验证集测试你的模型精度。如果你在没有足够数据的情况下训练的时候过长，你会发现你的模型精度开始变差----这称之为*过拟*。fastai 默认`valid_pct`为`0.2`，所以即使你忘记 fastai 也会给你创建一个验证集！
+
+The fifth line of the code training our image recognizer tells fastai to create a *convolutional neural network* (CNN) and specifies what *architecture* to use (i.e. what kind of model to create), what data we want to train it on, and what *metric* to use:
+
+训练我们的图像识别器的第五行代码告诉 fastai 创建一个*卷积神经网络*（CNN ）和使用什么样的特点*架构*（即，去创建什么类型的模型），我们想在什么样的数据上训练它和使用什么样的*指标*：
+
+```python
+learn = cnn_learner(dls, resnet34, metrics=error_rate)
+```
+
+Why a CNN? It's the current state-of-the-art approach to creating computer vision models. We'll be learning all about how CNNs work in this book. Their structure is inspired by how the human vision system works.
+
+为什么是 CNN？这是时下最先进的创建计算机视觉模型的方法。在本书我们会学到关于CNN 如何工作的所有内容。他们的构建灵感来自人类视觉系统工作方式。
+
+There are many different architectures in fastai, which we will introduce in this book (as well as discussing how to create your own). Most of the time, however, picking an architecture isn't a very important part of the deep learning process. It's something that academics love to talk about, but in practice it is unlikely to be something you need to spend much time on. There are some standard architectures that work most of the time, and in this case we're using one called *ResNet* that we'll be talking a lot about during the book; it is both fast and accurate for many datasets and problems. The `34` in `resnet34` refers to the number of layers in this variant of the architecture (other options are `18`, `50`, `101`, and `152`). Models using architectures with more layers take longer to train, and are more prone to overfitting (i.e. you can't train them for as many epochs before the accuracy on the validation set starts getting worse). On the other hand, when using more data, they can be quite a bit more accurate.
+
+在 fastai 有很多不同的架构，在这本里我们会介绍它们（和讨论如何去创建你自己）。然而，大多数时候深度学习过程挑选一个架构不是一个很重要的部分。这个事情学术界喜爱谈论，但在实践中它不可能是你需要花费很多时候的事情。这里有一些绝大多数情况下使用的标准架构，在这个例子里我们使用了一个名为*ResNet*的架构，在本书内我们会讲一些关于它的内容。在很多数据集和问题上它兼顾了快和精度。在 `resnet34`中的`34`指的是在这个种类架构内的层数（其它的操作还有`18`，`50`，`101`和`152`层）。模型使用的架构层数越多训练花费的时候就越长并更容易过拟（即，）别一方面，当你用更多的数据，他就能获得相对更好的精确度。
+
+What is a metric? A *metric* is a function that measures the quality of the model's predictions using the validation set, and will be printed at the end of each *epoch*. In this case, we're using `error_rate`, which is a function provided by fastai that does just what it says: tells you what percentage of images in the validation set are being classified incorrectly. Another common metric for classification is `accuracy` (which is just `1.0 - error_rate`). fastai provides many more, which will be discussed throughout this book.
+
+指标是什么？指标是使用验证集测量模型预测质量的，并会在每一个*epoch*后面输出。例如我们使用`error_rate`(错误率)，这是一个 fastai 提供的函数：告诉你在验证集上图像分类不正确性的百分数。别一种通用的指标是分类`精度`（从 1.0 至错误率）。fastai 提供了更多的指标，整本书都会讨论。
+
+The concept of a metric may remind you of *loss*, but there is an important distinction. The entire purpose of loss is to define a "measure of performance" that the training system can use to update weights automatically. In other words, a good choice for loss is a choice that is easy for stochastic gradient descent to use. But a metric is defined for human consumption, so a good metric is one that is easy for you to understand, and that hews as closely as possible to what you want the model to do. At times, you might decide that the loss function is a suitable metric, but that is not necessarily the case.
+
+指标的概念可以提醒你的损失，但这里有一个重要的差异。损失的全部目标是去定义“测量表现”，训练系统能用来自动更新权重。换一种说法，对损失来说一个好的选择，可以很容易用来进行随机梯度下降。但指标的定义对人类来说，一个好的指标是那种让你很容易去理解，并尽可能向接近你所想要的模型去努力。同时，你可以决定损失函数是一个合适的指标，但在一定程度上并不是必须的。
