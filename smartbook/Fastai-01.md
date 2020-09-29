@@ -1056,7 +1056,6 @@ Even when your model has not fully memorized all your data, earlier on in traini
   </p>
   <p align="center">图：过拟实例</p>
 </div>
-
 **Overfitting is the single most important and challenging issue** when training for all machine learning practitioners, and all algorithms. As you will see, it is very easy to create a model that does a great job at making predictions on the exact data it has been trained on, but it is much harder to make accurate predictions on data the model has never seen before. And of course, this is the data that will actually matter in practice. For instance, if you create a handwritten digit classifier (as we will very soon!) and use it to recognize numbers written on checks, then you are never going to see any of the numbers that the model was trained on—check will have slightly different variations of writing to deal with. You will learn many methods to avoid overfitting in this book. However, you should only use those methods after you have confirmed that overfitting is actually occurring (i.e., you have actually observed the validation accuracy getting worse during training). We often see practitioners using over-fitting avoidance techniques even when they have enough data that they didn't need to do so, ending up with a model that may be less accurate than what they could have achieved.
 
 所有机器学习预测者在训练模型时和所有的算法**过拟是一个非常重要并极巨挑战的问题**。正如你将要看到的，非常容易创建一个在它训练的确定数据上做的预测精度非常好，但在模型之前从来没见过的数据上做精确预测是非常难的事情。当然在现实中有些数据是可以准确处理的。例如，你创建了一个手写数字分类（我们很快就看到了！）并且用它去识别支票上的手写数字，然后去看训练后的模型从来没见过的数字----手写体只有很小的差异变化就能检查处理。在本书中你会学到很多避免过拟的方法。然而只有当你确定过拟已经实际发生了你才应该使用那些方法（即，训练期间你实际观测到验证精度开始变差了）。我们经常看到一些模型训练员在拥有足够多的数据的情况下依然使用过拟规避技术，事实上他们并不需要这样做，最终相对他能够完成的成果模型的精度可能会差一些。
@@ -1149,5 +1148,68 @@ The *head* of a model is the part that is newly added to be specific to the new 
 
 So, with all this code our model learned to recognize cats and dogs just from labeled examples. But how did it do it?
 
-所以利用这些代码我们的模型通过标注的实例学会了识别猫和狗。但它是怎么做的呢？
+所以利用这些代码我们的模型通过标注的实例学会了去辨别猫和狗。但它是怎么做的呢？
 
+### What Our Image Recognizer Learned
+
+### 我们的图像识别器学到了什么
+
+At this stage we have an image recognizer that is working very well, but we have no idea what it is actually doing! Although many people complain that deep learning results in impenetrable "black box" models (that is, something that gives predictions but that no one can understand), this really couldn't be further from the truth. There is a vast body of research showing how to deeply inspect deep learning models, and get rich insights from them. Having said that, all kinds of machine learning models (including deep learning, and traditional statistical models) can be challenging to fully understand, especially when considering how they will behave when coming across data that is very different to the data used to train them. We'll be discussing this issue throughout this book.
+
+在这一阶段我们有了一个工作良好的图像识别器，但我们并不知道它实际上做了什么！虽然很多人抱怨深度学习产生在无法穿透的“黑盒子”模型里（是这样的，一些事情给出的预测，然而没人能理解），事实上真像并不太远。这里有大量的研究展示了深层次检查深度学习模型是怎样的，并对它们有丰富的洞察。说到这，所有类型的机器学习模型（包括深度学习和传统统计模型）都能进行全面理解的挑战，尤其当考虑通过使用完全不同的数据训练它们时他们会有怎样的行为时。通过本书我们将会讨论这个问题。
+
+In 2013 a PhD student, Matt Zeiler, and his supervisor, Rob Fergus, published the paper ["Visualizing and Understanding Convolutional Networks"](https://arxiv.org/pdf/1311.2901.pdf), which showed how to visualize the neural network weights learned in each layer of a model. They carefully analyzed the model that won the 2012 ImageNet competition, and used this analysis to greatly improve the model, such that they were able to go on to win the 2013 competition! <img_layer1> is the picture that they published of the first layer's weights.
+
+在 2013 年一个名叫马特·齐勒博士生和他的导师罗伯·弗格斯发表了名为“[可视化并理解卷积网络](https://arxiv.org/pdf/1311.2901.pdf)”的论文，在文中展示了可视化神经网络权重在模型的每一层是如何学习的。他们仔细分析了2012 年 ImageNet 比赛的获胜模型，并利用分析去改进这个模型，因此他们能够继续赢得 2013 年的比赛！<层一图>是他们发表的第一层权重图片。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/layer1.png"alt="Activations of the first layer of a CNN" width="300" caption="Activations of the first layer of a CNN (courtesy of Matthew D. Zeiler and Rob Fergus)" id="img_layer1"/>
+  </p>
+  <p align="center">图：神经网络第一层激活</p>
+</div>
+
+This picture requires some explanation. For each layer, the image part with the light gray background shows the reconstructed weights pictures, and the larger section at the bottom shows the parts of the training images that most strongly matched each set of weights. For layer 1, what we can see is that the model has discovered weights that represent diagonal, horizontal, and vertical edges, as well as various different gradients. (Note that for each layer only a subset of the features are shown; in practice there are thousands across all of the layers.) These are the basic building blocks that the model has learned for computer vision. They have been widely analyzed by neuroscientists and computer vision researchers, and it turns out that these learned building blocks are very similar to the basic visual machinery in the human eye, as well as the handcrafted computer vision features that were developed prior to the days of deep learning. The next layer is represented in <img_layer2>.
+
+这张图片需要一些解释。图片用了浅灰背景部分为每层展示了重建权重图，在底部更大的区域展示训练图片每个权重集最匹配部分。对于层 1，我们能够发现模型已经发现了代表对角线，水平线和垂直边缘，以及各种不同类型的渐变权重。（注意这里只对每层的特征子集做了展示。实践中所有层上都会有数千个。）对于计算机视觉这是一些模型已经学到的基础构建模块。他们已经被神经科学家和计算机视觉研究人员广泛的分析了，并得出这些学到的构建模型与人类眼睛的基础可视化机制和深度学习时代之前开发的手工计算机视觉特征是非常类似的。下一层被展示在<层 二图>内。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/layer2.png" alt="Activations of the second layer of a CNN" width="800" caption="Activations of the second layer of a CNN (courtesy of Matthew D. Zeiler and Rob Fergus)" id="img_layer2"/>
+  </p>
+  <p align="center">图：神经网络第二层激活</p>
+</div>
+
+For layer 2, there are nine examples of weight reconstructions for each of the features found by the model. We can see that the model has learned to create feature detectors that look for corners, repeating lines, circles, and other simple patterns. These are built from the basic building blocks developed in the first layer. For each of these, the right-hand side of the picture shows small patches from actual images which these features most closely match. For instance, the particular pattern in row 2, column 1 matches the gradients and textures associated with sunsets.
+
+对于第二层，这里有通过模型发现的9 个每个特征的权重重建实例。我们能看到模型已经学会创建特征探测器查找角、重复的线、圈和其它简单图案。这些构造来自第一层形成的基础构建模块。图片右侧展示小块来自实际图像里最接近的特征匹配。例如，第 二 行第一列的特定图案与日落渐变和纹理相匹配。
+
+<img_layer3> shows the image from the paper showing the results of reconstructing the features of layer 3.
+
+<层三图>展示图像来自论文中列示的第三层特征重建结果。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/chapter2_layer3.png" alt="Activations of the third layer of a CNN" width="800" caption="Activations of the third layer of a CNN (courtesy of Matthew D. Zeiler and Rob Fergus)" id="img_layer3"/>
+  </p>
+  <p align="center">图：神经网络第三层激活</p>
+</div>
+
+As you can see by looking at the righthand side of this picture, the features are now able to identify and match with higher-level semantic components, such as car wheels, text, and flower petals. Using these components, layers four and five can identify even higher-level concepts, as shown in <img_layer4>.
+
+正如你在本图右侧看到的，特征现在能够辨认和匹配更高水平的语义组件，例如车轮、文本和花瓣。利用这些组件，第四和第五层甚至能够分辨更高水平的概念，正如<层四图>所显示。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/chapter2_layer4and5.png" alt="Activations of layers 4 and 5 of a CNN" width="800" caption="Activations of layers 4 and 5 of a CNN (courtesy of Matthew D. Zeiler and Rob Fergus)" id="img_layer4"/>
+  </p>
+  <p align="center">图：神经网络第四、五层激活</p>
+</div>
+
+This article was studying an older model called *AlexNet* that only contained five layers. Networks developed since then can have hundreds of layers—so you can imagine how rich the features developed by these models can be!
+
+这篇文章研究了一个只包含五层名为 AlexNet 的老模型。网络被开发后，从那时起能够有数百个层。你可以想像通过这些模型多么丰富的特征被形成！
+
+When we fine-tuned our pretrained model earlier, we adapted what those last layers focus on (flowers, humans, animals) to specialize on the cats versus dogs problem. More generally, we could specialize such a pretrained model on many different tasks. Let's have a look at some examples.
+
+当我们微调之前的预训练模型，我们调整最后的聚焦于花、人类、动物层，让它专门研究猫狗对比问题。更广泛的层面，我们能够基于更多不同的任务专门研究此类预训练模型。让我们看更多的例了。
