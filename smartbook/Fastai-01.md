@@ -1093,3 +1093,61 @@ The concept of a metric may remind you of *loss*, but there is an important dist
 
 `cnn_learner`也有一个参数`pretrained`默认值为`True`（即使我们没有具体说明它，在这个例子里也用到了），用来设置你模型内的权重为通过专家用 一 百三十万张上千种不同各类的图片已经训练完成的值（使用的是著名的 [ImageNet 数据集](http://www.image-net.org/)）。模型的权重已经用一些其它数据集训练过被称为*预训练模型*。你几乎可以一直使用预训练模型，因为它意味着，你的模型在给它展示任何你的数据前，它已经很有能力了。并且，你会发现在深度学习的这些能力将是你所需要的，你的项目几乎不用理会这些细节。例如，预训练模型的部分已经有了边缘、斜坡和颜色的检测，这些内容可被用于很多任务。
 
+When using a pretrained model, `cnn_learner` will remove the last layer, since that is always specifically customized to the original training task (i.e. ImageNet dataset classification), and replace it with one or more new layers with randomized weights, of an appropriate size for the dataset you are working with. This last part of the model is known as the *head*.
+
+当使用一个预训练模型，`cnn_learner`会移除最后一层，因为这层一直是为完成原始训练任务而特别定义的（即，ImageNet 数据集分类），用新的随机权重的单层或多层来替换它，和你正在使用的一个合适尺寸的数据集。模型的最后部分称为*head*。
+
+Using pretrained models is the *most* important method we have to allow us to train more accurate models, more quickly, with less data, and less time and money. You might think that would mean that using pretrained models would be the most studied area in academic deep learning... but you'd be very, very wrong! The importance of pretrained models is generally not recognized or discussed in most courses, books, or software library features, and is rarely considered in academic papers. As we write this at the start of 2020, things are just starting to change, but it's likely to take a while. So be careful: most people you speak to will probably greatly underestimate what you can do in deep learning with few resources, because they probably won't deeply understand how to use pretrained models.
+
+使用预训练模型是*最*使用的方法，可以让我们用更少的数据、时间和金钱去训练更精确、更快的模型。你可能会想这意味着使用预训练模型在学术深度学习也许是更广泛的研究领域...但你大错特错了！预训练模型的重要性通常在大多数课程、教科书或软件特征库没有被承认和讨论，并在学术论文是几乎没有被考虑。在 2020 的开始阶段我们编写这个内容时，这个状况已经开始变化，但它也许还需要一段时间。所以请注意：对大多数来说，你所说的在深度学习使用很少的资源进行训练极可能会被大大低估，因为他们可能对如何使用预训练模型没有深刻的理解。
+
+Using a pretrained model for a task different to what it was originally trained for is known as *transfer learning*. Unfortunately, because transfer learning is so under-studied, few domains have pretrained models available. For instance, there are currently few pretrained models available in medicine, making transfer learning challenging to use in that domain. In addition, it is not yet well understood how to use transfer learning for tasks such as time series analysis.
+
+使用预训练模型在一个不同于初始被训练的任务称为*迁移学习*。不幸的是，因为迁移学习的研究是非常不足的，只有少数领域可提供预训练模型。例如，当前在医疗领域只有少数预训练模型可提供，使的在该领域使用迁移学习具有挑战。另外，对于类似时间序列分析类任务如何使用迁移学习也没有很好的理解。
+
+> jargon: Transfer learning: Using a pretrained model for a task different to what it was originally trained for.
+>
+> 术语：迁移学习：使用预训练模型用于不同于它初始被训练目的的任务。
+
+The sixth line of our code tells fastai how to *fit* the model:
+
+我们代码的第六行告诉 fastai 如何*拟合*模型：
+
+```python
+learn.fine_tune(1)
+```
+
+As we've discussed, the architecture only describes a *template* for a mathematical function; it doesn't actually do anything until we provide values for the millions of parameters it contains.
+
+我们已经讨论过，架构只是针对一个学习函数描述了一个*模板*。在我们提供上百万它所包含的参数值之前，它不能做任何实际工作。
+
+This is the key to deep learning—determining how to fit the parameters of a model to get it to solve your problem. In order to fit a model, we have to provide at least one piece of information: how many times to look at each image (known as number of *epochs*). The number of epochs you select will largely depend on how much time you have available, and how long you find it takes in practice to fit your model. If you select a number that is too small, you can always train for more epochs later.
+
+深度学习的关键是：决定如何去拟合模型参数以让它去解决你的问题。为了拟合一个模型，我们必须提供至少一条信息：每一张图片看多少次（称为*epochs*数）。你的 epochs 数的选择极大依赖你可提供的时间有多少和在实践中你发现要多久去拟合你的模型。如果你选择的数很小，你稍后有更多的 epochs 保持训练。
+
+But why is the method called `fine_tune`, and not `fit`? fastai actually *does* have a method called `fit`, which does indeed fit a model (i.e. look at images in the training set multiple times, each time updating the parameters to make the predictions closer and closer to the target labels). But in this case, we've started with a pretrained model, and we don't want to throw away all those capabilities that it already has. As you'll learn in this book, there are some important tricks to adapt a pretrained model for a new dataset—a process called *fine-tuning*.
+
+但是为什么这个方法称为`fine_tune`（微调），而不是`fit`（拟合）？实际上fastai *有*一个称为`fit`（拟合）的方法，它确实拟合一个模型（即，在训练中设置多次看图片，每一次更新参数以使用的预测越来越接近目标标签）。但在这个事例，我们已经开始使用预训练模型，并且我们不想抛弃所有已经具备的能力。做为在本书中将要学到的，这里有很多重要的技巧为一个新的数据集调整一个预训练模型，这个过程称为*fine-tuning*（微调）。
+
+> jargon: Fine-tuning: A transfer learning technique where the parameters of a pretrained model are updated by training for additional epochs using a different task to that used for pretraining.
+>
+> 术语：微调（Fine-tuning）:一种迁移学习技术，一个预训练模型的参数被通过使用与预训练任务不同的用于其它任务的额外 epochs训练更新。
+
+When you use the `fine_tune` method, fastai will use these tricks for you. There are a few parameters you can set (which we'll discuss later), but in the default form shown here, it does two steps:
+
+当你使用`fine_tune`方法，fastai 将会为你使用这些技巧。这里有一些你能设置的参数（这些参数稍后我们再讨论），但在这里展示的默认格式下，它分两步来做：
+
+1. Use one epoch to fit just those parts of the model necessary to get the new random head to work correctly with your dataset.
+2. Use the number of epochs requested when calling the method to fit the entire model, updating the weights of the later layers (especially the head) faster than the earlier layers (which, as we'll see, generally don't require many changes from the pretrained weights).
+
+1. 使用 单 个 epoch去拟合模型必须的那些部分，让新的随机head在你的数据集下正确工作。
+2. 当使用本方法去拟合整个模型时要求使用 epochs 值，相比前几层（正如我会将看到的，这几层不太需要对预训练权重进行更多的变更）更快的更新最后的层数权重（尤其 head 层）。
+
+The *head* of a model is the part that is newly added to be specific to the new dataset. An *epoch* is one complete pass through the dataset. After calling `fit`, the results after each epoch are printed, showing the epoch number, the training and validation set losses (the "measure of performance" used for training the model), and any *metrics* you've requested (error rate, in this case).
+
+一个模型的*head*是新增加去特别应对新的数据集的部分。一个*epoch*是完全覆盖数据集的。调用`fit`（拟合）后每一个 epoch 后输出结果，显示 epoch 值、训练集和评估集的损失（用于在训练模型过程中模型表现测量），以及你要求的任何*指标*（例如在本例子中的错误率）。
+
+So, with all this code our model learned to recognize cats and dogs just from labeled examples. But how did it do it?
+
+所以利用这些代码我们的模型通过标注的实例学会了识别猫和狗。但它是怎么做的呢？
+
