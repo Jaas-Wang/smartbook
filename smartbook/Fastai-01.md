@@ -1213,3 +1213,75 @@ This article was studying an older model called *AlexNet* that only contained fi
 When we fine-tuned our pretrained model earlier, we adapted what those last layers focus on (flowers, humans, animals) to specialize on the cats versus dogs problem. More generally, we could specialize such a pretrained model on many different tasks. Let's have a look at some examples.
 
 当我们微调之前的预训练模型，我们调整最后的聚焦于花、人类、动物层，让它专门研究猫狗对比问题。更广泛的层面，我们能够基于更多不同的任务专门研究此类预训练模型。让我们看更多的例了。
+
+### Image Recognizers Can Tackle Non-Image Tasks
+
+### 图像识别器能够处理非图像任务
+
+An image recognizer can, as its name suggests, only recognize images. But a lot of things can be represented as images, which means that an image recogniser can learn to complete many tasks.
+
+就如它所名字表明的，一个图像识别器只能识别图像。然而很多事情能够用图像进行展示，这意味着一个图像识别器能学习完成很多任务。
+
+For instance, a sound can be converted to a spectrogram, which is a chart that shows the amount of each frequency at each time in an audio file. Fast.ai student Ethan Sutin used this approach to easily beat the published accuracy of a state-of-the-art [environmental sound detection model](https://medium.com/@etown/great-results-on-audio-classification-with-fastai-library-ccaf906c5f52) using a dataset of 8,732 urban sounds. fastai's `show_batch` clearly shows how each different sound has a quite distinctive spectrogram, as you can see in <img_spect>.
+
+例如，声音能够被转换为光谱图，一张图可展示一个声音文件在每一个时间点每一个频率的数量。Fast.ai 学生伊森·苏丁利用这一方法使用 8,732个城市声音数据集轻松打破了最先进的[环境声音检测模型](https://medium.com/@etown/great-results-on-audio-classification-with-fastai-library-ccaf906c5f52)精度。fastai 的`show_batch`清晰的显示了每一种不同的声音具有怎样的完全不同的光谱，正如下图<光谱图>你所看到的。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00012.png" alt="show_batch with spectrograms of sounds" width="400" caption="show_batch with spectrograms of sounds" id="img_spect"/>
+  </p>
+  <p align="center">图：声音光谱图</p>
+</div>
+
+A time series can easily be converted into an image by simply plotting the time series on a graph. However, it is often a good idea to try to represent your data in a way that makes it as easy as possible to pull out the most important components. In a time series, things like seasonality and anomalies are most likely to be of interest. There are various transformations available for time series data. For instance, fast.ai student Ignacio Oguiza created images from a time series dataset for olive oil classification, using a technique called Gramian Angular Difference Field (GADF); you can see the result in <ts_image>. He then fed those images to an image classification model just like the one you see in this chapter. His results, despite having only 30 training set images, were well over 90% accurate, and close to the state of the art.
+
+一个时间序列通过图表上简单的标定能轻松的转换为一张图像。因而，这是常用的好想法，用这种方法展示你的数据，使得它尽可能容易的提取出重要的要素。在一个时间序列，像季节性的或反常的事情最可能引发兴趣，圣于时间序列数据这是有很多有效的转换。例如，fast.ai 的学生伊格纳西奥·奥吉扎使用一种称为格拉姆角场（GADF）的技术为来自橄榄油分类的时间序列数据集创建图像，你能够看到在下图<时间序列转换图>的结果。然后他把那些图片喂一个你在本章节看到的那种图像分类模型。尽管只有 30 个训练集图片，他的结果超过了 90%的精度，接近了最新的技术。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00013.png" alt="Converting a time series into an image" width="700" caption="Converting a time series into an image" id="ts_image"/>
+  </p>
+  <p align="center">图：时间序列转化图</p>
+</div>
+
+Another interesting fast.ai student project example comes from Gleb Esman. He was working on fraud detection at Splunk, using a dataset of users' mouse movements and mouse clicks. He turned these into pictures by drawing an image where the position, speed, and acceleration of the mouse pointer was displayed using coloured lines, and the clicks were displayed using [small colored circles](https://www.splunk.com/en_us/blog/security/deep-learning-with-splunk-and-tensorflow-for-security-catching-the-fraudster-in-neural-networks-with-behavioral-biometrics.html), as shown in <splunk>. He then fed this into an image recognition model just like the one we've used in this chapter, and it worked so well that it led to a patent for this approach to fraud analytics!
+
+另一个有趣的fast.ai学习项目实例来自格莱布·埃斯曼。他在斯普伦克公司利用用户鼠标移动和点击数据集从事欺诈检测工作。他把数据集转化为图像集，通过使用不同颜色的线体现鼠标点击者位置、速度和加速进行绘图，并且使用[小彩色圆圈](https://www.splunk.com/en_us/blog/security/deep-learning-with-splunk-and-tensorflow-for-security-catching-the-fraudster-in-neural-networks-with-behavioral-biometrics.html)代表点击，如下图所示。然后他喂给就像我们在本章节所使用的一个图片识别模型，模型工作的非常好，这一个欺诈分析方法还申请了专利！
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00014.png" alt="Converting computer mouse behavior to an image" width="450" caption="Converting computer mouse behavior to an image" id="splunk"/>
+  </p>
+  <p align="center">图：计算机鼠标轨迹习惯图</p>
+</div>
+
+Another example comes from the paper ["Malware Classification with Deep Convolutional Neural Networks"](https://ieeexplore.ieee.org/abstract/document/8328749) by Mahmoud Kalash et al., which explains that "the malware binary file is divided into 8-bit sequences which are then converted to equivalent decimal values. This decimal vector is reshaped and a gray-scale image is generated that represents the malware sample," like in <malware_proc>.
+
+另一个例子来自马哈茂德·卡拉什等人的论文[“基于深度卷积神经网络的恶意软件分类”](https://ieeexplore.ieee.org/abstract/document/8328749)，文中解释了“制恶意软件二进文件被切分为一系列的 8八比特，然后又全部转化为等价的十进制值。这个十进制向量的变形和灰度图的产生代表了恶意软件样本”，如下图<恶意软件分类过程>。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00055.png" alt="Malware classification process" width="623" caption="Malware classification process" id="malware_proc"/>
+  </p>
+  <p align="center">图：恶意软件分类过程</p>
+</div>
+
+The authors then show "pictures" generated through this process of malware in different categories, as shown in <malware_eg>.
+
+作者然后展示了通过这一过程生成的不同类别恶意软件“图片”，如下图<恶意软件实例>所示。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00056.png" alt="Malware examples" width="650" caption="Malware examples" id="malware_eg" />
+  </p>
+  <p align="center">图：恶意软件实例</p>
+</div>
+
+As you can see, the different types of malware look very distinctive to the human eye. The model the researchers trained based on this image representation was more accurate at malware classification than any previous approach shown in the academic literature. This suggests a good rule of thumb for converting a dataset into an image representation: if the human eye can recognize categories from the images, then a deep learning model should be able to do so too.
+
+你能看出来，在人类的眼里各种不同类型的恶意软件看起来有很大的差别。研究人员基于这种图形表现法训练的模型在恶意软件分类的精度方面远超之前在学术文献中列示的任何方法。转换数据集为图形表示这是一个非常好的经验法则建议：如果人类的眼睛能够从图片中识别分类，那么深度学习模型应该也能够做到。
+
+In general, you'll find that a small number of general approaches in deep learning can go a long way, if you're a bit creative in how you represent your data! You shouldn't think of approaches like the ones described here as "hacky workarounds," because actually they often (as here) beat previously state-of-the-art results. These really are the right ways to think about these problem domains.
+
+通常来说，如果你是少数在如何展示你的数据方面有创造力的人，你将会发现在深度学习里少数通用方法能有很大的帮助！你不应该想像这些方法像这里人们所描述的那种“极客解决方法”，因为实际上他们经常（就像这里）打破之前先进的技术成果。这确实是正确的方法去想思考这些问题领域。
+
