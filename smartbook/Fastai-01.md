@@ -1285,3 +1285,75 @@ In general, you'll find that a small number of general approaches in deep learni
 
 通常来说，如果你是少数在如何展示你的数据方面有创造力的人，你将会发现在深度学习里少数通用方法能有很大的帮助！你不应该想像这些方法像这里人们所描述的那种“极客解决方法”，因为实际上他们经常（就像这里）打破之前先进的技术成果。这确实是正确的方法去想思考这些问题领域。
 
+### Jargon Recap
+
+### 术语总结
+
+We just covered a lot of information so let's recap briefly, <dljargon> provides a handy vocabulary.
+
+我们刚刚学习了一些知识，所以让我们做一个简短的总结，<深度学习术语>提供了一个方便查看的词汇表。
+
+dljargon.Deep learning vocabulary
+
+| Term             | Meaning                                                      |
+| ---------------- | ------------------------------------------------------------ |
+| Label            | The data that we're trying to predict, such as "dog" or "cat" |
+| Architecture     | The _template_ of the model that we're trying to fit; the actual mathematical function that we're passing the input data and parameters to |
+| Model            | The combination of the architecture with a particular set of parameters |
+| Parameters       | The values in the model that change what task it can do, and are updated through model training |
+| Fit              | Update the parameters of the model such that the predictions of the model using the input data match the target labels |
+| Train            | A synonym for _fit_                                          |
+| Pretrained model | A model that has already been trained, generally using a large dataset, and will be fine-tuned |
+| Fine-tune        | Update a pretrained model for a different task               |
+| Epoch            | One complete pass through the input data                     |
+| Loss             | A measure of how good the model is, chosen to drive training via SGD |
+| Metric           | A measurement of how good the model is, using the validation set, chosen for human consumption |
+| Validation set   | A set of data held out from training, used only for measuring how good the model is |
+| Training set     | The data used for fitting the model; does not include any data from the validation set |
+| Overfitting      | Training a model in such a way that it _remembers_ specific features of the input data, rather than generalizing well to data not seen during training |
+| CNN              | Convolutional neural network; a type of neural network that works particularly well for computer vision tasks |
+
+深度学习术语.深度学习词汇
+
+| 术语              | 解释                                                         |
+| :---------------- | :----------------------------------------------------------- |
+| 标签              | 我们尝试要预测的数据，例如“狗”或“猫”                         |
+| 架构              | 我们尝试拟合的模型模板；我们传递数据和参数给数学函数         |
+| 模型              | 含有特点参数集的架构混合体                                   |
+| 参数              | 在模型内更改其所能做的任务的数值，并通过模型训练进行更新     |
+| 拟合              | 更新模型的参数，使用输入数据以使得模型预测匹配目标标签       |
+| 训练              | _拟合_的同义词                                               |
+| 预训练模型        | 通常使用海量数据集完成训练的模型，并将被_微调_               |
+| 微调              | 为了一个不同的任务更新预训练模型                             |
+| 周期              | 完全遍历输入数据一轮                                         |
+| 损失              | 模型良好程序的测量，通过 SGD（随机梯度下降）选择驱动训练     |
+| 指标              | 使用验证集测量模型的良好程度指标，以供人类所使用             |
+| 验证集            | 与训练集不同的数据集，仅用来测试模型的良好程序               |
+| 训练集            | 用于拟合模型的数据，不包含任何来自验证集的数据               |
+| 过拟合            | 用某种方法训练一个模型以使用它记住输入数据的特定特征，而不能很好的归纳训练期看不到的数据 |
+| 卷积神经网络(CNN) | 卷积神经网络，在计算机视觉任务方面工作的特别好的一种神经网络 |
+
+With this vocabulary in hand, we are now in a position to bring together all the key concepts introduced so far. Take a moment to review those definitions and read the following summary. If you can follow the explanation, then you're well equipped to understand the discussions to come.
+
+基于手里的这个词汇表，到目前我们集合了所有关键概念的介绍。花点时间去温习一下定义并阅读一下后面的总结。如果你能读懂解释，然后你将有能力很好的理解接下来讨论的内容。
+
+*Machine learning* is a discipline where we define a program not by writing it entirely ourselves, but by learning from data. *Deep learning* is a specialty within machine learning that uses *neural networks* with multiple *layers*. *Image classification* is a representative example (also known as *image recognition*). We start with *labeled data*; that is, a set of images where we have assigned a *label* to each image indicating what it represents. Our goal is to produce a program, called a *model*, which, given a new image, will make an accurate *prediction* regarding what that new image represents.
+
+*机器学习*是不用完全不需要我们自己编写而从数据里进行学习定义一个程序的学科。*深度学习*是专长与*多层神经网络*的机器学习。*图像分类*是一个有代表性的例子（也称为*图像识别*）。我们从被标注后的数据开始，这些数据是我们对每一张图片分配一个*标签*以指明它是什么的图像数据集。我们的目标是产出一个称为*模型*的程序，当给这个模型一张新图片能够精准*预测*这张新图片是什么。
+
+Every model starts with a choice of *architecture*, a general template for how that kind of model works internally. The process of *training* (or *fitting*) the model is the process of finding a set of *parameter values* (or *weights*) that specialize that general architecture into a model that works well for our particular kind of data. In order to define how well a model does on a single prediction, we need to define a *loss function*, which determines how we score a prediction as good or bad.
+
+每一个模型都从选择*架构*开始，这个架构是一个相关类型模型内部如何工作的通用模板。模型*训练*（或*拟合*）过程是寻找*参数值*（或*权重*）集的过程，这个参数值集使的通用架构变成在我们特定类型数据上工作良好的一个模型。为了定义在单个预测上模型怎样良好，我们需要定义一个*损失函数*，这个函数决定我们如何评分预测的好或坏。
+
+To make the training process go faster, we might start with a *pretrained model*—a model that has already been trained on someone else's data. We can then adapt it to our data by training it a bit more on our data, a process called *fine-tuning*.
+
+为了训练过程尽量的快，我们可以从一个预训练模型开始---这个模型已经在其它人的数据上训练过了。然后，我们能够在我们的数据上对它进行更多的训练以使其适应数据，这一过程称为*微调*。
+
+When we train a model, a key concern is to ensure that our model *generalizes*—that is, that it learns general lessons from our data which also apply to new items it will encounter, so that it can make good predictions on those items. The risk is that if we train our model badly, instead of learning general lessons it effectively memorizes what it has already seen, and then it will make poor predictions about new images. Such a failure is called *overfitting*. In order to avoid this, we always divide our data into two parts, the *training set* and the *validation set*. We train the model by showing it only the training set and then we evaluate how well the model is doing by seeing how well it performs on items from the validation set. In this way, we check if the lessons the model learns from the training set are lessons that generalize to the validation set. In order for a person to assess how well the model is doing on the validation set overall, we define a *metric*. During the training process, when the model has seen every item in the training set, we call that an *epoch*.
+
+在我们训练一个模型时，一个关键的考虑是确保我们的模型*泛化*，是指从我们的数据中学习通用内容，也适用于它将遇到的新内容，以便使它能在其它内容上完成良好预测。风险是如果我们所训练的模型很差，替代学习通用内容的是它有效记忆所看到的内容，其后它将在新的图片上做出很有差的预测，这种*失败*被称为*过拟合*。为了避免这种情况，我们总是把我们的数据合成两份：*训练集*和*验证集*。我们只展示训练集进行模型训练，然后我们通过验证集的内容看它表现如何来评估模型运行是否良好。用这种方法，我们检查模型从训练集上学习的内容是否泛化到验证集。对个人来说在整个验证集上评估模型工作状况良好情况，我们定义了*指标*。在训练过程期间，当模型已经看完训练集的所有内容，我们称之为一个*周期*。
+
+All these concepts apply to machine learning in general. That is, they apply to all sorts of schemes for defining a model by training it with data. What makes deep learning distinctive is a particular class of architectures: the architectures based on *neural networks*. In particular, tasks like image classification rely heavily on *convolutional neural networks*, which we will discuss shortly.
+
+通常来说所有这些概念都适用于机器学习。也就是说，它们适用于定义一个通过数据训练模型的所有方案。使得深度学习与众不同是一种基于*神经网络*的特定类型架构。实践中，类似图像分类任务严重依赖*卷积神经网络*，我们将会对这一架构进行简短讨论。
+
