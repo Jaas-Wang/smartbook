@@ -1396,3 +1396,23 @@ learn.fine_tune(8)
 |             6 |               1.102528 |               0.809563 |        00:02 |
 |             7 |               1.020853 |               0.805135 |        00:02 |
 
+We are not even going to walk through this code line by line, because it is nearly identical to our previous example! (Although we will be doing a deep dive into segmentation models in <chapter_arch_details>, along with all of the other models that we are briefly introducing in this chapter, and many, many more.)
+
+我们不会一行一行的看一遍这个代码，因为它与这前的例子几乎一样！（虽然我们将会深入分割模型，以及本节和许多其它章节的其它许多模型我们都会简短的介绍）
+
+We can visualize how well it achieved its task, by asking the model to color-code each pixel of an image. As you can see, it nearly perfectly classifies every pixel in every object. For instance, notice that all of the cars are overlaid with the same color and all of the trees are overlaid with the same color (in each pair of images, the lefthand image is the ground truth label and the right is the prediction from the model):
+
+通过请求模型用不同的颜色标记图片的每个像素，你能看到它如何良好的完成它的任务。正如你看到的，它几乎完美的分类了每一个目标中的每一个像素。例如，注意到所有的汽车用同样的颜色做了覆盖，并且所有的树也用同样的颜色进行了覆盖（在每对图像中，左手边的图像是地面的真实标注，右侧是来自模型的预测）：
+
+```
+learn.show_results(max_n=6, figsize=(7,8))
+```
+
+<div style="text-align:left">
+  <p align="left">
+    <img src="./_v_images/download.png" >
+  </p>
+  <p align="left"></p>
+</div>
+
+
