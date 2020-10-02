@@ -1415,4 +1415,59 @@ learn.show_results(max_n=6, figsize=(7,8))
   <p align="left"></p>
 </div>
 
+One other area where deep learning has dramatically improved in the last couple of years is natural language processing (NLP). Computers can now generate text, translate automatically from one language to another, analyze comments, label words in sentences, and much more. Here is all of the code necessary to train a model that can classify the sentiment of a movie review better than anything that existed in the world just five years ago:
 
+在其它一个领域深度学习在近几年已经发生了戏剧化的改善，这就是自然语言处理（NLP）。计算机现在能够生成文本、自动从一种语言翻译到另一种语言、分析评论、在句子中标注词语等很多事情。这里有训练一个电影评论情感的分类模型所需要的所有代码，这个模型比五年前在这个世界上所存在的任何分类都要好：
+
+```
+from fastai.text.all import *
+
+dls = TextDataLoaders.from_folder(untar_data(URLs.IMDB), valid='test')
+learn = text_classifier_learner(dls, AWD_LSTM, drop_mult=0.5, metrics=accuracy)
+learn.fine_tune(4, 1e-2)
+```
+
+| epoch（周期） | train_loss（训练损失） | valid_loss（验证损失） | accuracy（精度） | time（时间） |
+| ------------: | ---------------------: | ---------------------: | ---------------: | -----------: |
+|             0 |               0.594912 |               0.407416 |         0.823640 |        01:35 |
+
+| epoch（周期） | train_loss（训练损失） | valid_loss（验证损失） | accuracy（精度） | time（时间） |
+| ------------: | ---------------------: | ---------------------: | ---------------: | -----------: |
+|             0 |               0.268259 |               0.316242 |         0.876000 |        03:03 |
+|             1 |               0.184861 |               0.246242 |         0.898080 |        03:10 |
+|             2 |               0.136392 |               0.220086 |         0.918200 |        03:16 |
+|             3 |               0.106423 |               0.191092 |         0.931360 |        03:15 |
+
+\#clean If you hit a "CUDA out of memory error" after running this cell, click on the menu Kernel, then restart. Instead of executing the cell above, copy and paste the following code in it:
+
+#如果在运行这个单元格后你遇到了“CUDA 内存举出错误”，点击内核菜单，然后重启来清楚这个错误。拷贝和粘贴下面的代码，以替代上面单元格的代码。
+
+```
+from fastai.text.all import *
+
+dls = TextDataLoaders.from_folder(untar_data(URLs.IMDB), valid='test', bs=32)
+learn = text_classifier_learner(dls, AWD_LSTM, drop_mult=0.5, metrics=accuracy)
+learn.fine_tune(4, 1e-2)
+```
+
+This reduces the batch size to 32 (we will explain this later). If you keep hitting the same error, change 32 to 16.
+
+这个减少了批次尺寸到 32（我们稍后会解释）。如果你保持了同样的错误，把 32 改成 16.
+
+This model is using the ["IMDb Large Movie Review dataset"](https://ai.stanford.edu/~ang/papers/acl11-WordVectorsSentimentAnalysis.pdf) from the paper "Learning Word Vectors for Sentiment Analysis" by Andrew Maas et al. It works well with movie reviews of many thousands of words, but let's test it out on a very short one to see how it does its thing:
+
+这个模型使用的是来自安德鲁·马斯等人发表的论文“学习用于情感分析的词语向量”的[“IMDb 大型电影评论数据集”](https://ai.stanford.edu/~ang/papers/acl11-WordVectorsSentimentAnalysis.pdf)。基于电影评论数千个词语它工作的很好，让我们用一个非常短的语句对它进行测试，看它做的怎么样：
+
+```
+learn.predict("I really liked that movie!"):
+```
+
+out：('pos', tensor(1), tensor([0.0041, 0.9959]))
+
+Here we can see the model has considered the review to be positive. The second part of the result is the index of "pos" in our data vocabulary and the last part is the probabilities attributed to each class (99.6% for "pos" and 0.4% for "neg").
+
+这里我们能够看到模型已经认为评论是正向的。结果的第二部分在我们的数据词汇中是“正向”索引，最后一部分是每个分类的概率属性（“正向”为 99.6% 和 “负面”为 0.4%）。
+
+Now it's your turn! Write your own mini movie review, or copy one from the internet, and you can see what this model thinks about it.
+
+现在到你了，写下你自己的电影小评论，或从互联网上拷贝一个，然后你能看到这个模型对这个评论想了什么。
