@@ -1529,4 +1529,101 @@ Let's move on to something much less sexy, but perhaps significantly more widely
 
 > jargon: Tabular: Data that is in the form of a table, such as from a spreadsheet, database, or CSV file. A tabular model is a model that tries to predict one column of a table based on information in other columns of the table.
 >
-> 术语：表格（Tabular）：在表格形式中的数据，例如来处一个电子数字表、数据表或 CSV 文件。一个表格模型是一种尝试基于表格的其它列信息去预测表格的某一列。
+> 术语：表格（Tabular）：在表格形式中的数据，例如来自一个电子数字表、数据库或 CSV 文件。一个表格模型是一种尝试基于表格的其它列信息去预测表格的某一列。
+
+It turns out that looks very similar too. Here is the code necessary to train a model that will predict whether a person is a high-income earner, based on their socioeconomic background:
+
+实际上看起来也是非常相似的。这里有训练一个模型所必需的代码，模型基于人们的社会经济背景，预测一个人是否是高收入者：
+
+```
+from fastai.tabular.all import *
+path = untar_data(URLs.ADULT_SAMPLE)
+
+dls = TabularDataLoaders.from_csv(path/'adult.csv', path=path, y_names="salary",
+    cat_names = ['workclass', 'education', 'marital-status', 'occupation',
+                 'relationship', 'race'],
+    cont_names = ['age', 'fnlwgt', 'education-num'],
+    procs = [Categorify, FillMissing, Normalize])
+
+learn = tabular_learner(dls, metrics=accuracy)
+```
+
+As you see, we had to tell fastai which columns are *categorical* (that is, contain values that are one of a discrete set of choices, such as `occupation`) and which are *continuous* (that is, contain a number that represents a quantity, such as `age`).
+
+正如你看到的，我们必须告诉 fastai 哪些列是分类的（这些列包含那种离散选择数值，例如`职业`）和哪些列是连续的（这些列包含代表数量的一种数值，例如`年龄`）。
+
+There is no pretrained model available for this task (in general, pretrained models are not widely available for any tabular modeling tasks, although some organizations have created them for internal use), so we don't use `fine_tune` in this case. Instead we use `fit_one_cycle`, the most commonly used method for training fastai models *from scratch* (i.e. without transfer learning):
+
+这个任务这里没有提供预训练模型（通常来说，对于那些表格式模型任务没有广泛的提供预训练模型，因此很多组织创建它们只是在内部使用），所以在这个例子中我们没用使用`微调(fine_tune)`。而是用到了`fit_one_cycle`，对于从头开始训练的 fastai 模型这是最常用的方法（即，没有迁移学习）：
+
+```
+learn.fit_one_cycle(3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   0.359960 |   0.357917 | 0.831388 | 00:11 |
+|     1 |   0.353458 |   0.349657 | 0.837991 | 00:10 |
+|     2 |   0.338368 |   0.346997 | 0.843213 | 00:10 |
+
+This model is using the [*Adult* dataset](http://robotics.stanford.edu/~ronnyk/nbtree.pdf), from the paper "Scaling Up the Accuracy of Naive-Bayes Classifiers: a Decision-Tree Hybrid" by Rob Kohavi, which contains some demographic data about individuals (like their education, marital status, race, sex, and whether or not they have an annual income greater than $50k). The model is over 80% accurate, and took around 30 seconds to train.
+
+这个模型使用的是[*成年人*数据集](http://robotics.stanford.edu/~ronnyk/nbtree.pdf)，来自由罗布·科哈维发表的“提升贝叶斯分类精度：一种混合决策树”论文，它包含了关于个人的一些人口统计数据（例如他们的教育、婚姻状况、种族、性别和是否高于 5 万美金的年度收入）。这个模型训练时间用了大约 30 秒，超过了80%的精度。
+
+Let's look at one more. Recommendation systems are very important, particularly in e-commerce. Companies like Amazon and Netflix try hard to recommend products or movies that users might like. Here's how to train a model that will predict movies people might like, based on their previous viewing habits, using the [MovieLens dataset](https://doi.org/10.1145/2827872):
+
+让我们看另外一个例子。推荐系统是非常重要的，尤其在电子商务。像亚马逊和网飞这样的公司尝试极力推荐用户可能喜欢的商品和电影。基于人们以前的观看习惯，这里有一个如何去训练预测他们可能喜欢的电影的模型，使用的是[MovieLens 数据集](https://doi.org/10.1145/2827872):
+
+```
+from fastai.collab import *
+path = untar_data(URLs.ML_SAMPLE)
+dls = CollabDataLoaders.from_csv(path/'ratings.csv')
+learn = collab_learner(dls, y_range=(0.5,5.5))
+learn.fine_tune(10)
+```
+
+| epoch（周期） | train_loss（训练损失） | valid_loss（验证损失） | time（时间） |
+| ------------: | ---------------------: | ---------------------: | -----------: |
+|             0 |               1.554056 |               1.428071 |        00:01 |
+
+| epoch（周期） | train_loss（训练损失） | valid_loss（验证损失） | time（时间） |
+| ------------: | ---------------------: | ---------------------: | -----------: |
+|             0 |               1.393103 |               1.361342 |        00:01 |
+|             1 |               1.297930 |               1.159169 |        00:00 |
+|             2 |               1.052705 |               0.827934 |        00:01 |
+|             3 |               0.810124 |               0.668735 |        00:01 |
+|             4 |               0.711552 |               0.627836 |        00:01 |
+|             5 |               0.657402 |               0.611715 |        00:01 |
+|             6 |               0.633079 |               0.605733 |        00:01 |
+|             7 |               0.622399 |               0.602674 |        00:01 |
+|             8 |               0.629075 |               0.601671 |        00:00 |
+|             9 |               0.619955 |               0.601550 |        00:01 |
+
+This model is predicting movie ratings on a scale of 0.5 to 5.0 to within around 0.6 average error. Since we're predicting a continuous number, rather than a category, we have to tell fastai what range our target has, using the `y_range` parameter.
+
+这个模型预测的电影评分从 0.5 到 5.0 这个范围，平均误差在 0.6 左右。因此我们预测的是一个连续数值，而不是一个分类，我们需要使用`y_range`这个参数告诉fastai我们的目标序列。
+
+Although we're not actually using a pretrained model (for the same reason that we didn't for the tabular model), this example shows that fastai lets us use `fine_tune` anyway in this case (you'll learn how and why this works in <chapter_pet_breeds>). Sometimes it's best to experiment with `fine_tune` versus `fit_one_cycle` to see which works best for your dataset.
+
+虽然我们没用实际用到预训练模型（基于同样的原因，我们没有把它用在表格模型上），不过在这个例子中事例显示 fastai 让我们用了`微调（fine_tune）`（我们将会在宠物品种章节学习这个如何工作和为什么）。
+
+We can use the same `show_results` call we saw earlier to view a few examples of user and movie IDs, actual ratings, and predictions:
+
+我们能够使用`show_results`输出我们之前看到用户、电影 ID和实际评分的一些例子，以及其评分预测：
+
+```
+learn.show_results()
+```
+
+|      | userId（用户 ID） | movieId（电影 ID） | rating（评分） | rating_pred（评分预测） |
+| ---: | ----------------: | -----------------: | -------------: | ----------------------: |
+|    0 |               157 |               1200 |            4.0 |                3.558502 |
+|    1 |                23 |                344 |            2.0 |                2.700709 |
+|    2 |                19 |               1221 |            5.0 |                4.390801 |
+|    3 |               430 |                592 |            3.5 |                3.944848 |
+|    4 |               547 |                858 |            4.0 |                4.076881 |
+|    5 |               292 |                 39 |            4.5 |                3.753513 |
+|    6 |               529 |               1265 |            4.0 |                3.349463 |
+|    7 |                19 |                231 |            3.0 |                2.881087 |
+|    8 |               475 |               4963 |            4.0 |                4.023387 |
+|    9 |               130 |                260 |            4.5 |                3.979703 |
