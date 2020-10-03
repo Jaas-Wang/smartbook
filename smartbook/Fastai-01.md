@@ -1504,3 +1504,29 @@ In command mode, pressing `0` twice will restart the *kernel* (which is the engi
 ### End sidebar
 
 ### 侧边栏结束
+
+If you ever have any questions about a fastai method, you should use the function `doc`, passing it the method name:
+
+如果对于 fastai 方法有任何疑问，你可以使用`doc`函数，通过如下方法名：
+
+```python
+doc(learn.predict)
+```
+
+This will make a small window pop up with content like this:
+
+这会弹出包含以下内容的小窗口：
+
+<img src="./_v_images/doc_ex.png" alt="img" style="zoom:100%;" />
+
+A brief one-line explanation is provided by `doc`. The "Show in docs" link take you to the full documentation, where you'll find all the details and lots of examples. Also, most of fastai's methods are just a handful of lines, so you can click the "source" link to see exactly what's going on behind the scenes.
+
+通过`doc`提供了一个简短的解释。“Show in docs” 链接可以让你进入完整文档，在那里你会找到全部细节和很多例子。当然大多数 fastai 的方法只有少量代码行，所以你可以点击“source”链接去看方法背后到底做了什么。
+
+Let's move on to something much less sexy, but perhaps significantly more widely commercially useful: building models from plain *tabular* data.
+
+让我们移步到不是那么迷人，但也许对广泛的商业用途很有用的事情上：创建来自纯*表格*式数据的模型。
+
+> jargon: Tabular: Data that is in the form of a table, such as from a spreadsheet, database, or CSV file. A tabular model is a model that tries to predict one column of a table based on information in other columns of the table.
+>
+> 术语：表格（Tabular）：在表格形式中的数据，例如来处一个电子数字表、数据表或 CSV 文件。一个表格模型是一种尝试基于表格的其它列信息去预测表格的某一列。
