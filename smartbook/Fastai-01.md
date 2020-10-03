@@ -1471,3 +1471,36 @@ Here we can see the model has considered the review to be positive. The second p
 Now it's your turn! Write your own mini movie review, or copy one from the internet, and you can see what this model thinks about it.
 
 现在到你了，写下你自己的电影小评论，或从互联网上拷贝一个，然后你能看到这个模型对这个评论想了什么。
+
+### Sidebar: The Order Matters
+
+### 侧边栏：次序那点事
+
+In a Jupyter notebook, the order in which you execute each cell is very important. It's not like Excel, where everything gets updated as soon as you type something anywhere—it has an inner state that gets updated each time you execute a cell. For instance, when you run the first cell of the notebook (with the "CLICK ME" comment), you create an object called `learn` that contains a model and data for an image classification problem. If we were to run the cell just shown in the text (the one that predicts if a review is good or not) straight after, we would get an error as this `learn` object does not contain a text classification model. This cell needs to be run after the one containing:
+
+在 Jupyter 笔记本中，执行每一个单元格的次序是非常重要的。它不像 Excel，当你在某地方一旦输入内容，所有内容就会被更新：它有一个内部状态，每次你执行一个单元格都会被更新。例如，当你点击第一个笔记本单元格（有“CLICK ME”注释），你创建了一个名为`learn`包含一个处理图像分类问题的模型和数据的对象。然后如果我们直接去运行刚刚文中显示的单元格（预测一个评论是好或坏），我们会发现一个`learn`对象没有包含文本分类模型的错误。这个单元格需要在执行如下内容后方可运行：
+
+```python
+from fastai.text.all import *
+
+dls = TextDataLoaders.from_folder(untar_data(URLs.IMDB), valid='test')
+learn = text_classifier_learner(dls, AWD_LSTM, drop_mult=0.5, 
+                                metrics=accuracy)
+learn.fine_tune(4, 1e-2)
+```
+
+The outputs themselves can be deceiving, because they include the results of the last time the cell was executed; if you change the code inside a cell without executing it, the old (misleading) results will remain.
+
+它们自己的输出能够被误导，因为它们包含最后一个单元格执行后的结果。如果你改变了单位格内的代码却没有执行它，老的（误导）结果将会保留。
+
+Except when we mention it explicitly, the notebooks provided on the [book website](https://book.fast.ai/) are meant to be run in order, from top to bottom. In general, when experimenting, you will find yourself executing cells in any order to go fast (which is a super neat feature of Jupyter Notebook), but once you have explored and arrived at the final version of your code, make sure you can run the cells of your notebooks in order (your future self won't necessarily remember the convoluted path you took otherwise!).
+
+除了我们明确说明，[图书网址](https://book.fast.ai/) 提供的书执行顺序一定是从上到下。通常来说，在做实验的时候，你会发现不管你以何顺序执行你的单元格都可以快速执行（这是 Jupyter 笔记的超级简洁特性），然而一旦你已经到了你的代码的最终版本，请确保你能以一定的顺序执行你的笔记本单元格（随着时间推移你自己不一定记得你曾做过的那些复杂顺序）。
+
+In command mode, pressing `0` twice will restart the *kernel* (which is the engine powering your notebook). This will wipe your state clean and make it as if you had just started in the notebook. Choose Run All Above from the Cell menu to run all cells above the point where you are. We have found this to be very useful when developing the fastai library.
+
+命令模型下，点击`0`按键两次会重启*内核*（这是你的笔记本引擎）。 这会清除笔记内所有你的执行状态并使得它就像刚刚开始的样子。点击单元格菜单选择运行上述所有代码功能项，就会运行当前位置以上的所有单元格。我们发现在开发 fastai 库时这是很有用。
+
+### End sidebar
+
+### 侧边栏结束
