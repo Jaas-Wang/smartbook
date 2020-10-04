@@ -1660,3 +1660,39 @@ Each of the models we trained showed a training and validation loss. A good vali
 
 我们训练的每一个模型都展示了一个训练损失和验证损失。一个好的验证集是训练过程最重要的一个环节。让我们看一下为什么以及学习如何创建一个。
 
+## Validation Sets and Test Sets
+
+## 验证集和测试集
+
+As we've discussed, the goal of a model is to make predictions about data. But the model training process is fundamentally dumb. If we trained a model with all our data, and then evaluated the model using that same data, we would not be able to tell how well our model can perform on data it hasn’t seen. Without this very valuable piece of information to guide us in training our model, there is a very good chance it would become good at making predictions about that data but would perform poorly on new data.
+
+正好我们已经讨论过的，一个模型的目标是做出关于数据的预测。但模型训练过程是根本无法表述的。如果你用我们全部数据训练模型，然后使用同样的数据评估模型，我们无法说出我们的模型在没有看到的数据上表现的良好情况。在我们训练模型时没有非常有价值的信息去指导我们，就有很大的可能性发生模型能在训练数据上做出很好的预测，但在新的数据上表现却很糟糕。
+
+To avoid this, our first step was to split our dataset into two sets: the *training set* (which our model sees in training) and the *validation set*, also known as the *development set* (which is used only for evaluation). This lets us test that the model learns lessons from the training data that generalize to new data, the validation data.
+
+为了避免这个问题，我们第一步是把我们的数据集分割为两个数据集：*训练集*（在训练中我们的模型可以看到）和*验证集*，也被称为*开发集*（只用于模型评估）。验证数据让我们测试模型从训练数据上学习经验可泛化到新的数据上。
+
+One way to understand this situation is that, in a sense, we don't want our model to get good results by "cheating." If it makes an accurate prediction for a data item, that should be because it has learned characteristics of that kind of item, and not because the model has been shaped by *actually having seen that particular item*.
+
+某种意义上理解这一情况的方法是，我们不想模型通过“作弊”获得好的成果。如果它在一个数据项上取得精准预测，应该是因为它已经学习到了那类数据项的一些特征，并不是因为模型通过*实际看到过的特定项* 完成塑形。
+
+Splitting off our validation data means our model never sees it in training and so is completely untainted by it, and is not cheating in any way. Right?
+
+分离出我们的验证数据意味着我们的模型在训练过程中永远无法看到它，所以验证数据完全不会用于模型训练，没有以任何方式进行欺骗。对吗？
+
+In fact, not necessarily. The situation is more subtle. This is because in realistic scenarios we rarely build a model just by training its weight parameters once. Instead, we are likely to explore many versions of a model through various modeling choices regarding network architecture, learning rates, data augmentation strategies, and other factors we will discuss in upcoming chapters. Many of these choices can be described as choices of *hyperparameters*. The word reflects that they are parameters about parameters, since they are the higher-level choices that govern the meaning of the weight parameters.
+
+事实上，不一定。情况更加微妙。这是因为基于确实可行的情况下我们很少仅通过训练模型的参数来构建模型。相反，我们可能去探查很多版本的模型，通过考虑网络架构进行各种建模选择、学习率、数据增加策略，以及我们将要在后续 章节讨论的其它因素。这些因素的选择能够被描述为*超参*选择。这个词折射出的他们是关于参数的参数，因为他们是更高水平的选择，以治理权重参数的意思。
+
+The problem is that even though the ordinary training process is only looking at predictions on the training data when it learns values for the weight parameters, the same is not true of us. We, as modelers, are evaluating the model by looking at predictions on the validation data when we decide to explore new hyperparameter values! So subsequent versions of the model are, indirectly, shaped by us having seen the validation data. Just as the automatic training process is in danger of overfitting the training data, we are in danger of overfitting the validation data through human trial and error and exploration.
+
+问题是，即使普通的训练过程在它学习权重参数值时只看在训练数据上的预测，对我们同样不是真实的。我们做为模型塑造者，我们决定探查新的超参值时通过看在验证数据上的预测来评估模型！所以随后的模型版本是通过我们查看验证数据间接塑造的。正如自动化训练过程是处于训练数据过拟危险之中，我们通过人类的判断、错误和探索而处于验证数据过拟的危险之中。
+
+The solution to this conundrum is to introduce another level of even more highly reserved data, the *test set*. Just as we hold back the validation data from the training process, we must hold back the test set data even from ourselves. It cannot be used to improve the model; it can only be used to evaluate the model at the very end of our efforts. In effect, we define a hierarchy of cuts of our data, based on how fully we want to hide it from training and modeling processes: training data is fully exposed, the validation data is less exposed, and test data is totally hidden. This hierarchy parallels the different kinds of modeling and evaluation processes themselves—the automatic training process with back propagation, the more manual process of trying different hyper-parameters between training sessions, and the assessment of our final result.
+
+解决这一复杂问题是引入其它更高等级储备数据：测试集。正如在训练过程中我们隐藏了验证数据，我们甚至必须对我们自己对测试集数据进行隐藏。它不能被用于改善模型。它只能用于我们的最终成果的模型评估。实际上是基于我们如何想完全在训练和建模过程中隐藏它，我们定义了数据分割的等级制度：训练数据完全暴露，验证数据较少暴露，测试数据全部隐藏。不同类型的建模和他们自我评估过程都有这个等级向度：向后传播的自动训练过程，在不同的训练时间段尝试不同超参的更多手动过程，和我们最终结果的评价。
+
+The test and validation sets should have enough data to ensure that you get a good estimate of your accuracy. If you're creating a cat detector, for instance, you generally want at least 30 cats in your validation set. That means that if you have a dataset with thousands of items, using the default 20% validation set size may be more than you need. On the other hand, if you have lots of data, using some of it for validation probably doesn't have any downsides.
+
+测试集和验证集应该有足够的数据以确保你可以获得精度的良好评估。例如，如果你正在创建一个猫探测器，通过在你的验证集不能少于 30 张猫的图片。意味着如果你有一个数千条的数据集，使用默认的 20%作为验证集大小可以大大满足你的需求。另一方面，如果你有一些数据，它们中的一部分做为验证之用可能不会有任何负面作用。
+
