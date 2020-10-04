@@ -1708,3 +1708,41 @@ To put it bluntly, if you're a senior decision maker in your organization (or yo
 
 坦白的说，如果你在你的组织内是一个资深决策层（或你给资深决策层做顾问），最重要的是：确保你是否真的理解什么是测试集和验证集和它们为什么重要，然后当组织决定使用人工智能时你将会规避我们所见过的单个最大失败源。例如，如果你考虑引进外部的卖家或服务，确保你持有卖家*从来没看到过的*测试数据。然后*你*用你的测试数据检测他们的模型，基于实践中对你来说真正重要的事情使用*你*所选择的指标，并且*你* 要决策什么表现级别是足够的。（尝试一些你自己的简单基线对你来说这也是一个好主意，因此你会知道一个真正简单的模型能完成什么。通常你会发现你的简单模型和外部“专家”生产的模型一样好！）
 
+### Use Judgment in Defining Test Sets
+
+### 使用判断力定义测试集
+
+To do a good job of defining a validation set (and possibly a test set), you will sometimes want to do more than just randomly grab a fraction of your original dataset. Remember: a key property of the validation and test sets is that they must be representative of the new data you will see in the future. This may sound like an impossible order! By definition, you haven’t seen this data yet. But you usually still do know some things.
+
+要做好一个好的定义一个验证集（也可能是一个测试集）的工作，你有时会想要做的更多而不是仅仅随机抓取你原始数据集的一下部分。记住：验证集和测试集一个关键的特征是它们必须代表你在未来将要看到的新数据。听起来这是一个不可能的任务！根据定义，你还没有看到过的这个数据。但通常你一直都知道一些事情。
+
+It's instructive to look at a few example cases. Many of these examples come from predictive modeling competitions on the [Kaggle](https://www.kaggle.com/) platform, which is a good representation of problems and methods you might see in practice.
+
+看一些事例是有帮助的。这些例子很多来自 [Kaggle](https://www.kaggle.com/)平台上的预测建模比赛，它们很好的代表了在实践中你可能看到的问题和方法。
+
+One case might be if you are looking at time series data. For a time series, choosing a random subset of the data will be both too easy (you can look at the data both before and after the dates your are trying to predict) and not representative of most business use cases (where you are using historical data to build a model for use in the future). If your data includes the date and you are building a model to use in the future, you will want to choose a continuous section with the latest dates as your validation set (for instance, the last two weeks or last month of available data).
+
+一种情况可能是你正在查看的时间序列数据。对于一个时间序列，选择一个随机子数据集即不太容易（你要能够看到你要预测时间之前和之后的两者数据）也不能很好的代表大多商业案例（你用历史数据去构建一个模型用于未来）。如果你的数据包含了日期且你正在构建一个用于未来的模型，你需要选择一个包含最近日期的连续片段作为你的验证集（例如，最后的两周或最后一个月的有效数据）
+
+Suppose you want to split the time series data in <timeseries1> into training and validation sets.
+
+假设你想把图<时间序列一>中的时间序列数据分割为训练集和验证集。
+
+<div style="text-align:left">
+  <p align="left">
+    <img src="./_v_images/timeseries1.png" alt="img"  width="400" id="timeseries1" caption="A time series" alt="A serie of values" >
+  </p>
+  <p align="center">时间序列一</p>
+</div>
+
+Instead, use the earlier data as your training set (and the later data for the validation set), as shown in <<timeseries3>>.
+
+作为替代，使用最早的数据作为你的训练集（和最新的数据做为验证集），如图<时间序列三>所示。
+
+<div style="text-align:left">
+  <p align="left">
+    <img src="./_v_images/timeseries3.png" width="400" id="timeseries3" caption="A good training subset" alt="Training subset using the data up to a certain timestamp" >
+  </p>
+  <p align="center">时间序列三</p>
+</div>
+
