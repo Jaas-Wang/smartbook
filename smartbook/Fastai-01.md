@@ -1696,3 +1696,15 @@ The test and validation sets should have enough data to ensure that you get a go
 
 测试集和验证集应该有足够的数据以确保你可以获得精度的良好评估。例如，如果你正在创建一个猫探测器，通过在你的验证集不能少于 30 张猫的图片。意味着如果你有一个数千条的数据集，使用默认的 20%作为验证集大小可以大大满足你的需求。另一方面，如果你有一些数据，它们中的一部分做为验证之用可能不会有任何负面作用。
 
+Having two levels of "reserved data"—a validation set and a test set, with one level representing data that you are virtually hiding from yourself—may seem a bit extreme. But the reason it is often necessary is because models tend to gravitate toward the simplest way to do good predictions (memorization), and we as fallible humans tend to gravitate toward fooling ourselves about how well our models are performing. The discipline of the test set helps us keep ourselves intellectually honest. That doesn't mean we *always* need a separate test set—if you have very little data, you may need to just have a validation set—but generally it's best to use one if at all possible.
+
+拥有两个等级的“保留数据”：一个验证集和一个测试集，一个等级代表数据对你自己完全隐藏，好像有点极端。通常必须这样做的理由是因为模型倾向采用最简单的方法去做出良好的预测（记忆），而我们做为容易犯错的人类倾向于我们的模型表现是如何的良好来愚弄自己。测试集的准则是帮助我们保持理智上的诚实。这并不意味我们*总是*需要一个单独的测试集，如果你有很少的数据，你可能只需要有一个验证集，但通常来说如果在完全有可能的情况下最好使用测试集。
+
+This same discipline can be critical if you intend to hire a third party to perform modeling work on your behalf. A third party might not understand your requirements accurately, or their incentives might even encourage them to misunderstand them. A good test set can greatly mitigate these risks and let you evaluate whether their work solves your actual problem.
+
+相同准则是至关重要的，如果你基于自己的需求想要雇佣第三方做建模工作。第三方不可能精准的理解到你的需求，或他们的动机甚至可能鼓励他们去错误的理解需求。一个好的测试集能够很好的缓解这个风险，让你评估他们的工作是否解决了你的实际问题。
+
+To put it bluntly, if you're a senior decision maker in your organization (or you're advising senior decision makers), the most important takeaway is this: if you ensure that you really understand what test and validation sets are and why they're important, then you'll avoid the single biggest source of failures we've seen when organizations decide to use AI. For instance, if you're considering bringing in an external vendor or service, make sure that you hold out some test data that the vendor *never gets to see*. Then *you* check their model on your test data, using a metric that *you* choose based on what actually matters to you in practice, and *you* decide what level of performance is adequate. (It's also a good idea for you to try out some simple baseline yourself, so you know what a really simple model can achieve. Often it'll turn out that your simple model performs just as well as one produced by an external "expert"!)
+
+坦白的说，如果你在你的组织内是一个资深决策层（或你给资深决策层做顾问），最重要的是：确保你是否真的理解什么是测试集和验证集和它们为什么重要，然后当组织决定使用人工智能时你将会规避我们所见过的单个最大失败源。例如，如果你考虑引进外部的卖家或服务，确保你持有卖家*从来没看到过的*测试数据。然后*你*用你的测试数据检测他们的模型，基于实践中对你来说真正重要的事情使用*你*所选择的指标，并且*你* 要决策什么表现级别是足够的。（尝试一些你自己的简单基线对你来说这也是一个好主意，因此你会知道一个真正简单的模型能完成什么。通常你会发现你的简单模型和外部“专家”生产的模型一样好！）
+
