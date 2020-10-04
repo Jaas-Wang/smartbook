@@ -1627,3 +1627,36 @@ learn.show_results()
 |    7 |                19 |                231 |            3.0 |                2.881087 |
 |    8 |               475 |               4963 |            4.0 |                4.023387 |
 |    9 |               130 |                260 |            4.5 |                3.979703 |
+
+### Sidebar: Datasets: Food for Models
+
+### 侧边栏：数据集：模型的食物
+
+You’ve already seen quite a few models in this section, each one trained using a different dataset to do a different task. In machine learning and deep learning, we can’t do anything without data. So, the people that create datasets for us to train our models on are the (often underappreciated) heroes. Some of the most useful and important datasets are those that become important *academic baselines*; that is, datasets that are widely studied by researchers and used to compare algorithmic changes. Some of these become household names (at least, among households that train models!), such as MNIST, CIFAR-10, and ImageNet.
+
+你已经在本节完整的看了一些模型，每个训练使用的是用于完成不同任务的不同的数据集。对于机器学习和深度学习，没有数据我们什么都干不了。所以为我们训练模型创建了数据集的人是英雄（经常被低估）。一些最有用和重要的数据集是那些变成了重要的*学术基线*，这些数据集被研究人员广泛的研究并用于对比算法的改变。其中一些的名字已经家喻户晓（至少，在训练模型方面家喻户晓），例如 MNIST,CIFAR-10和 ImageNet。
+
+The datasets used in this book have been selected because they provide great examples of the kinds of data that you are likely to encounter, and the academic literature has many examples of model results using these datasets to which you can compare your work.
+
+在本书中所使用的数据集被选择的原因，他们是你可能遇到的各种类型数据中很好的实例，并且学术作品已经有了很多使用这些数据集的模型结果例子，这样能对你的工作进行对比。
+
+Most datasets used in this book took the creators a lot of work to build. For instance, later in the book we’ll be showing you how to create a model that can translate between French and English. The key input to this is a French/English parallel text corpus prepared back in 2009 by Professor Chris Callison-Burch of the University of Pennsylvania. This dataset contains over 20 million sentence pairs in French and English. He built the dataset in a really clever way: by crawling millions of Canadian web pages (which are often multilingual) and then using a set of simple heuristics to transform URLs of French content onto URLs pointing to the same content in English.
+
+在本书中使用的大多数据集创建者都做了大量的工作去创建。例如，在本书最后我们会给你展示如何创建一个模型，能够实现法语和英语之间的互译。输入的关键是早在 2009 年由宾夕法尼亚大学克里斯·卡里森·伯奇教授准备的法语/英语平行文本语料库。这个数据集包含了超过两千万对法语和英语。他用了非常聪明的方法创建了这个数据集：通过爬取数百万加拿大网页（这些网页通过是多语言），然后使用一系列简单的启发式方法把含有法语内容的网络地址转换到含有相同内容的对应英文网络地址。
+
+As you look at datasets throughout this book, think about where they might have come from, and how they might have been curated. Then think about what kinds of interesting datasets you could create for your own projects. (We’ll even take you step by step through the process of creating your own image dataset soon.)
+
+正好通过本书你看到的数据集，思虑他们可能来自哪里，并且他们可能如何策划的。然后思考关于为了你自己的项目你能创建哪些类型的有趣数据集。（稍后我们将带你通过一步一步的过程创建你自己的图像数据集，）
+
+fast.ai has spent a lot of time creating cut-down versions of popular datasets that are specially designed to support rapid prototyping and experimentation, and to be easier to learn with. In this book we will often start by using one of the cut-down versions and later scale up to the full-size version (just as we're doing in this chapter!). In fact, this is how the world’s top practitioners do their modeling in practice; they do most of their experimentation and prototyping with subsets of their data, and only use the full dataset when they have a good understanding of what they have to do.
+
+fast.ai 已经花费了大量时间创建了缩减版的流行数据集，用于支持快速原型和实验而特别设计的，并很容易学习。在本书我们经常通过使用缩减版开始，然后逐步增加到全尺寸版本（就像我们在本章正在做的一样）。实际上，在实践中世界顶级的从业人员就是这样制作他们的模型的，他们大多数的实验和原型使用的是他们的数据子集，只有在对他们要做什么有了一个深刻理解的时候才会使用全尺寸数据集。
+
+### End sidebar
+
+### 侧边栏结束
+
+Each of the models we trained showed a training and validation loss. A good validation set is one of the most important pieces of the training process. Let's see why and learn how to create one.
+
+我们训练的每一个模型都展示了一个训练损失和验证损失。一个好的验证集是训练过程最重要的一个环节。让我们看一下为什么以及学习如何创建一个。
+
