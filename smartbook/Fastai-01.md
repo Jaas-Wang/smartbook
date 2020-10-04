@@ -1780,3 +1780,15 @@ Sometimes it may not be clear how your validation data will differ. For instance
 Now that you have gotten a taste of how to build a model, you can decide what you want to dig into next.
 
 现在你已经浅尝如何构建一个模型，你能够决定接下来想要深入研究什么。
+
+## A *Choose Your Own Adventure* moment
+
+## *选择你自己的冒险* 时刻
+
+If you would like to learn more about how to use deep learning models in practice, including how to identify and fix errors, create a real working web application, and avoid your model causing unexpected harm to your organization or society more generally, then keep reading the next two chapters. If you would like to start learning the foundations of how deep learning works under the hood, skip to <chapter_mnist_basics>. (Did you ever read *Choose Your Own Adventure* books as a kid? Well, this is kind of like that… except with more deep learning than that book series contained.)
+
+如你想学习更多关于如何在实践中使用深度学习模型，包括如何识别并修复错误，创建一个实际工作的网络应用，并避免你的模型在更广泛的层面上对你的组织和社会引发不可预期的伤害，请继续阅读接下来的两节。如果你喜欢从学习深度学习后台如何工作的基础开始，可以直接到<mnist 基础章节>（小的时候你曾经读过*选择你自己的冒险*系列书吗？是，这是相同的类型...除了比那本系列书包含了更多的深度学习。）
+
+You will need to read all these chapters to progress further in the book, but it is totally up to you which order you read them in. They don't depend on each other. If you skip ahead to <chapter_mnist_basics>, we will remind you at the end to come back and read the chapters you skipped over before you go any further.
+
+你需要阅读本书的所有章节以进一步学习，但它完全取决于你阅读他们的顺序。它们相互之间没有依赖。如果你略过开头去阅读<mnist 基础章节>，我们在结尾会提醒你进行任何进一步学习之前返回并阅读你略过的章节。
