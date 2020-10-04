@@ -1746,3 +1746,37 @@ Instead, use the earlier data as your training set (and the later data for the v
   <p align="center">时间序列三</p>
 </div>
 
+For example, Kaggle had a competition to [predict the sales in a chain of Ecuadorian grocery stores](https://www.kaggle.com/c/favorita-grocery-sales-forecasting). Kaggle's training data ran from Jan 1 2013 to Aug 15 2017, and the test data spanned Aug 16 2017 to Aug 31 2017. That way, the competition organizer ensured that entrants were making predictions for a time period that was *in the future*, from the perspective of their model. This is similar to the way quant hedge fund traders do *back-testing* to check whether their models are predictive of future periods, based on past data.
+
+例如，Kaggle 有一个竞赛[预测一个厄瓜多尔杂货连锁店的销售额](https://www.kaggle.com/c/favorita-grocery-sales-forecasting)。Kaggle 的训练数据从 2013 年 1 月 1 日到 2017 年 8 月 15 日，测试数据的持续时间段从 2017 年 8 月 16 日到 2017 年8 月 31 日。这样比赛组织者通过他们模型的视角可确保参赛者预测*未来*的一个时间段。这与量化对冲基金交易员做*回归测试*去检查他们的模型基于过去的数据是否预测了未来时间段很类似。
+
+A second common case is when you can easily anticipate ways the data you will be making predictions for in production may be *qualitatively different* from the data you have to train your model with.
+
+第二种常见的情况是当你能够轻松的预料在生产上做出预测的数据方式与你进行模型训练所必须的数据可能有*本质区别*。
+
+In the Kaggle [distracted driver competition](https://www.kaggle.com/c/state-farm-distracted-driver-detection), the independent variables are pictures of drivers at the wheel of a car, and the dependent variables are categories such as texting, eating, or safely looking ahead. Lots of pictures are of the same drivers in different positions, as we can see in <img_driver>. If you were an insurance company building a model from this data, note that you would be most interested in how the model performs on drivers it hasn't seen before (since you would likely have training data only for a small group of people). In recognition of this, the test data for the competition consists of images of people that don't appear in the training set.
+
+在 Kaggle 上的[驾驶员分心竞赛](https://www.kaggle.com/c/state-farm-distracted-driver-detection)，自变量是在汽车方向盘上驾驶员们的图片和因变量是各种如发信息、进食或安全的目视前方的分类。很多图片是相同的驾驶员的不同姿态，如你在下<驾驶员图片>中看到的。如果你是一个保险公司要根据这些数据构建模型， 请注意你可能最感兴趣的是模型在它之前没有看到的驾驶员上表面如何（因此你可能只有一个小团体人群的训练数据）。基于这个认识，竞赛所构成的人类图片测试数据没有出现在训练集中。
+
+<div style="text-align:left">
+  <p align="left">
+    <img src="./_v_images/driver.PNG" width="600" id="img_driver" caption="Two pictures from the training data" alt="Two pictures from the training data, showing the same driver" >
+  </p>
+  <p align="center">驾驶员图片</p>
+</div>
+
+If you put one of the images in <img_driver> in your training set and one in the validation set, your model will have an easy time making a prediction for the one in the validation set, so it will seem to be performing better than it would on new people. Another perspective is that if you used all the people in training your model, your model might be overfitting to particularities of those specific people, and not just learning the states (texting, eating, etc.).
+
+如果你把<驾驶员图片>中的一张图片放在你的训练集，一张放在验证集，你的模型将会很容易预测在验证集里的那张图片，所以相对一个新人图片模型看起来表面更好。别一个观点是，如果你使用了所有人的图片在你的模型训练，你的模型可能在那些特点人的特征过拟了，并不仅仅是学习了那此状态（发信息、进食等）。
+
+A similar dynamic was at work in the [Kaggle fisheries competition](https://www.kaggle.com/c/the-nature-conservancy-fisheries-monitoring) to identify the species of fish caught by fishing boats in order to reduce illegal fishing of endangered populations. The test set consisted of boats that didn't appear in the training data. This means that you'd want your validation set to include boats that are not in the training set.
+
+一个类似的措施是在[Kaggle渔业竞赛](https://www.kaggle.com/c/the-nature-conservancy-fisheries-monitoring)中去识别渔船捕捉鱼的品种，以减少非法捕捉濒危鱼种。渔船测试集构成没有出现在训练数据中。这意味着你不希望你的验证集包含的渔船没有在训练集中。
+
+Sometimes it may not be clear how your validation data will differ. For instance, for a problem using satellite imagery, you'd need to gather more information on whether the training set just contained certain geographic locations, or if it came from geographically scattered data.
+
+有时候它可能不清楚你的验证数据会有怎样的差别。例如，对于一个使用卫星图片的问题，你需要去搜集训练集是否仅仅包含确定的地理位置或它是否来自地理上分散数据的更多信息。
+
+Now that you have gotten a taste of how to build a model, you can decide what you want to dig into next.
+
+现在你已经浅尝如何构建一个模型，你能够决定接下来想要深入研究什么。
