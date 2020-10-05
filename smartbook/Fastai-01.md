@@ -1792,3 +1792,100 @@ If you would like to learn more about how to use deep learning models in practic
 You will need to read all these chapters to progress further in the book, but it is totally up to you which order you read them in. They don't depend on each other. If you skip ahead to <chapter_mnist_basics>, we will remind you at the end to come back and read the chapters you skipped over before you go any further.
 
 你需要阅读本书的所有章节以进一步学习，但它完全取决于你阅读他们的顺序。它们相互之间没有依赖。如果你略过开头去阅读<mnist 基础章节>，我们在结尾会提醒你进行任何进一步学习之前返回并阅读你略过的章节。
+
+## Questionnaire
+
+## 调查表
+
+It can be hard to know in pages and pages of prose what the key things are that you really need to focus on and remember. So, we've prepared a list of questions and suggested steps to complete at the end of each chapter. All the answers are in the text of the chapter, so if you're not sure about anything here, reread that part of the text and make sure you understand it. Answers to all these questions are also available on the [book's website](https://book.fast.ai/). You can also visit [the forums](https://forums.fast.ai/) if you get stuck to get help from other folks studying this material.
+
+在一页页的文字中很难知道你真正需要关注和记住的关键事情是什么。所以，我们在每一章的末尾准备了一个问题列表和建议完成的步骤。所有的答案都在章节内的文字中，如果你有任何不确定的事情，重新阅读该文字部分并确保你理解它。所有问题的答案在[图书站点](https://book.fast.ai/)也有提供。如果你卡住了你也可以访问[论坛](https://forums.fast.ai/)去获取其它学习本书人的帮助。
+
+1. Do you need these for deep learning?
+   - Lots of math T / F
+   - Lots of data T / F
+   - Lots of expensive computers T / F
+   - A PhD T / F
+2. Name five areas where deep learning is now the best in the world.
+3. What was the name of the first device that was based on the principle of the artificial neuron?
+4. Based on the book of the same name, what are the requirements for parallel distributed processing (PDP)?
+5. What were the two theoretical misunderstandings that held back the field of neural networks?
+6. What is a GPU?
+7. Open a notebook and execute a cell containing: `1+1`. What happens?
+8. Follow through each cell of the stripped version of the notebook for this chapter. Before executing each cell, guess what will happen.
+9. Complete the Jupyter Notebook online appendix.
+10. Why is it hard to use a traditional computer program to recognize images in a photo?
+11. What did Samuel mean by "weight assignment"?
+12. What term do we normally use in deep learning for what Samuel called "weights"?
+13. Draw a picture that summarizes Samuel's view of a machine learning model.
+14. Why is it hard to understand why a deep learning model makes a particular prediction?
+15. What is the name of the theorem that shows that a neural network can solve any mathematical problem to any level of accuracy?
+16. What do you need in order to train a model?
+17. How could a feedback loop impact the rollout of a predictive policing model?
+18. Do we always have to use 224×224-pixel images with the cat recognition model?
+19. What is the difference between classification and regression?
+20. What is a validation set? What is a test set? Why do we need them?
+21. What will fastai do if you don't provide a validation set?
+22. Can we always use a random sample for a validation set? Why or why not?
+23. What is overfitting? Provide an example.
+24. What is a metric? How does it differ from "loss"?
+25. How can pretrained models help?
+26. What is the "head" of a model?
+27. What kinds of features do the early layers of a CNN find? How about the later layers?
+28. Are image models only useful for photos?
+29. What is an "architecture"?
+30. What is segmentation?
+31. What is `y_range` used for? When do we need it?
+32. What are "hyperparameters"?
+33. What's the best way to avoid failures when using AI in an organization?
+
+1. 对于深度学习你需要这些吗？
+   - 许多数学知识 真 / 假
+   - 大量数据 真 / 假
+   - 许多昂贵的计算机 真 / 假
+   - 一个博士学位 真 / 假
+2. 列出在这个世界上现在深度学习做的最好的五个领域名称。
+3. 基于人工神经元原理的第一个装置是什么名字？
+4. 根据同名书，对于并行分布式处理（PDP）有什么要求？
+5. 阻止神经网络领域的两个理论误解是什么？
+6.  什么是GPU？
+7. 打开一个Jupyter笔记本并执行 一个含有 1+1 内容的单元格，会发生什么？
+8. 跟随本章笔记的剥离版本的每一个单元格，在执行每个单元格前，猜想将会发生什么。
+9. 完成 Jupyter 笔记本的在线附录。
+10. 为什么很难用传统计算机程序去识别照片中的图像？
+11. 塞缪尔所说的“权重分配”是什么意思？
+12. 在深度学习中什么术语通常用来表示塞缪尔所说的“权重”？
+13. 画一幅总结塞缪尔机器学习模型观点的图。
+14. 一个深度学习模型为什么做了一个特定预测，为什么很难理解？
+15. 表名神经网络能够在任何精度等级上解决任何数学问题的定理名是什么？
+16. 为了训练一个模型你需要做什么？
+17. 反馈回路如何影响治安预警模型的推出？
+18. 在猫识别模型上你必须一直使用 224*224 像素的图片吗？
+19. 分类和回归这间的差异是什么？
+20. 什么是验证集？什么是测试集？我们为什么需要它们？
+21. 如果你不提供一个验证集，fastai 将会做什么？
+22. 对于验证集我们能总是使用随机样本吗？为什么这样做或为什么不这样做？
+23. 什么是过拟？提供一个实例。
+24. 什么是指标？它与“loss”有怎样的区别？
+25. 预训练模型能提供怎样的帮助？
+26. 模型“头”是什么？
+27. 卷积神经网络前面的层能找到什么类型的特征？后面的层呢？
+28. 图形模型只对图像有用吗？
+29. “架构”是什么？
+30. 什么是分割？
+31. `y_range`用于什么？我们什么时候需要它？
+32. 什么是“超参”？
+
+### Further Research
+
+### 未来研究
+
+Each chapter also has a "Further Research" section that poses questions that aren't fully answered in the text, or gives more advanced assignments. Answers to these questions aren't on the book's website; you'll need to do your own research!
+
+每个章节也有一个“未来研究”小节，突出一些文中没有完全回答的问题，或给出更多高级任务。本收的网站没有问题的答案，你需要自己去研究探索！
+
+1. Why is a GPU useful for deep learning? How is a CPU different, and why is it less effective for deep learning?
+2. Try to think of three areas where feedback loops might impact the use of machine learning. See if you can find documented examples of that happening in practice.
+
+1. 为什么 GPU 对深度学习有用？ CPU 有什么不同，及为什么它对深度学习的效果差？
+2. 尝试思考反馈回路功能影响机器学习使用的三个方面。看你是否能找到实践中记录的发生实例。
