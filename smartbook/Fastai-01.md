@@ -1,6 +1,6 @@
 # 01_intro.ipynb
 
-# 第一章 深度学习导引
+# 第一章 深度学习概论
 
 ## Your Deep Learning Journey
 
