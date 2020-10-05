@@ -215,11 +215,11 @@ Paul Lockhart, a Columbia math PhD, former Brown professor, and K-12 math teache
 
 Unfortunately, this is where many teaching resources on deep learning begin–-**<font color=#A52A2A>asking learners to follow along with the definition of the Hessian and theorems for the Taylor approximation of your loss functions</font>**, without ever giving examples of actual working code. We're not knocking calculus. We love calculus, and Sylvain has even taught it at the college level, but we don't think it's the best place to start when learning deep learning!
 
-不幸的是，很多入门深度学习教学资源就是这样的：要求学习者遵循海森的定义和定理以对你损失函数进行泰勒逼近，而不提供可以实际运行的代码实例。我们不是在抨击微积分，我们很喜爱它，并且西尔维亚在大学教授微积分，但我们不认为在学习深度学习的时候它是最佳的切入点。
+不幸的是，很多入门深度学习教学资源就是这样的：要求学习者遵循海森的定义和定理以对你损失函数进行泰勒逼近，而不提供可以实际运行的代码示例。我们不是在抨击微积分，我们很喜爱它，并且西尔维亚在大学教授微积分，但我们不认为在学习深度学习的时候它是最佳的切入点。
 
 In deep learning, it really helps if you have the motivation to fix your model to get it to do better. That's when you start learning the relevant theory. But you need to have the model in the first place. We teach almost everything through real examples. As we build out those examples, we go deeper and deeper, and we'll show you how to make your projects better and better. This means that you'll be gradually learning all the theoretical foundations you need, in context, in such a way that you'll see why it matters and how it works.
 
-对于深度学习，如果你可以积极的修正你的模型并让模型获得更好的结果，这是非常有帮助的。即使你开始学习相关原理，但也你需要把模型放在首要的位置。我们传授的每个内容几乎都有实际的例子。通过构建的这些实例我们逐步深入，并用我们会给你展示如果让你的项目结果越来越好。这意味着你会逐步学习到所有需要的基础原理，通过上下文内容，并用这种方法你将会明白它什么是这个样子和他们如何工作的。
+对于深度学习，如果你可以积极的修正你的模型并让模型获得更好的结果，这是非常有帮助的。即使你开始学习相关原理，但也你需要把模型放在首要的位置。我们传授的每个内容几乎都有实际的例子。通过构建的这些实际的示例我们逐步深入，并用我们会给你展示如果让你的项目结果越来越好。这意味着你会逐步学习到所有需要的基础原理，通过上下文内容，并用这种方法你将会明白它什么是这个样子和他们如何工作的。
 
 So, here's our commitment to you. Throughout this book, we will follow these principles:
 
@@ -228,7 +228,7 @@ So, here's our commitment to you. Throughout this book, we will follow these pri
 - Teaching the *whole game*. We'll start by showing how to use a complete, working, very usable, state-of-the-art deep learning network to solve real-world problems, using simple, expressive tools. And then we'll gradually dig deeper and deeper into understanding how those tools are made, and how the tools that make those tools are made, and so on…
 - 完整游戏教学法。我们将从展示如何使用一个完整、可运行、完全可用、时下最流行的深度学习网络开始去解决现实世界的问题，使用简单，描述生动的工具。然后我们会逐步加深并深入理解那些工作是如何制作的，以及制作那些工具的工具是如何制作的，等等...
 - Always teaching through examples. We'll ensure that there is a context and a purpose that you can understand intuitively, rather than starting with algebraic symbol manipulation.
-- 总是实例教学。我们保证你可以凭直觉就可以理解其内容与用途，而不是从操作代数符号开始。
+- 总是通过示例进行教学。我们保证你可以凭直觉就可以理解其内容与用途，而不是从操作代数符号开始。
 - Simplifying as much as possible. We've spent years building tools and teaching methods that make previously complex topics very simple.
 - 尽可能的简单明了。我们已经花费多年的时间构建这些工具和教学方法，以确保之前前面那些复杂的主题变的非常简单。
 - Removing barriers. Deep learning has, until now, been a very exclusive game. We're breaking it open, and ensuring that everyone can play.
@@ -467,7 +467,7 @@ We wrote this book using Jupyter notebooks, so for nearly every chart, table, an
 
 You just saw how a cell that outputs a table looks inside the book. Here is an example of a cell that outputs text:
 
-如书里面的样子，你刚看了一个单元格如何输出一个表，这里有一个单元输出实例：
+如书里面的样子，你刚看了一个单元格如何输出一个表，这里有一个单元输出示例：
 
 ```python
 1+1
@@ -954,7 +954,7 @@ Feedback loops can also create problems in commercial settings. For instance, a 
 
 Now that you have seen the base of the theory, let's go back to our code example and see in detail how the code corresponds to the process we just described.
 
-现在你已经看到了这个理论基础，让我们返回到代码实例，并看代码如何反映到我们刚刚描述的过程细节。
+现在你已经看到了这个理论基础，让我们返回到代码示例，并看代码如何反映到我们刚刚描述的过程细节。
 
 ### How Our Image Recognizer Works
 
@@ -1054,8 +1054,9 @@ Even when your model has not fully memorized all your data, earlier on in traini
   <p align="center">
     <img src="./_v_images/att_00000.png" alt="Example of overfitting"  caption="Example of overfitting" id="img_overfit" width="700" />
   </p>
-  <p align="center">图：过拟实例</p>
+  <p align="center">图：过拟示例</p>
 </div>
+
 **Overfitting is the single most important and challenging issue** when training for all machine learning practitioners, and all algorithms. As you will see, it is very easy to create a model that does a great job at making predictions on the exact data it has been trained on, but it is much harder to make accurate predictions on data the model has never seen before. And of course, this is the data that will actually matter in practice. For instance, if you create a handwritten digit classifier (as we will very soon!) and use it to recognize numbers written on checks, then you are never going to see any of the numbers that the model was trained on—check will have slightly different variations of writing to deal with. You will learn many methods to avoid overfitting in this book. However, you should only use those methods after you have confirmed that overfitting is actually occurring (i.e., you have actually observed the validation accuracy getting worse during training). We often see practitioners using over-fitting avoidance techniques even when they have enough data that they didn't need to do so, ending up with a model that may be less accurate than what they could have achieved.
 
 所有机器学习预测者在训练模型时和所有的算法**过拟是一个非常重要并极巨挑战的问题**。正如你将要看到的，非常容易创建一个在它训练的确定数据上做的预测精度非常好，但在模型之前从来没见过的数据上做精确预测是非常难的事情。当然在现实中有些数据是可以准确处理的。例如，你创建了一个手写数字分类（我们很快就看到了！）并且用它去识别支票上的手写数字，然后去看训练后的模型从来没见过的数字----手写体只有很小的差异变化就能检查处理。在本书中你会学到很多避免过拟的方法。然而只有当你确定过拟已经实际发生了你才应该使用那些方法（即，训练期间你实际观测到验证精度开始变差了）。我们经常看到一些模型训练员在拥有足够多的数据的情况下依然使用过拟规避技术，事实上他们并不需要这样做，最终相对他能够完成的成果模型的精度可能会差一些。
@@ -1148,7 +1149,7 @@ The *head* of a model is the part that is newly added to be specific to the new 
 
 So, with all this code our model learned to recognize cats and dogs just from labeled examples. But how did it do it?
 
-所以利用这些代码我们的模型通过标注的实例学会了去辨别猫和狗。但它是怎么做的呢？
+所以利用这些代码我们的模型通过标注的示例学会了去辨别猫和狗。但它是怎么做的呢？
 
 ### What Our Image Recognizer Learned
 
@@ -1182,7 +1183,7 @@ This picture requires some explanation. For each layer, the image part with the 
 
 For layer 2, there are nine examples of weight reconstructions for each of the features found by the model. We can see that the model has learned to create feature detectors that look for corners, repeating lines, circles, and other simple patterns. These are built from the basic building blocks developed in the first layer. For each of these, the right-hand side of the picture shows small patches from actual images which these features most closely match. For instance, the particular pattern in row 2, column 1 matches the gradients and textures associated with sunsets.
 
-对于第二层，这里有通过模型发现的9 个每个特征的权重重建实例。我们能看到模型已经学会创建特征探测器查找角、重复的线、圈和其它简单图案。这些构造来自第一层形成的基础构建模块。图片右侧展示小块来自实际图像里最接近的特征匹配。例如，第 二 行第一列的特定图案与日落渐变和纹理相匹配。
+对于第二层，这里有通过模型发现的9 个每个特征的权重重建示例。我们能看到模型已经学会创建特征探测器查找角、重复的线、圈和其它简单图案。这些构造来自第一层形成的基础构建模块。图片右侧展示小块来自实际图像里最接近的特征匹配。例如，第 二 行第一列的特定图案与日落渐变和纹理相匹配。
 
 <img_layer3> shows the image from the paper showing the results of reconstructing the features of layer 3.
 
@@ -1246,7 +1247,7 @@ A time series can easily be converted into an image by simply plotting the time 
 
 Another interesting fast.ai student project example comes from Gleb Esman. He was working on fraud detection at Splunk, using a dataset of users' mouse movements and mouse clicks. He turned these into pictures by drawing an image where the position, speed, and acceleration of the mouse pointer was displayed using coloured lines, and the clicks were displayed using [small colored circles](https://www.splunk.com/en_us/blog/security/deep-learning-with-splunk-and-tensorflow-for-security-catching-the-fraudster-in-neural-networks-with-behavioral-biometrics.html), as shown in <splunk>. He then fed this into an image recognition model just like the one we've used in this chapter, and it worked so well that it led to a patent for this approach to fraud analytics!
 
-另一个有趣的fast.ai学习项目实例来自格莱布·埃斯曼。他在斯普伦克公司利用用户鼠标移动和点击数据集从事欺诈检测工作。他把数据集转化为图像集，通过使用不同颜色的线体现鼠标点击者位置、速度和加速进行绘图，并且使用[小彩色圆圈](https://www.splunk.com/en_us/blog/security/deep-learning-with-splunk-and-tensorflow-for-security-catching-the-fraudster-in-neural-networks-with-behavioral-biometrics.html)代表点击，如下图所示。然后他喂给就像我们在本章节所使用的一个图片识别模型，模型工作的非常好，这一个欺诈分析方法还申请了专利！
+另一个有趣的fast.ai学习项目示例来自格莱布·埃斯曼。他在斯普伦克公司利用用户鼠标移动和点击数据集从事欺诈检测工作。他把数据集转化为图像集，通过使用不同颜色的线体现鼠标点击者位置、速度和加速进行绘图，并且使用[小彩色圆圈](https://www.splunk.com/en_us/blog/security/deep-learning-with-splunk-and-tensorflow-for-security-catching-the-fraudster-in-neural-networks-with-behavioral-biometrics.html)代表点击，如下图所示。然后他喂给就像我们在本章节所使用的一个图片识别模型，模型工作的非常好，这一个欺诈分析方法还申请了专利！
 
 <div style="text-align:center">
   <p align="center">
@@ -1268,14 +1269,15 @@ Another example comes from the paper ["Malware Classification with Deep Convolut
 
 The authors then show "pictures" generated through this process of malware in different categories, as shown in <malware_eg>.
 
-作者然后展示了通过这一过程生成的不同类别恶意软件“图片”，如下图<恶意软件实例>所示。
+作者然后展示了通过这一过程生成的不同类别恶意软件“图片”，如下图<恶意软件示例>所示。
 
 <div style="text-align:center">
   <p align="center">
     <img src="./_v_images/att_00056.png" alt="Malware examples" width="650" caption="Malware examples" id="malware_eg" />
   </p>
-  <p align="center">图：恶意软件实例</p>
+  <p align="center">图：恶意软件示例</p>
 </div>
+
 
 As you can see, the different types of malware look very distinctive to the human eye. The model the researchers trained based on this image representation was more accurate at malware classification than any previous approach shown in the academic literature. This suggests a good rule of thumb for converting a dataset into an image representation: if the human eye can recognize categories from the images, then a deep learning model should be able to do so too.
 
@@ -1638,7 +1640,7 @@ You’ve already seen quite a few models in this section, each one trained using
 
 The datasets used in this book have been selected because they provide great examples of the kinds of data that you are likely to encounter, and the academic literature has many examples of model results using these datasets to which you can compare your work.
 
-在本书中所使用的数据集被选择的原因，他们是你可能遇到的各种类型数据中很好的实例，并且学术作品已经有了很多使用这些数据集的模型结果例子，这样能对你的工作进行对比。
+在本书中所使用的数据集被选择的原因，他们是你可能遇到的各种类型数据中很好的示例，并且学术作品已经有了很多使用这些数据集的模型结果例子，这样能对你的工作进行对比。
 
 Most datasets used in this book took the creators a lot of work to build. For instance, later in the book we’ll be showing you how to create a model that can translate between French and English. The key input to this is a French/English parallel text corpus prepared back in 2009 by Professor Chris Callison-Burch of the University of Pennsylvania. This dataset contains over 20 million sentence pairs in French and English. He built the dataset in a really clever way: by crawling millions of Canadian web pages (which are often multilingual) and then using a set of simple heuristics to transform URLs of French content onto URLs pointing to the same content in English.
 
@@ -1865,7 +1867,7 @@ It can be hard to know in pages and pages of prose what the key things are that 
 20. 什么是验证集？什么是测试集？我们为什么需要它们？
 21. 如果你不提供一个验证集，fastai 将会做什么？
 22. 对于验证集我们能总是使用随机样本吗？为什么这样做或为什么不这样做？
-23. 什么是过拟？提供一个实例。
+23. 什么是过拟？提供一个示例。
 24. 什么是指标？它与“loss”有怎样的区别？
 25. 预训练模型能提供怎样的帮助？
 26. 模型“头”是什么？
@@ -1888,4 +1890,4 @@ Each chapter also has a "Further Research" section that poses questions that are
 2. Try to think of three areas where feedback loops might impact the use of machine learning. See if you can find documented examples of that happening in practice.
 
 1. 为什么 GPU 对深度学习有用？ CPU 有什么不同，及为什么它对深度学习的效果差？
-2. 尝试思考反馈回路功能影响机器学习使用的三个方面。看你是否能找到实践中记录的发生实例。
+2. 尝试思考反馈回路功能影响机器学习使用的三个方面。看你是否能找到实践中记录的发生示例。
