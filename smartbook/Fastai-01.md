@@ -12,7 +12,7 @@ Hello, and thank you for letting us join you on your deep learning journey, howe
 
 ## Deep Learning Is for Everyone
 
-## 人人可做的深度学习
+## 大众的深度学习
 
 A lot of people assume that you need all kinds of hard-to-find stuff to get great results with deep learning, but as you'll see in this book, those people are wrong. Here's a few things you absolutely don't need to do world-class deep learning:
 
@@ -24,7 +24,7 @@ A lot of people assume that you need all kinds of hard-to-find stuff to get grea
 |        Lots of data         |  We've seen record-breaking results with <50 items of data   |
 | Lots of expensive computers | You can get what you need for state of the art work for free |
 
-|    神秘（并不需要）    |                     真相                     |
+|  神话（真相并非如此）  |                     真相                     |
 | :--------------------: | :------------------------------------------: |
 |   大量的数学专业知识   |         只需要高中的数学水平就可以了         |
 |       海量的数据       | 我们可以用不到50条数据就可以看到突破行的结果 |
