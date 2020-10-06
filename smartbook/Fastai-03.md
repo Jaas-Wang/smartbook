@@ -79,3 +79,37 @@ The Verge investigated software used in over half of the US states to determine 
 
  Verge 调查超过美国一半的州所使用的软件，以查明人们接受了多少医疗保健，并在文章[“当算法削减你的医疗保健时会发生什么”](https://www.theverge.com/2018/3/21/17144260/healthcare-medicaid-algorithm-arkansas-cerebral-palsy)中记录了他们的调查。在阿肯色州实施了算法后，数百人（一些有严重的残疾）的医疗保健被大幅削减。例如，塔米·多布斯，一名患有大脑性麻痹的女士，她需要一项救助以帮助她离开床、进入浴室、进餐，及更多的帮助，然而她每周的救助时间突然被缩减了20 小时。她无法获得任何关于医疗保健时间被缩减的解释。最终，一个司法案例揭露了在算法软件实施中所存在的错误。它对于糖尿病和大脑性麻痹人群有负面影响。不管怎样，多布斯和一些其他依赖医疗保健福利的人，生活在他们的福利被突然再次缩减而没有解释的恐惧中。
 
+### Feedback Loops: YouTube's Recommendation System
+
+### 反馈循环：YouTube 的推荐系统
+
+Feedback loops can occur when your model is controlling the next round of data you get. The data that is returned quickly becomes flawed by the software itself.
+
+反馈循环在你的模型正在控制你所获取的下一轮数据时会发生。通过软件自身使得快速返回的数据具有缺陷。
+
+For instance, YouTube has 1.9 billion users, who watch over 1 billion hours of YouTube videos a day. Its recommendation algorithm (built by Google), which was designed to optimize watch time, is responsible for around 70% of the content that is watched. But there was a problem: it led to out-of-control feedback loops, leading the *New York Times* to run the headline ["YouTube Unleashed a Conspiracy Theory Boom. Can It Be Contained?"](https://www.nytimes.com/2019/02/19/technology/youtube-conspiracy-stars.html). Ostensibly recommendation systems are predicting what content people will like, but they also have a lot of power in determining what content people even see.
+
+例如，YouTube 有 19 亿用户，一天观看YouTube 视频总时长超过 10 亿小时。由谷歌构建的YouTube 推荐算法被设计的目的是优化观看时间，此算法对观看的大约 70%的内容负有责任。但这里有一个问题：它依赖于失去控制的反馈循环。以至于*纽约时报*头版头条发布了[“YouTube助长了阴谋伦浪潮。它能包含吗？”](https://www.nytimes.com/2019/02/19/technology/youtube-conspiracy-stars.html)。表面上推荐系统预测人们会喜欢什么内容，但他们也有很大的权利决定什么内容人们可以看。
+
+### Bias: Professor Lantanya Sweeney "Arrested"
+
+Dr. Latanya Sweeney is a professor at Harvard and director of the university's data privacy lab. In the paper ["Discrimination in Online Ad Delivery"](https://arxiv.org/abs/1301.6822) (see <lantanya_arrested>) she describes her discovery that Googling her name resulted in advertisements saying "Latanya Sweeney, arrested?" even though she is the only known Latanya Sweeney and has never been arrested. However when she Googled other names, such as "Kirsten Lindquist," she got more neutral ads, even though Kirsten Lindquist has been arrested three times.
+
+兰塔尼亚·斯威尼博士是哈佛大学教授及大学的数据隐私实验室负责人。在论文[“在线广告投放中的歧视”](https://arxiv.org/abs/1301.6822)（下图谷歌搜索引擎显示了兰塔尼亚·斯威尼教授的拘捕记录）中她描述了她的发现，尽管她是唯一已知的兰塔尼亚·斯威尼并从来没有被拘捕过，通过谷歌搜索她的名字，在广告中的结果是“兰塔尼亚·斯威尼，被拘捕？”。然而当她用谷歌搜索其它人的名字（例如“克里斯汀•林奎斯特”），即使克里斯汀•林奎斯特已经被拘捕 3 次，但她却收到了更加中立的广告信息。
+
+
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image1.png" id="lantanya_arrested" caption="Google search showing ads about Professor Lantanya Sweeney's arrest record" alt="Screenshot of google search showing ads about Professor Lantanya Sweeney's arrest record" width="400">
+  </p>
+  <p align="center">图：谷歌搜索引擎显示了兰塔尼亚·斯威尼教授的拘捕记录</p>
+</div>
+
+Being a computer scientist, she studied this systematically, and looked at over 2000 names. She found a clear pattern where historically Black names received advertisements suggesting that the person had a criminal record, whereas, white names had more neutral advertisements.
+
+做为一名计算机科学家，她有计划的做了研究，并查看了超过 2000 个人名。她发现了一个很清晰的模式：历史上黑人名会收到这个人已经有犯罪记录的广告建议，然而白人名则会有更加中立的广告。
+
+This is an example of bias. It can make a big difference to people's lives—for instance, if a job applicant is Googled it may appear that they have a criminal record when they do not.
+
+这是一个偏见的示例。它能给人的生活制造巨大的麻烦。例如，如果应聘者在谷歌上被搜索显示他们有犯罪记录，实际上他们并没有时。
