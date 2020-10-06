@@ -113,3 +113,30 @@ Being a computer scientist, she studied this systematically, and looked at over 
 This is an example of bias. It can make a big difference to people's lives—for instance, if a job applicant is Googled it may appear that they have a criminal record when they do not.
 
 这是一个偏见的示例。它能给人的生活制造巨大的麻烦。例如，如果应聘者在谷歌上被搜索显示他们有犯罪记录，实际上他们并没有时。
+
+### Why Does This Matter?
+
+### 为什么这么重要？
+
+One very natural reaction to considering these issues is: "So what? What's that got to do with me? I'm a data scientist, not a politician. I'm not one of the senior executives at my company who make the decisions about what we do. I'm just trying to build the most predictive model I can."
+
+思考这个问题的一个很正常的反应：“所以呢？那和我有什么关系？我是只一句数据科学家，并不是政治家。在公司我不是一名决策我们做什么的资深经营者。我只是尽我所有去构建最有预见性的模型”
+
+These are very reasonable questions. But we're going to try to convince you that the answer is that everybody who is training models absolutely needs to consider how their models will be used, and consider how to best ensure that they are used as positively as possible. There are things you can do. And if you don't do them, then things can go pretty badly.
+
+这些是很合理的问题。但我们要尝试说服你，答案是每个训练模型的人绝对需要去考虑他们模型的用途，并考虑如何最大限度确保他们尽可能用于正面的方向。这些事情你能够做的，如果你不做，事情会变的非常糟糕。
+
+One particularly hideous example of what happens when technologists focus on technology at all costs is the story of IBM and Nazi Germany. In 2001, a Swiss judge ruled that it was not unreasonable "to deduce that IBM's technical assistance facilitated the tasks of the Nazis in the commission of their crimes against humanity, acts also involving accountancy and classification by IBM machines and utilized in the concentration camps themselves."
+
+当工程师不惜一切代价聚焦于技术时发生了一件尤为骇人听闻的事情：IBM 和德国纳粹的故事。在 2001 年，一名法官的裁决不无道理“推定 IBM 的技术加快了纳粹反人类委员会的任务，行为也涉及到通过 IBM 的机器进行会计记录和分类，并利用在他们自己的集中营”
+
+IBM, you see, supplied the Nazis with data tabulation products necessary to track the extermination of Jews and other groups on a massive scale. This was driven from the top of the company, with marketing to Hitler and his leadership team. Company President Thomas Watson personally approved the 1939 release of special IBM alphabetizing machines to help organize the deportation of Polish Jews. Pictured in <meeting> is Adolf Hitler (far left) meeting with IBM CEO Tom Watson Sr. (second from left), shortly before Hitler awarded Watson a special “Service to the Reich” medal in 1937.
+
+正如你看到的，IBM 提供给纳粹数据表格产品，它是追踪大规模犹太人和其它团队灭绝所必须的。这是由公司高层推动的营销希特勒和他的领导团队。公司主席汤姆·沃森个人批准 1939 年发布的特殊IBM 字母拼写机以帮助组织波兰犹太人驱逐出境。下图拍摄的照片是阿道夫·希特勒（左一）会见IBM首席执行官汤姆·沃森（左二）。之前早些时候，在 1937 年阿道夫给沃森颁布了一个特别的“服务帝国”勋章。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image2.png" id="meeting" caption="IBM CEO Tom Watson Sr. meeting with Adolf Hitler" alt="A picture of IBM CEO Tom Watson Sr. meeting with Adolf Hitler" width="400">
+  </p>
+  <p align="center">图：IBM首席执行官汤姆·沃森会见阿道夫·希特勒</p>
+</div>
