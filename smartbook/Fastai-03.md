@@ -174,4 +174,8 @@ Okay, so hopefully we have convinced you that you ought to care. But what should
 
 Normally there is a very long chain from one end to the other. This is especially true if you are a researcher, where you might not even know if your research will ever get used for anything, or if you're involved in data collection, which is even earlier in the pipeline. But no one is better placed to inform everyone involved in this chain about the capabilities, constraints, and details of your work than you are. Although there's no "silver bullet" that can ensure your work is used the right way, by getting involved in the process, and asking the right questions, you can at the very least ensure that the right issues are being considered.
 
+从一端到别一端正常来说这是很长的链条。如果你是一名研究人员这尤为真实，你可能甚至不知道你的研究是否有用，或在管道初期你是否参与了数据收集。但与你相比没人更合适去通知在这一链条上的每一个人关于你工作的能力、限制和细节。虽然没有“银弹”能确保你的工作被说于正确的用途，通过涉及的过程问正确的问题，你至少能够确保正确的问题会被思考。
+
 Sometimes, the right response to being asked to do a piece of work is to just say "no." Often, however, the response we hear is, "If I don’t do it, someone else will." But consider this: if you’ve been picked for the job, you’re the best person they’ve found to do it—so if you don’t do it, the best person isn’t working on that project. If the first five people they ask all say no too, even better!
+
+有时候，正好反馈被要求做的工作内容只需要说“不”。然而通常你听到的反馈是，“如果你不做，其它人会做。”但请考虑这名话：如果你已经获得了这个工作，你就是他们所能找到最适合做这个工作的人。所以如果你不做，在这个项目上没人更合适的人做。如果他们要求的头五个人也都说不的话，那就再好不过了！
