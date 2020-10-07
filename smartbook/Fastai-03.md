@@ -163,3 +163,12 @@ Step back for a moment and consider: How would you feel if you discovered that y
 It's not just a moral burden, either. Sometimes technologists pay very directly for their actions. For instance, the first person who was jailed as a result of the Volkswagen scandal, where the car company was revealed to have cheated on its diesel emissions tests, was not the manager that oversaw the project, or an executive at the helm of the company. It was one of the engineers, James Liang, who just did what he was told.
 
 这也不仅仅是一个道德负担。有时技术专家要为他们的行为直接付出代价。例如，大众汽车公司被揭露在柴油排放测试上存在欺诈行为，詹姆斯·梁成为了大众丑闻入狱第一人，他不是监管项目的管理人员，也不是主导公司的经理，他只是众多工程师的一员，做了被告知的工作。
+
+Of course, it's not all bad—if a project you are involved in turns out to make a huge positive impact on even one person, this is going to make you feel pretty great!
+
+当然，也不登时坏的方面：如果你参与的一个项目对即使一个人产生了巨大的正面影响，这也会让你感觉非常非常的好。
+
+Okay, so hopefully we have convinced you that you ought to care. But what should you do? As data scientists, we're naturally inclined to focus on making our models better by optimizing some metric or other. But optimizing that metric may not actually lead to better outcomes. And even if it *does* help create better outcomes, it almost certainly won't be the only thing that matters. Consider the pipeline of steps that occurs between the development of a model or an algorithm by a researcher or practitioner, and the point at which this work is actually used to make some decision. This entire pipeline needs to be considered *as a whole* if we're to have a hope of getting the kinds of outcomes we want.
+
+好吧，希望我们已经说服你应该关心这些事情。但是你应该做什么呢？做为一名数据科学家，我们很自然的倾向关注通过优化指标或其它参数让我们的模型更优。但优化指标实际上不可能引出更好的结果。即使它帮助创建了更好的结果，几乎可以确定的是这也不是唯一要紧的事情。在通过研究人员或参与者对模型或算法的发展和这一工作实际用途决策的点之间思考发生的所有步骤通道。如果我们希望想要取得好的结果，这个通道需要被视为*一个整体*
+
