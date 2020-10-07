@@ -140,3 +140,14 @@ IBM, you see, supplied the Nazis with data tabulation products necessary to trac
   </p>
   <p align="center">图：IBM首席执行官汤姆·沃森会见阿道夫·希特勒</p>
 </div>
+
+But this was not an isolated incident—the organization's involvement was extensive. IBM and its subsidiaries provided regular training and maintenance onsite at the concentration camps: printing off cards, configuring machines, and repairing them as they broke frequently. IBM set up categorizations on its punch card system for the way that each person was killed, which group they were assigned to, and the logistical information necessary to track them through the vast Holocaust system. IBM's code for Jews in the concentration camps was 8: some 6,000,000 were killed. Its code for Romanis was 12 (they were labeled by the Nazis as "asocials," with over 300,000 killed in the *Zigeunerlager*, or “Gypsy camp”). General executions were coded as 4, death in the gas chambers as 6.
+
+但这并不是一个孤立事件，而是有组织的广泛参与。IBM 和它的子公司提供定期训练和在集中营的现场运维：打印卡片、配置机器，及在机器频繁故障时进行维修。IBM 在它的打孔卡系统上建立了分类用于区分每一个人被杀的方法，他们被分配到那个团体，和通过大屠杀系统跟踪他们所必须的物流信息。在集中营犹太人的 IBM 编码是 8：大约六百万人被杀。吉普赛人的代码是 12（他们被纳粹标注为“自私的”，超过三十万人在*Zigeunerlager*或“吉普赛人集中营”被杀）。普通的处决代码是 4，在毒气室被杀是 6。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image3.jpeg" id="punch_card" caption="A punch card used by IBM in concentration camps" alt="Picture of a punch card used by IBM in concentration camps" width="600">
+  </p>
+  <p align="center">图： 在集中营 IBM 所使用的打孔卡</p>
+</div>
