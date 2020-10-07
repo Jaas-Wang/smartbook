@@ -172,3 +172,6 @@ Okay, so hopefully we have convinced you that you ought to care. But what should
 
 好吧，希望我们已经说服你应该关心这些事情。但是你应该做什么呢？做为一名数据科学家，我们很自然的倾向关注通过优化指标或其它参数让我们的模型更优。但优化指标实际上不可能引出更好的结果。即使它帮助创建了更好的结果，几乎可以确定的是这也不是唯一要紧的事情。在通过研究人员或参与者对模型或算法的发展和这一工作实际用途决策的点之间思考发生的所有步骤通道。如果我们希望想要取得好的结果，这个通道需要被视为*一个整体*
 
+Normally there is a very long chain from one end to the other. This is especially true if you are a researcher, where you might not even know if your research will ever get used for anything, or if you're involved in data collection, which is even earlier in the pipeline. But no one is better placed to inform everyone involved in this chain about the capabilities, constraints, and details of your work than you are. Although there's no "silver bullet" that can ensure your work is used the right way, by getting involved in the process, and asking the right questions, you can at the very least ensure that the right issues are being considered.
+
+Sometimes, the right response to being asked to do a piece of work is to just say "no." Often, however, the response we hear is, "If I don’t do it, someone else will." But consider this: if you’ve been picked for the job, you’re the best person they’ve found to do it—so if you don’t do it, the best person isn’t working on that project. If the first five people they ask all say no too, even better!
