@@ -156,3 +156,10 @@ Of course, the project managers and engineers and technicians involved were just
 
 当然，参与的项目经理、工程师和技师只是过他们的普通生活。照顾他们的家人，周日去教堂，尽他们所能做他们的工作。按部就班。市场人员只是实现他们的商业目标。埃德温·布莱克，*IBM 和大屠杀*（Dialog 发行）的作者注意到：“犹太人的毁灭甚至变的不那么重要，因为 IBM 的技术成就令人愉悦本质只是当面包线延伸到全世界时通过每一次创造的奇幻利润被提升了”
 
+Step back for a moment and consider: How would you feel if you discovered that you had been part of a system that ended up hurting society? Would you be open to finding out? How can you help make sure this doesn't happen? We have described the most extreme situation here, but there are many negative societal consequences linked to AI and machine learning being observed today, some of which we'll describe in this chapter.
+
+退后一步并考虑：如果你发现你所完成的系统部分最终伤害了社会，你会任何感想？你愿意去发现吗？你会提供什么帮助以确保不会发现？我们在这里已经描述了最极端的情况，但现如今会发现有很多的负面社会后果与人工智能和机器学习相关，我们在本章节会谈论其中的一些内容。
+
+It's not just a moral burden, either. Sometimes technologists pay very directly for their actions. For instance, the first person who was jailed as a result of the Volkswagen scandal, where the car company was revealed to have cheated on its diesel emissions tests, was not the manager that oversaw the project, or an executive at the helm of the company. It was one of the engineers, James Liang, who just did what he was told.
+
+这也不仅仅是一个道德负担。有时技术专家要为他们的行为直接付出代价。例如，大众汽车公司被揭露在柴油排放测试上存在欺诈行为，詹姆斯·梁成为了大众丑闻入狱第一人，他不是监管项目的管理人员，也不是主导公司的经理，他只是众多工程师的一员，做了被告知的工作。
