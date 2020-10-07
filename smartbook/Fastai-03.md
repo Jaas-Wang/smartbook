@@ -151,3 +151,8 @@ But this was not an isolated incident—the organization's involvement was exten
   </p>
   <p align="center">图： 在集中营 IBM 所使用的打孔卡</p>
 </div>
+
+Of course, the project managers and engineers and technicians involved were just living their ordinary lives. Caring for their families, going to the church on Sunday, doing their jobs the best they could. Following orders. The marketers were just doing what they could to meet their business development goals. As Edwin Black, author of *IBM and the Holocaust* (Dialog Press) observed: "To the blind technocrat, the means were more important than the ends. The destruction of the Jewish people became even less important because the invigorating nature of IBM's technical achievement was only heightened by the fantastical profits to be made at a time when bread lines stretched across the world."
+
+当然，参与的项目经理、工程师和技师只是过他们的普通生活。照顾他们的家人，周日去教堂，尽他们所能做他们的工作。按部就班。市场人员只是实现他们的商业目标。埃德温·布莱克，*IBM 和大屠杀*（Dialog 发行）的作者注意到：“犹太人的毁灭甚至变的不那么重要，因为 IBM 的技术成就令人愉悦本质只是当面包线延伸到全世界时通过每一次创造的奇幻利润被提升了”
+
