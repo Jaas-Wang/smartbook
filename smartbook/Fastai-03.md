@@ -203,3 +203,15 @@ For instance, two studies found that Amazon’s facial recognition software prod
   <p align="center">图： 国会议员</p>
 </div>
 
+Data scientists need to be part of a cross-disciplinary team. And researchers need to work closely with the kinds of people who will end up using their research. Better still is if the domain experts themselves have learned enough to be able to train and debug some models themselves—hopefully there are a few of you reading this book right now!
+
+数据学科家需要做为跨学科团队的一份子。并且研究人员需要和那些将最终使用他们模型的人紧密工作。最好的是如果领域专家学到到足够的知识，能够自己去训练和调试一些模型，希望你们中一些人现在正在阅读本书。
+
+The modern workplace is a very specialized place. Everybody tends to have well-defined jobs to perform. Especially in large companies, it can be hard to know what all the pieces of the puzzle are. Sometimes companies even intentionally obscure the overall project goals that are being worked on, if they know that their employees are not going to like the answers. This is sometimes done by compartmentalising pieces as much as possible.
+
+现代的工作场所是一个非常特殊的地方。很一个人都倾向执行有明确定义的工作。尤其在大公司，几乎很难知道工作任务的所有部分。如果公司知道他们的员工有可能不喜欢某个工作目标，有时候公司甚至会故意模糊化正在工作中的项目总体目标。有时候通过尽可能的碎片化来完成项目。
+
+In other words, we're not saying that any of this is easy. It's hard. It's really hard. We all have to do our best. And we have often seen that the people who do get involved in the higher-level context of these projects, and attempt to develop cross-disciplinary capabilities and teams, become some of the most important and well rewarded members of their organizations. It's the kind of work that tends to be highly appreciated by senior executives, even if it is sometimes considered rather uncomfortable by middle management.
+
+从别一方面说，我们不是说这是一件很容易的事情。它很难，真的很难。我们不得不尽全力做到最好。我们经常会看到一些项目高级别背景的干系人，尝试发展交叉学科能够和团队，变成他们组织中最重要且好评的成员。这类工作即使有时中层管理人员认为很不舒服，然而却能获得高级管理层的高度赞赏。
+
