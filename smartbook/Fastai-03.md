@@ -215,3 +215,23 @@ In other words, we're not saying that any of this is easy. It's hard. It's reall
 
 从别一方面说，我们不是说这是一件很容易的事情。它很难，真的很难。我们不得不尽全力做到最好。我们经常会看到一些项目高级别背景的干系人，尝试发展交叉学科能够和团队，变成他们组织中最重要且好评的成员。这类工作即使有时中层管理人员认为很不舒服，然而却能获得高级管理层的高度赞赏。
 
+## Topics in Data Ethics
+
+## 数据伦理的几个主题
+
+Data ethics is a big field, and we can't cover everything. Instead, we're going to pick a few topics that we think are particularly relevant:
+
+数据伦理是一个巨大的领域，我们无法覆盖每一件事情。所以我们会挑出一些我们认为高度相关的主题：
+
+- The need for recourse and accountability
+- Feedback loops
+- Bias
+- Disinformation
+- 需要追索和问责
+- 反馈循环
+- 偏见
+- 虚假信息
+
+Let's look at each in turn.
+
+让我们依次看每一部分。
