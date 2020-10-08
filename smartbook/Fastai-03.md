@@ -166,7 +166,7 @@ It's not just a moral burden, either. Sometimes technologists pay very directly 
 
 Of course, it's not all bad—if a project you are involved in turns out to make a huge positive impact on even one person, this is going to make you feel pretty great!
 
-当然，也不登时坏的方面：如果你参与的一个项目对即使一个人产生了巨大的正面影响，这也会让你感觉非常非常的好。
+当然，也不全是坏的方面：如果你参与的一个项目对即使一个人产生了巨大的正面影响，这也会让你感觉非常非常的好。
 
 Okay, so hopefully we have convinced you that you ought to care. But what should you do? As data scientists, we're naturally inclined to focus on making our models better by optimizing some metric or other. But optimizing that metric may not actually lead to better outcomes. And even if it *does* help create better outcomes, it almost certainly won't be the only thing that matters. Consider the pipeline of steps that occurs between the development of a model or an algorithm by a researcher or practitioner, and the point at which this work is actually used to make some decision. This entire pipeline needs to be considered *as a whole* if we're to have a hope of getting the kinds of outcomes we want.
 
@@ -174,7 +174,7 @@ Okay, so hopefully we have convinced you that you ought to care. But what should
 
 Normally there is a very long chain from one end to the other. This is especially true if you are a researcher, where you might not even know if your research will ever get used for anything, or if you're involved in data collection, which is even earlier in the pipeline. But no one is better placed to inform everyone involved in this chain about the capabilities, constraints, and details of your work than you are. Although there's no "silver bullet" that can ensure your work is used the right way, by getting involved in the process, and asking the right questions, you can at the very least ensure that the right issues are being considered.
 
-从一端到别一端正常来说这是很长的链条。如果你是一名研究人员这尤为真实，你可能甚至不知道你的研究是否有用，或在管道初期你是否参与了数据收集。但与你相比没人更合适去通知在这一链条上的每一个人关于你工作的能力、限制和细节。虽然没有“银弹”能确保你的工作被说于正确的用途，通过涉及的过程问正确的问题，你至少能够确保正确的问题会被思考。
+从一端到另一端正常来说这是很长的链条。如果你是一名研究人员这尤为真实，你可能甚至不知道你的研究是否有用，或在管道初期你是否参与了数据收集。但与你相比没人更合适去通知在这一链条上的每一个人关于你工作的能力、限制和细节。虽然没有“银弹”能确保你的工作被说于正确的用途，通过涉及的过程问正确的问题，你至少能够确保正确的问题会被思考。
 
 Sometimes, the right response to being asked to do a piece of work is to just say "no." Often, however, the response we hear is, "If I don’t do it, someone else will." But consider this: if you’ve been picked for the job, you’re the best person they’ve found to do it—so if you don’t do it, the best person isn’t working on that project. If the first five people they ask all say no too, even better!
 
@@ -192,7 +192,7 @@ These are not just algorithm questions. They are data product design questions. 
 
 这里没有任何算法问题。他们只是一些数据产品设计问题。但产品经理，经营决策者，法官，新闻记者，医生...无论谁最终开发和使用的系统涉及到你的模型，他们所处的位置都不可能很好的理解你所做的决策，更何况改变他们。
 
-For instance, two studies found that Amazon’s facial recognition software produced [inaccurate](https://www.nytimes.com/2018/07/26/technology/amazon-aclu-facial-recognition-congress.html) and [racially biased](https://www.theverge.com/2019/1/25/18197137/amazon-rekognition-facial-recognition-bias-race-gender) results. Amazon claimed that the researchers should have changed the default parameters, without explaining how this would have changed the biased results. Furthermore, it turned out that [Amazon was not instructing police departments](https://gizmodo.com/defense-of-amazons-face-recognition-tool-undermined-by-1832238149) that used its software to do this either. There was, presumably, a big distance between the researchers that developed these algorithms and the Amazon documentation staff that wrote the guidelines provided to the police. A lack of tight integration led to serious problems for society at large, the police, and Amazon themselves. It turned out that their system erroneously matched 28 members of congress to criminal mugshots!  (And the Congresspeople wrongly matched to criminal mugshots were disproportionately people of color, as seen in <<congressmen>>.)
+For instance, two studies found that Amazon’s facial recognition software produced [inaccurate](https://www.nytimes.com/2018/07/26/technology/amazon-aclu-facial-recognition-congress.html) and [racially biased](https://www.theverge.com/2019/1/25/18197137/amazon-rekognition-facial-recognition-bias-race-gender) results. Amazon claimed that the researchers should have changed the default parameters, without explaining how this would have changed the biased results. Furthermore, it turned out that [Amazon was not instructing police departments](https://gizmodo.com/defense-of-amazons-face-recognition-tool-undermined-by-1832238149) that used its software to do this either. There was, presumably, a big distance between the researchers that developed these algorithms and the Amazon documentation staff that wrote the guidelines provided to the police. A lack of tight integration led to serious problems for society at large, the police, and Amazon themselves. It turned out that their system erroneously matched 28 members of congress to criminal mugshots!  (And the Congresspeople wrongly matched to criminal mugshots were disproportionately people of color, as seen in <congressmen>.)
 
 例如，两名学者发现亚马逊公司的面部识别软件会产生不精准和种族偏见的结果。亚马逊声称研究人员应该修改默认参数，但没有解释如何改变偏见的结果。此外，结果是[亚马逊没有指导警察部门](https://gizmodo.com/defense-of-amazons-face-recognition-tool-undermined-by-1832238149) 用这个软件时也要做这个事情。可能在研究人员开发算法和亚马逊文书人员编写提供给警察的指引之间还有很大的距离。缺乏紧密的整合对于整个社会、警察和亚马逊自身会导致一系列问题。结果是他们的系统把 28 名国会议员错误的匹配为罪犯的面部照片！（把国会议员错误的匹配到罪犯的面部照片大多是有色人种，见下图<国会议员>）
 
@@ -246,8 +246,20 @@ In a complex system, it is easy for no one person to feel responsible for outcom
 
 An additional reason why recourse is so necessary is because data often contains errors. Mechanisms for audits and error correction are crucial. A database of suspected gang members maintained by California law enforcement officials was found to be full of errors, including 42 babies who had been added to the database when they were less than 1 year old (28 of whom were marked as “admitting to being gang members”). In this case, there was no process in place for correcting mistakes or removing people once they’d been added. Another example is the US credit report system: in a large-scale study of credit reports by the Federal Trade Commission (FTC) in 2012, it was found that 26% of consumers had at least one mistake in their files, and 5% had errors that could be devastating. Yet, the process of getting such errors corrected is incredibly slow and opaque. When public radio reporter [Bobby Allyn](https://www.washingtonpost.com/posteverything/wp/2016/09/08/how-the-careless-errors-of-credit-reporting-agencies-are-ruining-peoples-lives/) discovered that he was erroneously listed as having a firearms conviction, it took him "more than a dozen phone calls, the handiwork of a county court clerk and six weeks to solve the problem. And that was only after I contacted the company’s communications department as a journalist."
 
-一个额外的原因，为什么追索是如何必须的，因为数据经常包含错误。审核及错误纠正机制非常关键。一个由加利福尼亚司法部门官员维护的推测帮派成员数据库里，发现其充满了错误，里面包含了42名婴儿，当他们不满一岁的时候被添加进了数据库（他们中的28人被 标记为“承认是帮派成员”）。在这一案例中，一旦被添加没有纠正错误或移除的流程。那一个是美国信用报告系统的示例：在2012年联邦贸易委员会（FTC）开展了大规模的信用报告研究，在26%的消费者文件中发现至少存在一个错误，并且5%的人含有摧毁性的错误。然而，纠正错误的过程是难以置信的慢和不透明。当公共广播记者[鲍比·艾琳](https://www.washingtonpost.com/posteverything/wp/2016/09/08/how-the-careless-errors-of-credit-reporting-agencies-are-ruining-peoples-lives/)发现，他被错误的列为拥有枪只定罪时，这让他“打了超过一打的电话，一个县法庭职员的杰作和六周的时间去解决这一问题。这一切还只是我做为一个记者联系了公司的传播部门。”
+一个额外的原因，为什么追索是如何必须的，因为数据经常包含错误。审核及错误纠正机制非常关键。一个由加利福尼亚司法部门官员维护的推测帮派成员数据库里，发现其充满了错误，里面包含了42名婴儿，当他们不满一岁的时候被添加进了数据库（他们中的28人被 标记为“承认是帮派成员”）。在这一案例中，一旦被添加没有纠正错误或移除的流程。那一个是美国信用报告系统的示例：在2012年联邦贸易委员会（FTC）开展了大规模的信用报告研究，在26%的消费者文件中发现至少存在一个错误，并且5%的人含有摧毁性的错误。然而，纠正错误的过程是难以置信的慢和不透明。当公共广播记者[鲍比·艾琳](https://www.washingtonpost.com/posteverything/wp/2016/09/08/how-the-careless-errors-of-credit-reporting-agencies-are-ruining-peoples-lives/)发现，他被错误的列为拥有枪只定罪时，这让他“打了超过一打的电话，一个县法庭职员的杰作和六周的时间去解决这一问题。这一切还是我做为一个记者联系了公司的传播部门。”
 
 As machine learning practitioners, we do not always think of it as our responsibility to understand how our algorithms end up being implemented in practice. But we need to.
 
 做为机器学习参与者，我们并不是一直认为了解我们的算法在实践中最终被如何实施是我们的责任。但是我们需要去做。
+
+### Feedback Loops
+
+### 反馈循环
+
+We explained in <chapter_intro> how an algorithm can interact with its enviromnent to create a feedback loop, making predictions that reinforce actions taken in the real world, which lead to predictions even more pronounced in the same direction. 
+As an example, let's again consider YouTube's recommendation system. A couple of years ago the Google team talked about how they had introduced reinforcement learning (closely related to deep learning, but where your loss function represents a result potentially a long time after an action occurs) to improve YouTube's recommendation system. They described how they used an algorithm that made recommendations such that watch time would be optimized.
+
+在<概述>这一章中我们解释了一个算法如何和它的环境交互以创建一个反馈循环，进行预测以增强在真实世界中的行为，从而在同一方向上使得预测更准确。做为一个实例，让我们再次思考YouTube的推荐系统。两年前谷歌团队宣城他们如何引入了增强学习（与深度学习很接近，只是在增强学习上你的损失函数代表的是一个行为发生后很长时间的潜在结果）以改善YouTube的推荐系统。他们描述如何利用一个算法做出推荐从而观看时间获得优化。
+
+
+
