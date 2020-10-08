@@ -235,3 +235,12 @@ Data ethics is a big field, and we can't cover everything. Instead, we're going 
 Let's look at each in turn.
 
 让我们依次看每一部分。
+
+### Recourse and Accountability
+
+### 追索和问责
+
+In a complex system, it is easy for no one person to feel responsible for outcomes. While this is understandable, it does not lead to good results. In the earlier example of the Arkansas healthcare system in which a bug led to people with cerebral palsy losing access to needed care, the creator of the algorithm blamed government officials, and government officials blamed those who implemented the software. NYU professor [Danah Boyd](https://www.youtube.com/watch?v=NTl0yyPqf3E) described this phenomenon: "Bureaucracy has often been used to shift or evade responsibility... Today's algorithmic systems are extending bureaucracy."
+
+在一个复杂系统中，没有人感觉对结果负责是很容易的。虽然这是可以理解的，但它不会带来好的结果。在早先阿肯色州医疗保健系统，因系统缺陷导致具有大脑性麻痹人群失去必要看护的案例中，算法的创建人谴责政府官员，政府官员谴责那些实施软件的人。纽约大学教授[Danah Boyd](https://www.youtube.com/watch?v=NTl0yyPqf3E)这样描述这一现象：“官僚主义经常习惯于推卸和逃避责任... 今天的算法系统是官僚管理的延伸。”
+
