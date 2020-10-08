@@ -186,8 +186,20 @@ Sometimes, the right response to being asked to do a piece of work is to just sa
 
 Presumably the reason you're doing this work is because you hope it will be used for something. Otherwise, you're just wasting your time. So, let's start with the assumption that your work will end up somewhere. Now, as you are collecting your data and developing your model, you are making lots of decisions. What level of aggregation will you store your data at? What loss function should you use? What validation and training sets should you use? Should you focus on simplicity of implementation, speed of inference, or accuracy of the model? How will your model handle out-of-domain data items? Can it be fine-tuned, or must it be retrained from scratch over time?
 
-做做这一工作的大概原因是因为你希望它会用到某些地方。否则就只是在浪费你的时间。所以，让我们从你的工作成果最终会被使用的假设开始。现在，你正在搜集数据和开始你的模型，你正在做一些决策。你的数据存储到什么聚集级别？你应该采用什么损失函数？你应该使用什么样的验证集和训练集？你应该聚焦在简单实施，快速推理或模型的精度？你的模型怎么处理域外数据？它能被微调吗，或随着时间的推移它必定要被再训练吗？
+做这一工作的大概原因是因为你希望它会用到某些地方。否则就只是在浪费你的时间。所以，让我们从你的工作成果最终会被使用的假设开始。现在，你正在搜集数据和开始你的模型，你正在做一些决策。你的数据存储到什么聚集级别？你应该采用什么损失函数？你应该使用什么样的验证集和训练集？你应该聚焦在简单实施，快速推理或模型的精度？你的模型怎么处理域外数据？它能被微调吗，或随着时间的推移它必定要被再训练吗？
 
 These are not just algorithm questions. They are data product design questions. But the product managers, executives, judges, journalists, doctors… whoever ends up developing and using the system of which your model is a part will not be well-placed to understand the decisions that you made, let alone change them.
 
-这里没有任何算法问题。他们只是一些数据产品设计问题。但产品经理，经营决策者，法官，新闻记者，医生...以及那些把你的模型做为所开发和使用系统的一部分的人都不可能很好的理解你所做的决策，更何况改变他们。
+这里没有任何算法问题。他们只是一些数据产品设计问题。但产品经理，经营决策者，法官，新闻记者，医生...无论谁最终开发和使用的系统涉及到你的模型，他们所处的位置都不可能很好的理解你所做的决策，更何况改变他们。
+
+For instance, two studies found that Amazon’s facial recognition software produced [inaccurate](https://www.nytimes.com/2018/07/26/technology/amazon-aclu-facial-recognition-congress.html) and [racially biased](https://www.theverge.com/2019/1/25/18197137/amazon-rekognition-facial-recognition-bias-race-gender) results. Amazon claimed that the researchers should have changed the default parameters, without explaining how this would have changed the biased results. Furthermore, it turned out that [Amazon was not instructing police departments](https://gizmodo.com/defense-of-amazons-face-recognition-tool-undermined-by-1832238149) that used its software to do this either. There was, presumably, a big distance between the researchers that developed these algorithms and the Amazon documentation staff that wrote the guidelines provided to the police. A lack of tight integration led to serious problems for society at large, the police, and Amazon themselves. It turned out that their system erroneously matched 28 members of congress to criminal mugshots!  (And the Congresspeople wrongly matched to criminal mugshots were disproportionately people of color, as seen in <<congressmen>>.)
+
+例如，两名学者发现亚马逊公司的面部识别软件会产生不精准和种族偏见的结果。亚马逊声称研究人员应该修改默认参数，但没有解释如何改变偏见的结果。此外，结果是[亚马逊没有指导警察部门](https://gizmodo.com/defense-of-amazons-face-recognition-tool-undermined-by-1832238149) 用这个软件时也要做这个事情。可能在研究人员开发算法和亚马逊文书人员编写提供给警察的指引之间还有很大的距离。缺乏紧密的整合对于整个社会、警察和亚马逊自身会导致一系列问题。结果是他们的系统把 28 名国会议员错误的匹配为罪犯的面部照片！（把国会议员错误的匹配到罪犯的面部照片大多是有色人种，见下图<国会议员>）
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image4.png" id="congressmen" caption="Congresspeople matched to criminal mugshots by Amazon software" alt="Picture of the congresspeople matched to criminal mugshots by Amazon software, they are disproportionatedly people of color" width="500">
+  </p>
+  <p align="center">图： 国会议员</p>
+</div>
+
