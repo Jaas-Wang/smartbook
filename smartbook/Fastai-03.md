@@ -179,3 +179,15 @@ Normally there is a very long chain from one end to the other. This is especiall
 Sometimes, the right response to being asked to do a piece of work is to just say "no." Often, however, the response we hear is, "If I don’t do it, someone else will." But consider this: if you’ve been picked for the job, you’re the best person they’ve found to do it—so if you don’t do it, the best person isn’t working on that project. If the first five people they ask all say no too, even better!
 
 有时候，正好反馈被要求做的工作内容只需要说“不”。然而通常你听到的反馈是，“如果你不做，其它人会做。”但请考虑这名话：如果你已经获得了这个工作，你就是他们所能找到最适合做这个工作的人。所以如果你不做，在这个项目上没人更合适的人做。如果他们要求的头五个人也都说不的话，那就再好不过了！
+
+## Integrating Machine Learning with Product Design
+
+## 集成了机器学习的产品设计
+
+Presumably the reason you're doing this work is because you hope it will be used for something. Otherwise, you're just wasting your time. So, let's start with the assumption that your work will end up somewhere. Now, as you are collecting your data and developing your model, you are making lots of decisions. What level of aggregation will you store your data at? What loss function should you use? What validation and training sets should you use? Should you focus on simplicity of implementation, speed of inference, or accuracy of the model? How will your model handle out-of-domain data items? Can it be fine-tuned, or must it be retrained from scratch over time?
+
+做做这一工作的大概原因是因为你希望它会用到某些地方。否则就只是在浪费你的时间。所以，让我们从你的工作成果最终会被使用的假设开始。现在，你正在搜集数据和开始你的模型，你正在做一些决策。你的数据存储到什么聚集级别？你应该采用什么损失函数？你应该使用什么样的验证集和训练集？你应该聚焦在简单实施，快速推理或模型的精度？你的模型怎么处理域外数据？它能被微调吗，或随着时间的推移它必定要被再训练吗？
+
+These are not just algorithm questions. They are data product design questions. But the product managers, executives, judges, journalists, doctors… whoever ends up developing and using the system of which your model is a part will not be well-placed to understand the decisions that you made, let alone change them.
+
+这里没有任何算法问题。他们只是一些数据产品设计问题。但产品经理，经营决策者，法官，新闻记者，医生...以及那些把你的模型做为所开发和使用系统的一部分的人都不可能很好的理解你所做的决策，更何况改变他们。
