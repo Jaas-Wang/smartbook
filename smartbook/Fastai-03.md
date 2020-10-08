@@ -248,5 +248,6 @@ An additional reason why recourse is so necessary is because data often contains
 
 一个额外的原因，为什么追索是如何必须的，因为数据经常包含错误。审核及错误纠正机制非常关键。一个由加利福尼亚司法部门官员维护的推测帮派成员数据库里，发现其充满了错误，里面包含了42名婴儿，当他们不满一岁的时候被添加进了数据库（他们中的28人被 标记为“承认是帮派成员”）。在这一案例中，一旦被添加没有纠正错误或移除的流程。那一个是美国信用报告系统的示例：在2012年联邦贸易委员会（FTC）开展了大规模的信用报告研究，在26%的消费者文件中发现至少存在一个错误，并且5%的人含有摧毁性的错误。然而，纠正错误的过程是难以置信的慢和不透明。当公共广播记者[鲍比·艾琳](https://www.washingtonpost.com/posteverything/wp/2016/09/08/how-the-careless-errors-of-credit-reporting-agencies-are-ruining-peoples-lives/)发现，他被错误的列为拥有枪只定罪时，这让他“打了超过一打的电话，一个县法庭职员的杰作和六周的时间去解决这一问题。这一切还只是我做为一个记者联系了公司的传播部门。”
 
+As machine learning practitioners, we do not always think of it as our responsibility to understand how our algorithms end up being implemented in practice. But we need to.
 
-
+做为机器学习参与者，我们并不是一直认为了解我们的算法在实践中最终被如何实施是我们的责任。但是我们需要去做。
