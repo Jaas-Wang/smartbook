@@ -259,7 +259,11 @@ As machine learning practitioners, we do not always think of it as our responsib
 We explained in <chapter_intro> how an algorithm can interact with its enviromnent to create a feedback loop, making predictions that reinforce actions taken in the real world, which lead to predictions even more pronounced in the same direction. 
 As an example, let's again consider YouTube's recommendation system. A couple of years ago the Google team talked about how they had introduced reinforcement learning (closely related to deep learning, but where your loss function represents a result potentially a long time after an action occurs) to improve YouTube's recommendation system. They described how they used an algorithm that made recommendations such that watch time would be optimized.
 
-在<概述>这一章中我们解释了一个算法如何和它的环境交互以创建一个反馈循环，进行预测以增强在真实世界中的行为，从而在同一方向上使得预测更准确。做为一个实例，让我们再次思考YouTube的推荐系统。两年前谷歌团队宣城他们如何引入了增强学习（与深度学习很接近，只是在增强学习上你的损失函数代表的是一个行为发生后很长时间的潜在结果）以改善YouTube的推荐系统。他们描述如何利用一个算法做出推荐从而观看时间获得优化。
+在<概述>这一章中我们解释了一个算法如何和它的环境交互以创建一个反馈循环，进行预测以增强在真实世界中的行为，从而在同一方向上使得预测更准确。做为一个实例，让我们再次思考YouTube的推荐系统。两年前谷歌团队宣城他们如何引入了增强学习（与深度学习很接近，只是在增强学习上你的损失函数代表的是一个行为发生后很长时间的潜在结果）以改善YouTube的推荐系统。他们描述如何利用一个算法做出推荐这样观看时间会获得优化。
+
+However, human beings tend to be drawn to controversial content. This meant that videos about things like conspiracy theories started to get recommended more and more by the recommendation system. Furthermore, it turns out that the kinds of people that are interested in conspiracy theories are also people that watch a lot of online videos! So, they started to get drawn more and more toward YouTube. The increasing number of conspiracy theorists watching videos on YouTube resulted in the algorithm recommending more and more conspiracy theory and other extremist content, which resulted in more extremists watching videos on YouTube, and more people watching YouTube developing extremist views, which led to the algorithm recommending more extremist content... The system was spiraling out of control.
+
+然而，人类倾向被有争议的内容所吸引。这意味着像阴谋论这种视频开始获得推荐系统越来越多的推荐。而且，事实证明对阴谋论有兴趣的那些人也是大量看在线视频的人。在YouTube上阴谋论观看视频数的增加导致算法推荐越来越多的阴谋念经和其它极端内容，这就导致在YouTube上更多的极端视频被观看，并且更多观看YouTube的人形成了极端的观点，这使的算法推荐更多的极端内容... 系统呈螺旋状的失去控制。
 
 
 
