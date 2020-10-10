@@ -268,3 +268,11 @@ However, human beings tend to be drawn to controversial content. This meant that
 And this phenomenon was not contained to this particular type of content. In June 2019 the *New York Times* published an article on YouTube's recommendation system, titled ["On YouTube’s Digital Playground, an Open Gate for Pedophiles"](https://www.nytimes.com/2019/06/03/world/americas/youtube-pedophiles.html). The article started with this chilling story:
 
 并且这一现象并不包含这一特定类型的内容。在2019年6月，*纽约时报*对于YouTube的推荐系统发表了一篇文章，题为[YouTube的游乐场，一扇对恋童癖敞开的大门](https://www.nytimes.com/2019/06/03/world/americas/youtube-pedophiles.html)。文章以这样信人心寒的故事开始：
+
+> : Christiane C. didn’t think anything of it when her 10-year-old daughter and a friend uploaded a video of themselves playing in a backyard pool… A few days later… the video had thousands of views. Before long, it had ticked up to 400,000... “I saw the video again and I got scared by the number of views,” Christiane said. She had reason to be. YouTube’s automated recommendation system… had begun showing the video to users who watched other videos of prepubescent, partially clothed children, a team of researchers has found.
+>
+> ：当克里斯蒂安妮·C. 10岁的女儿和她的朋友上传了在后院游泳池玩耍的视频时时，克里斯蒂安妮·C.没感觉有什么特别的。几天后...这个视频已经有了数千的观看量。前不久，它已经上升到了40万...“我再看视频，我被观看数量吓到了”，克里斯蒂安妮说道。她有理由害怕。一个研究团队发现，YouTube的自动推荐系统...开始向已经观看其它少儿视频的用户展示这一视频，尤其是穿了衣服的孩子。
+
+> : On its own, each video might be perfectly innocent, a home movie, say, made by a child. Any revealing frames are fleeting and appear accidental. But, grouped together, their shared features become unmistakable.
+>
+> ：每个视频可能都有任何问题，只是孩子们拍摄的家庭录像。任何展示的帧是短暂且显的偶然。但是把它们聚合在一起，他们共同的特征就显露无疑了。
