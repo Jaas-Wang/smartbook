@@ -276,3 +276,26 @@ And this phenomenon was not contained to this particular type of content. In Jun
 > : On its own, each video might be perfectly innocent, a home movie, say, made by a child. Any revealing frames are fleeting and appear accidental. But, grouped together, their shared features become unmistakable.
 >
 > ：每个视频可能都有任何问题，只是孩子们拍摄的家庭录像。任何展示的帧是短暂且显的偶然。但是把它们聚合在一起，他们共同的特征就显露无疑了。
+
+YouTube's recommendation algorithm had begun curating playlists for pedophiles, picking out innocent home videos that happened to contain prepubescent, partially clothed children.
+
+YouTube的推荐算法开始为恋童癖制作播放列表，挑选出包含少儿（尤其是穿衣儿童）无辜家庭的视频。
+
+No one at Google planned to create a system that turned family videos into porn for pedophiles. So what happened?
+
+在谷歌没有人计划建立一个把家庭视频转为儿童色情的系统。那到底发生了什么？
+
+Part of the problem here is the centrality of metrics in driving a financially important system. When an algorithm has a metric to optimize, as you have seen, it will do everything it can to optimize that number. This tends to lead to all kinds of edge cases, and humans interacting with a system will search for, find, and exploit these edge cases and feedback loops for their advantage.
+
+这里的部分问题是因为在推动一个经济性重要系统中指标是核心。下如你看到的，当一个算法有个指标要优化时，它将作出所有努力以能够优化那数值。这个倾向导致各种极端情况，及人与系统的交互行为都会被搜索、发现，为了他们利益并利用这些极端情况并反馈循环。
+
+There are signs that this is exactly what has happened with YouTube's recommendation system. *The Guardian* ran an article called ["How an ex-YouTube Insider Investigated its Secret Algorithm"](https://www.theguardian.com/technology/2018/feb/02/youtube-algorithm-election-clinton-trump-guillaume-chaslot) about Guillaume Chaslot, an ex-YouTube engineer who created AlgoTransparency, which tracks these issues. Chaslot published the chart in <ethics_yt_rt>, following the release of Robert Mueller's "Report on the Investigation Into Russian Interference in the 2016 Presidential Election."
+
+有一些迹象表明，YouTube的推荐系统发生了什么。*卫报*刊登了关于Guillaume Chaslot一篇名为["前YouTube内部人如何调查它的秘密算法"](https://www.theguardian.com/technology/2018/feb/02/youtube-algorithm-election-clinton-trump-guillaume-chaslot)，这名前YouTube工程师创建了人工智能透明化公司，用以追踪这些问题。罗伯特·穆勒发表了“对于俄罗斯干涉2016年总统大选的调查报告”，Chaslotd在<穆勒报告>中发布了图表。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image18.jpeg" id="ethics_yt_rt" caption="Coverage of the Mueller report" alt="Coverage of the Mueller report" width="500">
+  </p>
+  <p align="center">图：米勒报告</p>
+</div>
