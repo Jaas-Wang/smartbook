@@ -265,5 +265,6 @@ However, human beings tend to be drawn to controversial content. This meant that
 
 然而，人类倾向被有争议的内容所吸引。这意味着像阴谋论这种视频开始获得推荐系统越来越多的推荐。而且，事实证明对阴谋论有兴趣的那些人也是大量看在线视频的人。在YouTube上阴谋论观看视频数的增加导致算法推荐越来越多的阴谋念经和其它极端内容，这就导致在YouTube上更多的极端视频被观看，并且更多观看YouTube的人形成了极端的观点，这使的算法推荐更多的极端内容... 系统呈螺旋状的失去控制。
 
+And this phenomenon was not contained to this particular type of content. In June 2019 the *New York Times* published an article on YouTube's recommendation system, titled ["On YouTube’s Digital Playground, an Open Gate for Pedophiles"](https://www.nytimes.com/2019/06/03/world/americas/youtube-pedophiles.html). The article started with this chilling story:
 
-
+并且这一现象并不包含这一特定类型的内容。在2019年6月，*纽约时报*对于YouTube的推荐系统发表了一篇文章，题为[YouTube的游乐场，一扇对恋童癖敞开的大门](https://www.nytimes.com/2019/06/03/world/americas/youtube-pedophiles.html)。文章以这样信人心寒的故事开始：
