@@ -291,7 +291,7 @@ Part of the problem here is the centrality of metrics in driving a financially i
 
 There are signs that this is exactly what has happened with YouTube's recommendation system. *The Guardian* ran an article called ["How an ex-YouTube Insider Investigated its Secret Algorithm"](https://www.theguardian.com/technology/2018/feb/02/youtube-algorithm-election-clinton-trump-guillaume-chaslot) about Guillaume Chaslot, an ex-YouTube engineer who created AlgoTransparency, which tracks these issues. Chaslot published the chart in <ethics_yt_rt>, following the release of Robert Mueller's "Report on the Investigation Into Russian Interference in the 2016 Presidential Election."
 
-有一些迹象表明，YouTube的推荐系统发生了什么。*卫报*刊登了关于Guillaume Chaslot一篇名为["前YouTube内部人如何调查它的秘密算法"](https://www.theguardian.com/technology/2018/feb/02/youtube-algorithm-election-clinton-trump-guillaume-chaslot)，这名前YouTube工程师创建了人工智能透明化公司，用以追踪这些问题。罗伯特·穆勒发表了“对于俄罗斯干涉2016年总统大选的调查报告”，Chaslotd在<穆勒报告>中发布了图表。
+有一些迹象表明，YouTube的推荐系统发生了什么。*卫报*刊登了关于Guillaume Chaslot一篇名为["前YouTube内部人如何调查它的秘密算法"](https://www.theguardian.com/technology/2018/feb/02/youtube-algorithm-election-clinton-trump-guillaume-chaslot)，这名前YouTube工程师创建了人工智能透明化公司，用以追踪这些问题。罗伯特·穆勒发表了“对于俄罗斯干涉2016年总统大选的调查报告”，Chaslotd在<穆勒报告>中发布了图表。如下图所示。
 
 <div style="text-align:center">
   <p align="center">
