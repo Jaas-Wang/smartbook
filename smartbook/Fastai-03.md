@@ -324,3 +324,26 @@ While Meetup chose to avoid such an outcome, Facebook provides an example of all
 >
 > ：一旦用户加入一个阴谋思想团队[脸书]，他们的算法会发送其它很多的内容。加入一个反疫苗团队，然后你会看到包含反转基因、化学制品的手表、地球是平的（真是这样），和“癌症自愈团体”。不是把用户脱离困境，算法引擎而是把用户推的更远。
 
+It is extremely important to keep in mind that this kind of behavior can happen, and to either anticipate a feedback loop or take positive action to break it when you see the first signs of it in your own projects. Another thing to keep in mind is *bias*, which, as we discussed briefly in the previous chapter, can interact with feedback loops in very troublesome ways.
+
+记住这种行为能够发生非常重要，在你的项目中预料循环反馈或当你看到有类似迹象的第一时刻采取积极的行动去打破它。要记住的另一个事情是*偏见*，我们在之前的章节中已经讨论过，它会以非常麻烦的方式与循环反馈进行交互。
+
+### Bias
+
+### 偏见
+
+Discussions of bias online tend to get pretty confusing pretty fast. The word "bias" means so many different things. Statisticians often think when data ethicists are talking about bias that they're talking about the statistical definition of the term bias. But they're not. And they're certainly not talking about the biases that appear in the weights and biases which are the parameters of your model!
+
+在线偏见讨论趋于更混乱更快。“偏见”一词意味着很多不同的事情。统计学家经常认为当数据伦理谈论偏见时，他们正在谈的是一个偏移术语的统计定义。但是他们不是。确实不是讨论关于显示在你模型参数权重和偏移中的那些偏移！
+
+What they're talking about is the social science concept of bias. In ["A Framework for Understanding Unintended Consequences of Machine Learning"](https://arxiv.org/abs/1901.10002) MIT's Harini Suresh and John Guttag describe six types of bias in machine learning, summarized in <bias> from their paper.
+
+他们正在讨论的是社会科学偏见概念。在["一个理解非故意机器学习后果框架"](https://arxiv.org/abs/1901.10002)中，麻省理工大学的哈里尼·苏雷什和约翰·古塔格描述了机器学习中的六种偏见，下<偏见>总结图来自他们的论文。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/pipeline_diagram.svg" id="bias" caption="Bias in machine learning can come from multiple sources (courtesy of Harini Suresh and John V. Guttag)" alt="A diagram showing all sources where bias can appear in machine learning" width="500">
+  </p>
+  <p align="center">偏见</p>
+</div>
+
