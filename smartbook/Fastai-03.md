@@ -303,3 +303,14 @@ There are signs that this is exactly what has happened with YouTube's recommenda
 Russia Today's coverage of the Mueller report was an extreme outlier in terms of how many channels were recommending it. This suggests the possibility that Russia Today, a state-owned Russia media outlet, has been successful in gaming YouTube's recommendation algorithm. Unfortunately, the lack of transparency of systems like this makes it hard to uncover the kinds of problems that we're discussing.
 
 今日俄罗斯对穆勒报告的报道在推荐它的频道数量上是及其异常的。这表明今日俄罗斯这一俄罗斯国属新闻媒体在博弈YouTube的推荐系统方面已经取得成功。不幸的是，就想这样系统透明度的缺乏使得它很难揭露我们正在讨论这些问题。
+
+One of our reviewers for this book, Aurélien Géron, led YouTube's video classification team from 2013 to 2016 (well before the events discussed here). He pointed out that it's not just feedback loops involving humans that are a problem. There can also be feedback loops without humans! He told us about an example from YouTube:
+
+这本书的一个评论员奥雷利安·杰龙，他从2013年到2016年带领了YouTube的视频分类团队（这个事情以前发生的）。他指出，问题是它不仅仅涉及人的反馈循环。也有无人的反馈循环！他告诉了我们一个来自YouTube的例子：
+
+> : One important signal to classify the main topic of a video is the channel it comes from. For example, a video uploaded to a cooking channel is very likely to be a cooking video. But how do we know what topic a channel is about? Well… in part by looking at the topics of the videos it contains! Do you see the loop? For example, many videos have a description which indicates what camera was used to shoot the video. As a result, some of these videos might get classified as videos about “photography.” If a channel has such a misclassified video, it might be classified as a “photography” channel, making it even more likely for future videos on this channel to be wrongly classified as “photography.” This could even lead to runaway virus-like classifications! One way to break this feedback loop is to classify videos with and without the channel signal. Then when classifying the channels, you can only use the classes obtained without the channel signal. This way, the feedback loop is broken.
+>
+> ：对视频的主题进行分类的一个重要标志是它来自的频道。例如，上传到烹饪频道的视频非常可能是一个烹饪视频。但是我们怎么知道频道的主题是什么？很好...依据看到的视频主题包含的内容！你看到循环了吗？例如，很多视频有用的是是什么品牌的摄像机拍摄的这个视频的描述。作为结果，这些视频是的一些可能会分类为“摄影”的视频。如果一个频道有这样一个错误分类视频，它可能被分类为“摄影”频道，使得它更可能对未来上传到本频道的视频错误的分类为“摄影”。这甚至能导致病毒样本分类失控！打破这一反馈循环的方法是通过无频道表示进行视频分类。然后正在分类频道时，你只能看到获取无频道标识的分类。这样，反馈循环就被打破了。
+
+
+
