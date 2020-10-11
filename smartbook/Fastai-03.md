@@ -342,8 +342,11 @@ What they're talking about is the social science concept of bias. In ["A Framewo
 
 <div style="text-align:center">
   <p align="center">
-    <img src="./_v_images/pipeline_diagram.svg" id="bias" caption="Bias in machine learning can come from multiple sources (courtesy of Harini Suresh and John V. Guttag)" alt="A diagram showing all sources where bias can appear in machine learning" width="500">
+    <img src="./_v_images/pipeline_diagram.svg" id="bias" caption="Bias in machine learning can come from multiple sources (courtesy of Harini Suresh and John V. Guttag)" alt="A diagram showing all sources where bias can appear in machine learning" width="650">
   </p>
   <p align="center">偏见</p>
 </div>
 
+We'll discuss four of these types of bias, those that we've found most helpful in our own work (see the paper for details on the others).
+
+我们会讨论这些类型中的四个，我们认为这几个对我们的工作帮助最大（其它细节请看论文）。
