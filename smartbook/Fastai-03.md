@@ -299,3 +299,7 @@ There are signs that this is exactly what has happened with YouTube's recommenda
   </p>
   <p align="center">图：米勒报告</p>
 </div>
+
+Russia Today's coverage of the Mueller report was an extreme outlier in terms of how many channels were recommending it. This suggests the possibility that Russia Today, a state-owned Russia media outlet, has been successful in gaming YouTube's recommendation algorithm. Unfortunately, the lack of transparency of systems like this makes it hard to uncover the kinds of problems that we're discussing.
+
+今日俄罗斯对穆勒报告的报道在推荐它的频道数量上是及其异常的。这表明今日俄罗斯这一俄罗斯国属新闻媒体在博弈YouTube的推荐系统方面已经取得成功。不幸的是，就想这样系统透明度的缺乏使得它很难揭露我们正在讨论这些问题。
