@@ -316,3 +316,11 @@ There are positive examples of people and organizations attempting to combat the
 
 这里有一些人和组织尝试同这些问题战斗的例子。埃文·埃斯托拉带领机器学习工程师在聚会项目上，讨论男性表达出对于技术聚会比女性更有兴趣的[例子](https://www.youtube.com/watch?v=MqoRzNhrTnQ)。把性别做为考虑因素能够导致聚会算法推荐更少的技术聚会给女性，这就导致更少的女性找到和参加技术聚会，这就引发算法推荐更少的技术聚会给女性，以及诸如此的类自强化循环反馈。所以埃文和他的团队对于他们的推荐算法做出一个伦理决策，不去创建此类的循环反馈，明确不用性别做为他们模型的一部分。令人高兴的看到一个公司不仅仅只是欠考虑的去优化一个指标，而是去考虑它的影响。埃文说到，“你需要决定在你的算法中什么特征不能用...一个最优的算法可能不是在产品中所启用的最好的算法。”
 
+While Meetup chose to avoid such an outcome, Facebook provides an example of allowing a runaway feedback loop to run wild. Like YouTube, it tends to radicalize users interested in one conspiracy theory by introducing them to more. As Renee DiResta, a researcher on proliferation of disinformation, [writes](https://www.fastcompany.com/3059742/social-network-algorithms-are-distorting-reality-by-boosting-conspiracy-theories):
+
+当聚会公司选择避免这种结果的时候，脸书提供了一个允许失控循环反馈暴涨的例子。像YouTube一样，它倾向通过介绍更多人一种阴谋论以激发用户对它的兴趣。正如对虚假信息激增进行研究的研究员[蕾妮·迪瑞斯塔所写的](https://www.fastcompany.com/3059742/social-network-algorithms-are-distorting-reality-by-boosting-conspiracy-theories)：
+
+> : Once people join a single conspiracy-minded [Facebook] group, they are algorithmically routed to a plethora of others. Join an anti-vaccine group, and your suggestions will include anti-GMO, chemtrail watch, flat Earther (yes, really), and "curing cancer naturally groups. Rather than pulling a user out of the rabbit hole, the recommendation engine pushes them further in."
+>
+> ：一旦用户加入一个阴谋思想团队[脸书]，他们的算法会发送其它很多的内容。加入一个反疫苗团队，然后你会看到包含反转基因、化学制品的手表、地球是平的（真是这样），和“癌症自愈团体”。不是把用户脱离困境，算法引擎而是把用户推的更远。
+
