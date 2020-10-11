@@ -359,3 +359,27 @@ We'll discuss four of these types of bias, those that we've found most helpful i
 
 历史上的偏见来自人们是偏见的、过程是偏见的、社会也是偏见的这些因素。苏雷什和古塔格说：“对于数据生成过程的第一步历史偏见是一个基础的框架性问题，即使给出完美的样本和特征选择也能够存在”
 
+For instance, here are a few examples of historical *race bias* in the US, from the *New York Times* article ["Racial Bias, Even When We Have Good Intentions"](https://www.nytimes.com/2015/01/04/upshot/the-measuring-sticks-of-racial-bias-.html) by the University of Chicago's Sendhil Mullainathan:
+
+例如，这里有几个历史上美国*种族偏见*的例子，来自*纽约时报*由芝加哥大学森提尔·穆兰纳森发表的题为["种族偏见，及时当我们有好的意图的时候"](https://www.nytimes.com/2015/01/04/upshot/the-measuring-sticks-of-racial-bias-.html)的文章：
+
+- When doctors were shown identical files, they were much less likely to recommend cardiac catheterization (a helpful procedure) to Black patients.
+- When bargaining for a used car, Black people were offered initial prices $700 higher and received far smaller concessions.
+- Responding to apartment rental ads on Craigslist with a Black name elicited fewer responses than with a white name.
+- An all-white jury was 16 percentage points more likely to convict a Black defendant than a white one, but when a jury had one Black member it convicted both at the same rate.
+- 当医生看到相同的档案，他们更不太可能给黑人推荐心脏插管术。
+- 对一个二手车谈协议时，黑人会得到高于700美元的出价，并获得很小的让步。
+- 在克雷格列表网站上有内容名字的公寓出租广告答复要远少于白人名字的答复。
+- 一个全是白人的陪审团更有可能判黑人被告有罪，比白人被告高出16%，但是当陪审团中有一个黑人成员那它的有罪审判比率是相同的。
+
+The COMPAS algorithm, widely used for sentencing and bail decisions in the US, is an example of an important algorithm that, when tested by [ProPublica](https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing), showed clear racial bias in practice (<bail_algorithm>).
+
+在美国广泛用于审判和保释决策的COMPAS算法是一个很重要的算法例子，当[ProPublica](https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing)测试这一算法时发现它在实践中有明显的种族偏见(下图<COMPAS算法结果>)
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image6.png" id="bail_algorithm" caption="Results of the COMPAS algorithm" alt="Table showing the COMPAS algorithm is more likely to give bail to white people, even if they re-offend more" width="600">
+  </p>
+  <p align="center">COMPAS算法结果</p>
+</div>
+
