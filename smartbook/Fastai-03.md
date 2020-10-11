@@ -350,3 +350,12 @@ What they're talking about is the social science concept of bias. In ["A Framewo
 We'll discuss four of these types of bias, those that we've found most helpful in our own work (see the paper for details on the others).
 
 我们会讨论这些类型中的四个，我们认为这几个对我们的工作帮助最大（其它细节请看论文）。
+
+#### Historical bias
+
+#### 历史上的偏见
+
+*Historical bias* comes from the fact that people are biased, processes are biased, and society is biased. Suresh and Guttag say: "Historical bias is a fundamental, structural issue with the first step of the data generation process and can exist even given perfect sampling and feature selection."
+
+历史上的偏见来自人们是偏见的、过程是偏见的、社会也是偏见的这些因素。苏雷什和古塔格说：“对于数据生成过程的第一步历史偏见是一个基础的框架性问题，即使给出完美的样本和特征选择也能够存在”
+
