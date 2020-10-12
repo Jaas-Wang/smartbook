@@ -383,3 +383,14 @@ The COMPAS algorithm, widely used for sentencing and bail decisions in the US, i
   <p align="center">COMPAS算法结果</p>
 </div>
 
+Any dataset involving humans can have this kind of bias: medical data, sales data, housing data, political data, and so on. Because underlying bias is so pervasive, bias in datasets is very pervasive. Racial bias even turns up in computer vision, as shown in the example of autocategorized photos shared on Twitter by a Google Photos user shown in <<google_photos>>.
+
+任何涉及到人的数据集都能有这种偏见：医学数据、销售数据、住宅数据、政治数据等等。因为偏见是如此广泛，在数据集中的偏见也是非常广泛。种族偏见甚至发生在计算机视觉中，推特上分享了一个谷歌照片用户在照片自动分类的例子中显示分类错误有点离谱，如下图<谷歌离谱的错误标注>。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image7.png" id="google_photos" caption="One of these labels is very wrong..." alt="Screenshot of the use of Google photos labeling a black user and her friend as gorillas" width="450">
+  </p>
+  <p align="center">谷歌离谱的错误标注</p>
+</div>
+
