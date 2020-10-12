@@ -394,3 +394,17 @@ Any dataset involving humans can have this kind of bias: medical data, sales dat
   <p align="center">谷歌离谱的错误标注</p>
 </div>
 
+Yes, that is showing what you think it is: Google Photos classified a Black user's photo with their friend as "gorillas"! This algorithmic misstep got a lot of attention in the media. “We’re appalled and genuinely sorry that this happened,” a company spokeswoman said. “There is still clearly a lot of work to do with automatic image labeling, and we’re looking at how we can prevent these types of mistakes from happening in the future.”
+
+是的，它展示了你认为它是什么：谷歌照片一个黑人用户及他们的朋友分类为“猩猩”！这个算法错误在媒体上获得了广泛关注。“发生这样的事情我们是惊骇的并诚挚道歉，”一个公司发言人说到。“很显然对于自动图像标注还有很多工作要做，我们正在寻找能够如何阻止今后此类错误的发生。”
+
+Unfortunately, fixing problems in machine learning systems when the input data has problems is hard. Google's first attempt didn't inspire confidence, as coverage by *The Guardian* suggested (<<gorilla-ban>>).
+
+不幸的是，当输入数据有问题时，机器学习系统修复这些问题是很困难的。谷歌的首次尝试并没有激发人的信息，*卫报*的新闻报道如下图(<谷歌对问题的初次尝试>)
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image8.png" id="gorilla-ban" caption="Google's first response to the problem" alt="Pictures of a headlines from the Guardian, showing Google removed gorillas and other moneys from the possible labels of its algorithm" width="500">
+  </p>
+  <p align="center">谷歌对问题的初次尝试</p>
+</div>
