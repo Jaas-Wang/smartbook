@@ -438,3 +438,15 @@ Part of the issue appears to be a systematic imbalance in the makeup of popular 
   </p>
   <p align="center">流行训练集图像来源</p>
 </div>
+
+The vast majority of the images are from the United States and other Western countries, leading to models trained on ImageNet performing worse on scenes from other countries and cultures. For instance, research found that such models are worse at identifying household items (such as soap, spices, sofas, or beds) from lower-income countries. <<object_detect>> shows an image from the paper, ["Does Object Recognition Work for Everyone?"](https://arxiv.org/pdf/1906.02659.pdf) by Terrance DeVries et al. of Facebook AI Research that illustrates this point.
+
+图像主要来自美国和其它西方国家，导致在ImageNet上训练的模型对于来自其它国家和文化的当地物品表现很糟糕。例如，研究发现这些模型在识别来自低收入国家家用物品（如肥皂、调料、沙发或床）方面很糟糕。由脸书人工智能研究院泰伦斯·德弗里斯等人编写的["对每个人目标识别做了什么工作？"](https://arxiv.org/pdf/1906.02659.pdf)论文插图说明了这一点，下图<目标识别>展示的内容来自这一论文。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image17.png" id="object_detect" caption="Object detection in action" alt="Figure showing an object detection algorithm performing better on western products" width=500 >
+  </p>
+  <p align="center">目标识别</p>
+</div>
+
