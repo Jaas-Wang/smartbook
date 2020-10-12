@@ -427,3 +427,14 @@ IBM's system, for instance, had a 34.7% error rate for darker females, versus 0.
 One of the MIT researchers, Joy Buolamwini, warned: "We have entered the age of automation overconfident yet underprepared. If we fail to make ethical and inclusive artificial intelligence, we risk losing gains made in civil rights and gender equity under the guise of machine neutrality."
 
 一名麻省理工大学研究员乔·布兰维尼警告道：“我们已经进入了还没有准备好的过度自信自动化时代。如果我们未能建立伦理和不排斥人工智能，我们在机器中立的伪装之下会面临损失在人权和性别平衡方面所产生的收益的风险”
+
+Part of the issue appears to be a systematic imbalance in the makeup of popular datasets used for training models. The abstract to the paper ["No Classification Without Representation: Assessing Geodiversity Issues in Open Data Sets for the Developing World"](https://arxiv.org/abs/1711.08536) by Shreya Shankar et al. states, "We analyze two large, publicly available image data sets to assess geo-diversity and find that these data sets appear to exhibit an observable amerocentric and eurocentric representation bias. Further, we analyze classifiers trained on these data sets to assess the impact of these training distributions and find strong differences in the relative performance on images from different locales." <<image_provenance>> shows one of the charts from the paper, showing the geographic makeup of what was, at the time (and still are, as this book is being written) the two most important image datasets for training models.
+
+部分问题显示出了在对用于模型训练的流行数据集的制作上是一个系统性的不平衡。在由什里娅·香卡等人编写的论文["无代表无分类：对于发展中国家评估开放数据集上的地理多样性问题"](https://arxiv.org/abs/1711.08536)摘要中描述，“我们分析了两个大型的公开获得的图像数据集以评估地理多样性，发现这些数据集显示了可观察到的大气中心和欧洲中心为代表的偏差。进而，我们分析了在这些数据集上训练的分类器以评估这些训练分布的影响，发现在不同地区在图片相关表现有巨大的差异。”论文中的一个插图<流行训练集图像来源>显示了地理构成是什么样子，在那时（在本书编写时还一直这个样子）两最重要的图像数据集用于训练模型。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image10.png" id="image_provenance" caption="Image provenance in popular training sets" alt="Graphs showing how the vast majority of images in popular training datasets come from the US or Western Europe" width="800">
+  </p>
+  <p align="center">流行训练集图像来源</p>
+</div>
