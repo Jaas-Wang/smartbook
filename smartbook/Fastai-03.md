@@ -408,3 +408,19 @@ Unfortunately, fixing problems in machine learning systems when the input data h
   </p>
   <p align="center">谷歌对问题的初次尝试</p>
 </div>
+
+These kinds of problems are certainly not limited to just Google. MIT researchers studied the most popular online computer vision APIs to see how accurate they were. But they didn't just calculate a single accuracy number—instead, they looked at the accuracy across four different groups, as illustrated in <<face_recognition>>.
+
+这些类型的错误不仅仅局限于谷歌。麻省理工大学研究人员对大多数主流在线计算机视觉应用程序接口进行了研究，去看他们的精度如何。但是他们没有计算单一的精度数值，而是通过四个不同的团队看了这个精度，正如下图<各种人脸识别系统对每一性别和种族的错误率>如示。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image9.jpeg" id="face_recognition" caption="Error rate per gender and race for various facial recognition systems" alt="Table showing how various facial recognition systems perform way worse on darker shades of skin and females" width="600">
+  </p>
+  <p align="center">各种人脸识别系统对每一性别和种族的错误率</p>
+</div>
+
+IBM's system, for instance, had a 34.7% error rate for darker females, versus 0.3% for lighter males—over 100 times more errors! Some people incorrectly reacted to these experiments by claiming that the difference was simply because darker skin is harder for computers to recognize. However, what actually happened was that, after the negative publicity that this result created, all of the companies in question dramatically improved their models for darker skin, such that one year later they were nearly as good as for lighter skin. So what this actually showed is that the developers failed to utilize datasets containing enough darker faces, or test their product with darker faces.
+
+例如，IBM的系统对深肤色女性的错误率在34.7%，相对比浅肤色男性只有0.3%，错误对比超过了100多倍！很多人对这些实验有不正确的反应，只是简单的认为这种差异是因为深肤色对于计算机来说更难识别。然而，实际上发生了什么呢，在负面的公共媒体结果生成后，所有的这一问题的公司的模型对深色肤色有了戏剧化的改进，因此一年后他们几乎和浅肤色一样好了。所以这实际上反应的是开发者未能利用包含了足够深肤色面部的数据集，或者用深肤色面部对测试了他们的产品。
+
