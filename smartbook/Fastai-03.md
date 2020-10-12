@@ -424,3 +424,6 @@ IBM's system, for instance, had a 34.7% error rate for darker females, versus 0.
 
 例如，IBM的系统对深肤色女性的错误率在34.7%，相对比浅肤色男性只有0.3%，错误对比超过了100多倍！很多人对这些实验有不正确的反应，只是简单的认为这种差异是因为深肤色对于计算机来说更难识别。然而，实际上发生了什么呢，在负面的公共媒体结果生成后，所有的这一问题的公司的模型对深色肤色有了戏剧化的改进，因此一年后他们几乎和浅肤色一样好了。所以这实际上反应的是开发者未能利用包含了足够深肤色面部的数据集，或者用深肤色面部对测试了他们的产品。
 
+One of the MIT researchers, Joy Buolamwini, warned: "We have entered the age of automation overconfident yet underprepared. If we fail to make ethical and inclusive artificial intelligence, we risk losing gains made in civil rights and gender equity under the guise of machine neutrality."
+
+一名麻省理工大学研究员乔·布兰维尼警告道：“我们已经进入了还没有准备好的过度自信自动化时代。如果我们未能建立伦理和不排斥人工智能，我们在机器中立的伪装之下会面临损失在人权和性别平衡方面所产生的收益的风险”
