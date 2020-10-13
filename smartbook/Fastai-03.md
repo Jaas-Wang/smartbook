@@ -493,3 +493,12 @@ In the paper ["Does Machine Learning Automate Moral Hazard and Error"](https://s
 - 良性乳房肿瘤
 - 结肠镜
 -  鼻窦炎
+
+However, only the top two have anything to do with a stroke! Based on what we've studied so far, you can probably guess why. We haven’t really measured *stroke*, which occurs when a region of the brain is denied oxygen due to an interruption in the blood supply. What we’ve measured is who had symptoms, went to a doctor, got the appropriate tests, *and* received a diagnosis of stroke. Actually having a stroke is not the only thing correlated with this complete list—it's also correlated with being the kind of person who actually goes to the doctor (which is influenced by who has access to healthcare, can afford their co-pay, doesn't experience racial or gender-based medical discrimination, and more)! If you are likely to go to the doctor for an *accidental injury*, then you are likely to also go the doctor when you are having a stroke.
+
+然而，只有头两个会引发中风！基于迄今为止我们的研究内容，我们大概能够猜出原因。我们没有真正的计量*中风*，当大脑的一个区域由于中止血液供应无法获得氧气就会发生中风。我们计量的是有了相关症状，去看医生，进行合适的检查并收到中风诊断。事实上患有中风不仅仅不是关联这一全部列表的唯一事情，它也关联实际上去看医生的那类人（影响谁获得理疗保健，能影响他们的共同支付，没有种族和基于性别的医疗歧视经历，等等）！如果因为一次*意外伤害*你可能去看医生，然后当你有中风的时候你也可能去看医生。
+
+This is an example of *measurement bias*. It occurs when our models make mistakes because we are measuring the wrong thing, or measuring it in the wrong way, or incorporating that measurement into the model inappropriately.
+
+这是一个*计量偏见*的例子。当我们的模型生发差错时它会发生，因为我们计量了错误的事情，或用了错误的方式计量它，或计量不合适的纳入了模型。
+
