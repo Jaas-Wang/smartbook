@@ -450,3 +450,22 @@ The vast majority of the images are from the United States and other Western cou
   <p align="center">目标识别</p>
 </div>
 
+In this example, we can see that the lower-income soap example is a very long way away from being accurate, with every commercial image recognition service predicting "food" as the most likely answer!
+
+在这个例子里，我们能够看到低收入肥皂的精度差距很大，每一个商业图像识别服务把“食品”作为最有可能的答案！
+
+As we will discuss shortly, in addition, the vast majority of AI researchers and developers are young white men. Most projects that we have seen do most user testing using friends and families of the immediate product development group. Given this, the kinds of problems we just discussed should not be surprising.
+
+此外，我们将会简短的讨论一下，绝大多数人工智能研究人员和开发人员是年青的白人男性。绝大多数我们看到的项目做的用户测试是利用的即使开发小组的朋友和家人成员。因此，我们刚刚讨论的这些类型错误就不应该感到惊讶了。
+
+Similar historical bias is found in the texts used as data for natural language processing models. This crops up in downstream machine learning tasks in many ways. For instance, it [was widely reported](https://nypost.com/2017/11/30/google-translates-algorithm-has-a-gender-bias/) that until last year Google Translate showed systematic bias in how it translated the Turkish gender-neutral pronoun "o" into English: when applied to jobs which are often associated with males it used "he," and when applied to jobs which are often associated with females it used "she" (<<turkish_gender>>).
+
+类似的历史偏见也在用于自然语言处理模型的文本数据里发现了。以多种方式出现在了机器学习下流任务里。例如，一个广为报道的事例，直到去年谷歌翻译在翻译土耳其的中性性别代词“o”为英文时出现了系统偏见：当应用的工作经常与男性关联时它会用“他”，当经常与女性关联的工作时它会用“她”。如下图<在文本数据集里的性别偏见>
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image11.png" id="turkish_gender" caption="Gender bias in text data sets" alt="Figure showing gender bias in data sets used to train language models showing up in translations" width="600" >
+  </p>
+  <p align="center">在文本数据集里的性别偏见</p>
+</div>
+
