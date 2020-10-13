@@ -472,3 +472,24 @@ Similar historical bias is found in the texts used as data for natural language 
 We also see this kind of bias in online advertisements. For instance, a [study](https://arxiv.org/abs/1904.02095) in 2019 by Muhammad Ali et al. found that even when the person placing the ad does not intentionally discriminate, Facebook will show ads to very different audiences based on race and gender. Housing ads with the same text, but picture either a white or a Black family, were shown to racially different audiences.
 
 在线广告上我们也看到这类偏见。例如，在2019年由默罕默德·阿里等人开展的一项研究发现，即使在人们放置广告时并无有意识的歧视，脸书基于种族和性别把广告展示给非常不同的受众。具有相同文字的但是白人或黑人家庭照片的房产广告会展示给不同种族的受众。
+
+#### Measurement bias
+
+#### 计量偏见
+
+In the paper ["Does Machine Learning Automate Moral Hazard and Error"](https://scholar.harvard.edu/files/sendhil/files/aer.p20171084.pdf) in *American Economic Review*, Sendhil Mullainathan and Ziad Obermeyer look at a model that tries to answer the question: using historical electronic health record (EHR) data, what factors are most predictive of stroke? These are the top predictors from the model:
+
+在*美国经济观察*上的文章["机器学习会自动化道德危机和错误吗"](https://scholar.harvard.edu/files/sendhil/files/aer.p20171084.pdf) ，森提尔·穆兰纳森和齐亚德·奥伯迈耶查看一个模型尝试回答一个问题：利用历史电子健康记录（EHR）数据什么因素最能预测中风？这里有来自模型的顶级预测因素：
+
+- Prior stroke
+- Cardiovascular disease
+- Accidental injury
+- Benign breast lump
+- Colonoscopy
+- Sinusitis
+- 之前中风
+- 心血管疾病
+- 事故伤害
+- 良性乳房肿瘤
+- 结肠镜
+-  鼻窦炎
