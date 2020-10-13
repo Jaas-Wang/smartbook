@@ -469,3 +469,6 @@ Similar historical bias is found in the texts used as data for natural language 
   <p align="center">在文本数据集里的性别偏见</p>
 </div>
 
+We also see this kind of bias in online advertisements. For instance, a [study](https://arxiv.org/abs/1904.02095) in 2019 by Muhammad Ali et al. found that even when the person placing the ad does not intentionally discriminate, Facebook will show ads to very different audiences based on race and gender. Housing ads with the same text, but picture either a white or a Black family, were shown to racially different audiences.
+
+在线广告上我们也看到这类偏见。例如，在2019年由默罕默德·阿里等人开展的一项研究发现，即使在人们放置广告时并无有意识的歧视，脸书基于种族和性别把广告展示给非常不同的受众。具有相同文字的但是白人或黑人家庭照片的房产广告会展示给不同种族的受众。
