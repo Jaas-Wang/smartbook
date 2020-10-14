@@ -21,6 +21,6 @@
 
 ## 目录
 
-[第一章 深度学习简介 pdf](./Fastai-01.pdf)   [（中英文翻译对比：Fastai-01.md）](./smartbook/Fastai-01.md)  [（英文原书：01_intro.ipynb）](./englishbook/01_intro.ipynb)
+[中英文翻译对比：Fastai-01.md](./smartbook/Fastai-01.md)  [（英文原书：01_intro.ipynb）](./englishbook/01_intro.ipynb)
 
  
