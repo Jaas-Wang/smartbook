@@ -502,3 +502,10 @@ This is an example of *measurement bias*. It occurs when our models make mistake
 
 这是一个*计量偏见*的例子。当我们的模型生发差错时它会发生，因为我们计量了错误的事情，或用了错误的方式计量它，或计量不合适的纳入了模型。
 
+#### Aggregation bias
+
+#### 聚集偏见
+
+*Aggregation bias* occurs when models do not aggregate data in a way that incorporates all of the appropriate factors, or when a model does not include the necessary interaction terms, nonlinearities, or so forth. This can particularly occur in medical settings. For instance, the way diabetes is treated is often based on simple univariate statistics and studies involving small groups of heterogeneous people. Analysis of results is often done in a way that does not take account of different ethnicities or genders. However, it turns out that diabetes patients have [different complications across ethnicities](https://www.ncbi.nlm.nih.gov/pubmed/24037313), and HbA1c levels (widely used to diagnose and monitor diabetes) [differ in complex ways across ethnicities and genders](https://www.ncbi.nlm.nih.gov/pubmed/22238408). This can result in people being misdiagnosed or incorrectly treated because medical decisions are based on a model that does not include these important variables and interactions.
+
+当模型采纳所有恰当的因素在某种程度上没有集料数据时，或当一个模型未包含必要的交互项、非线性等诸如此类情况的时候就会发生*聚集偏见*。这特别会发生在医疗环境中。例如，糖尿病的治疗通常基于简单的相关混合小团体人群的单一变量统计和研究。某种意义上来说分析结果的完成通常不会考虑区分种族和性别，然而，事实证明糖尿病患者[不同的种族会有不同的并发症](https://www.ncbi.nlm.nih.gov/pubmed/24037313)，并且糖化血红蛋白水平（广泛用于诊断和监控糖尿病）[在不同的种族和性别间存在复杂的差异](https://www.ncbi.nlm.nih.gov/pubmed/22238408)。基于一个没有包含重要变量和交互项的模型进行医疗判断，这导致的结果是对病人会误诊或不正确的治疗。
