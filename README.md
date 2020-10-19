@@ -21,8 +21,8 @@
 
 ## 目录
 
-[第一章 概述     中英文翻译对比：Fastai-01.md](./smartbook/Fastai-01.md)  [（英文原书：01_intro.ipynb）](./englishbook/01_intro.ipynb)
+[第一章 概述------中英文翻译对比：Fastai-01.md](./smartbook/Fastai-01.md)  [（英文原书：01_intro.ipynb）](./englishbook/01_intro.ipynb)
 
-[第三章 数据伦理  中英文翻译对比：Fastai-03.md](./smartbook/Fastai-03.md)
+[第三章 数据伦理---中英文翻译对比：Fastai-03.md](./smartbook/Fastai-03.md)
 
  
