@@ -518,3 +518,13 @@ The abstract of the paper ["Bias in Bios: A Case Study of Semantic Representatio
 
 玛丽亚·德·阿尔泰加等人编写的论文["生物偏见：在高风险环境中语意表示偏见的一个实证研究"](https://arxiv.org/abs/1901.09451)摘要中提到职业方面的性别不平等（例如，女性更可能成为护士，而男性更可能做牧师），并认为：“性别间真正的确定比率差异与在职业中现存的性别不平等是有关联的，可能会加剧这些不平等。”
 
+In other words, the researchers noticed that models predicting occupation did not only *reflect* the actual gender imbalance in the underlying population, but actually *amplified* it! This type of *representation bias* is quite common, particularly for simple models. When there is some clear, easy-to-see underlying relationship, a simple model will often simply assume that this relationship holds all the time. As <<representation_bias>> from the paper shows, for occupations that had a higher percentage of females, the model tended to overestimate the prevalence of that occupation.
+
+另一方面，研究人员注意到，模型预测职业不仅仅*反映*了基于人口的真实性别不平等，实际上而是*放大*了它！这类*表示性偏见*非常普遍，尤其对于简单的模型。当有一些清晰的、显而易见的基础关系，一个简单的模型通常会假设所有的情况下都会保持这些关系。正如论文中显示的<表示性偏见>图，对于女性占比很高的职业，模型倾向高估职业的流行性。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image12.png" id="representation_bias" caption="Model error in predicting occupation plotted against percentage of women in said occupation" alt="Graph showing how model predictions overamplify existing bias" width="500">
+  </p>
+  <p align="center">表示性偏见</p>
+</div>
