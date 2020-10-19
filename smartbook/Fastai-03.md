@@ -516,7 +516,7 @@ This is an example of *measurement bias*. It occurs when our models make mistake
 
 The abstract of the paper ["Bias in Bios: A Case Study of Semantic Representation Bias in a High-Stakes Setting"](https://arxiv.org/abs/1901.09451) by Maria De-Arteaga et al. notes that there is gender imbalance in occupations (e.g., females are more likely to be nurses, and males are more likely to be pastors), and says that: "differences in true positive rates between genders are correlated with existing gender imbalances in occupations, which may compound these imbalances."
 
-玛丽亚·德·阿尔泰加等人编写的论文["生物偏见：在高风险环境中语意表示偏见的一个实证研究"](https://arxiv.org/abs/1901.09451)摘要中提到职业方面的性别不平等（例如，女性更可能成为护士，而男性更可能做牧师），并认为：“性别间真正的确定比率差异与在职业中现存的性别不平等是有关联的，可能会加剧这些不平等。”
+玛丽亚·德·阿尔泰加等人编写的论文["生物偏见：在高风险环境中语意表示偏见的一个实证研究"](https://arxiv.org/abs/1901.09451)摘要中提到职业方面的性别不平等（例如，女性更可能成为护士，而男性更可能做牧师），并认为：“真正确定的性别间比率差异与在职业中现存的性别不平等是有关联的，可能会加剧这些不平等。”
 
 In other words, the researchers noticed that models predicting occupation did not only *reflect* the actual gender imbalance in the underlying population, but actually *amplified* it! This type of *representation bias* is quite common, particularly for simple models. When there is some clear, easy-to-see underlying relationship, a simple model will often simply assume that this relationship holds all the time. As <<representation_bias>> from the paper shows, for occupations that had a higher percentage of females, the model tended to overestimate the prevalence of that occupation.
 
@@ -529,3 +529,10 @@ In other words, the researchers noticed that models predicting occupation did no
   <p align="center">表示性偏见</p>
 </div>
 
+For example, in the training dataset 14.6% of surgeons were women, yet in the model predictions only 11.6% of the true positives were women. The model is thus amplifying the bias existing in the training set.
+
+例如，在训练集中外科女性医生有14.6%，而在模型预测中只有11.6%是真实确定是女性。因而模型放大了现在于训练集中的偏见。
+
+Now that we've seen that those biases exist, what can we do to mitigate them?
+
+现在，我们已经看了那些存在的偏见，那我们能做什么来缓解它们呢？
