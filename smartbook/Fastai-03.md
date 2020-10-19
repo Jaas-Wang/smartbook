@@ -504,8 +504,17 @@ This is an example of *measurement bias*. It occurs when our models make mistake
 
 #### Aggregation bias
 
-#### 聚集偏见
+#### 聚集性偏见
 
 *Aggregation bias* occurs when models do not aggregate data in a way that incorporates all of the appropriate factors, or when a model does not include the necessary interaction terms, nonlinearities, or so forth. This can particularly occur in medical settings. For instance, the way diabetes is treated is often based on simple univariate statistics and studies involving small groups of heterogeneous people. Analysis of results is often done in a way that does not take account of different ethnicities or genders. However, it turns out that diabetes patients have [different complications across ethnicities](https://www.ncbi.nlm.nih.gov/pubmed/24037313), and HbA1c levels (widely used to diagnose and monitor diabetes) [differ in complex ways across ethnicities and genders](https://www.ncbi.nlm.nih.gov/pubmed/22238408). This can result in people being misdiagnosed or incorrectly treated because medical decisions are based on a model that does not include these important variables and interactions.
 
 当模型采纳所有恰当的因素在某种程度上没有集料数据时，或当一个模型未包含必要的交互项、非线性等诸如此类情况的时候就会发生*聚集偏见*。这特别会发生在医疗环境中。例如，糖尿病的治疗通常基于简单的相关混合小团体人群的单一变量统计和研究。某种意义上来说分析结果的完成通常不会考虑区分种族和性别，然而，事实证明糖尿病患者[不同的种族会有不同的并发症](https://www.ncbi.nlm.nih.gov/pubmed/24037313)，并且糖化血红蛋白水平（广泛用于诊断和监控糖尿病）[在不同的种族和性别间存在复杂的差异](https://www.ncbi.nlm.nih.gov/pubmed/22238408)。基于一个没有包含重要变量和交互项的模型进行医疗判断，这导致的结果是对病人会误诊或不正确的治疗。
+
+#### Representation bias
+
+#### 表示性偏见
+
+The abstract of the paper ["Bias in Bios: A Case Study of Semantic Representation Bias in a High-Stakes Setting"](https://arxiv.org/abs/1901.09451) by Maria De-Arteaga et al. notes that there is gender imbalance in occupations (e.g., females are more likely to be nurses, and males are more likely to be pastors), and says that: "differences in true positive rates between genders are correlated with existing gender imbalances in occupations, which may compound these imbalances."
+
+玛丽亚·德·阿尔泰加等人编写的论文["生物偏见：在高风险环境中语意表示偏见的一个实证研究"](https://arxiv.org/abs/1901.09451)摘要中提到职业方面的性别不平等（例如，女性更可能成为护士，而男性更可能做牧师），并认为：“性别间真正的确定比率差异与在职业中现存的性别不平等是有关联的，可能会加剧这些不平等。”
+
