@@ -536,3 +536,11 @@ For example, in the training dataset 14.6% of surgeons were women, yet in the mo
 Now that we've seen that those biases exist, what can we do to mitigate them?
 
 现在，我们已经看了那些存在的偏见，那我们能做什么来缓解它们呢？
+
+### Addressing different types of bias
+
+### 处理不同类型的偏见
+
+Different types of bias require different approaches for mitigation. While gathering a more diverse dataset can address representation bias, this would not help with historical bias or measurement bias. All datasets contain bias. There is no such thing as a completely debiased dataset. Many researchers in the field have been converging on a set of proposals to enable better documentation of the decisions, context, and specifics about how and why a particular dataset was created, what scenarios it is appropriate to use in, and what the limitations are. This way, those using a particular dataset will not be caught off guard by its biases and limitations.
+
+不同类型的偏见需要用不同方法来缓解。在收集更多多样化的数据集的时候能够处理表示性偏见，这不会对历史偏见和计量偏见有帮助。所有的数据集都包含偏见。这并不是说这是一个完全低质量的数据集。在这一领域的很多研究人员已经汇聚在一起提出一系列建议，以更好的记录关于怎样和为什么一个特定数据集被建立的决策、背影和细节，什么样的场景适合采纳，限制的是什么。用这种方法，那些使用这一特点数据集的人就不会被数据集的偏见和限制搞的措手不及。
