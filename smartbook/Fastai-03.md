@@ -557,3 +557,17 @@ We often hear the question—"Humans are biased, so does algorithmic bias even m
 - 机器学习能够放大偏见：人类偏见能导致更大数据的机器学习偏见。
 - 算法和人类用法不同：在实践中人类决策者和算法决策者并不是使用即插即用的交互方法。
 - 技术就是力量：并且随之而来的是责任。
+
+As the Arkansas healthcare example showed, machine learning is often implemented in practice not because it leads to better outcomes, but because it is cheaper and more efficient. Cathy O'Neill, in her book *Weapons of Math Destruction* (Crown), described the pattern of how the privileged are processed by people, whereas the poor are processed by algorithms. This is just one of a number of ways that algorithms are used differently than human decision makers. Others include:
+
+正如阿肯色州医疗保健事例，机器学习经常在实践中被实施，不是因为它会有更好的结果，而是因为它更便宜及更有效率。在凯茜·奥尼尔的书中*数学破坏性武器*（皇冠出版）描述了特权是怎样通过人处理，而穷人是通过算法处理的模式。这只是许多算法使用不同与人类决策者的方法中的一种。其它还包括：
+
+- People are more likely to assume algorithms are objective or error-free (even if they’re given the option of a human override).
+- Algorithms are more likely to be implemented with no appeals process in place.
+- Algorithms are often used at scale.
+- Algorithmic systems are cheap.
+- 人类更可能假设算法是公平或无错误的（即使他们给出的是人类控制的选择）。
+- 算法更可能被实施在无吸引力过程的地方。
+- 算法通常会被大规模使用。
+- 算法系统是廉价的。
+
