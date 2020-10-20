@@ -571,3 +571,6 @@ As the Arkansas healthcare example showed, machine learning is often implemented
 - 算法通常会被大规模使用。
 - 算法系统是廉价的。
 
+Even in the absence of bias, algorithms (and deep learning especially, since it is such an effective and scalable algorithm) can lead to negative societal problems, such as when used for *disinformation*.
+
+即使不存在偏见，算法（尤其是深度学习，因为它是一个如此有效率和可扩展的算法）能够导致负面的社会问题，如果当使用人为假消息的时候。
