@@ -544,3 +544,16 @@ Now that we've seen that those biases exist, what can we do to mitigate them?
 Different types of bias require different approaches for mitigation. While gathering a more diverse dataset can address representation bias, this would not help with historical bias or measurement bias. All datasets contain bias. There is no such thing as a completely debiased dataset. Many researchers in the field have been converging on a set of proposals to enable better documentation of the decisions, context, and specifics about how and why a particular dataset was created, what scenarios it is appropriate to use in, and what the limitations are. This way, those using a particular dataset will not be caught off guard by its biases and limitations.
 
 不同类型的偏见需要用不同方法来缓解。在收集更多多样化的数据集的时候能够处理表示性偏见，这不会对历史偏见和计量偏见有帮助。所有的数据集都包含偏见。这并不是说这是一个完全低质量的数据集。在这一领域的很多研究人员已经汇聚在一起提出一系列建议，以更好的记录关于怎样和为什么一个特定数据集被建立的决策、背影和细节，什么样的场景适合采纳，限制的是什么。用这种方法，那些使用这一特点数据集的人就不会被数据集的偏见和限制搞的措手不及。
+
+We often hear the question—"Humans are biased, so does algorithmic bias even matter?" This comes up so often, there must be some reasoning that makes sense to the people that ask it, but it doesn't seem very logically sound to us! Independently of whether this is logically sound, it's important to realize that algorithms (particularly machine learning algorithms!) and people are different. Consider these points about machine learning algorithms:
+
+我们经常会听到这个问题—“人类有偏见，那么算法有偏见算个事吗？” 这如此常见，一定有一些说的通的原因以导致人们问这个问题，但它对我们来说并没有听起来那么符合逻辑！是否符合逻辑这外，认识到算法（特指机器学习算法）和人类有差异是很重要的。思考这些关于机器学习算法的点：
+
+- *Machine learning can create feedback loops*:: Small amounts of bias can rapidly increase exponentially due to feedback loops.
+- *Machine learning can amplify bias*:: Human bias can lead to larger amounts of machine learning bias.
+- *Algorithms & humans are used differently*:: Human decision makers and algorithmic decision makers are not used in a plug-and-play interchangeable way in practice.
+- *Technology is power*:: And with that comes responsibility.
+- 机器学习能够创建反馈循环：由于反馈循环少量的偏见能呈几何倍数增长。
+- 机器学习能够放大偏见：人类偏见能导致更大数据的机器学习偏见。
+- 算法和人类用法不同：在实践中人类决策者和算法决策者并不是使用即插即用的交互方法。
+- 技术就是力量：并且随之而来的是责任。
