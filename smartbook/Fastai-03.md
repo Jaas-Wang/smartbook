@@ -614,3 +614,7 @@ One proposed approach is to develop some form of digital signature, to implement
 
 一个建议方法是开发一些数字签名形式，以一种连续的方法去实施它，并创建一个我们应该只相信那些被验证过的内容基准。艾伦人工智能研究院负责人奥伦·埃齐奥尼在一篇题为[“我们将如何阻止基于人工智能的伪造”](https://hbr.org/2019/03/how-will-we-prevent-ai-based-forgery)中写下这么一个建议：“人工智能有望既不昂贵又自动化的进行高保真伪造，致使对于民主、安全和社会造成潜在的灾难性后果。人工智能伪造的幽灵意味着我们需要行动起来，制造出必要的数字签名作为数字内容的一种认证手段。”
 
+Whilst we can't hope to discuss all the ethical issues that deep learning, and algorithms more generally, brings up, hopefully this brief introduction has been a useful starting point you can build on. We'll now move on to the questions of how to identify ethical issues, and what to do about them.
+
+同时我们不能寄希望可以讨论深度学习所有的伦理问题，算法更加通用，希望这个简短介绍的提出对于你起点的建立有所帮助。我们现在进入如果识别伦理的问题，并对他们应该做些什么。
+
