@@ -589,5 +589,15 @@ Some people think disinformation is primarily about false information or *fake n
 
 In the US this has hit close to home in recent years, with the FBI detailing a massive disinformation campaign linked to Russia in the 2016 election. Understanding the disinformation that was used in this campaign is very educational. For instance, the FBI found that the Russian disinformation campaign often organized two separate fake "grass roots" protests, one for each side of an issue, and got them to protest at the same time! The [*Houston Chronicle*](https://www.houstonchronicle.com/local/gray-matters/article/A-Houston-protest-organized-by-Russian-trolls-12625481.php) reported on one of these odd events (<<texas>>).
 
-近几年这已经影响到了美国家庭，美国联邦调查局公布一大量在2016年总统大选时与俄罗斯相关联的虚假信息运动。理解虚假信息被用于这样的运动是非常有教育意义的。例如，联邦调查局发现俄罗斯虚假信息运动通常会组织两个独立的虚假“平民”抗议，一方反对另一方的议题，并让他们在同一时间抗议！[休斯敦纪事报](https://www.houstonchronicle.com/local/gray-matters/article/A-Houston-protest-organized-by-Russian-trolls-12625481.php)报道了众多奇怪事件中的一个（如下图<德克萨斯>）。
+近几年这已经影响到了美国家庭，美国联邦调查局公布一大量在2016年总统大选时与俄罗斯相关联的虚假信息运动。理解虚假信息被用于这样的运动是非常有教育意义的。例如，联邦调查局发现俄罗斯虚假信息运动通常会组织两个独立的虚假“平民”抗议，一方反对另一方的议题，并让他们在同一时间抗议！[休斯敦纪事报](https://www.houstonchronicle.com/local/gray-matters/article/A-Houston-protest-organized-by-Russian-trolls-12625481.php)报道了众多奇怪事件中的一个（如下图<德克萨斯之心团体组织的事件>）。
 
+> : A group that called itself the "Heart of Texas" had organized it on social media—a protest, they said, against the "Islamization" of Texas. On one side of Travis Street, I found about 10 protesters. On the other side, I found around 50 counterprotesters. But I couldn't find the rally organizers. No "Heart of Texas." I thought that was odd, and mentioned it in the article: What kind of group is a no-show at its own event? Now I know why. Apparently, the rally's organizers were in Saint Petersburg, Russia, at the time. "Heart of Texas" is one of the internet troll groups cited in Special Prosecutor Robert Mueller's recent indictment of Russians attempting to tamper with the U.S. presidential election.
+>
+> ：一个自称“德克萨斯之心”的团地在社交媒体上组织了一个抗议游行。他们说反对德克萨斯的“伊斯兰化”。在特拉维斯街一侧我发现有大约10名抗议者。在街道另一侧有大约50名反对示威者。但是我没有发现集会组织者。没有“德克萨斯之心”。我认为这是奇怪的，并在文正中提到：什么类型的团队没有现身在他们自己的活动中？现在我知道为什么了。很显然，与此同时集会组织者在俄罗斯的圣彼得堡。“德克萨斯之心”是网络巨魔集团中的一个，特别检察官罗伯特·穆勒最近在起诉俄罗斯尝试篡改美国总统大选中引述了它。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/image13.png" id="texas" caption="Event organized by the group Heart of Texas" alt="Screenshot of an event organized by the group Heart of Texas" width="300">
+  </p>
+  <p align="center">德克萨斯之心团体组织的事件</p>
+</div>
