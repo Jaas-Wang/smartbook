@@ -585,4 +585,9 @@ Even in the absence of bias, algorithms (and deep learning especially, since it 
 
 Some people think disinformation is primarily about false information or *fake news*, but in reality, disinformation can often contain seeds of truth, or half-truths taken out of context. Ladislav Bittman was an intelligence officer in the USSR who later defected to the US and wrote some books in the 1970s and 1980s on the role of disinformation in Soviet propaganda operations. In *The KGB and Soviet Disinformation* (Pergamon) he wrote, "Most campaigns are a carefully designed mixture of facts, half-truths, exaggerations, and deliberate lies."
 
-一些人认为虚假信息主要是假信息或*假新闻*，但事实上，虚假信息经常能够包含真相的种子，或脱离背影的半真实信息。拉迪斯拉夫·比特曼曾是苏维埃社会主义共和国联盟的一名情报机构官员，后来叛逃到美国并基于在二十世纪70和80年代作为苏联鼓动宣传操作中虚假信息的作用编写了一些著作。在*克格勃和苏联虚假信息*（培格曼出版）一书中他写道，“大多数运动是精心设计的各种因素的混合体，并真实信息，夸大的，及认真编造的谎言。”
+一些人认为虚假信息主要是假信息或*假新闻*，但事实上，虚假信息经常能够包含真相的种子，或脱离背影的半真实信息。拉迪斯拉夫·比特曼曾是苏维埃社会主义共和国联盟的一名情报机构官员，后来叛逃到美国并基于在二十世纪70和80年代作为苏联鼓动宣传操作中虚假信息的作用编写了一些著作。在*克格勃和苏联虚假信息*（培格曼出版）一书中他写道，“大多数运动是精心设计的各种因素的混合体，半真实的、夸大的信息，及认真编造的谎言。”
+
+In the US this has hit close to home in recent years, with the FBI detailing a massive disinformation campaign linked to Russia in the 2016 election. Understanding the disinformation that was used in this campaign is very educational. For instance, the FBI found that the Russian disinformation campaign often organized two separate fake "grass roots" protests, one for each side of an issue, and got them to protest at the same time! The [*Houston Chronicle*](https://www.houstonchronicle.com/local/gray-matters/article/A-Houston-protest-organized-by-Russian-trolls-12625481.php) reported on one of these odd events (<<texas>>).
+
+近几年这已经影响到了美国家庭，美国联邦调查局公布一大量在2016年总统大选时与俄罗斯相关联的虚假信息运动。理解虚假信息被用于这样的运动是非常有教育意义的。例如，联邦调查局发现俄罗斯虚假信息运动通常会组织两个独立的虚假“平民”抗议，一方反对另一方的议题，并让他们在同一时间抗议！[休斯敦纪事报](https://www.houstonchronicle.com/local/gray-matters/article/A-Houston-protest-organized-by-Russian-trolls-12625481.php)报道了众多奇怪事件中的一个（如下图<德克萨斯>）。
+
