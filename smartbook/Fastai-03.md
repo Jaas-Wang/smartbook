@@ -573,4 +573,12 @@ As the Arkansas healthcare example showed, machine learning is often implemented
 
 Even in the absence of bias, algorithms (and deep learning especially, since it is such an effective and scalable algorithm) can lead to negative societal problems, such as when used for *disinformation*.
 
-即使不存在偏见，算法（尤其是深度学习，因为它是一个如此有效率和可扩展的算法）能够导致负面的社会问题，如果当使用人为假消息的时候。
+即使不存在偏见，算法（尤其是深度学习，因为它是一个如此有效率和可扩展的算法）能够导致负面的社会问题，如果当使用人为假信息的时候。
+
+### Disinformation
+
+### 人为的假信息
+
+*Disinformation* has a history stretching back hundreds or even thousands of years. It is not necessarily about getting someone to believe something false, but rather often used to sow disharmony and uncertainty, and to get people to give up on seeking the truth. Receiving conflicting accounts can lead people to assume that they can never know whom or what to trust.
+
+*虚假信息*可回溯数百甚至数千年的历史。它不必让人们相信事情是假的，而只需要经常去传播不和谐和不确定的信息，并让人们放弃寻找真相。接收冲突信息能够让人们假设他们永远都无法知道哪些人和什么事才是真的。
