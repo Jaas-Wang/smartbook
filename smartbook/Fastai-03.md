@@ -573,12 +573,16 @@ As the Arkansas healthcare example showed, machine learning is often implemented
 
 Even in the absence of bias, algorithms (and deep learning especially, since it is such an effective and scalable algorithm) can lead to negative societal problems, such as when used for *disinformation*.
 
-即使不存在偏见，算法（尤其是深度学习，因为它是一个如此有效率和可扩展的算法）能够导致负面的社会问题，如果当使用人为假信息的时候。
+即使不存在偏见，算法（尤其是深度学习，因为它是一个如此有效率和可扩展的算法）能够导致负面的社会问题，如果当使用虚假信息的时候。
 
 ### Disinformation
 
-### 人为的假信息
+### 虚假信息
 
 *Disinformation* has a history stretching back hundreds or even thousands of years. It is not necessarily about getting someone to believe something false, but rather often used to sow disharmony and uncertainty, and to get people to give up on seeking the truth. Receiving conflicting accounts can lead people to assume that they can never know whom or what to trust.
 
 *虚假信息*可回溯数百甚至数千年的历史。它不必让人们相信事情是假的，而只需要经常去传播不和谐和不确定的信息，并让人们放弃寻找真相。接收冲突信息能够让人们假设他们永远都无法知道哪些人和什么事才是真的。
+
+Some people think disinformation is primarily about false information or *fake news*, but in reality, disinformation can often contain seeds of truth, or half-truths taken out of context. Ladislav Bittman was an intelligence officer in the USSR who later defected to the US and wrote some books in the 1970s and 1980s on the role of disinformation in Soviet propaganda operations. In *The KGB and Soviet Disinformation* (Pergamon) he wrote, "Most campaigns are a carefully designed mixture of facts, half-truths, exaggerations, and deliberate lies."
+
+一些人认为虚假信息主要是假信息或*假新闻*，但事实上，虚假信息经常能够包含真相的种子，或脱离背影的半真实信息。拉迪斯拉夫·比特曼曾是苏维埃社会主义共和国联盟的一名情报机构官员，后来叛逃到美国并基于在二十世纪70和80年代作为苏联鼓动宣传操作中虚假信息的作用编写了一些著作。在*克格勃和苏联虚假信息*（培格曼出版）一书中他写道，“大多数运动是精心设计的各种因素的混合体，并真实信息，夸大的，及认真编造的谎言。”
