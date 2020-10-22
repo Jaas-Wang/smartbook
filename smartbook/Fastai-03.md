@@ -743,3 +743,7 @@ The alternative lens to this is the *deontological* perspective, which focuses o
 - 信任和公正的考虑是怎么关联到这个设计/项目？
 - 这个项目涉及哪些对他人的道德责任冲突，或对利益相关者的权利产生冲突？我们怎么确定优先级？
 
+One of the best ways to help come up with complete and thoughtful answers to questions like these is to ensure that the people asking the questions are *diverse*.
+
+帮助想出完整及详尽答案的一个最佳方法是像这样问一些问题，确保问问题的人是*多样化*的。
+
