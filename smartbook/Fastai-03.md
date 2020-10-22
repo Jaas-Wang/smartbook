@@ -665,3 +665,6 @@ It's easy to miss important issues when considering ethical implications of your
 - 正确处理上述或错误的过程是什么？
 - 如果多样化创造它的团队？
 
+These questions may be able to help you identify outstanding issues, and possible alternatives that are easier to understand and control. In addition to asking the right questions, it's also important to consider practices and processes to implement.
+
+这些问题可以帮助你识别显著的问题，并且对可能的替代方案更加容易理解和控制。此外问一些正确的问题，对于考虑实践和实施过程也是很重要的。
