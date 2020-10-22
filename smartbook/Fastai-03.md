@@ -729,3 +729,17 @@ Markkula's recommendations include a deeper dive into each of these perspectives
 - 这个项目可能会怎样影响后代？
 - 社会中的低层人民会不成比例的遭受来自这个项目的伤害风险吗？不成比例的收益会进入上层阶级吗？
 - 我们充分考虑“双重用途”了吗？
+
+The alternative lens to this is the *deontological* perspective, which focuses on basic concepts of *right* and *wrong*:
+
+可选择视角是*责任*视点，聚焦于*对*和*错*的基础概念：
+
+- What rights of others and duties to others must we respect?
+- How might the dignity and autonomy of each stakeholder be impacted by this project?
+- What considerations of trust and of justice are relevant to this design/project?
+- Does this project involve any conflicting moral duties to others, or conflicting stakeholder rights? How can we prioritize these?
+- 他人的什么权力和对他人的责任我们必须尊重？
+- 通过这个项目每个利益相关者的尊严和自治可能被怎样影响？
+- 信任和公正的考虑是怎么关联到这个设计/项目？
+- 这个项目涉及哪些对他人的道德责任冲突，或对利益相关者的权利产生冲突？我们怎么确定优先级？
+
