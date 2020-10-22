@@ -680,3 +680,16 @@ One thing to consider at this stage is what data you are collecting and storing.
 The Markkula Center has released [An Ethical Toolkit for Engineering/Design Practice](https://www.scu.edu/ethics-in-technology-practice/ethical-toolkit/) that includes some concrete practices to implement at your company, including regularly scheduled sweeps to proactively search for ethical risks (in a manner similar to cybersecurity penetration testing), expanding the ethical circle to include the perspectives of a variety of stakeholders, and considering the terrible people (how could bad actors abuse, steal, misinterpret, hack, destroy, or weaponize what you are building?).
 
 马库拉中心发布了[一个面向工程/设计实践的伦理工具包](https://www.scu.edu/ethics-in-technology-practice/ethical-toolkit/) ，它包含了在你公司实施的具体作法，其中包括定期主动排查搜索伦理风险（类似于网络案例渗透测试方法），扩展伦理范围包括各种利益关联方的观点，及思考那些糟糕的人（对于你正在创建的内容，这些坏份子能够如何滥用，盗窃，错误的阐述，黑客行为，破坏，武器化？）。
+
+Even if you don't have a diverse team, you can still try to pro-actively include the perspectives of a wider group, considering questions such as these (provided by the Markkula Center):
+
+即使你没有一个多样化的团队，你能够持续尝试涵盖广泛团体的观点，例如考虑如下这些问题（由马库拉中心提供）：
+
+- Whose interests, desires, skills, experiences, and values have we simply assumed, rather than actually consulted?
+- Who are all the stakeholders who will be directly affected by our product? How have their interests been protected? How do we know what their interests really are—have we asked?
+- Who/which groups and individuals will be indirectly affected in significant ways?
+- Who might use this product that we didn’t expect to use it, or for purposes we didn’t initially intend?
+- 你只是简单的假设了那些人的兴趣、欲望、技能、经验和价值，而不是实际的咨询过？
+- 将直接影响我们产品的所有利益关联方都是谁？他们的利益怎么被保护？我们怎么知道他们真实的利益是什么，我们问过吗？
+- 哪些团体和个人将会间接的产品显著影响？
+- 谁可能使用这一产品，而我们并不希望他们使用，或我们最初没有想到的使用目的？
