@@ -696,7 +696,7 @@ Even if you don't have a diverse team, you can still try to pro-actively include
 
 #### Ethical lenses
 
-#### 伦理镜头
+#### 伦理视角
 
 Another useful resource from the Markkula Center is its [Conceptual Frameworks in Technology and Engineering Practice](https://www.scu.edu/ethics-in-technology-practice/conceptual-frameworks/). This considers how different foundational ethical lenses can help identify concrete issues, and lays out the following approaches and key questions:
 
@@ -713,3 +713,19 @@ Another useful resource from the Markkula Center is its [Conceptual Frameworks i
 - 通用好方法：哪种选择最好的服务与整个团队，而不仅仅是少数？
 - 道德途径：哪种选择使得我做出我想成为的那类人的行为？
 
+Markkula's recommendations include a deeper dive into each of these perspectives, including looking at a project through the lenses of its *consequences*:
+
+马库拉的建议潜入到每一个观点的更深层，包括通过它们的*结果*视角看一个项目：
+
+- Who will be directly affected by this project? Who will be indirectly affected?
+- Will the effects in aggregate likely create more good than harm, and what types of good and harm?
+- Are we thinking about all relevant types of harm/benefit (psychological, political, environmental, moral, cognitive, emotional, institutional, cultural)?
+- How might future generations be affected by this project?
+- Do the risks of harm from this project fall disproportionately on the least powerful in society? Will the benefits go disproportionately to the well-off?
+- Have we adequately considered "dual-use"?
+- 哪些人会被这个项目直接影响？哪些人会被间接影响？
+- 整体上可能产生大于伤害的更好结果吗，什么类型的好结果和伤害？
+- 你会思虑所有相关的伤害/收益类型吗（心理、政治、环境、道德、认知、情绪、制度、文化）？
+- 这个项目可能会怎样影响后代？
+- 社会中的低层人民会不成比例的遭受来自这个项目的伤害风险吗？不成比例的收益会进入上层阶级吗？
+- 我们充分考虑“双重用途”了吗？
