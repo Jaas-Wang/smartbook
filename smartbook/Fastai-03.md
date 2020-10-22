@@ -747,3 +747,20 @@ One of the best ways to help come up with complete and thoughtful answers to que
 
 帮助想出完整及详尽答案的一个最佳方法是像这样问一些问题，确保问问题的人是*多样化*的。
 
+### The Power of Diversity
+
+### 多样化的力量
+
+Currently, less than 12% of AI researchers are women, according to [a study from Element AI](https://medium.com/element-ai-research-lab/estimating-the-gender-ratio-of-ai-researchers-around-the-world-81d2b8dbe9c3). The statistics are similarly dire when it comes to race and age. When everybody on a team has similar backgrounds, they are likely to have similar blindspots around ethical risks. The *Harvard Business Review* (HBR) has published a number of studies showing many benefits of diverse teams, including:
+
+来自[元素人工智能的一项研究](https://medium.com/element-ai-research-lab/estimating-the-gender-ratio-of-ai-researchers-around-the-world-81d2b8dbe9c3)，当前人工智能研究员女性占比要少于12%。当看到种族和年龄时统计结果惊人的相似。当在团队里的每个人的背影类似时，他们可能对于伦理风险有类似的盲点。*哈佛商业观察*发表的许多研究显示了多样化团队很多收益，包括：
+
+- ["How Diversity Can Drive Innovation"](https://hbr.org/2013/12/how-diversity-can-drive-innovation)
+- ["Teams Solve Problems Faster When They’re More Cognitively Diverse"](https://hbr.org/2017/03/teams-solve-problems-faster-when-theyre-more-cognitively-diverse)
+- ["Why Diverse Teams Are Smarter"](https://hbr.org/2016/11/why-diverse-teams-are-smarter), and
+- ["Defend Your Research: What Makes a Team Smarter? More Women"](https://hbr.org/2011/06/defend-your-research-what-makes-a-team-smarter-more-women)
+- [“如何多样化能够驱动创新”](https://hbr.org/2013/12/how-diversity-can-drive-innovation)
+- [“当团队认知更加多样化时他们解决问题会更快”](https://hbr.org/2017/03/teams-solve-problems-faster-when-theyre-more-cognitively-diverse)
+- [“为什么多样化的团队更加聪明”](https://hbr.org/2016/11/why-diverse-teams-are-smarter)，以及
+- [“保卫你的研究：什么使得一个团队更加聪明？更多女性”](https://hbr.org/2011/06/defend-your-research-what-makes-a-team-smarter-more-women)
+
