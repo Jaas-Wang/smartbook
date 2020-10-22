@@ -639,3 +639,7 @@ So what can we do? This is a big topic, but a few steps towards addressing ethic
 - 提供好的政策。
 - 增加多样性。
 
+Let's walk through each of these steps, starting with analyzing a project you are working on.
+
+让我们对上述每一个步骤都过一下，开始分析你正在进行中的一个项目。
+
