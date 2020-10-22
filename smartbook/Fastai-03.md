@@ -643,3 +643,25 @@ Let's walk through each of these steps, starting with analyzing a project you ar
 
 让我们对上述每一个步骤都过一下，开始分析你正在进行中的一个项目。
 
+### Analyze a Project You Are Working On
+
+### 分析一个你正在做的项目
+
+It's easy to miss important issues when considering ethical implications of your work. One thing that helps enormously is simply asking the right questions. Rachel Thomas recommends considering the following questions throughout the development of a data project:
+
+当思考你的工作所产生的伦理后果时容易忽视一些重要问题。简单问几个正确的问题能帮助放大一个事情。雷切尔·托马斯建议在开发一个数据项目的时候考虑下述几个问题：
+
+- Should we even be doing this?
+- What bias is in the data?
+- Can the code and data be audited?
+- What are the error rates for different sub-groups?
+- What is the accuracy of a simple rule-based alternative?
+- What processes are in place to handle appeals or mistakes?
+- How diverse is the team that built it?
+- 我们到底应该做这个事吗？
+- 在数据中的偏见是什么？
+- 不同的子团体的错误率是什么？
+- 一个简单的基于规则的替代物的精确度是什么？
+- 正确处理上述或错误的过程是什么？
+- 如果多样化创造它的团队？
+
