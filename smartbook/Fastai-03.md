@@ -693,3 +693,23 @@ Even if you don't have a diverse team, you can still try to pro-actively include
 - 将直接影响我们产品的所有利益关联方都是谁？他们的利益怎么被保护？我们怎么知道他们真实的利益是什么，我们问过吗？
 - 哪些团体和个人将会间接的产品显著影响？
 - 谁可能使用这一产品，而我们并不希望他们使用，或我们最初没有想到的使用目的？
+
+#### Ethical lenses
+
+#### 伦理镜头
+
+Another useful resource from the Markkula Center is its [Conceptual Frameworks in Technology and Engineering Practice](https://www.scu.edu/ethics-in-technology-practice/conceptual-frameworks/). This considers how different foundational ethical lenses can help identify concrete issues, and lays out the following approaches and key questions:
+
+别一个来自马库拉中心可利用的资源是[在技术和工程实施中的概念框架](https://www.scu.edu/ethics-in-technology-practice/conceptual-frameworks/)。它考虑的是不同基础伦理镜头能够怎样帮助识别具体的问题，并列示出下面的方法与关键问题：
+
+- The rights approach:: Which option best respects the rights of all who have a stake?
+- The justice approach:: Which option treats people equally or proportionately?
+- The utilitarian approach:: Which option will produce the most good and do the least harm?
+- The common good approach:: Which option best serves the community as a whole, not just some members?
+- The virtue approach:: Which option leads me to act as the sort of person I want to be?
+- 权力途径：哪种选择最能尊重所有利益相关者的权力？
+- 公平途径：哪种选择威胁到人类平均或适合的比例？
+- 实用途径：哪种选择会产生最好和做到最小伤害？
+- 通用好方法：哪种选择最好的服务与整个团队，而不仅仅是少数？
+- 道德途径：哪种选择使得我做出我想成为的那类人的行为？
+
