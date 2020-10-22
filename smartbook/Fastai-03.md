@@ -672,3 +672,11 @@ These questions may be able to help you identify outstanding issues, and possibl
 One thing to consider at this stage is what data you are collecting and storing. Data often ends up being used for different purposes than what it was originally collected for. For instance, IBM began selling to Nazi Germany well before the Holocaust, including helping with Germany’s 1933 census conducted by Adolf Hitler, which was effective at identifying far more Jewish people than had previously been recognized in Germany. Similarly, US census data was used to round up Japanese-Americans (who were US citizens) for internment during World War II. It is important to recognize how data and images collected can be weaponized later. Columbia professor [Tim Wu wrote](https://www.nytimes.com/2019/04/10/opinion/sunday/privacy-capitalism.html) that “You must assume that any personal data that Facebook or Android keeps are data that governments around the world will try to get or that thieves will try to steal.”
 
 在这个阶段思考一个问题：你正在收集和存储什么数据。数据通常在最终用于不同于开始搜集它的目的。例如，IBM在早于大屠杀之前就开始给纳粹德国销售产品了，包括帮助德国1933年由阿道夫·希特勒提出的人口统计，相比之前德国识别的结果，有效率的识别出更多犹太人。类似的，二次世界大战期间，美国人口统计数据被用于围捕拘留日裔美国人（他们是美国公民）。识别收集怎么的数据和图片以后会被武器化是很重要的。哥伦比亚大学教授吴修铭写道“你必须假设任何脸书或安卓所拥有的个人数据，世界上的各国政府将会尝试获得或窃贼会尝试盗取。”
+
+### Processes to Implement
+
+### 实施过程
+
+The Markkula Center has released [An Ethical Toolkit for Engineering/Design Practice](https://www.scu.edu/ethics-in-technology-practice/ethical-toolkit/) that includes some concrete practices to implement at your company, including regularly scheduled sweeps to proactively search for ethical risks (in a manner similar to cybersecurity penetration testing), expanding the ethical circle to include the perspectives of a variety of stakeholders, and considering the terrible people (how could bad actors abuse, steal, misinterpret, hack, destroy, or weaponize what you are building?).
+
+马库拉中心发布了[一个面向工程/设计实践的伦理工具包](https://www.scu.edu/ethics-in-technology-practice/ethical-toolkit/) ，它包含了在你公司实施的具体作法，其中包括定期主动排查搜索伦理风险（类似于网络案例渗透测试方法），扩展伦理范围包括各种利益关联方的观点，及思考那些糟糕的人（对于你正在创建的内容，这些坏份子能够如何滥用，盗窃，错误的阐述，黑客行为，破坏，武器化？）。
