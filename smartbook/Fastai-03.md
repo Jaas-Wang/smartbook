@@ -625,3 +625,17 @@ Whilst we can't hope to discuss all the ethical issues that deep learning, and a
 Mistakes happen. Finding out about them, and dealing with them, needs to be part of the design of any system that includes machine learning (and many other systems too). The issues raised within data ethics are often complex and interdisciplinary, but it is crucial that we work to address them.
 
 错误发生了。找出并处理他们，这需要成为包括机器学习（一些其它系统也需要如此）在内的任何系统设计的一部分。数据伦理问题提出通过是复杂和跨学科，但我们努力处理他们是至关重要的。
+
+So what can we do? This is a big topic, but a few steps towards addressing ethical issues are:
+
+那么我们能做什么呢？这是一个很大的话题，但几个对于处理伦理问题的步骤是：
+
+- Analyze a project you are working on.
+- Implement processes at your company to find and address ethical risks.
+- Support good policy.
+- Increase diversity.
+- 分析你正在工作的项目。
+- 在你的公司实施一些发现并处理伦理风险的过程。
+- 提供好的政策。
+- 增加多样性。
+
