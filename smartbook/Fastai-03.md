@@ -776,5 +776,7 @@ Studies have confirmed a number of the factors that make it harder for women to 
 
 研究已经确认了许多因素使得女性在职场更难晋升。在表现评估方面女性获得更模糊的反馈和人格品论，然而男性收到与商业成果相关联的更有用的可行建议。女性经常经历被拒绝更有创造性和创新性的角色，且没有得到有助于获得晋升的清晰的“延伸”性工作分配。一项研究发现即使在阅读相同的脚本，男性的声音相比女性被认为更有说服力、更基于事实和更合乎逻辑。
 
+Receiving mentorship has been statistically shown to help men advance, but not women. The reason behind this is that when women receive mentorship, it’s advice on how they should change and gain more self-knowledge. When men receive mentorship, it’s public endorsement of their authority. Guess which is more useful in getting promoted?
 
+统计显示接收的指导有助于男性晋升，但是女性并不会。背后的原因是当女性接受指导时，给出的建议是她们应该改变和更有自知之明。当男性获得指导时，它是公开的赞同和他们的权威。试想哪种更能有益于获得晋升？
 
