@@ -780,3 +780,6 @@ Receiving mentorship has been statistically shown to help men advance, but not w
 
 统计显示接收的指导有助于男性晋升，但是女性并不会。背后的原因是当女性接受指导时，给出的建议是她们应该改变和更有自知之明。当男性获得指导时，它是公开的赞同和他们的权威。试想哪种更能有益于获得晋升？
 
+As long as qualified women keep dropping out of tech, teaching more girls to code will not solve the diversity issues plaguing the field. Diversity initiatives often end up focusing primarily on white women, even though women of color face many additional barriers. In [interviews](https://worklifelaw.org/publications/Double-Jeopardy-Report_v6_full_web-sm.pdf) with 60 women of color who work in STEM research, 100% had experienced discrimination.
+
+当越来越多的优秀女性持续离开技术领域，教育更多女孩子编码将不能解决困扰这一领域的多样化问题。多样化举措通常最终会主要集中在白人女性，而有色人种女性会面临更多障碍。[访谈](https://worklifelaw.org/publications/Double-Jeopardy-Report_v6_full_web-sm.pdf)了60名从事科学、技术、工程与数学研究的有色人种女性，她们所有人都经历过歧视。
