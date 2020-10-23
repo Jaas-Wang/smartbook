@@ -753,14 +753,28 @@ One of the best ways to help come up with complete and thoughtful answers to que
 
 Currently, less than 12% of AI researchers are women, according to [a study from Element AI](https://medium.com/element-ai-research-lab/estimating-the-gender-ratio-of-ai-researchers-around-the-world-81d2b8dbe9c3). The statistics are similarly dire when it comes to race and age. When everybody on a team has similar backgrounds, they are likely to have similar blindspots around ethical risks. The *Harvard Business Review* (HBR) has published a number of studies showing many benefits of diverse teams, including:
 
-来自[元素人工智能的一项研究](https://medium.com/element-ai-research-lab/estimating-the-gender-ratio-of-ai-researchers-around-the-world-81d2b8dbe9c3)，当前人工智能研究员女性占比要少于12%。当看到种族和年龄时统计结果惊人的相似。当在团队里的每个人的背影类似时，他们可能对于伦理风险有类似的盲点。*哈佛商业观察*发表的许多研究显示了多样化团队很多收益，包括：
+来自[元素人工智能的一项研究](https://medium.com/element-ai-research-lab/estimating-the-gender-ratio-of-ai-researchers-around-the-world-81d2b8dbe9c3)，当前人工智能研究员女性占比要少于12%。当看到种族和年龄时统计结果惊人的相似。当在团队里的每个人的背影类似时，他们可能对于伦理风险有类似的盲点。*哈佛商业评论*发表的许多研究显示了多样化团队很多收益，包括：
 
-- ["How Diversity Can Drive Innovation"](https://hbr.org/2013/12/how-diversity-can-drive-innovation)
-- ["Teams Solve Problems Faster When They’re More Cognitively Diverse"](https://hbr.org/2017/03/teams-solve-problems-faster-when-theyre-more-cognitively-diverse)
-- ["Why Diverse Teams Are Smarter"](https://hbr.org/2016/11/why-diverse-teams-are-smarter), and
-- ["Defend Your Research: What Makes a Team Smarter? More Women"](https://hbr.org/2011/06/defend-your-research-what-makes-a-team-smarter-more-women)
-- [“如何多样化能够驱动创新”](https://hbr.org/2013/12/how-diversity-can-drive-innovation)
-- [“当团队认知更加多样化时他们解决问题会更快”](https://hbr.org/2017/03/teams-solve-problems-faster-when-theyre-more-cognitively-diverse)
-- [“为什么多样化的团队更加聪明”](https://hbr.org/2016/11/why-diverse-teams-are-smarter)，以及
-- [“保卫你的研究：什么使得一个团队更加聪明？更多女性”](https://hbr.org/2011/06/defend-your-research-what-makes-a-team-smarter-more-women)
+- ["How Diversity Can Drive Innovation"](https://hbr.org/2013/12/how-diversity-can-drive-innovation) 
+- ["Teams Solve Problems Faster When They’re More Cognitively Diverse"](https://hbr.org/2017/03/teams-solve-problems-faster-when-theyre-more-cognitively-diverse) 
+- ["Why Diverse Teams Are Smarter"](https://hbr.org/2016/11/why-diverse-teams-are-smarter), and 
+- ["Defend Your Research: What Makes a Team Smarter? More Women"](https://hbr.org/2011/06/defend-your-research-what-makes-a-team-smarter-more-women) 
+- [“如何多样化能够驱动创新”](https://hbr.org/2013/12/how-diversity-can-drive-innovation) 
+- [“当团队认知更加多样化时他们解决问题会更快”](https://hbr.org/2017/03/teams-solve-problems-faster-when-theyre-more-cognitively-diverse) 
+- [“为什么多样化的团队更加聪明”](https://hbr.org/2016/11/why-diverse-teams-are-smarter)，以及 
+- [“保卫你的研究：什么使得一个团队更加聪明？更多女性”](https://hbr.org/2011/06/defend-your-research-what-makes-a-team-smarter-more-women) 
+
+Diversity can lead to problems being identified earlier, and a wider range of solutions being considered. For instance, Tracy Chou was an early engineer at Quora. She [wrote of her experiences](https://qz.com/1016900/tracy-chou-leading-silicon-valley-engineer-explains-why-every-tech-worker-needs-a-humanities-education/), describing how she advocated internally for adding a feature that would allow trolls and other bad actors to be blocked. Chou recounts, “I was eager to work on the feature because I personally felt antagonized and abused on the site (gender isn’t an unlikely reason as to why)... But if I hadn’t had that personal perspective, it’s possible that the Quora team wouldn’t have prioritized building a block button so early in its existence.” Harassment often drives people from marginalized groups off online platforms, so this functionality has been important for maintaining the health of Quora's community.
+
+多样化能够使得更容易识别问题，并更广范围的思考解决方案。例如，在Quora公司的早期工程师特蕾西·周[写下了她的经验](https://qz.com/1016900/tracy-chou-leading-silicon-valley-engineer-explains-why-every-tech-worker-needs-a-humanities-education/)，描述了她如何在内部倡议增加一个允许拉黑挑衅和其它坏份子的功能。周讲述到，“我渴望实现这一功能，因为我个人感觉在网站上被对立和虐待（至于为什么，性别是一个可能的原因）...但如果我没有个人的观点，可能Quora团队不会在诞生初期就优先创建一个拉黑按钮。”骚扰经常驱使边缘团体的人离开在线平台，所以这个功能对于维护Quora的社区健康已经很重要了。
+
+A crucial aspect to understand is that women leave the tech industry at over twice the rate that men do, according to the [*Harvard Business Review*](https://www.researchgate.net/publication/268325574_By_RESEARCH_REPORT_The_Athena_Factor_Reversing_the_Brain_Drain_in_Science_Engineering_and_Technology) (41% of women working in tech leave, compared to 17% of men). An analysis of over 200 books, white papers, and articles found that the reason they leave is that “they’re treated unfairly; underpaid, less likely to be fast-tracked than their male colleagues, and unable to advance.”
+
+一个关键因素要去理解，根据[哈佛商业评论](https://www.researchgate.net/publication/268325574_By_RESEARCH_REPORT_The_Athena_Factor_Reversing_the_Brain_Drain_in_Science_Engineering_and_Technology) （41%的女性在技术性休假，而男性是17%）女性离开技术产业的比率是男性的两倍多。分析了超过200本著作，白皮书和文章发现了她们离开的原因是“他们被不平等的对待：薪酬低，相比男同事她们不太可能被快速跟踪，不能够晋升。”
+
+Studies have confirmed a number of the factors that make it harder for women to advance in the workplace. Women receive more vague feedback and personality criticism in performance evaluations, whereas men receive actionable advice tied to business outcomes (which is more useful). Women frequently experience being excluded from more creative and innovative roles, and not receiving high-visibility “stretch” assignments that are helpful in getting promoted. One study found that men’s voices are perceived as more persuasive, fact-based, and logical than women’s voices, even when reading identical scripts.
+
+研究已经确认了许多因素使得女性在职场更难晋升。在表现评估方面女性获得更模糊的反馈和人格品论，然而男性收到与商业成果相关联的更有用的可行建议。女性经常经历被拒绝更有创造性和创新性的角色，且没有得到有助于获得晋升的清晰的“延伸”性工作分配。一项研究发现即使在阅读相同的脚本，男性的声音相比女性被认为更有说服力、更基于事实和更合乎逻辑。
+
+
 
