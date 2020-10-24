@@ -19,6 +19,7 @@
 >
 >**推荐工具 [Typora](https://www.typora.io/)**
 
+-Mark 也许[Fairness and Machine Learning: Limitations and Opportunities](https://fairmlbook.org/#course-materials)是下一本翻译的著作。愿望也许会实现吧！！！Bless me!
 ## 目录
 
 [第一章 概述--------中英文翻译对比：Fastai-01.md](./smartbook/Fastai-01.md)  [（英文原书：01_intro.ipynb）](./englishbook/01_intro.ipynb)
