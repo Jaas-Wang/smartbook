@@ -795,3 +795,11 @@ This is a challenge for those trying to break into the world of deep learning, s
 This leaves a big opportunity for companies that are ready to look beyond status and pedigree, and focus on results!
 
 这对于那些准备超越地位和血统并关注结果的公司留下了巨大的机会！
+
+### Fairness, Accountability, and Transparency
+
+### 公平、责任和透明
+
+The professional society for computer scientists, the ACM, runs a data ethics conference called the Conference on Fairness, Accountability, and Transparency. "Fairness, Accountability, and Transparency" which used to go under the acronym *FAT* but now uses to the less objectionable *FAccT*. Microsoft has a group focused on "Fairness, Accountability, Transparency, and Ethics" (FATE). In this section, we'll use "FAccT" to refer to the concepts of *Fairness, Accountability, and Transparency*.
+
+美国计算机协会是计算机科学专业协会，举办了一个称为公平、责任和透明的数据伦理会议。“公平、责任和透明”以前用的是首字母缩写*FAT*，现在使用了不让人太反感的*FAccT。胃复安有一个关注“公平、责任、透明和伦理”的团队（FATE）。在这个小节，我们会用“FAccT”来指代**公平、责任和透明*的概念。
