@@ -802,4 +802,9 @@ This leaves a big opportunity for companies that are ready to look beyond status
 
 The professional society for computer scientists, the ACM, runs a data ethics conference called the Conference on Fairness, Accountability, and Transparency. "Fairness, Accountability, and Transparency" which used to go under the acronym *FAT* but now uses to the less objectionable *FAccT*. Microsoft has a group focused on "Fairness, Accountability, Transparency, and Ethics" (FATE). In this section, we'll use "FAccT" to refer to the concepts of *Fairness, Accountability, and Transparency*.
 
-美国计算机协会是计算机科学专业协会，举办了一个称为公平、责任和透明的数据伦理会议。“公平、责任和透明”以前用的是首字母缩写*FAT*，现在使用了不让人太反感的*FAccT。胃复安有一个关注“公平、责任、透明和伦理”的团队（FATE）。在这个小节，我们会用“FAccT”来指代**公平、责任和透明*的概念。
+美国计算机协会是计算机科学专业协会，举办了一个称为公平、责任和透明的数据伦理会议。“公平、责任和透明”以前用的是首字母缩写*FAT*，现在使用了不让人太反感的*FAccT*。微软有一个关注“公平、责任、透明和伦理”的团队（FATE）。在这个小节，我们会用“FAccT”来指代**公平、责任和透明*的概念。
+
+FAccT is another lens that you may find useful in considering ethical issues. One useful resource for this is the free online book [*Fairness and Machine Learning: Limitations and Opportunities*](https://fairmlbook.org/) by Solon Barocas, Moritz Hardt, and Arvind Narayanan, which "gives a perspective on machine learning that treats fairness as a central concern rather than an afterthought." It also warns, however, that it "is intentionally narrow in scope... A narrow framing of machine learning ethics might be tempting to technologists and businesses as a way to focus on technical interventions while sidestepping deeper questions about power and accountability. We caution against this temptation." Rather than provide an overview of the FAccT approach to ethics (which is better done in books such as that one), our focus here will be on the limitations of this kind of narrow framing.
+
+FAccT是别一面透视镜，你能发现在思考伦理问题时很有用。一个可利用的资源是由梭伦·巴洛卡斯、莫里茨·哈特和阿文·纳拉亚南合著的免费在线图书[公平和机器学习：限制和机遇](https://fairmlbook.org/)，本书“给出一个机器学习威胁公平做为一个核心思考而不是事后再说的观点。” 然而，它也警告到它“是有意的收缩范围... 当回避关于权力和责任深层次问题时，一个机器学习伦理收缩框架可能会吸引技术人员和商业人员以关注技术的干涉。我们要警惕这个诱惑。” 而不是提供一个概述的FAccT伦理方法（在本书中这个方法是更好的），我们在里将会聚焦于这类收缩架构的局限。
+
