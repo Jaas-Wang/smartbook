@@ -787,3 +787,11 @@ As long as qualified women keep dropping out of tech, teaching more girls to cod
 The hiring process is particularly broken in tech. One study indicative of the disfunction comes from Triplebyte, a company that helps place software engineers in companies, conducting a standardized technical interview as part of this process. They have a fascinating dataset: the results of how over 300 engineers did on their exam, coupled with the results of how those engineers did during the interview process for a variety of companies. The number one finding from [Triplebyte’s research](https://triplebyte.com/blog/who-y-combinator-companies-want) is that “the types of programmers that each company looks for often have little to do with what the company needs or does. Rather, they reflect company culture and the backgrounds of the founders.”
 
 雇佣过程在技术领域尤为让人崩溃。一项来自三倍字节的研究指出了异常，这家公司帮助安置一些公司中的软件工程师，实施一个标准化的访谈是这一过程的一部分。他们有一个丰富的数据库：超过300名工程的测试成绩，还有在对各类公司访谈期间那些工程师的成绩。[三位字节的研究](https://triplebyte.com/blog/who-y-combinator-companies-want)发现排名第一的是“每个公司所寻找的一些类型程序员与公司需要的或所做的关系不大。从而，这反映出公司的文化和创始人的背影。”
+
+This is a challenge for those trying to break into the world of deep learning, since most companies' deep learning groups today were founded by academics. These groups tend to look for people "like them"—that is, people that can solve complex math problems and understand dense jargon. They don't always know how to spot people who are actually good at solving real problems using deep learning.
+
+对于那些尝试进入深度学习领域的人来说这是一个挑战，因为现今大多数公司的深度学习团队是通过学术派创建的。这些团队倾向去寻找“类似他们”一样的人：这些人能够解决复杂的数学问题和理解难懂的术语。他们并不能总会知道如何找出真的擅长利用深度学习解决实际问题的人。
+
+This leaves a big opportunity for companies that are ready to look beyond status and pedigree, and focus on results!
+
+这对于那些准备超越地位和血统并关注结果的公司留下了巨大的机会！
