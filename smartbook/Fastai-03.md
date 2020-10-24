@@ -814,5 +814,16 @@ One great way to consider whether an ethical lens is complete is to try to come 
 
 > : The ethical implications of algorithmic systems have been much discussed in both HCI and the broader community of those interested in technology design, development and policy. In this paper, we explore the application of one prominent ethical framework - Fairness, Accountability, and Transparency - to a proposed algorithm that resolves various societal issues around food security and population aging. Using various standardised forms of algorithmic audit and evaluation, we drastically increase the algorithm's adherence to the FAT framework, resulting in a more ethical and beneficent system. We discuss how this might serve as a guide to other researchers or practitioners looking to ensure better ethical outcomes from algorithmic systems in their line of work.
 >
-> ：算法系统的伦理后果已经在人机交互和那些对技术设计、发展和政策感兴趣的广泛团体中非常多地被讨论。在这篇论文中，我们研究了一个著名伦理框架（公平、责任和透明）应用在一个提名算法，这个算法用于解决围绕食品安全和人口年龄的各种社会问题。利用多种标准化算法与评估形式，我们极大增加了算法遵守FAT框架，从而产品了一个更有道德和慈爱的系统。我们讨论这如何对其它研究人员或从业人员可能做为一个指引去寻找确保在他们的工作范围内来自算法系统更好道德成果。
+> ：算法系统的伦理后果已经在人机交互和那些对技术设计、发展和政策感兴趣的广泛团体中非常多地被讨论。在这篇论文中，我们研究了一个著名伦理框架（公平、责任和透明）应用在一个提名算法，这个算法用于解决围绕食品安全和人口年龄的各种社会问题。利用多种标准化算法与评估形式，我们大幅增加了算法对FAT框架遵守度，从而产生了一个更有道德和更慈爱的系统。我们讨论这如何对其它研究人员或从业人员可能做为一个指引去寻找确保在他们的工作范围内来自算法系统更好道德成果。
 
+In this paper, the rather controversial proposal ("Turning the Elderly into High-Nutrient Slurry") and the results ("drastically increase the algorithm's adherence to the FAT framework, resulting in a more ethical and beneficent system") are at odds... to say the least!
+
+在这篇论文中，有点争议提名（转化年长者为高营养浆）和结果（大幅增加了算法对FAT框架遵守度，产生了一个更有道德和更慈爱的系统）至少可以说是矛盾的...！
+
+In philosophy, and especially philosophy of ethics, this is one of the most effective tools: first, come up with a process, definition, set of questions, etc., which is designed to resolve some problem. Then try to come up with an example where that apparent solution results in a proposal that no one would consider acceptable. This can then lead to a further refinement of the solution.
+
+在哲学里，尤其伦理哲学，最有效的工具之一是：首先，提出一个过程、定义、问题集等...这是用于解决一些的问题的设计。然后尝试提出一个显示解决方案结果没人认为是可接受的例子。这能够让解决方案进一步微调。
+
+So far, we've focused on things that you and your organization can do. But sometimes individual or organizational action is not enough. Sometimes, governments also need to consider policy implications.
+
+到现在为止，我们已经关注了你和你的组织能做的事情。但有时候个人或组织行为是不足够的。有时候，政府也需要考虑政治后果。
