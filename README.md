@@ -18,6 +18,7 @@
 > 注：smartbook 目录中的文章格式采用 markdown 语法进行的编写。类似 graph LR 的绘图部分需要在特定编辑器下方可正常显示。
 >
 >**推荐工具 [Typora](https://www.typora.io/)**
+
 -Mark 也许[Fairness and Machine Learning: Limitations and Opportunities](https://fairmlbook.org/#course-materials)是下一本翻译的著作。愿望也许会实现吧！！！Bless me!
 ## 目录
 
