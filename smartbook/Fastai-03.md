@@ -827,3 +827,11 @@ In philosophy, and especially philosophy of ethics, this is one of the most effe
 So far, we've focused on things that you and your organization can do. But sometimes individual or organizational action is not enough. Sometimes, governments also need to consider policy implications.
 
 到现在为止，我们已经关注了你和你的组织能做的事情。但有时候个人或组织行为是不足够的。有时候，政府也需要考虑政治后果。
+
+## Role of Policy
+
+## 政策的作用
+
+We often talk to people who are eager for technical or design fixes to be a full solution to the kinds of problems that we've been discussing; for instance, a technical approach to debias data, or design guidelines for making technology less addictive. While such measures can be useful, they will not be sufficient to address the underlying problems that have led to our current state. For example, as long as it is incredibly profitable to create addictive technology, companies will continue to do so, regardless of whether this has the side effect of promoting conspiracy theories and polluting our information ecosystem. While individual designers may try to tweak product designs, we will not see substantial changes until the underlying profit incentives change.
+
+我们经常与那些热衷技术或设计修复做为我们已经讨论过的那些类型问题的合理解决方案的人交谈。例如，一个技术方法去偏误化数据，或设计指引使得减少技术依赖。当这样的措施能够被使用时，他们将不足以去处理已经导致我们目前状态的那些潜在问题。例如，当创建令人着迷的技术有令人难以执行的利益，公司将会持续去做这些事情，不会理会是否有发展为阴谋论的后果及污染我们的信息生态系统。当个人设计者尝试扭转产品设计，直到潜在收益刺激改变前我们不会看到显著的改变。
