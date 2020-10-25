@@ -871,3 +871,14 @@ Many of the issues we are seeing in tech are actually human rights issues, such 
 We need both regulatory and legal changes, *and* the ethical behavior of individuals. Individual behavior change can’t address misaligned profit incentives, externalities (where corporations reap large profits while offloading their costs and harms to the broader society), or systemic failures. However, the law will never cover all edge cases, and it is important that individual software developers and data scientists are equipped to make ethical decisions in practice.
 
 我们需要法则和法律两者的变化*和*个人道德行为。个人行为改变不能处理偏离的利益刺激、外部经济效果（公司们当卸掉他们的成本并伤害广泛的社会时收获巨大收益）、或系统性失败。然而，法律无法覆盖全面的边缘案例，并且个人软件开发者和数据科学装备它在实践中做出伦理决策是很重要的。
+
+### Cars: A Historical Precedent
+
+### 汽车：一个历史判例
+
+The problems we are facing are complex, and there are no simple solutions. This can be discouraging, but we find hope in considering other large challenges that people have tackled throughout history. One example is the movement to increase car safety, covered as a case study in ["Datasheets for Datasets"](https://arxiv.org/abs/1803.09010) by Timnit Gebru et al. and in the design podcast [99% Invisible](https://99percentinvisible.org/episode/nut-behind-wheel/). Early cars had no seatbelts, metal knobs on the dashboard that could lodge in people’s skulls during a crash, regular plate glass windows that shattered in dangerous ways, and non-collapsible steering columns that impaled drivers. However, car companies were incredibly resistant to even discussing the idea of safety as something they could help address, and the widespread belief was that cars are just the way they are, and that it was the people using them who caused problems.
+
+我们面对的这些是复杂的，并用没有一个简单的解决方案。这让人变的沮丧，但我们在考虑人们曾经所处理的贯穿历史其它巨大挑战中找到了希望。一个增加汽车的安全性活动例子，在蒂姆尼特·格布鲁等人编写的论文[对于数据集的数据页](https://arxiv.org/abs/1803.09010)中做为一个案例研究。并且设计要播客[99%不可见](https://99percentinvisible.org/episode/nut-behind-wheel/)中。早期的汽车没有安全带，在仪表板上有金属的球形把手，在冲撞期间能进入人的颅骨中，普通的平面玻璃窗在危险的方式破碎，并且不可折叠的转向柱刺穿驾驶员。然而，汽车公司们难以置信的阻挠去讨论，甚至有些事情他们能够帮助处理的安全想法，并且广泛的相信汽车只是他们的生活方式，是使用他们的人引发了问题。
+
+
+
