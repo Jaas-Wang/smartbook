@@ -836,3 +836,11 @@ We often talk to people who are eager for technical or design fixes to be a full
 
 我们经常与那些热衷技术或设计修复做为我们已经讨论过的那些类型问题的合理解决方案的人交谈。例如，一个技术方法去偏误化数据，或设计指引使得减少技术依赖。当这样的措施能够被使用时，他们将不足以去处理已经导致我们目前状态的那些潜在问题。例如，当创建令人着迷的技术有令人难以执行的利益，公司将会持续去做这些事情，不会理会是否有发展为阴谋论的后果及污染我们的信息生态系统。当个人设计者尝试扭转产品设计，直到潜在收益刺激改变前我们不会看到显著的改变。
 
+### The Effectiveness of Regulation
+
+### 规定的有效性
+
+To look at what can cause companies to take concrete action, consider the following two examples of how Facebook has behaved. In 2018, a UN investigation found that Facebook had played a “determining role” in the ongoing genocide of the Rohingya, an ethnic minority in Mynamar described by UN Secretary-General Antonio Guterres as "one of, if not the, most discriminated people in the world." Local activists had been warning Facebook executives that their platform was being used to spread hate speech and incite violence since as early as 2013. In 2015, they were warned that Facebook could play the same role in Myanmar that the radio broadcasts played during the Rwandan genocide (where a million people were killed). Yet, by the end of 2015, Facebook only employed four contractors that spoke Burmese. As one person close to the matter said, "That’s not 20/20 hindsight. The scale of this problem was significant and it was already apparent." Zuckerberg promised during the congressional hearings to hire "dozens" to address the genocide in Myanmar (in 2018, years after the genocide had begun, including the destruction by fire of at least 288 villages in northern Rakhine state after August 2017).
+
+看来一下是什么能够让公司采取实际行动，下面考虑两个脸书如果表现的。在2018年，一项联合国调查发现脸书扮演了一个罗兴亚人持续种族灭绝“决策者”的角色，罗兴亚人是一个在缅甸的少数民族，被联合国秘书长安东尼奥·古特雷斯描述为“世界上最受歧视的人种之一。” 早在2013年当地活动家就已经警告了脸书管理层，他们的平台被用来散布仇恨言论和煽动暴力。在2015年，他们被警告在缅甸脸书能够扮演广播电台在卢旺达种族灭绝期间（在那里一百万人被杀害）所扮演的相同角色。然而，2015年末，脸书只是雇佣了四个说缅甸语的承包商。一个接近本事件的人说，“这不是一个简单的事后诸葛亮，这个问题的规模是值得关注的并用它已经显现出来了。”在国会听证会期间扎克伯格承诺雇佣“数打”员工来处理在缅甸的种族灭绝（在2018年，种族灭绝开始后的数年，包括2017年8月后在若开邦北部差不多有288个村庄被大火摧毁。）
+
