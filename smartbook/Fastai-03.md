@@ -856,3 +856,18 @@ In an [article on privacy issues](https://idlewords.com/2019/06/the_new_wilderne
 >
 > ：这个监管项目在发达国家已经如果的成功，我们面临忘记以前生活的风险。曾经是[伦敦象征](https://en.wikipedia.org/wiki/Pea_soup_fog)的窒息烟雾现如今在雅加达和德里杀死了几千人。在俄亥俄州的[库霍加河曾经着火](http://www.ohiohistorycentral.org/w/Cuyahoga_River_Fire)。一个未预料到后果且尤为恐怖的例子，四乙基铅加到汽油中在世界范围内[提升了暴力犯罪](https://en.wikipedia.org/wiki/Lead%E2%80%93crime_hypothesis) 的比率有50年的时候。只是告诉人们用钱包投票，或小心的审视每个公司给出的他们商业环境政策，或停止使用有问题的技术，都没办法让任何一个伤害能够修复。这要协调，有时要需要更高的技巧性，跨越司法管辖权边界的监管去修复他们。在一些案例中，如[限制商业制冷剂](https://en.wikipedia.org/wiki/Montreal_Protocol)消耗大气层，那些规定需要全世界达成一致。在对于我们隐私法的观点上我们需要一个类似改变。
 
+### Rights and Policy
+
+### 权力和政策
+
+Clean air and clean drinking water are public goods which are nearly impossible to protect through individual market decisions, but rather require coordinated regulatory action. Similarly, many of the harms resulting from unintended consequences of misuses of technology involve public goods, such as a polluted information environment or deteriorated ambient privacy. Too often privacy is framed as an individual right, yet there are societal impacts to widespread surveillance (which would still be the case even if it was possible for a few individuals to opt out).
+
+清新的空气和干净的饮用水是公共产品，这几乎不可能通过个人市场决策进行保护，而需要协调监管行动。相类似的，很多来自涉及公共产品技术误用的无意识后果的伤害后果，例如污染信息环境或恶化隐私环境。正常的隐私是个人权力框架，然而社会冲突需要广泛的监管（即使可能有少数人选择退出也要依然如此）。
+
+Many of the issues we are seeing in tech are actually human rights issues, such as when a biased algorithm recommends that Black defendants have longer prison sentences, when particular job ads are only shown to young people, or when police use facial recognition to identify protesters. The appropriate venue to address human rights issues is typically through the law.
+
+我们在技术中看到的很多这样的问题实际上是人权问题，如果当一个偏见算法推荐黑人被告有更长的监狱判决，当特定工作广告只给年青人展示，或当警察使用人脸识别去辨别示威者。通过法律处理人权问题是很典型的合适手段。
+
+We need both regulatory and legal changes, *and* the ethical behavior of individuals. Individual behavior change can’t address misaligned profit incentives, externalities (where corporations reap large profits while offloading their costs and harms to the broader society), or systemic failures. However, the law will never cover all edge cases, and it is important that individual software developers and data scientists are equipped to make ethical decisions in practice.
+
+我们需要法则和法律两者的变化*和*个人道德行为。个人行为改变不能处理偏离的利益刺激、外部经济效果（公司们当卸掉他们的成本并伤害广泛的社会时收获巨大收益）、或系统性失败。然而，法律无法覆盖全面的边缘案例，并且个人软件开发者和数据科学装备它在实践中做出伦理决策是很重要的。
