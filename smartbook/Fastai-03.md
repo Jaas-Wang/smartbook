@@ -846,4 +846,13 @@ To look at what can cause companies to take concrete action, consider the follow
 
 This stands in stark contrast to Facebook quickly [hiring 1,200 people in Germany](http://thehill.com/policy/technology/361722-facebook-opens-second-german-office-to-comply-with-hate-speech-law) to try to avoid expensive penalties (of up to 50 million euros) under a new German law against hate speech. Clearly, in this case, Facebook was more reactive to the threat of a financial penalty than to the systematic destruction of an ethnic minority.
 
-形成鲜明对比的是在德国新的反对仇恨言论法律下，脸书在德国快速雇佣1200名员工以试图规避昂贵的处罚（大约5千万欧元）。在这个案例中，非常明显相比系统性的摧毁少数民族脸书对于经济的威胁反应更强。
+形成鲜明对比的是在德国新的反对仇恨言论法律下，脸书快速[在德国雇佣1200名员工](http://thehill.com/policy/technology/361722-facebook-opens-second-german-office-to-comply-with-hate-speech-law)以试图规避昂贵的处罚（大约5千万欧元）。在这个案例中，非常明显相比系统性的摧毁少数民族脸书对于经济的威胁反应更强。
+
+In an [article on privacy issues](https://idlewords.com/2019/06/the_new_wilderness.htm), Maciej Ceglowski draws parallels with the environmental movement:
+
+在一篇[隐私问题的文章](https://idlewords.com/2019/06/the_new_wilderness.htm)中，梅西·切格洛夫斯基画出了与环境运动相关的平行线：
+
+> : This regulatory project has been so successful in the First World that we risk forgetting what life was like before it. Choking smog of the kind that today kills thousands in Jakarta and Delhi was [once emblematic of London](https://en.wikipedia.org/wiki/Pea_soup_fog). The Cuyahoga River in Ohio used to [reliably catch fire](http://www.ohiohistorycentral.org/w/Cuyahoga_River_Fire). In a particularly horrific example of unforeseen consequences, tetraethyl lead added to gasoline [raised violent crime rates](https://en.wikipedia.org/wiki/Lead%E2%80%93crime_hypothesis) worldwide for fifty years. None of these harms could have been fixed by telling people to vote with their wallet, or carefully review the environmental policies of every company they gave their business to, or to stop using the technologies in question. It took coordinated, and sometimes highly technical, regulation across jurisdictional boundaries to fix them. In some cases, like the [ban on commercial refrigerants](https://en.wikipedia.org/wiki/Montreal_Protocol) that depleted the ozone layer, that regulation required a worldwide consensus. We’re at the point where we need a similar shift in perspective in our privacy law.
+>
+> ：这个监管项目在发达国家已经如果的成功，我们面临忘记以前生活的风险。曾经是[伦敦象征](https://en.wikipedia.org/wiki/Pea_soup_fog)的窒息烟雾现如今在雅加达和德里杀死了几千人。在俄亥俄州的[库霍加河曾经着火](http://www.ohiohistorycentral.org/w/Cuyahoga_River_Fire)。一个未预料到后果且尤为恐怖的例子，四乙基铅加到汽油中在世界范围内[提升了暴力犯罪](https://en.wikipedia.org/wiki/Lead%E2%80%93crime_hypothesis) 的比率有50年的时候。只是告诉人们用钱包投票，或小心的审视每个公司给出的他们商业环境政策，或停止使用有问题的技术，都没办法让任何一个伤害能够修复。这要协调，有时要需要更高的技巧性，跨越司法管辖权边界的监管去修复他们。在一些案例中，如[限制商业制冷剂](https://en.wikipedia.org/wiki/Montreal_Protocol)消耗大气层，那些规定需要全世界达成一致。在对于我们隐私法的观点上我们需要一个类似改变。
+
