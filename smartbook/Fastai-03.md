@@ -973,6 +973,27 @@ One of our reviewers for this book, Fred Monroe, used to work in hedge fund trad
 4. 一个跨学科团队怎么能够帮助规避负面结果？
 5. 阅读论文“机器学习会自动化道德危机和错误吗”。你认为应该采取什么活动来处理这篇论文中识别的那些问题？
 6. 阅读文章“我们将如何阻止基于人工智能的伪造？” 你认为埃齐奥尼建议的方法有用吗？为什么？
-7. 在本章完成“分析一个你正在工作的项目”的小节。
+7. 在本章完成“分析一个你正在工作的项目”的部分。
 8. 思考你的团队是否能够更多样化。如果可以，什么方法可能有帮助？
 
+## Deep Learning in Practice: That's a Wrap!
+
+## 实践中的机器学习：完满结束了！
+
+Congratulations! You've made it to the end of the first section of the book. In this section we've tried to show you what deep learning can do, and how you can use it to create real applications and products. At this point, you will get a lot more out of the book if you spend some time trying out what you've learned. Perhaps you have already been doing this as you go along—in which case, great! If not, that's no problem either... Now is a great time to start experimenting yourself.
+
+恭喜！你已经到了本书的第一部分的结尾。在本部分我们尝试给你展示深度学习能做什么，以及你如何利用它去创建一个真实应用和产品。基于这一点，如果你花费一些时候实验你已经学到的内容，你将会获得更多本书外的知识。在这种情况下也许你已经这样做了，很好！如果没有，也不是问题... 现在是开始你自己试验的好时候。
+
+If you haven't been to the [book's website](https://book.fast.ai/) yet, head over there now. It's really important that you get yourself set up to run the notebooks. Becoming an effective deep learning practitioner is all about practice, so you need to be training models. So, please go get the notebooks running now if you haven't already! And also have a look on the website for any important updates or notices; deep learning changes fast, and we can't change the words that are printed in this book, so the website is where you need to look to ensure you have the most up-to-date information.
+
+
+
+Make sure that you have completed the following steps:
+
+- Connect to one of the GPU Jupyter servers recommended on the book's website.
+- Run the first notebook yourself.
+- Upload an image that you find in the first notebook; then try a few different images of different kinds to see what happens.
+- Run the second notebook, collecting your own dataset based on image search queries that you come up with.
+- Think about how you can use deep learning to help you with your own projects, including what kinds of data you could use, what kinds of problems may come up, and how you might be able to mitigate these issues in practice.
+
+In the next section of the book you will learn about how and why deep learning works, instead of just seeing how you can use it in practice. Understanding the how and why is important for both practitioners and researchers, because in this fairly new field nearly every project requires some level of customization and debugging. The better you understand the foundations of deep learning, the better your models will be. These foundations are less important for executives, product managers, and so forth (although still useful, so feel free to keep reading!), but they are critical for anybody who is actually training and deploying models themselves.
