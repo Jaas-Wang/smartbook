@@ -1797,7 +1797,7 @@ You will need to read all these chapters to progress further in the book, but it
 
 ## Questionnaire
 
-## 调查表
+## 调查问卷
 
 It can be hard to know in pages and pages of prose what the key things are that you really need to focus on and remember. So, we've prepared a list of questions and suggested steps to complete at the end of each chapter. All the answers are in the text of the chapter, so if you're not sure about anything here, reread that part of the text and make sure you understand it. Answers to all these questions are also available on the [book's website](https://book.fast.ai/). You can also visit [the forums](https://forums.fast.ai/) if you get stuck to get help from other folks studying this material.
 
