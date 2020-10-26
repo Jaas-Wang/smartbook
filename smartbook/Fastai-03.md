@@ -952,5 +952,27 @@ One of our reviewers for this book, Fred Monroe, used to work in hedge fund trad
 17.  马库拉中心描述的五伦理视角是什么？
 18.  政策在哪里是处理数据伦理问题的一个合适工具？
 
+### Further Research:
 
+### 未来研究：
+
+1. Read the article "What Happens When an Algorithm Cuts Your Healthcare". How could problems like this be avoided in the future?
+2. Research to find out more about YouTube's recommendation system and its societal impacts. Do you think recommendation systems must always have feedback loops with negative results? What approaches could Google take to avoid them? What about the government?
+3. Read the paper ["Discrimination in Online Ad Delivery"](https://arxiv.org/abs/1301.6822). Do you think Google should be considered responsible for what happened to Dr. Sweeney? What would be an appropriate response?
+4. How can a cross-disciplinary team help avoid negative consequences?
+5. Read the paper "Does Machine Learning Automate Moral Hazard and Error". What actions do you think should be taken to deal with the issues identified in this paper?
+6. Read the article "How Will We Prevent AI-Based Forgery?" Do you think Etzioni's proposed approach could work? Why?
+7. Complete the section "Analyze a Project You Are Working On" in this chapter.
+8. Consider whether your team could be more diverse. If so, what approaches might help?
+
+
+
+1. 阅读文章“当算法削减了你的医疗保健时会发生什么”。像这样的问题在未来如果规避？
+2. 研究去发现更多YouTube的推荐系统和它的社会影响。你认为推荐系统一定总有负面后果的反馈循环吗？谷歌能采取什么方法来规避他们？政府能做什么？
+3. 阅读论文["在线广告的歧视"](https://arxiv.org/abs/1301.6822)。你感觉谷歌应该对于斯威尼博士发生的事情认为负有责任的吗？一个合适的答复是什么？
+4. 一个跨学科团队怎么能够帮助规避负面结果？
+5. 阅读论文“机器学习会自动化道德危机和错误吗”。你认为应该采取什么活动来处理这篇论文中识别的那些问题？
+6. 阅读文章“我们将如何阻止基于人工智能的伪造？” 你认为埃齐奥尼建议的方法有用吗？为什么？
+7. 在本章完成“分析一个你正在工作的项目”的小节。
+8. 思考你的团队是否能够更多样化。如果可以，什么方法可能有帮助？
 
