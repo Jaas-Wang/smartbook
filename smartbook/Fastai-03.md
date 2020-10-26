@@ -905,3 +905,5 @@ It's reassuring that Angwin thinks we are largely still in the diagnosis phase: 
 安格温认为我们很大程度上一直在诊断阶段这是让人安心的：如果这些问题感觉不完整是你的理解，这是正常和自然的。还没有人有一个“解决方案”，然而我们持续工作以更好的理解和处理这些我们正在面对的问题是很有必要的。
 
 One of our reviewers for this book, Fred Monroe, used to work in hedge fund trading. He told us, after reading this chapter, that many of the issues discussed here (distribution of data being dramatically different than what a model was trained on, the impact feedback loops on a model once deployed and at scale, and so forth) were also key issues for building profitable trading models. The kinds of things you need to do to consider societal consequences are going to have a lot of overlap with things you need to do to consider organizational, market, and customer consequences—so thinking carefully about ethics can also help you think carefully about how to make your data product successful more generally!
+
+我们这本书的评审之一弗雷德·门罗，曾经在对冲基金工作。读了这个章节后他告诉我们，这里讨论的很多问题（一个模型的训练和数据的分布是截然不同的、一旦大规模部署模型上的影响反馈就会循环，等等）也是创建获交易模型的关键问题。这类事情你需要去做去思考社会后果，这将与你需要去做去思考组织、市场和客户后果的事情有一些重叠。所以仔细思考伦理能够帮助你仔细思考关于如何使得你的数据产品更广泛的成功！
