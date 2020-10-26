@@ -986,14 +986,23 @@ Congratulations! You've made it to the end of the first section of the book. In 
 
 If you haven't been to the [book's website](https://book.fast.ai/) yet, head over there now. It's really important that you get yourself set up to run the notebooks. Becoming an effective deep learning practitioner is all about practice, so you need to be training models. So, please go get the notebooks running now if you haven't already! And also have a look on the website for any important updates or notices; deep learning changes fast, and we can't change the words that are printed in this book, so the website is where you need to look to ensure you have the most up-to-date information.
 
-
+如果你还没有访问[本书的网站](https://book.fast.ai/)，现在就前往那里吧。它是很重要的获取你自己的设置来运行这个笔记本。成为一个高效的深度学习参与者是保持实践，所以你需要训练模型。那么，现在请去运行本笔记本吧，如果你还没有开始的话！并且也要查看网站上的任何重要更新或提示；深度学习变化很快，我们不能改变已经印刷在本书内的内容，所以网站是你需要看的地方，以确保你拥有最新的信息。
 
 Make sure that you have completed the following steps:
+
+确信你已经完成了如下步骤：
 
 - Connect to one of the GPU Jupyter servers recommended on the book's website.
 - Run the first notebook yourself.
 - Upload an image that you find in the first notebook; then try a few different images of different kinds to see what happens.
 - Run the second notebook, collecting your own dataset based on image search queries that you come up with.
 - Think about how you can use deep learning to help you with your own projects, including what kinds of data you could use, what kinds of problems may come up, and how you might be able to mitigate these issues in practice.
+- 连接本书网站推荐的一个图形加速Jupyter服务器。
+- 运行你自己的第一个笔记。
+- 在第一个笔记里上传一张你找到的图片，然后尝试一些不同类型的不同图片看发生了什么。
+- 运行第二个笔记，基于你提出的图片搜索问题收你自己的数据集。
+- 思考你能如何利用深度学习去帮助你自己的项目，包括你能用的那些数据类型，那些可以产生的问题，及在实践中你能够如何减轻这些问题。
 
 In the next section of the book you will learn about how and why deep learning works, instead of just seeing how you can use it in practice. Understanding the how and why is important for both practitioners and researchers, because in this fairly new field nearly every project requires some level of customization and debugging. The better you understand the foundations of deep learning, the better your models will be. These foundations are less important for executives, product managers, and so forth (although still useful, so feel free to keep reading!), but they are critical for anybody who is actually training and deploying models themselves.
+
+在本书的下一部分，你将学习关于深度学习工作原理和原因，而不仅仅看在实践中你能如何使用它。理解原理和原因对于参与者和研究人员两类人是重要的，因为在这个相当新的领域几乎每个项目需要一定程度的定制和调度。你最好理解深度学习的基础，你的模型将会更好。这些基础对于管理人员、产品经理 等人不那么重要（不过一直是有用的，所以继续轻松阅读！），但他们对任何自己正在实际训练和部署模型的人是关键的。
