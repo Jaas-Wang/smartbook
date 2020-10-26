@@ -898,7 +898,7 @@ Many people (including us!) are looking for more satisfying, solid answers about
 
 > : I strongly believe that in order to solve a problem, you have to diagnose it, and that we’re still in the diagnosis phase of this. If you think about the turn of the century and industrialization, we had, I don’t know, 30 years of child labor, unlimited work hours, terrible working conditions, and it took a lot of journalist muckraking and advocacy to diagnose the problem and have some understanding of what it was, and then the activism to get laws changed. I feel like we’re in a second industrialization of data information... I see my role as trying to make as clear as possible what the downsides are, and diagnosing them really accurately so that they can be solvable. That’s hard work, and lots more people need to be doing it.
 >
-> 
+> ：我坚信为了解决一个问题，我们必须诊断它，并且我们一直在诊断这个阶段。是否你还记的本世纪初和工业化，我不知道，我们有30年童工历史、无限工作时长、可怕的工作条件，以及它让很多记者揭露丑闻和倡议去诊断这个问题，并对它是什么有了一些了解，然后活动者取得了法律改变。我感觉我们很像是第二次数据信息工厂化...我明白我的角度，尝试尽可能清晰的明白缺点是什么，诊断他们能够被解决的实际精确性。这是一个艰难的工作，并且很多人需要去做这个事情。
 
 It's reassuring that Angwin thinks we are largely still in the diagnosis phase: if your understanding of these problems feels incomplete, that is normal and natural. Nobody has a “cure” yet, although it is vital that we continue working to better understand and address the problems we are facing.
 
