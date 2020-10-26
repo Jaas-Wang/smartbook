@@ -902,4 +902,6 @@ Many people (including us!) are looking for more satisfying, solid answers about
 
 It's reassuring that Angwin thinks we are largely still in the diagnosis phase: if your understanding of these problems feels incomplete, that is normal and natural. Nobody has a “cure” yet, although it is vital that we continue working to better understand and address the problems we are facing.
 
+安格温认为我们很大程度上一直在诊断阶段这是让人安心的：如果这些问题感觉不完整是你的理解，这是正常和自然的。还没有人有一个“解决方案”，然而我们持续工作以更好的理解和处理这些我们正在面对的问题是很有必要的。
+
 One of our reviewers for this book, Fred Monroe, used to work in hedge fund trading. He told us, after reading this chapter, that many of the issues discussed here (distribution of data being dramatically different than what a model was trained on, the impact feedback loops on a model once deployed and at scale, and so forth) were also key issues for building profitable trading models. The kinds of things you need to do to consider societal consequences are going to have a lot of overlap with things you need to do to consider organizational, market, and customer consequences—so thinking carefully about ethics can also help you think carefully about how to make your data product successful more generally!
