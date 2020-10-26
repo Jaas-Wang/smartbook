@@ -287,7 +287,7 @@ No one at Google planned to create a system that turned family videos into porn 
 
 Part of the problem here is the centrality of metrics in driving a financially important system. When an algorithm has a metric to optimize, as you have seen, it will do everything it can to optimize that number. This tends to lead to all kinds of edge cases, and humans interacting with a system will search for, find, and exploit these edge cases and feedback loops for their advantage.
 
-这里的部分问题是因为在推动一个经济性重要系统中指标是核心。下如你看到的，当一个算法有个指标要优化时，它将作出所有努力以能够优化那数值。这个倾向导致各种极端情况，及人与系统的交互行为都会被搜索、发现，为了他们利益并利用这些极端情况并反馈循环。
+这里的部分问题是因为在推动一个金融重要系统中是指标的中心性。正如你看到的，当一个算法有个指标要优化时，它将作出所有努力以能够优化那数值。这个倾向导致各种极端情况，人与系统的交互行为都会被搜索、发现，为了他们利益并利用这些极端情况并反馈循环。
 
 There are signs that this is exactly what has happened with YouTube's recommendation system. *The Guardian* ran an article called ["How an ex-YouTube Insider Investigated its Secret Algorithm"](https://www.theguardian.com/technology/2018/feb/02/youtube-algorithm-election-clinton-trump-guillaume-chaslot) about Guillaume Chaslot, an ex-YouTube engineer who created AlgoTransparency, which tracks these issues. Chaslot published the chart in <ethics_yt_rt>, following the release of Robert Mueller's "Report on the Investigation Into Russian Interference in the 2016 Presidential Election."
 
@@ -907,3 +907,50 @@ It's reassuring that Angwin thinks we are largely still in the diagnosis phase: 
 One of our reviewers for this book, Fred Monroe, used to work in hedge fund trading. He told us, after reading this chapter, that many of the issues discussed here (distribution of data being dramatically different than what a model was trained on, the impact feedback loops on a model once deployed and at scale, and so forth) were also key issues for building profitable trading models. The kinds of things you need to do to consider societal consequences are going to have a lot of overlap with things you need to do to consider organizational, market, and customer consequences—so thinking carefully about ethics can also help you think carefully about how to make your data product successful more generally!
 
 我们这本书的评审之一弗雷德·门罗，曾经在对冲基金工作。读了这个章节后他告诉我们，这里讨论的很多问题（一个模型的训练和数据的分布是截然不同的、一旦大规模部署模型上的影响反馈就会循环，等等）也是创建获交易模型的关键问题。这类事情你需要去做去思考社会后果，这将与你需要去做去思考组织、市场和客户后果的事情有一些重叠。所以仔细思考伦理能够帮助你仔细思考关于如何使得你的数据产品更广泛的成功！
+
+## Questionnaire
+
+## 调查问卷
+
+1. Does ethics provide a list of "right answers"?
+2. How can working with people of different backgrounds help when considering ethical questions?
+3. What was the role of IBM in Nazi Germany? Why did the company participate as it did? Why did the workers participate?
+4. What was the role of the first person jailed in the Volkswagen diesel scandal?
+5. What was the problem with a database of suspected gang members maintained by California law enforcement officials?
+6. Why did YouTube's recommendation algorithm recommend videos of partially clothed children to pedophiles, even though no employee at Google had programmed this feature?
+7. What are the problems with the centrality of metrics?
+8. Why did Meetup.com not include gender in its recommendation system for tech meetups?
+9. What are the six types of bias in machine learning, according to Suresh and Guttag?
+10. Give two examples of historical race bias in the US.
+11. Where are most images in ImageNet from?
+12. In the paper ["Does Machine Learning Automate Moral Hazard and Error"](https://scholar.harvard.edu/files/sendhil/files/aer.p20171084.pdf) why is sinusitis found to be predictive of a stroke?
+13. What is representation bias?
+14. How are machines and people different, in terms of their use for making decisions?
+15. Is disinformation the same as "fake news"?
+16. Why is disinformation through auto-generated text a particularly significant issue?
+17. What are the five ethical lenses described by the Markkula Center?
+18. Where is policy an appropriate tool for addressing data ethics issues?
+
+
+
+1.  道德标准提供了一个"正确答案"列表吗？
+2.  如果能够与不同背景的人工作以有助于考虑伦理问题？
+3.  在纳粹德国IBM的角色是什么？为什么这家公司参与其中？为什么工作人参与？
+4.  在大众柴油丑闻中第一个被监禁人的角色是什么？
+5.  通过加利福尼亚执法人员维护的帮派成员嫌疑人数据库的问题是什么？
+6.  为什么YouTube的推荐算法推荐部分大龄儿童给恋童癖，即使谷歌的员工没人编写这一功能？
+7.  指标中心性的问题是什么？
+8.  对于技术见面为什么见面会网站没有在它的推荐系统中包含性别？
+9.  根据苏雷什和古塔格，在机器学习中的六种偏见是什么？
+10.  举出两个在美国历史种族偏见的例子。
+11.  在ImageNet里最多的图片来自哪些地区？
+12.  在论文[机器学习会自动化道德危机和错误吗](https://scholar.harvard.edu/files/sendhil/files/aer.p20171084.pdf)中，为什么发现鼻窦炎是中风的先兆？
+13.  什么是代表性偏见？
+14.  机器与人在他们做出决策的机制有怎样的差异？
+15.  误导信息等同与“假新闻”吗？
+16.  为什么通过自动文本生成的误导信息是一个尤为重大的问题？
+17.  马库拉中心描述的五伦理视角是什么？
+18.  政策在哪里是处理数据伦理问题的一个合适工具？
+
+
+
