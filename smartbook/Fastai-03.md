@@ -894,9 +894,11 @@ Coming from a background of working with binary logic, the lack of clear answers
 
 Many people (including us!) are looking for more satisfying, solid answers about how to address harmful impacts of technology. However, given the complex, far-reaching, and interdisciplinary nature of the problems we are facing, there are no simple solutions. Julia Angwin, former senior reporter at ProPublica who focuses on issues of algorithmic bias and surveillance (and one of the 2016 investigators of the COMPAS recidivism algorithm that helped spark the field of FAccT) said in [a 2019 interview](https://www.fastcompany.com/90337954/who-cares-about-liberty-julia-angwin-and-trevor-paglen-on-privacy-surveillance-and-the-mess-were-in):
 
-
+许多人（包括我们！）寻找关于如何处理技术伤害影响的更满意与固定答案。然而，我们正面对这些复杂、深远和跨学科性的问题，没有简单的解决方案。前ProPublica资深记者朱莉娅·安格温关注算法偏见和监管（也是康巴丝累犯计算法的2016年调查员之一，该算法帮助启动了FAccT这一领域）问题，[在201年的访谈](https://www.fastcompany.com/90337954/who-cares-about-liberty-julia-angwin-and-trevor-paglen-on-privacy-surveillance-and-the-mess-were-in)中说到：
 
 > : I strongly believe that in order to solve a problem, you have to diagnose it, and that we’re still in the diagnosis phase of this. If you think about the turn of the century and industrialization, we had, I don’t know, 30 years of child labor, unlimited work hours, terrible working conditions, and it took a lot of journalist muckraking and advocacy to diagnose the problem and have some understanding of what it was, and then the activism to get laws changed. I feel like we’re in a second industrialization of data information... I see my role as trying to make as clear as possible what the downsides are, and diagnosing them really accurately so that they can be solvable. That’s hard work, and lots more people need to be doing it.
+>
+> 
 
 It's reassuring that Angwin thinks we are largely still in the diagnosis phase: if your understanding of these problems feels incomplete, that is normal and natural. Nobody has a “cure” yet, although it is vital that we continue working to better understand and address the problems we are facing.
 
