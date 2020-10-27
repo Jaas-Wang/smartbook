@@ -106,3 +106,29 @@ im3
 
 out: ![three_number](./_v_images/three_number.png)
 
+Here we are using the `Image` class from the *Python Imaging Library* (PIL), which is the most widely used Python package for opening, manipulating, and viewing images. Jupyter knows about PIL images, so it displays the image for us automatically.
+
+这里我们用了来自*python图像库*（PIL）的`Image`类，这是使用最为广泛的Python包用于打开、操作和查看图像。Jupyter知道PIL图片，所以它会为我们自动显示图片。
+
+In a computer, everything is represented as a number. To view the numbers that make up this image, we have to convert it to a *NumPy array* or a *PyTorch tensor*. For instance, here's what a section of the image looks like, converted to a NumPy array:
+
+在一个计算机里，所有的事情被表示为一个数值。查看组成这一图片的数值，我们必须把它转换为一个*NumPy数组*或一个*PyTorch张量*。例如，这是一张选中的图像看起来已转换为一个NumPy数组：
+
+```python
+array(im3)[4:10,4:10]
+```
+
+$
+\begin{matrix} out:array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
+& [& 0, & 0, & 0, & 0, & 0, & 29&], \\ 
+& [& 0, & 0, & 0, & 48, & 166, & 224&], \\ 
+& [& 0, & 93, & 244, & 249, & 253, & 187&], \\
+& [& 0, & 107, & 253, & 253, & 230, & 48&], \\
+& [& 0, & 3, & 20, & 20, & 15, & 0&]]&dtype=uint8)
+\end{matrix}
+$
+
+The `4:10` indicates we requested the rows from index 4 (included) to 10 (not included) and the same for the columns. NumPy indexes from top to bottom and left to right, so this section is located in the top-left corner of the image. Here's the same thing as a PyTorch tensor:
+
+
+
