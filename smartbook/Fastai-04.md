@@ -120,15 +120,42 @@ array(im3)[4:10,4:10]
 
 $
 \begin{matrix} out:array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
-& [&0,& 0,& 0,& 0,& 0,& 29&], \\ 
-& [&0,& 0,& 0,& 48,& 166,& 224&], \\ 
-& [&0,& 93,& 244,& 249,& 253,& 187&], \\
-& [&0,& 107,& 253,& 253,& 230,& 48&], \\
-& [&0,& 3,& 20,& 20,& 15,& 0&]]&dtype=uint8)
+	& [&0,& 0,& 0,& 0,& 0,& 29&], \\ 
+	& [&0,& 0,& 0,& 48,& 166,& 224&], \\ 
+	& [&0,& 93,& 244,& 249,& 253,& 187&], \\
+	& [&0,& 107,& 253,& 253,& 230,& 48&], \\
+	& [&0,& 3,& 20,& 20,& 15,& 0&]]&dtype=uint8)
 \end{matrix}
 $
 
 The `4:10` indicates we requested the rows from index 4 (included) to 10 (not included) and the same for the columns. NumPy indexes from top to bottom and left to right, so this section is located in the top-left corner of the image. Here's the same thing as a PyTorch tensor:
 
+4:10指示的是我们需要索引号从4（包含）到10（不包含）的行和相同的列。NumPy索引号从上到下和从左到右，所以这一部分位置在图像的左上部。对于PyTorch张量是同样的事情：
 
+```python
+tensor(im3)[4:10,4:10]
+```
+
+$
+\begin{matrix} out:array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
+	& [&0,& 0,& 0,& 0,& 0,& 29&], \\ 
+	& [&0,& 0,& 0,& 48,& 166,& 224&], \\ 
+	& [&0,& 93,& 244,& 249,& 253,& 187&], \\
+	& [&0,& 107,& 253,& 253,& 230,& 48&], \\
+	& [&0,& 3,& 20,& 20,& 15,& 0&]]&dtype=torch.uint8)
+\end{matrix}
+$
+
+We can slice the array to pick just the part with the top of the digit in it, and then use a Pandas DataFrame to color-code the values using a gradient, which shows us clearly how the image is created from the pixel values:
+
+我们能够切片数组挑出其中数值顶部的部分，然后用Pandas的数据结构利用一个梯度对数值颜色编码，就能够清晰的展示给我们图片被创建的像数值：
+
+```python
+#hide_output
+im3_t = tensor(im3)
+df = pd.DataFrame(im3_t[4:15,4:22])
+df.style.set_properties(**{'font-size':'6pt'}).background_gradient('Greys')
+```
+
+out: <img src="./_v_images/att_00058.png" alt="att_00058" style="zoom:50%;"  />
 
