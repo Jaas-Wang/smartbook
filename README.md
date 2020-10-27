@@ -26,6 +26,6 @@
 
 [第三章 数据伦理  中英文翻译对比：Fastai-03.md](./smartbook/Fastai-03.md)   [（英文原书：03_ethics.ipynb）](./englishbook/03_ethics.ipynb)
 
-[第四章 mnist基础  中英文翻译对比：Fastai-04.md](./smartbook/Fastai-03.md)   [（英文原书：04_mnist_basics.ipynb）](./englishbook/03_ethics.ipynb)
+[第四章 mnist基础  中英文翻译对比：Fastai-04.md](./smartbook/Fastai-04.md)   [（英文原书：04_mnist_basics.ipynb）](./englishbook/03_ethics.ipynb)
 
  
