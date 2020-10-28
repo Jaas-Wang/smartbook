@@ -237,3 +237,17 @@ stacked_threes.shape
 
 out: torch.Size([6131, 28, 28])
 
+Perhaps the most important attribute of a tensor is its *shape*. This tells you the length of each axis. In this case, we can see that we have 6,131 images, each of size 28×28 pixels. There is nothing specifically about this tensor that says that the first axis is the number of images, the second is the height, and the third is the width—the semantics of a tensor are entirely up to us, and how we construct it. As far as PyTorch is concerned, it is just a bunch of numbers in memory.
+
+也许张量最重要的属性是它的*shape*。这会告诉你每一个坐标的长度。在这个例子中，我们能够看到我们有6131张图像，每张图像的尺寸28×28像素。关于这个张量没有什么特别的只是说第一个坐标是图像的数值，第二个是图像的高，第三个是图像的宽：这样一个张量的含义就完全呈现给我们，及我们怎么构造他。正如PyTorch所考虑的，在内存中它只是一堆数。
+
+The *length* of a tensor's shape is its rank:
+
+张量形状的*长度*是它的阶：
+
+```python
+len(stacked_threes.shape)
+```
+
+out: 3
+
