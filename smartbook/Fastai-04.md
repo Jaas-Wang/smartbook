@@ -283,3 +283,18 @@ show_image(mean3);
 ```
 
 out: <img src="./_v_images/three_3.png" alt="three_3" style="zoom:33%;" />
+
+According to this dataset, this is the ideal number 3! (You may not like it, but this is what peak number 3 performance looks like.) You can see how it's very dark where all the images agree it should be dark, but it becomes wispy and blurry where the images disagree.
+
+根据这个数据集，这是一个理想的数字3！（你可能不喜欢它，但是这看起来是最优的数字3的表现。）你能看到所有的图片一致认为它应该是暗的地方非常暗的，但对于图像不一致的地方就变成小束壮和模糊不清。
+
+Let's do the same thing for the 7s, but put all the steps together at once to save some time:
+
+让我们对7做同样的事情，但同时把所有的步骤合并在一起以节省时间：
+
+```
+mean7 = stacked_sevens.mean(0)
+show_image(mean7);
+```
+
+out: <img src="./_v_images/seven.png" alt="seven" style="zoom:33%;" />
