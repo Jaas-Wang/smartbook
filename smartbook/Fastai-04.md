@@ -159,3 +159,12 @@ df.style.set_properties(**{'font-size':'6pt'}).background_gradient('Greys')
 
 out: <img src="./_v_images/att_00058.png" alt="att_00058" style="zoom:50%;"  />
 
+You can see that the background white pixels are stored as the number 0, black is the number 255, and shades of gray are between the two. The entire image contains 28 pixels across and 28 pixels down, for a total of 768 pixels. (This is much smaller than an image that you would get from a phone camera, which has millions of pixels, but is a convenient size for our initial learning and experiments. We will build up to bigger, full-color images soon.)
+
+你能够看到白色像素背景储存的数值是0，黑色的是数值255，及灰色阴影是在两者之间的数值。整张图像包含28个横向像素和28个竖向像素，一共是784个像素。（这与你从一个手机镜头拍摄的图片极为相似，它有上百万像素，但对于我们开始学习和试验小像素是一个合适的尺寸。稍后我们会创建更大和全色的图像。）
+
+So, now you've seen what an image looks like to a computer, let's recall our goal: create a model that can recognize 3s and 7s. How might you go about getting a computer to do that?
+
+
+
+> Warning: Stop and Think!: Before you read on, take a moment to think about how a computer might be able to recognize these two different digits. What kinds of features might it be able to look at? How might it be able to identify these features? How could it combine them together? Learning works best when you try to solve problems yourself, rather than just reading somebody else's answers; so step away from this book for a few minutes, grab a piece of paper and pen, and jot some ideas down…
