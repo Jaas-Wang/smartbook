@@ -290,7 +290,7 @@ According to this dataset, this is the ideal number 3! (You may not like it, but
 
 Let's do the same thing for the 7s, but put all the steps together at once to save some time:
 
-让我们对7做同样的事情，但同时把所有的步骤合并在一起以节省时间：
+让我们对7做同样的事情，但同时把所有的步骤合并起来以节省时间：
 
 ```
 mean7 = stacked_sevens.mean(0)
