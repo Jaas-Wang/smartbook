@@ -177,7 +177,7 @@ So, now you've seen what an image looks like to a computer, let's recall our goa
 
 So, here is a first idea: how about we find the average pixel value for every pixel of the 3s, then do the same for the 7s. This will give us two group averages, defining what we might call the "ideal" 3 and 7. Then, to classify an image as one digit or the other, we see which of these two ideal digits the image is most similar to. This certainly seems like it should be better than nothing, so it will make a good baseline.
 
-所以，这是第一个想法：我们如何发现３图像每个像素的平均像素值，然后对７的图像做同样的事情。这会给我们两组平均值，定义我们认为“理想”的３和７。然后分类一张图像作为一个数字或另一个，我们看这两个理想的数字图片更像哪一个。这确实好像应该比无法识别任何东西更好，所以它会做作为一个好的基线。
+所以，这是第一个想法：我们如何发现３图像每个像素的平均像素值，然后对７的图像做同样的事情。这会给我们两组平均值，定义我们认为“理想中”的３和７。然后分类一张图像作为一个数字或另一个，我们看这两个理想的数字图片更像哪一个。这确实好像应该比无法识别任何东西更好，所以它会做作为一个好的基线。
 
 > jargon: Baseline: A simple model which you are confident should perform reasonably well. It should be very simple to implement, and very easy to test, so that you can then test each of your improved ideas, and make sure they are always better than your baseline. Without starting with a sensible baseline, it is very difficult to know whether your super-fancy models are actually any good. One good approach to creating a baseline is doing what we have done here: think of a simple, easy-to-implement model. Another good approach is to search around to find other people that have solved similar problems to yours, and download and run their code on your dataset. Ideally, try both of these!
 >
@@ -298,3 +298,22 @@ show_image(mean7);
 ```
 
 out: <img src="./_v_images/seven.png" alt="seven" style="zoom:33%;" />
+
+Let's now pick an arbitrary 3 and measure its *distance* from our "ideal digits."
+
+让我们现在随意取一个3并测量我们“理想中数字”间的*差距*。
+
+> stop: Stop and Think!: How would you calculate how similar a particular image is to each of our ideal digits? Remember to step away from this book and jot down some ideas before you move on! Research shows that recall and understanding improves dramatically when you are engaged with the learning process by solving problems, experimenting, and trying new ideas yourself
+>
+> 暂停：停下来并想一想！：你将如何计算每一个我们理想数字是如何相似一个特定图片？记住从本书离开一会并在你继续前写一下一些想法！研究显示当你通过解决问题、试验和尝试你自己的新想法来应对你的学习过程的时候，回忆能力和理解力会戏剧化的改善。
+
+Here's a sample 3:
+
+这是一个样本3：
+
+```python
+a_3 = stacked_threes[1]
+show_image(a_3);
+```
+
+out: <img src="./_v_images/three_4.png" alt="three_4" style="zoom:33%;" />
