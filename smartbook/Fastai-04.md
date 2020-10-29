@@ -317,3 +317,21 @@ show_image(a_3);
 ```
 
 out: <img src="./_v_images/three_4.png" alt="three_4" style="zoom:33%;" />
+
+How can we determine its distance from our ideal 3? We can't just add up the differences between the pixels of this image and the ideal digit. Some differences will be positive while others will be negative, and these differences will cancel out, resulting in a situation where an image that is too dark in some places and too light in others might be shown as having zero total differences from the ideal. That would be misleading!
+
+我们怎样能够确定它与我们理想中3的差距？我们不能只是加这张图片和理想中数字像素间的差异。一些差异是正向的同时其它一些会是负向的，这些差异将会抵消，在图像中一些地方太暗，在别一些地方太亮会被显示与理想数字总差异为零的一种结果情况。 这会被误导！
+
+To avoid this, there are two main ways data scientists measure distance in this context:
+
+为避免发现此事， 在这种情况下这里有两个数据科学家测量差距的主要方法：
+
+- Take the mean of the *absolute value* of differences (absolute value is the function that replaces negative values with positive values). This is called the *mean absolute difference* or *L1 norm*
+- Take the mean of the *square* of differences (which makes everything positive) and then take the *square root* (which undoes the squaring). This is called the *root mean squared error* (RMSE) or *L2 norm*.
+- 取差异的*绝对值*的平均值（绝对值是替换负值为正值的一个方法）这称之为*平均绝对差*或*L1 正则*。
+- 到差异的*平方*的平均值（使得每个数为正），然后求*平均根*（撤销平方）。这称之为*均方根误差*或*L2正则*
+
+> important: It's Okay to Have Forgotten Your Math: In this book we generally assume that you have completed high school math, and remember at least some of it... But everybody forgets some things! It all depends on what you happen to have had reason to practice in the meantime. Perhaps you have forgotten what a *square root* is, or exactly how they work. No problem! Any time you come across a maths concept that is not explained fully in this book, don't just keep moving on; instead, stop and look it up. Make sure you understand the basic idea, how it works, and why we might be using it. One of the best places to refresh your understanding is Khan Academy. For instance, Khan Academy has a great [introduction to square roots](https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:rational-exponents-radicals/x2f8bb11595b61c86:radicals/v/understanding-square-roots).
+>
+> 重要：已经忘记你的数学知识这没什么关系：在本书我们通常假设你已经完成高中数学，并至少还记得一些... 但每个人都忘记了很多！在此期间它完全依赖于你碰巧有机会用到。也许你已经忘记什么是*平均根*或究竟他们怎么计算。没有问题！在本书任何时候你遇到了一个没有完全解释的数学概念，不要只是向下看，而是停下来并查找它。确保你理解基础概念，它的计算原理，及我们为什么可能会用到它。恢复你理解的最好的一个地方是可汗学院。例如，可汗学院有一个很好的对[平均根的介绍](https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:rational-exponents-radicals/x2f8bb11595b61c86:radicals/v/understanding-square-roots)。
+
