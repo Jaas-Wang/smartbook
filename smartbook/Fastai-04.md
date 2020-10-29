@@ -329,7 +329,7 @@ To avoid this, there are two main ways data scientists measure distance in this 
 - Take the mean of the *absolute value* of differences (absolute value is the function that replaces negative values with positive values). This is called the *mean absolute difference* or *L1 norm*
 - Take the mean of the *square* of differences (which makes everything positive) and then take the *square root* (which undoes the squaring). This is called the *root mean squared error* (RMSE) or *L2 norm*.
 - 取差异的*绝对值*的平均值（绝对值是替换负值为正值的一个方法）这称之为*平均绝对差*或*L1 正则*。
-- 到差异的*平方*的平均值（使得每个数为正），然后求*平均根*（撤销平方）。这称之为*均方根误差*或*L2正则*
+- 到差异的*平方*的平均值（使得每个数为正），然后求*平均根*（撤销平方）。这称之为*均方根误差*（RMSE）或*L2正则*
 
 > important: It's Okay to Have Forgotten Your Math: In this book we generally assume that you have completed high school math, and remember at least some of it... But everybody forgets some things! It all depends on what you happen to have had reason to practice in the meantime. Perhaps you have forgotten what a *square root* is, or exactly how they work. No problem! Any time you come across a maths concept that is not explained fully in this book, don't just keep moving on; instead, stop and look it up. Make sure you understand the basic idea, how it works, and why we might be using it. One of the best places to refresh your understanding is Khan Academy. For instance, Khan Academy has a great [introduction to square roots](https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:rational-exponents-radicals/x2f8bb11595b61c86:radicals/v/understanding-square-roots).
 >
@@ -351,6 +351,20 @@ out: (tensor(0.1114), tensor(0.2021))
 dist_7_abs = (a_3 - mean7).abs().mean()
 dist_7_sqr = ((a_3 - mean7)**2).mean().sqrt()
 dist_7_abs,dist_7_sqr
+```
+
+out: (tensor(0.1586), tensor(0.3021))
+
+In both cases, the distance between our 3 and the "ideal" 3 is less than the distance to the ideal 7. So our simple model will give the right prediction in this case.
+
+在两个事例中，我们的3和“理想的”3之间的差距要小于它与理想的7之间的差距。所以在本例中我们的简单模型会给出正确的预测。
+
+PyTorch already provides both of these as *loss functions*. You'll find these inside `torch.nn.functional`, which the PyTorch team recommends importing as `F` (and is available by default under that name in fastai):
+
+PyTorch已经以*损失函数*的方式提供了这两个方法。你会在`torch.nn.functional`内部发现他们，PyTorch团队推荐以`F`作为引入（并且在fastai中默认该名可用）
+
+```python
+F.l1_loss(a_3.float(),mean7), F.mse_loss(a_3,mean7).sqrt()
 ```
 
 out: (tensor(0.1586), tensor(0.3021))
