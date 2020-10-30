@@ -427,7 +427,7 @@ Perhaps the most important new coding skill for a Python programmer to learn is 
 
 To create an array or tensor, pass a list (or list of lists, or list of lists of lists, etc.) to `array()` or `tensor()`:
 
-创建一个数组和张量，传递一个列表（或列表的列表，或列表的列表的列表等。）给`array()`或`tensor()`：
+创建一个数组和张量，传递一个列表（或列表的列表，或列表的列表的列表等。）给`array()` 或 `tensor()`：
 
 ```python
 data = [[1,2,3],[4,5,6]]
@@ -455,3 +455,36 @@ $
 \end{matrix}
 $
 
+All the operations that follow are shown on tensors, but the syntax and results for NumPy arrays is identical.
+
+随后所有的操作在张量上展示，但是句法和结果对于NumPy数组来说是相同的。
+
+You can select a row (note that, like lists in Python, tensors are 0-indexed so 1 refers to the second row/column):
+
+你能选择一行（请注意，就像Python中的列表，张量是从0开始索引的，所以1指的是第二行/列）：
+
+```python
+tns[1]
+```
+
+Out: tensor([4, 5, 6])
+
+or a column, by using `:` to indicate *all of the first axis* (we sometimes refer to the dimensions of tensors/arrays as *axes*):
+
+或一列，通过使用`:` 来指示*第一坐标轴的全部*（我们有时候参照张量/数组的维度为*坐标轴*）：
+
+```python
+tns[:,1]
+```
+
+Out: tensor([2, 5])
+
+You can combine these with Python slice syntax (`[start:end]` with `end` being excluded) to select part of a row or column:
+
+你能够把这些内容与Python切片句法（`[start:end]`其中`end`是被排除在外的）结合使用去选择一行或列的部分内容：
+
+```python
+tns[1,1:3]
+```
+
+Out: tensor([5, 6])
