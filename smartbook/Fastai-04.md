@@ -411,5 +411,16 @@ A NumPy array is a multidimensional table of data, with all items of the same ty
 
 A PyTorch tensor is nearly the same thing as a NumPy array, but with an additional restriction that unlocks some additional capabilities. It's the same in that it, too, is a multidimensional table of data, with all items of the same type. However, the restriction is that a tensor cannot use just any old type—it has to use a single basic numeric type for all components. For example, a PyTorch tensor cannot be jagged. It is always a regularly shaped multidimensional rectangular structure.
 
-一个PyTorch张量做的事情与NumPy数组几乎相同，但一些附加限制打开了一些附加的能力。它同样是一个所有条目类型相同的多维数据表。然而，限制是一个张量只是不能使用任何老的类型（对所有的组件它必须用一个单一基础数值类型）。例如，一个PyTorch张量不能是不规则的。它总是一个规则多维长方形结构形状。
+一个PyTorch张量做的事情与NumPy数组几乎相同，但一些附加限制打开了一些额外的能力。它同样是一个所有条目类型相同的多维数据表。然而，限制是一个张量只是不能使用任何老的类型（对所有的组件它必须用一个单一基础数值类型）。例如，一个PyTorch张量不能是不规则的。它总是一个规则多维长方形结构形状。
 
+The vast majority of methods and operators supported by NumPy on these structures are also supported by PyTorch, but PyTorch tensors have additional capabilities. One major capability is that these structures can live on the GPU, in which case their computation will be optimized for the GPU and can run much faster (given lots of values to work on). In addition, PyTorch can automatically calculate derivatives of these operations, including combinations of operations. As you'll see, it would be impossible to do deep learning in practice without this capability.
+
+在这些结构上由NumPy提供的的绝大多数方法和运算符也被PyTorch所提供，但PyTorch张量有额外的能力。一个主要能力是这些结构能够在GPU上运行，由此他们的计算能够针对GPU做优化并运行的更快（给出很多的数据去处理）。另外，PyTorch能够自动计算这些运算符的派生，包括运算符的混合体。你将会看到，它没有个能力它也许不可能在实践中做深度学习。
+
+> S: If you don't know what C is, don't worry as you won't need it at all. In a nutshell, it's a low-level (low-level means more similar to the language that computers use internally) language that is very fast compared to Python. To take advantage of its speed while programming in Python, try to avoid as much as possible writing loops, and replace them by commands that work directly on arrays or tensors.
+>
+> 西：如果你不知道C是什么不要着急，因为你压根不需要它。简单的说，相对Python它是运行的非常快的底层语言（低层的意思是更像是计算机内部使用的语言）。当在Python中编程时它会取得运行速度优势，尝试避免尽可能多的写循环，而是通过直接工作在数组或张量上的命令来替代他们。
+
+Perhaps the most important new coding skill for a Python programmer to learn is how to effectively use the array/tensor APIs. We will be showing lots more tricks later in this book, but here's a summary of the key things you need to know for now.
+
+可能对于一名Python程序员最重要的新编码技能是去学习如何有效使用数组/张量API接口。稍后在本书我们会展示一些技巧，但这里是你现在需要知道的一些关键事项的总结。
