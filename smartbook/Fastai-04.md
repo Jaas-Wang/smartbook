@@ -400,3 +400,16 @@ We just completed various mathematical operations on PyTorch tensors. If you've 
 But what are arrays and tensors, and why should you care?
 
 但数组和张量是什么，为什么你应该关注？
+
+Python is slow compared to many languages. Anything fast in Python, NumPy, or PyTorch is likely to be a wrapper for a compiled object written (and optimized) in another language—specifically C. In fact, **NumPy arrays and PyTorch tensors can finish computations many thousands of times faster than using pure Python.**
+
+相比项目语言Python是慢的。在Python、NumPy、或PyTorch中任何运行速度快的可能在其它语言（特别是C）中编写（和优化），对编译对象做了包装。事实上，**Numpy数组和PyTorch张量能够完成计算比单纯使用Python快数千倍**。
+
+A NumPy array is a multidimensional table of data, with all items of the same type. Since that can be any type at all, they can even be arrays of arrays, with the innermost arrays potentially being different sizes—this is called a "jagged array." By "multidimensional table" we mean, for instance, a list (dimension of one), a table or matrix (dimension of two), a "table of tables" or "cube" (dimension of three), and so forth. If the items are all of some simple type such as integer or float, then NumPy will store them as a compact C data structure in memory. This is where NumPy shines. NumPy has a wide variety of operators and methods that can run computations on these compact structures at the same speed as optimized C, because they are written in optimized C.
+
+一个NumPy数组是所有条目类型相同的多维数据表。因为能完全做为任何类型，他们甚至能做为数组的数组，数组最里面可能是不同的尺寸，这被称为“不规则数组”。我们表达的“多维的表”，例如是一列（一维），一个表或矩阵（二维），一个“表中的表”或“立方体”（三维）等等。如果所有的条目是一些整型或浮点型之类简单的类型，NumPy会在内存中以简洁的C数据结构存贮他们。这是NumPy的闪光点。NumPy有多种运算符和方法在这些简洁的结构上运行计算，运行速度与优化的C相同，因为他们的优化是用C写的。
+
+A PyTorch tensor is nearly the same thing as a NumPy array, but with an additional restriction that unlocks some additional capabilities. It's the same in that it, too, is a multidimensional table of data, with all items of the same type. However, the restriction is that a tensor cannot use just any old type—it has to use a single basic numeric type for all components. For example, a PyTorch tensor cannot be jagged. It is always a regularly shaped multidimensional rectangular structure.
+
+一个PyTorch张量做的事情与NumPy数组几乎相同，但一些附加限制打开了一些附加的能力。它同样是一个所有条目类型相同的多维数据表。然而，限制是一个张量只是不能使用任何老的类型（对所有的组件它必须用一个单一基础数值类型）。例如，一个PyTorch张量不能是不规则的。它总是一个规则多维长方形结构形状。
+
