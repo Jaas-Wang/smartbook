@@ -368,3 +368,16 @@ F.l1_loss(a_3.float(),mean7), F.mse_loss(a_3,mean7).sqrt()
 ```
 
 out: (tensor(0.1586), tensor(0.3021))
+
+Here `mse` stands for *mean squared error*, and `l1` refers to the standard mathematical jargon for *mean absolute value* (in math it's called the *L1 norm*).
+
+这里的`mse`代表*均方误差*，和`l1`参照的标准的数学术语*平均绝对值*（在数学里它称为*L1正则*）。
+
+> S: Intuitively, the difference between L1 norm and mean squared error (MSE) is that the latter will penalize bigger mistakes more heavily than the former (and be more lenient with small mistakes).
+>
+> 西：直观地的来说，L1正则和均方差（MSE）之间的差异是后者相对前者会对更大的错误惩罚的更重（且对小错误惩罚更宽松）。
+
+> J: When I first came across this "L1" thingie, I looked it up to see what on earth it meant. I found on Google that it is a *vector norm* using *absolute value*, so looked up *vector norm* and started reading: *Given a vector space V over a field F of the real or complex numbers, a norm on V is a nonnegative-valued any function p: V → [0,+∞) with the following properties: For all a ∈ F and all u, v ∈ V, p(u + v) ≤ p(u) + p(v)...* Then I stopped reading. "Ugh, I'll never understand math!" I thought, for the thousandth time. Since then I've learned that every time these complex mathy bits of jargon come up in practice, it turns out I can replace them with a tiny bit of code! Like, the *L1 loss* is just equal to `(a-b).abs().mean()`, where `a` and `b` are tensors. I guess mathy folks just think differently than me... I'll make sure in this book that every time some mathy jargon comes up, I'll give you the little bit of code it's equal to as well, and explain in common-sense terms what's going on.
+>
+> 杰：在我第一次碰到这个“L1”的时候，我查找看它到底代表什么意思。在谷歌上我发现它是一个使用*绝对值*的*向量范数*，所以查看*向量范数*并开始读：*在真实或复杂数据域 F 之上给出一个向量空间 V，在 V 上的一个范数是具有以下属性的非负数据任何函数 p: V → [0,+∞) 所有 a ∈ F 并且 所有的 u, v ∈ V, p(u + v) ≤ p(u) + p(v)...* 然后我停止了阅读。我想了无数次，“嗯...，我永远都无法理解数学！” 自那以后我学会了，每当在实践中遇到这种复杂数学术语，证明我都能用一小段代码替换他们，就像L1损失只是等于 `(a-b).abs().mean()`，其中`a`和`b`是张量。我猜想搞数学的这些家伙只是想法上与我不同...在本书我保证每当遇到一些数学术语，我会给你与它相等的一小段代码，并用常识性语言解释到底是怎么回事。
+
