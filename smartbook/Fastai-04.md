@@ -529,3 +529,34 @@ So, is our baseline model any good? To quantify this, we must define a metric.
 
 所以，我们的基线模型好吗？要量化，我们必须定义一个指标。
 
+## Computing Metrics Using Broadcasting
+
+## 使用传播计算指标
+
+Recall that a metric is a number that is calculated based on the predictions of our model, and the correct labels in our dataset, in order to tell us how good our model is. For instance, we could use either of the functions we saw in the previous section, mean squared error, or mean absolute error, and take the average of them over the whole dataset. However, neither of these are numbers that are very understandable to most people; in practice, we normally use *accuracy* as the metric for classification models.
+
+回忆一下，一个指标是基于我们模型预测和在我们数据集中的正确标注计算出的一个数字，为了能够告诉我们的模型如何的好。例如，我们能够用在之前小节看到的两种函数：均方误差或平均绝对误差。并取整个数据集的平均数。然而，对大多数人来说这些数字都不是非常不易懂。在实践中，我们通常会用*精度*作为分类模型的指标。
+
+As we've discussed, we want to calculate our metric over a *validation set*. This is so that we don't inadvertently overfit—that is, train a model to work well only on our training data. This is not really a risk with the pixel similarity model we're using here as a first try, since it has no trained components, but we'll use a validation set anyway to follow normal practices and to be ready for our second try later.
+
+正如我们讨论过的，我们希望在一个*验证集*上计算我们的指标。这是因为我们不要无意中过拟（它是训练一个模型只在我们的训练数据上工作的好）。作为第一次尝试，我们在这里使用的像素相似模型，这不是一个真实风险，因为它没有被训练的要素，但不论如何，我们会用一个验证集遵循正常的实践，并为我们稍后的第二次尝试做好准备。
+
+To get a validation set we need to remove some of the data from training entirely, so it is not seen by the model at all. As it turns out, the creators of the MNIST dataset have already done this for us. Do you remember how there was a whole separate directory called *valid*? That's what this directory is for!
+
+我们需要从整个训练集中移除一些数据来得到一个验证集，所以它对模型是完全不可见的。事实证明，MNIST数据集的创建者已经为我们做了这个事情。你还记得有一个完全分割的目录称为*验证*吗？那就是这个目录的使用！
+
+So to start with, let's create tensors for our 3s and 7s from that directory. These are the tensors we will use to calculate a metric measuring the quality of our first-try model, which measures distance from an ideal image:
+
+所以让我们为来自那个目录的3和7创建张量开始。这些张量我们会用于计算一个指标来测量我们第一步尝试模型的质量，即测试与理想图片的差距：
+
+```python
+valid_3_tens = torch.stack([tensor(Image.open(o)) 
+                            for o in (path/'valid'/'3').ls()])
+valid_3_tens = valid_3_tens.float()/255
+valid_7_tens = torch.stack([tensor(Image.open(o)) 
+                            for o in (path/'valid'/'7').ls()])
+valid_7_tens = valid_7_tens.float()/255
+valid_3_tens.shape,valid_7_tens.shape
+```
+
+Out: (torch.Size([1010, 28, 28]), torch.Size([1028, 28, 28]))
