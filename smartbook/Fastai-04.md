@@ -488,3 +488,44 @@ tns[1,1:3]
 ```
 
 Out: tensor([5, 6])
+
+And you can use the standard operators such as `+`, `-`, `*`, `/`:
+
+并且你能用例如`+`,`-`,`*`,`/`这些标准运算符：
+
+```python
+tns+1
+```
+$
+\begin{matrix} Out: tensor([&[& 2, & 3, & 4&],\\ 
+	& [&5,& 6,& 7&]]&)
+\end{matrix}
+$
+
+Tensors have a type:
+
+张量有一个类型：
+
+```python
+tns.type()
+```
+
+Out: 'torch.LongTensor'
+
+And will automatically change type as needed, for example from `int` to `float`:
+
+并且会自动改变为所需要的类型，例如从`整型`变为`浮点型`：
+
+```python
+tns*1.5
+```
+$
+\begin{matrix} Out: tensor([&[& 1.5000, & 3.0000, & 4.5000&],\\ 
+	& [& 6.0000,& 7.5000 ,& 9.0000&]]&)
+\end{matrix}
+$
+
+So, is our baseline model any good? To quantify this, we must define a metric.
+
+所以，我们的基线模型好吗？要量化，我们必须定义一个指标。
+
