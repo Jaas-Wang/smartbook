@@ -70,7 +70,7 @@ We can see what's in this directory by using `ls`, a method added by fastai. Thi
 path.ls()
 ```
 
-out：(#3) [Path('valid'),Path('labels.csv'),Path('train')]
+Out：(#3) [Path('valid'),Path('labels.csv'),Path('train')]
 
 The MNIST dataset follows a common layout for machine learning datasets: separate folders for the training set and the validation set (and/or test set). Let's see what's inside the training set:
 
@@ -80,7 +80,7 @@ MNIST数据集遵从了机器学习数据集的通用框架：把文件夹分割
 (path/'train').ls()
 ```
 
-out: (#2) [Path('train/7'),Path('train/3')]
+Out: (#2) [Path('train/7'),Path('train/3')]
 
 There's a folder of 3s, and a folder of 7s. In machine learning parlance, we say that "3" and "7" are the *labels* (or targets) in this dataset. Let's take a look in one of these folders (using `sorted` to ensure we all get the same order of files):
 
@@ -92,7 +92,7 @@ sevens = (path/'train'/'7').ls().sorted()
 threes
 ```
 
-out: (#6131) [Path('train/3/10.png'),Path('train/3/10000.png'),Path('train/3/10011.png'),Path('train/3/10031.png'),Path('train/3/10034.png'),Path('train/3/10042.png'),Path('train/3/10052.png'),Path('train/3/1007.png'),Path('train/3/10074.png'),Path('train/3/10091.png')...]
+Out: (#6131) [Path('train/3/10.png'),Path('train/3/10000.png'),Path('train/3/10011.png'),Path('train/3/10031.png'),Path('train/3/10034.png'),Path('train/3/10042.png'),Path('train/3/10052.png'),Path('train/3/1007.png'),Path('train/3/10074.png'),Path('train/3/10091.png')...]
 
 As we might expect, it's full of image files. Let’s take a look at one now. Here’s an image of a handwritten number 3, taken from the famous MNIST dataset of handwritten numbers:
 
@@ -104,7 +104,7 @@ im3 = Image.open(im3_path)
 im3
 ```
 
-out: ![three_number](./_v_images/three_number.png)
+Out: ![three_number](./_v_images/three_number.png)
 
 Here we are using the `Image` class from the *Python Imaging Library* (PIL), which is the most widely used Python package for opening, manipulating, and viewing images. Jupyter knows about PIL images, so it displays the image for us automatically.
 
@@ -119,7 +119,7 @@ array(im3)[4:10,4:10]
 ```
 
 $
-\begin{matrix} out:array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
+\begin{matrix} Out:array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
 	& [&0,& 0,& 0,& 0,& 0,& 29&], \\ 
 	& [&0,& 0,& 0,& 48,& 166,& 224&], \\ 
 	& [&0,& 93,& 244,& 249,& 253,& 187&], \\
@@ -137,7 +137,7 @@ tensor(im3)[4:10,4:10]
 ```
 
 $
-\begin{matrix} out:array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
+\begin{matrix} Out:array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
 	& [&0,& 0,& 0,& 0,& 0,& 29&], \\ 
 	& [&0,& 0,& 0,& 48,& 166,& 224&], \\ 
 	& [&0,& 93,& 244,& 249,& 253,& 187&], \\
@@ -157,7 +157,7 @@ df = pd.DataFrame(im3_t[4:15,4:22])
 df.style.set_properties(**{'font-size':'6pt'}).background_gradient('Greys')
 ```
 
-out: <img src="./_v_images/att_00058.png" alt="att_00058" style="zoom:30%;"  />
+Out: <img src="./_v_images/att_00058.png" alt="att_00058" style="zoom:30%;"  />
 
 You can see that the background white pixels are stored as the number 0, black is the number 255, and shades of gray are between the two. The entire image contains 28 pixels across and 28 pixels down, for a total of 784 pixels. (This is much smaller than an image that you would get from a phone camera, which has millions of pixels, but is a convenient size for our initial learning and experiments. We will build up to bigger, full-color images soon.)
 
@@ -201,7 +201,7 @@ three_tensors = [tensor(Image.open(o)) for o in threes]
 len(three_tensors),len(seven_tensors)
 ```
 
-out: (6131, 6265)
+Out: (6131, 6265)
 
 > note: List Comprehensions: List and dictionary comprehensions are a wonderful feature of Python. Many Python programmers use them every day, including the authors of this book—they are part of "idiomatic Python." But programmers coming from other languages may have never seen them before. There are a lot of great tutorials just a web search away, so we won't spend a long time discussing them now. Here is a quick explanation and example to get you started. A list comprehension looks like this: `new_list = [f(o) for o in a_list if o>0]`. This will return every element of `a_list` that is greater than 0, after passing it to the function `f`. There are three parts here: the collection you are iterating over (`a_list`), an optional filter (`if o>0`), and something to do to each element (`f(o)`). It's not only shorter to write but way faster than the alternative ways of creating the same list with a loop.
 >
@@ -215,7 +215,7 @@ We'll also check that one of the images looks okay. Since we now have tensors (w
 show_image(three_tensors[1]);
 ```
 
-out: <img src="./_v_images/three_2.png" alt="three_2" style="zoom:30%;" />
+Out: <img src="./_v_images/three_2.png" alt="three_2" style="zoom:30%;" />
 
 For every pixel position, we want to compute the average over all the images of the intensity of that pixel. To do this we first combine all the images in this list into a single three-dimensional tensor. The most common way to describe such a tensor is to call it a *rank-3 tensor*. We often need to stack up individual tensors in a collection into a single tensor. Unsurprisingly, PyTorch comes with a function called `stack` that we can use for this purpose.
 
@@ -235,7 +235,7 @@ stacked_threes = torch.stack(three_tensors).float()/255
 stacked_threes.shape
 ```
 
-out: torch.Size([6131, 28, 28])
+Out: torch.Size([6131, 28, 28])
 
 Perhaps the most important attribute of a tensor is its *shape*. This tells you the length of each axis. In this case, we can see that we have 6,131 images, each of size 28×28 pixels. There is nothing specifically about this tensor that says that the first axis is the number of images, the second is the height, and the third is the width—the semantics of a tensor are entirely up to us, and how we construct it. As far as PyTorch is concerned, it is just a bunch of numbers in memory.
 
@@ -249,7 +249,7 @@ The *length* of a tensor's shape is its rank:
 len(stacked_threes.shape)
 ```
 
-out: 3
+Out: 3
 
 It is really important for you to commit to memory and practice these bits of tensor jargon: *rank* is the number of axes or dimensions in a tensor; *shape* is the size of each axis of a tensor.
 
@@ -267,7 +267,7 @@ We can also get a tensor's rank directly with `ndim`:
 stacked_threes.ndim
 ```
 
-out: 3
+Out: 3
 
 Finally, we can compute what the ideal 3 looks like. We calculate the mean of all the image tensors by taking the mean along dimension 0 of our stacked, rank-3 tensor. This is the dimension that indexes over all the images.
 
@@ -282,7 +282,7 @@ mean3 = stacked_threes.mean(0)
 show_image(mean3);
 ```
 
-out: <img src="./_v_images/three_3.png" alt="three_3" style="zoom:33%;" />
+Out: <img src="./_v_images/three_3.png" alt="three_3" style="zoom:33%;" />
 
 According to this dataset, this is the ideal number 3! (You may not like it, but this is what peak number 3 performance looks like.) You can see how it's very dark where all the images agree it should be dark, but it becomes wispy and blurry where the images disagree.
 
@@ -297,7 +297,7 @@ mean7 = stacked_sevens.mean(0)
 show_image(mean7);
 ```
 
-out: <img src="./_v_images/seven.png" alt="seven" style="zoom:33%;" />
+Out: <img src="./_v_images/seven.png" alt="seven" style="zoom:33%;" />
 
 Let's now pick an arbitrary 3 and measure its *distance* from our "ideal digits."
 
@@ -316,7 +316,7 @@ a_3 = stacked_threes[1]
 show_image(a_3);
 ```
 
-out: <img src="./_v_images/three_4.png" alt="three_4" style="zoom:33%;" />
+Out: <img src="./_v_images/three_4.png" alt="three_4" style="zoom:33%;" />
 
 How can we determine its distance from our ideal 3? We can't just add up the differences between the pixels of this image and the ideal digit. Some differences will be positive while others will be negative, and these differences will cancel out, resulting in a situation where an image that is too dark in some places and too light in others might be shown as having zero total differences from the ideal. That would be misleading!
 
@@ -345,7 +345,7 @@ dist_3_sqr = ((a_3 - mean3)**2).mean().sqrt()
 dist_3_abs,dist_3_sqr
 ```
 
-out: (tensor(0.1114), tensor(0.2021))
+Out: (tensor(0.1114), tensor(0.2021))
 
 ```python
 dist_7_abs = (a_3 - mean7).abs().mean()
@@ -353,7 +353,7 @@ dist_7_sqr = ((a_3 - mean7)**2).mean().sqrt()
 dist_7_abs,dist_7_sqr
 ```
 
-out: (tensor(0.1586), tensor(0.3021))
+Out: (tensor(0.1586), tensor(0.3021))
 
 In both cases, the distance between our 3 and the "ideal" 3 is less than the distance to the ideal 7. So our simple model will give the right prediction in this case.
 
@@ -367,7 +367,7 @@ PyTorch已经以*损失函数*的方式提供了这两个方法。你会在`torc
 F.l1_loss(a_3.float(),mean7), F.mse_loss(a_3,mean7).sqrt()
 ```
 
-out: (tensor(0.1586), tensor(0.3021))
+Out: (tensor(0.1586), tensor(0.3021))
 
 Here `mse` stands for *mean squared error*, and `l1` refers to the standard mathematical jargon for *mean absolute value* (in math it's called the *L1 norm*).
 
@@ -424,3 +424,34 @@ The vast majority of methods and operators supported by NumPy on these structure
 Perhaps the most important new coding skill for a Python programmer to learn is how to effectively use the array/tensor APIs. We will be showing lots more tricks later in this book, but here's a summary of the key things you need to know for now.
 
 可能对于一名Python程序员最重要的新编码技能是去学习如何有效使用数组/张量API接口。稍后在本书我们会展示一些技巧，但这里是你现在需要知道的一些关键事项的总结。
+
+To create an array or tensor, pass a list (or list of lists, or list of lists of lists, etc.) to `array()` or `tensor()`:
+
+创建一个数组和张量，传递一个列表（或列表的列表，或列表的列表的列表等。）给`array()`或`tensor()`：
+
+```python
+data = [[1,2,3],[4,5,6]]
+arr = array (data)
+tns = tensor(data)
+```
+
+```python
+arr  # numpy
+```
+
+$
+\begin{matrix} Out: array([&[& 1, & 2, & 3&],\\ 
+	& [&4,& 5,& 6&]]&)
+\end{matrix}
+$
+
+```python
+tns  # pytorch
+```
+
+$
+\begin{matrix} Out: tensor([&[& 1, & 2, & 3&],\\ 
+	& [&4,& 5,& 6&]]&)
+\end{matrix}
+$
+
