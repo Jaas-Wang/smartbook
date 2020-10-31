@@ -257,7 +257,7 @@ It is really important for you to commit to memory and practice these bits of te
 
 > A: Watch out because the term "dimension" is sometimes used in two ways. Consider that we live in "three-dimensonal space" where a physical position can be described by a 3-vector `v`. But according to PyTorch, the attribute `v.ndim` (which sure looks like the "number of dimensions" of `v`) equals one, not three! Why? Because `v` is a vector, which is a tensor of rank one, meaning that it has only one *axis* (even if that axis has a length of three). In other words, sometimes dimension is used for the size of an axis ("space is three-dimensional"); other times, it is used for the rank, or the number of axes ("a matrix has two dimensions"). When confused, I find it helpful to translate all statements into terms of rank, axis, and length, which are unambiguous terms.
 >
-> 亚：小心，因为术语“维度”有时候会用于两种方式。思考你所生活的“三维空间”，这是一个通过3个矢量`v`能够描述的物理位置。但根据PyTorch，`v.ndim`的属性（确实看起来像`v`的"维度数"）等于1，而不是3！为什么？因为`v`是一个矢量，是一个1阶的张量，意味它只有一个*坐标轴*（即使那个坐标轴有一个3的长度）。换句话说，有时候维度被用于坐标轴的大小（“空间是三维”）；其它时候，它被用于阶或坐标轴的数量（“一个矩阵有二维”）。当混淆的时候，我发现把所有的声明转换为阶、坐标轴和长度这些不模糊的术语是有帮助的。
+> 亚：小心，因为术语“维度”有时候会用于两种方式。思考你所生活的“三维空间”，这是一个通过3维向量`v`能够描述的物理位置。但根据PyTorch，`v.ndim`的属性（确实看起来像`v`的"维度数"）等于1，而不是3！为什么？因为`v`是一个向量。即，是一个1阶的张量，意味它只有一个*坐标轴*（即使那个坐标轴有一个3的长度）。换句话说，有时候维度被用于坐标轴的大小（“空间是三维”）；其它时候，它被用于阶或坐标轴的数量（“一个矩阵有二维”）。当混淆的时候，我发现把所有的声明转换为阶、坐标轴和长度这些不模糊的术语是有帮助的。
 
 We can also get a tensor's rank directly with `ndim`:
 
@@ -601,7 +601,7 @@ Out: (tensor([0.1634, 0.1145, 0.1363,  ..., 0.1105, 0.1111, 0.1640]),torch.Size(
 
 Instead of complaining about shapes not matching, it returned the distance for every single image as a vector (i.e., a rank-1 tensor) of length 1,010 (the number of 3s in our validation set). How did that happen?
 
-替代吐槽形状不匹配，它返回了长度1010（在我们验证集中3图像的数量）每个单张图像的差距的张量（即，一阶张量）。这是怎么发生的？
+替代吐槽形状不匹配，它返回了长度1010（在我们验证集中3图像的数量）每个单张图像的差距的向量（即，一阶张量）。这是怎么发生的？
 
 Take another look at our function `mnist_distance`, and you'll see we have there the subtraction `(a-b)`. The magic trick is that PyTorch, when it tries to perform a simple subtraction operation between two tensors of different ranks, will use *broadcasting*. That is, it will automatically expand the tensor with the smaller rank to have the same size as the one with the larger rank. Broadcasting is an important capability that makes tensor code much easier to write.
 
@@ -731,5 +731,31 @@ Instead of trying to find the similarity between an image and an "ideal image," 
 
 ​			def pr_eight(x,w) = (x*w).sum()
 
+Here we are assuming that `x` is the image, represented as a vector—in other words, with all of the rows stacked up end to end into a single long line. And we are assuming that the weights are a vector `w`. If we have this function, then we just need some way to update the weights to make them a little bit better. With such an approach, we can repeat that step a number of times, making the weights better and better, until they are as good as we can make them.
 
+这是我们正在假设`x`是图像，表示为一个向量：换句话说，把所有的行端对端的堆叠为一个很长的单行。并且我们正在假设权重是一个向量`w`。如果我们有这样的函数，然后我们只需要一些方法来更新权重，以使得它们稍好一点。用这样的方法，我们能够重复这个步骤很多次，使得权重越来越好，直到他们与我们所能够做到的一样好。
+
+We want to find the specific values for the vector `w` that causes the result of our function to be high for those images that are actually 8s, and low for those images that are not. Searching for the best vector `w` is a way to search for the best function for recognising 8s. (Because we are not yet using a deep neural network, we are limited by what our function can actually do—we are going to fix that constraint later in this chapter.)
+
+对于向量`w`我们希望找到特点值，使得我们的函数对于那些真实为8的图像是高的，且对于那些不是8的图像是低的。搜索最好的向量`w`是一个去搜索识别8的最好函数的方法。（因为我们还没使用深度神经网络，我们被我们函数所能实际做的事情限制了，我们将在本章修复这个限制。）
+
+To be more specific, here are the steps that we are going to require, to turn this function into a machine learning classifier:
+
+为了更加具体，这里是我们将需要的一些步骤，把这个函数变为一个机器学习分类器：
+
+1. *Initialize* the weights.
+2. For each image, use these weights to *predict* whether it appears to be a 3 or a 7.
+3. Based on these predictions, calculate how good the model is (its *loss*).
+4. Calculate the *gradient*, which measures for each weight, how changing that weight would change the loss
+5. *Step* (that is, change) all the weights based on that calculation.
+6. Go back to the step 2, and *repeat* the process.
+7. Iterate until you decide to *stop* the training process (for instance, because the model is good enough or you don't want to wait any longer).
+
+1. *初始化*权重。
+2. 对每张图像使用权重来*预测* 它像是3或7。
+3. 基于这些预测，计算模型是如何的好（它的损失）。
+4. 计算用于测量每个权重*梯度*，改变权重可能会改变损失。
+5. 根据这个计算*步进*（即改变）所有权重。
+6. 返回到步骤2，并重复这一过程。
+7. 重复做，直到你决定*停止*这个训练过程（例如，因为这个模型是足够的好或你不想等太长时间）。
 
