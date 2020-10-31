@@ -617,3 +617,94 @@ tensor([1,2,3]) + tensor([1,1,1])
 
 Out: tensor([2, 3, 4])
 
+So in this case, PyTorch treats `mean3`, a rank-2 tensor representing a single image, as if it were 1,010 copies of the same image, and then subtracts each of those copies from each 3 in our validation set. What shape would you expect this tensor to have? Try to figure it out yourself before you look at the answer below:
+
+所以在这个例子中，PyTorch处理`mean3`（一个两阶张量等同于一个单张图像）好像它是相同图像的1010次拷贝，然后这些拷贝与我们验证集中每一张图像3做减法操作。你期望这个张量有什么样的形状？在看到下面的答案之前尝试自己想像出它的结果：
+
+```python
+(valid_3_tens-mean3).shape
+```
+
+Out: torch.Size([1010, 28, 28])
+
+We are calculating the difference between our "ideal 3" and each of the 1,010 3s in the validation set, for each of 28×28 images, resulting in the shape `[1010,28,28]`.
+
+我们正在计算我们“理想中的3”和在验证集中1010张图像每张3之间的差异，每张图像的尺寸是 28×28 ，得到结果形状为`[1010,28,28]`。
+
+There are a couple of important points about how broadcasting is implemented, which make it valuable not just for expressivity but also for performance:
+
+关于传播的实施这里有两个重要的点，每个产生的价值不仅仅在其表达性上，而且有其执行：
+
+- PyTorch doesn't *actually* copy `mean3` 1,010 times. It *pretends* it were a tensor of that shape, but doesn't actually allocate any additional memory
+- It does the whole calculation in C (or, if you're using a GPU, in CUDA, the equivalent of C on the GPU), tens of thousands of times faster than pure Python (up to millions of times faster on a GPU!).
+- PyTorch不*实际* 拷贝`mean3`1010次。它*假装*是那个形状的一个张量，但是并没有实际分配任何额外内存
+- 它在C中做整个计算（或如果你使用一个GPU，在CUDA中等同于在GPU上的C），比纯Python快几万倍（在GPU上要快百万倍以上）。
+
+This is true of all broadcasting and elementwise operations and functions done in PyTorch. *It's the most important technique for you to know to create efficient PyTorch code.*
+
+在PyTorch中传播和逐元素操作及函数处理都是如此。*对于你知道如何创建高效的PyTorch代码它是最重要的*。
+
+Next in `mnist_distance` we see `abs`. You might be able to guess now what this does when applied to a tensor. It applies the method to each individual element in the tensor, and returns a tensor of the results (that is, it applies the method "elementwise"). So in this case, we'll get back 1,010 absolute values.
+
+接下来我们看`mnist_distance`中的`abs`。当它被应用于一个张量时，你现在也许能够猜这是做什么的。它应用本方法到张量中的每个独立元素，并返回结果的一个张量（也就是说，它按“逐元素”应用本方法）。所以在这个例子中，我们会返回1010个绝对值。
+
+Finally, our function calls `mean((-1,-2))`. The tuple `(-1,-2)` represents a range of axes. In Python, `-1` refers to the last element, and `-2` refers to the second-to-last. So in this case, this tells PyTorch that we want to take the mean ranging over the values indexed by the last two axes of the tensor. The last two axes are the horizontal and vertical dimensions of an image. After taking the mean over the last two axes, we are left with just the first tensor axis, which indexes over our images, which is why our final size was `(1010)`. In other words, for every image, we averaged the intensity of all the pixels in that image.
+
+最后，我们的函数名叫`mean((-1,-2))`。这个`(-1,-2)`元组代表坐标轴的一个范围。在Python中，-1参照的是最后一个元素，-2参照的是倒数第二个元素。所以在这个例子中，这是告诉PyTorch我们想在张量的最后两个坐标轴索引的数值范围上求平均。最后两个坐标轴是一个图像的横和纵两个维度。在最后两个坐标轴上求平均值后，我们就剩下覆盖我们所有图像索引的第一个张量坐标轴，这主是为什么我们最终的尺寸是`(1010)`。换句话说，对每一张图片，我们对在那张图像上的所有像素强度就了平均。
+
+We'll be learning lots more about broadcasting throughout this book, especially in <<chapter_foundations>, and will be practicing it regularly too.
+
+通过本书，我们将会学习到一些关于传播的内容，特别在<章节：基础>中会也会经常的对它进行练习。
+
+We can use `mnist_distance` to figure out whether an image is a 3 or not by using the following logic: if the distance between the digit in question and the ideal 3 is less than the distance to the ideal 7, then it's a 3. This function will automatically do broadcasting and be applied elementwise, just like all PyTorch functions and operators:
+
+我们能够用`mnist_distance`通过使用下述逻辑想像出一个图像是否是3：在问题图片和理想中3之间的差距小于理想中7的差距，它就是3.这个函数将会自动做传播并应用到逐个元素，就像所有的PyTorch函数和操作一样：
+
+```python
+def is_3(x): return mnist_distance(x,mean3) < mnist_distance(x,mean7)
+```
+
+Let's test it on our example case:
+
+让我们在我们的事例上测试一下它：
+
+```python
+is_3(a_3), is_3(a_3).float()
+```
+
+Out: (tensor(True), tensor(1.))
+
+Note that when we convert the Boolean response to a float, we get `1.0` for `True` and `0.0` for `False`. Thanks to broadcasting, we can also test it on the full validation set of 3s:
+
+注意，当我们转换布尔型为一个浮点型，我们取`1.0`为`真`和`0.0`为`假`。感谢传播机制，我们也能够在全是3的验证集上测试它：
+
+```python
+is_3(valid_3_tens)
+```
+
+Out: tensor([True, True, True,  ..., True, True, True])
+
+Now we can calculate the accuracy for each of the 3s and 7s by taking the average of that function for all 3s and its inverse for all 7s:
+
+现在我们能够通过对所有3的函数求平均值和对所有7的反函数求平均值，来计算每个3和7的精度：
+
+```python
+accuracy_3s =      is_3(valid_3_tens).float() .mean()
+accuracy_7s = (1 - is_3(valid_7_tens).float()).mean()
+
+accuracy_3s,accuracy_7s,(accuracy_3s+accuracy_7s)/2
+```
+
+Out: (tensor(0.9168), tensor(0.9854), tensor(0.9511))
+
+This looks like a pretty good start! We're getting over 90% accuracy on both 3s and 7s, and we've seen how to define a metric conveniently using broadcasting.
+
+这看起来是一个相当好的开始！我们对3和7取得了超过90%的精度，并且我们已经看到如何方便的利用传播来定义一个指标。
+
+But let's be honest: 3s and 7s are very different-looking digits. And we're only classifying 2 out of the 10 possible digits so far. So we're going to need to do better!
+
+但说实话，3和7看起来是差异非常大的数字。并且到目前为止我们只分类出10个可能数字中的2个。所以我们将需要做的更好！
+
+To do better, perhaps it is time to try a system that does some real learning—that is, that can automatically modify itself to improve its performance. In other words, it's time to talk about the training process, and SGD.
+
+为了做的更好，也许是时候尝试一个做真正学习的系统了。也就是说，能够自己改变它自己来改善它的表现。换句话话，是时候讨论关于训练过程和随机梯度下降（SGD）的内容了
