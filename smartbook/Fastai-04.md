@@ -531,7 +531,7 @@ So, is our baseline model any good? To quantify this, we must define a metric.
 
 ## Computing Metrics Using Broadcasting
 
-## 使用传播计算指标
+## 使用广播计算指标
 
 Recall that a metric is a number that is calculated based on the predictions of our model, and the correct labels in our dataset, in order to tell us how good our model is. For instance, we could use either of the functions we saw in the previous section, mean squared error, or mean absolute error, and take the average of them over the whole dataset. However, neither of these are numbers that are very understandable to most people; in practice, we normally use *accuracy* as the metric for classification models.
 
@@ -605,11 +605,11 @@ Instead of complaining about shapes not matching, it returned the distance for e
 
 Take another look at our function `mnist_distance`, and you'll see we have there the subtraction `(a-b)`. The magic trick is that PyTorch, when it tries to perform a simple subtraction operation between two tensors of different ranks, will use *broadcasting*. That is, it will automatically expand the tensor with the smaller rank to have the same size as the one with the larger rank. Broadcasting is an important capability that makes tensor code much easier to write.
 
-再看一下我们的`mnist_distance`函数，你会看在这里我们有减法`(a-b)`。那是PyTorch奇妙的技巧，当它尝试在两个不同阶张量间执行减法操作时，将用到*传播*。这是自动扩展张量到与最大阶张量相同的阶，从而他们间具有了相同尺寸。传播是使得张量代码更容易编写的一个很重要的能力。
+再看一下我们的`mnist_distance`函数，你会看在这里我们有减法`(a-b)`。那是PyTorch奇妙的技巧，当它尝试在两个不同阶张量间执行减法操作时，将用到*广播*。这是自动扩展张量到与最大阶张量相同的阶，从而他们间具有了相同尺寸。广播是使得张量代码更容易编写的一个很重要的能力。
 
 After broadcasting so the two argument tensors have the same rank, PyTorch applies its usual logic for two tensors of the same rank: it performs the operation on each corresponding element of the two tensors, and returns the tensor result. For instance:
 
-传播后两个张量参数有了相同的阶，PyTorch对两个相同阶的张量应用通常逻辑：它在两个张量的每个相符元素上执行操作，并返回张量结果。例如：
+广播后两个张量参数有了相同的阶，PyTorch对两个相同阶的张量应用通常逻辑：它在两个张量的每个相符元素上执行操作，并返回张量结果。例如：
 
 ```python
 tensor([1,2,3]) + tensor([1,1,1])
@@ -633,7 +633,7 @@ We are calculating the difference between our "ideal 3" and each of the 1,010 3s
 
 There are a couple of important points about how broadcasting is implemented, which make it valuable not just for expressivity but also for performance:
 
-关于传播的实施这里有两个重要的点，每个产生的价值不仅仅在其表达性上，而且有其执行：
+关于广播的实施这里有两个重要的点，每个产生的价值不仅仅在其表达性上，而且有其执行：
 
 - PyTorch doesn't *actually* copy `mean3` 1,010 times. It *pretends* it were a tensor of that shape, but doesn't actually allocate any additional memory
 - It does the whole calculation in C (or, if you're using a GPU, in CUDA, the equivalent of C on the GPU), tens of thousands of times faster than pure Python (up to millions of times faster on a GPU!).
@@ -642,7 +642,7 @@ There are a couple of important points about how broadcasting is implemented, wh
 
 This is true of all broadcasting and elementwise operations and functions done in PyTorch. *It's the most important technique for you to know to create efficient PyTorch code.*
 
-在PyTorch中传播和逐元素操作及函数处理都是如此。*对于你知道如何创建高效的PyTorch代码它是最重要的*。
+在PyTorch中广播和逐元素操作及函数处理都是如此。*对于你知道如何创建高效的PyTorch代码它是最重要的*。
 
 Next in `mnist_distance` we see `abs`. You might be able to guess now what this does when applied to a tensor. It applies the method to each individual element in the tensor, and returns a tensor of the results (that is, it applies the method "elementwise"). So in this case, we'll get back 1,010 absolute values.
 
@@ -654,11 +654,11 @@ Finally, our function calls `mean((-1,-2))`. The tuple `(-1,-2)` represents a ra
 
 We'll be learning lots more about broadcasting throughout this book, especially in <<chapter_foundations>, and will be practicing it regularly too.
 
-通过本书，我们将会学习到一些关于传播的内容，特别在<章节：基础>中会也会经常的对它进行练习。
+通过本书，我们将会学习到一些关于广播的内容，特别在<章节：基础>中会也会经常的对它进行练习。
 
 We can use `mnist_distance` to figure out whether an image is a 3 or not by using the following logic: if the distance between the digit in question and the ideal 3 is less than the distance to the ideal 7, then it's a 3. This function will automatically do broadcasting and be applied elementwise, just like all PyTorch functions and operators:
 
-我们能够用`mnist_distance`通过使用下述逻辑想像出一个图像是否是3：在问题图片和理想中3之间的差距小于理想中7的差距，它就是3.这个函数将会自动做传播并应用到逐个元素，就像所有的PyTorch函数和操作一样：
+我们能够用`mnist_distance`通过使用下述逻辑想像出一个图像是否是3：在问题图片和理想中3之间的差距小于理想中7的差距，它就是3.这个函数将会自动做广播并应用到逐个元素，就像所有的PyTorch函数和操作一样：
 
 ```python
 def is_3(x): return mnist_distance(x,mean3) < mnist_distance(x,mean7)
@@ -676,7 +676,7 @@ Out: (tensor(True), tensor(1.))
 
 Note that when we convert the Boolean response to a float, we get `1.0` for `True` and `0.0` for `False`. Thanks to broadcasting, we can also test it on the full validation set of 3s:
 
-注意，当我们转换布尔型为一个浮点型，我们取`1.0`为`真`和`0.0`为`假`。感谢传播机制，我们也能够在全是3的验证集上测试它：
+注意，当我们转换布尔型为一个浮点型，我们取`1.0`为`真`和`0.0`为`假`。感谢广播机制，我们也能够在全是3的验证集上测试它：
 
 ```python
 is_3(valid_3_tens)
@@ -699,7 +699,7 @@ Out: (tensor(0.9168), tensor(0.9854), tensor(0.9511))
 
 This looks like a pretty good start! We're getting over 90% accuracy on both 3s and 7s, and we've seen how to define a metric conveniently using broadcasting.
 
-这看起来是一个相当好的开始！我们对3和7取得了超过90%的精度，并且我们已经看到如何方便的利用传播来定义一个指标。
+这看起来是一个相当好的开始！我们对3和7取得了超过90%的精度，并且我们已经看到如何方便的利用传广播来定义一个指标。
 
 But let's be honest: 3s and 7s are very different-looking digits. And we're only classifying 2 out of the 10 possible digits so far. So we're going to need to do better!
 
@@ -708,3 +708,28 @@ But let's be honest: 3s and 7s are very different-looking digits. And we're only
 To do better, perhaps it is time to try a system that does some real learning—that is, that can automatically modify itself to improve its performance. In other words, it's time to talk about the training process, and SGD.
 
 为了做的更好，也许是时候尝试一个做真正学习的系统了。也就是说，能够自己改变它自己来改善它的表现。换句话话，是时候讨论关于训练过程和随机梯度下降（SGD）的内容了
+
+## Stochastic Gradient Descent (SGD)
+
+## 随机梯度下降（SGD）
+
+Do you remember the way that Arthur Samuel described machine learning, which we quoted in <chapter_intro>?
+
+你还记得亚瑟·塞缪尔描述的机器学习方法吗？我们在<章节：概述>中引用的话。
+
+> : Suppose we arrange for some automatic means of testing the effectiveness of any current weight assignment in terms of actual performance and provide a mechanism for altering the weight assignment so as to maximize the performance. We need not go into the details of such a procedure to see that it could be made entirely automatic and to see that a machine so programmed would "learn" from its experience.
+>
+> ：假设我们安排了一些基于实际的表现测试当前权重分配有效性的方法，并提供一种改变权重分配的机制以使其表现最优。我们不需要进入这个程序的细节就能到看它能够实现完全自动化，并看到这样程序的机器会从它的经验中“学习”。
+
+As we discussed, this is the key to allowing us to have a model that can get better and better—that can learn. But our pixel similarity approach does not really do this. We do not have any kind of weight assignment, or any way of improving based on testing the effectiveness of a weight assignment. In other words, we can't really improve our pixel similarity approach by modifying a set of parameters. In order to take advantage of the power of deep learning, we will first have to represent our task in the way that Arthur Samuel described it.
+
+正如我们讨论过的，这是一个允许我们有一个越来越好模型的关键：它能学习。但我们的像素相似法不能真正的做这个事情。我们没有任何种类的权重分配，或任何基于测试权重分配的有效性的改善方法。换种说法，我们不能通过改变一组参数，真正的改善我们的像素相似法。为了充分利用深度深度的力量，我们将首先必须用亚瑟·塞缪尔描述的方法来体现我们的任务。
+
+Instead of trying to find the similarity between an image and an "ideal image," we could instead look at each individual pixel and come up with a set of weights for each one, such that the highest weights are associated with those pixels most likely to be black for a particular category. For instance, pixels toward the bottom right are not very likely to be activated for a 7, so they should have a low weight for a 7, but they are likely to be activated for an 8, so they should have a high weight for an 8. This can be represented as a function and set of weight values for each possible category—for instance the probability of being the number 8:
+
+替代尝试寻找一个张图像与一个“理想中的图像”之间相似之处，相反，我们能够查看每个独立的像素并为对每个像素提供一组权重，这样对于一个特定分类那些最有可能是黑色的像素被分配了最高的权重。例如对于7，右下角像素是极不可能被激活的。所以对于7来说他们应该有一个低权重，但是对于8，他们可能被激活，所以对8来说他们应该有一个高权重。对于每一个可能分类这能够表示为一个函数和权重值集，例如做为数字8的概率：
+
+​			def pr_eight(x,w) = (x*w).sum()
+
+
+
