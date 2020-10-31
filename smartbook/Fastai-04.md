@@ -547,7 +547,7 @@ To get a validation set we need to remove some of the data from training entirel
 
 So to start with, let's create tensors for our 3s and 7s from that directory. These are the tensors we will use to calculate a metric measuring the quality of our first-try model, which measures distance from an ideal image:
 
-所以让我们为来自那个目录的3和7创建张量开始。这些张量我们会用于计算一个指标来测量我们第一步尝试模型的质量，即测试与理想图片的差距：
+所以让我们为来自那个目录的3和7创建张量开始。这些张量我们会用于计算一个指标来测量我们第一步尝试模型的质量，即测量与理想中图片的差距：
 
 ```python
 valid_3_tens = torch.stack([tensor(Image.open(o)) 
@@ -560,3 +560,42 @@ valid_3_tens.shape,valid_7_tens.shape
 ```
 
 Out: (torch.Size([1010, 28, 28]), torch.Size([1028, 28, 28]))
+
+It's good to get in the habit of checking shapes as you go. Here we see two tensors, one representing the 3s validation set of 1,010 images of size 28×28, and one representing the 7s validation set of 1,028 images of size 28×28.
+
+养成随时检查形状的习惯这很好。这里我们看到两个张量，一个代表3的验证集（1010张图像，尺寸28×28），一个代表7的验证集（1028张图像，尺寸28×28）。
+
+We ultimately want to write a function, `is_3`, that will decide if an arbitrary image is a 3 or a 7. It will do this by deciding which of our two "ideal digits" this arbitrary image is closer to. For that we need to define a notion of distance—that is, a function that calculates the distance between two images.
+
+我们最终会写一个`is_3`的函数，它将会判断一个随机图像是3或7。它将决策我们两个“理想中的数字”那一个与这张随机图像是更接近。为了这个，我们需要定义一个差距概念：那是一个计算两张图像差距的函数。
+
+We can write a simple function that calculates the mean absolute error using an experssion very similar to the one we wrote in the last section:
+
+我们能写一个计算平均绝对误差的简单函数，使用的表达与我们在最后小节写的那个非常相似：
+
+```python
+def mnist_distance(a,b): return (a-b).abs().mean((-1,-2))
+mnist_distance(a_3, mean3)
+```
+
+Out: tensor(0.1114)
+
+This is the same value we previously calculated for the distance between these two images, the ideal 3 `mean3` and the arbitrary sample 3 `a_3`, which are both single-image tensors with a shape of `[28,28]`.
+
+这与我们之前计算的两张图像间的差距值是相同的。这两张图像是理想中的3 `mean3`和随机样本3 `a_3`,这两者都是`[28,28]`形状的单图像张量。
+
+But in order to calculate a metric for overall accuracy, we will need to calculate the distance to the ideal 3 for *every* image in the validation set. How do we do that calculation? We could write a loop over all of the single-image tensors that are stacked within our validation set tensor, `valid_3_tens`, which has a shape of `[1010,28,28]` representing 1,010 images. But there is a better way.
+
+但为了计算一个全局精度指标，我将需要来计算理想中的3对验证集中*每张*图像的差距。我们怎么做这个计算呢？我们能够写一个循环，把所有单张图像张量堆叠在我们的验证集张量，`valid_3_tens`，这个张量的形状为`[1010,28,28]`代表1010张图像。但这里有一个更好的方法。
+
+Something very interesting happens when we take this exact same distance function, designed for comparing two single images, but pass in as an argument `valid_3_tens`, the tensor that represents the 3s validation set:
+
+当你们采纳这个完全一样的距离函数时，会发生一些有趣的事情，这个函数的设计用于比较两张单张图像，`valid_3_lens`做为一个参数传递进来后，张量就相当于3的验证集：
+
+```python
+valid_3_dist = mnist_distance(valid_3_tens, mean3)
+valid_3_dist, valid_3_dist.shape
+```
+
+Out: (tensor([0.1634, 0.1145, 0.1363,  ..., 0.1105, 0.1111, 0.1640]),torch.Size([1010]))
+
