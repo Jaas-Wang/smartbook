@@ -759,3 +759,39 @@ To be more specific, here are the steps that we are going to require, to turn th
 6. 返回到步骤2，并重复这一过程。
 7. 重复做，直到你决定*停止*这个训练过程（例如，因为这个模型是足够的好或你不想等太长时间）。
 
+These seven steps, illustrated in <gradient_descent>, are the key to the training of all deep learning models. That deep learning turns out to rely entirely on these steps is extremely surprising and counterintuitive. It's amazing that this process can solve such complex problems. But, as you'll see, it really does!
+
+这七步（在<梯度下降>图中做了插图说明）是训练所有深度模型的关键。深度学习产生完全的依赖这些步骤是极度令人惊讶和反直觉的。这个过程能够解决如此复杂的问题是奇妙的。但，正好你将看到的，它确实如此！
+
+```mermaid
+graph LR
+init((init))
+predict((predict))
+loss((loss))
+gradient((gradient))
+step((step))
+stop((stop))
+subgraph the_gradient_descent_process
+init --> predict --> loss --> gradient  --> step --> stop 
+end
+subgraph the_gradient_descent_process
+step --> predict
+end
+```
+
+```mermaid
+graph LR
+init((初始化))
+predict((预测))
+loss((损失))
+gradient((梯度))
+step((步进))
+stop((停止))
+subgraph 梯度下降过程
+init --> predict --> loss --> gradient  --> step --> stop 
+end
+subgraph 梯度下降过程
+step --> predict
+end
+```
+
