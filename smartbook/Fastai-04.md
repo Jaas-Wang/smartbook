@@ -599,3 +599,21 @@ valid_3_dist, valid_3_dist.shape
 
 Out: (tensor([0.1634, 0.1145, 0.1363,  ..., 0.1105, 0.1111, 0.1640]),torch.Size([1010]))
 
+Instead of complaining about shapes not matching, it returned the distance for every single image as a vector (i.e., a rank-1 tensor) of length 1,010 (the number of 3s in our validation set). How did that happen?
+
+替代吐槽形状不匹配，它返回了长度1010（在我们验证集中3图像的数量）每个单张图像的差距的张量（即，一阶张量）。这是怎么发生的？
+
+Take another look at our function `mnist_distance`, and you'll see we have there the subtraction `(a-b)`. The magic trick is that PyTorch, when it tries to perform a simple subtraction operation between two tensors of different ranks, will use *broadcasting*. That is, it will automatically expand the tensor with the smaller rank to have the same size as the one with the larger rank. Broadcasting is an important capability that makes tensor code much easier to write.
+
+再看一下我们的`mnist_distance`函数，你会看在这里我们有减法`(a-b)`。那是PyTorch奇妙的技巧，当它尝试在两个不同阶张量间执行减法操作时，将用到*传播*。这是自动扩展张量到与最大阶张量相同的阶，从而他们间具有了相同尺寸。传播是使得张量代码更容易编写的一个很重要的能力。
+
+After broadcasting so the two argument tensors have the same rank, PyTorch applies its usual logic for two tensors of the same rank: it performs the operation on each corresponding element of the two tensors, and returns the tensor result. For instance:
+
+传播后两个张量参数有了相同的阶，PyTorch对两个相同阶的张量应用通常逻辑：它在两个张量的每个相符元素上执行操作，并返回张量结果。例如：
+
+```python
+tensor([1,2,3]) + tensor([1,1,1])
+```
+
+Out: tensor([2, 3, 4])
+
