@@ -757,7 +757,7 @@ To be more specific, here are the steps that we are going to require, to turn th
 4. 计算用于测量每个权重*梯度*，改变权重可能会改变损失。
 5. 根据这个计算*步进*（即改变）所有权重。
 6. 返回到步骤2，并重复这一过程。
-7. 重复做，直到你决定*停止*这个训练过程（例如，因为这个模型是足够的好或你不想等太长时间）。
+7. 重复，直到你决定*停止*这个训练过程（例如，因为这个模型足够的好了或你不想再等了）。
 
 These seven steps, illustrated in <gradient_descent>, are the key to the training of all deep learning models. That deep learning turns out to rely entirely on these steps is extremely surprising and counterintuitive. It's amazing that this process can solve such complex problems. But, as you'll see, it really does!
 
@@ -775,7 +775,7 @@ subgraph the_gradient_descent_process
 init --> predict --> loss --> gradient  --> step --> stop 
 end
 subgraph the_gradient_descent_process
-step --> predict
+step --repeat--> predict
 end
 ```
 
@@ -791,7 +791,7 @@ subgraph 梯度下降过程
 init --> predict --> loss --> gradient  --> step --> stop 
 end
 subgraph 梯度下降过程
-step --> predict
+step --重复--> predict
 end
 ```
 
