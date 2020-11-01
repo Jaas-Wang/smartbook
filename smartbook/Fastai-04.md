@@ -918,3 +918,55 @@ The "backward" here refers to *backpropagation*, which is the name given to the 
 
 这里的“backward”指的是*反向传播*，这个名字给出了每导计算导数的过程。当我们从头开始计算一个深度神经网络的梯度时，在<章节：基础>里我们会看到具体如何做的。这被称为网络的“反向传递”，与之相对的是“前向传递”，后者是计算激活的位置。如果`backward`只是被叫做`计算梯度`工作可能会更容易，但做深度学习的这些人真喜欢在任何能加的地方的增加术语！
 
+We can now view the gradients by checking the `grad` attribute of our tensor:
+
+我们现在能够通过检查张量的`grad`属性查看这些梯度：
+
+```python
+xt.grad
+```
+
+Out: tensor(6.)
+
+If you remember your high school calculus rules, the derivative of `x**2` is `2*x`, and we have `x=3`, so the gradients should be `2*3=6`, which is what PyTorch calculated for us!
+
+如果你还记得高中微积分规则，`x**2`的导数是`2*x`，当`x=3`，梯度应该是`2*3=6`，这就是PyTorchy为我们计算的结果！
+
+Now we'll repeat the preceding steps, but with a vector argument for our function:
+
+现在我们会重复向前的这些步骤，只是为我们的函数使用一个向量参数：
+
+```python
+xt = tensor([3.,4.,10.]).requires_grad_()
+xt
+```
+
+Out: tensor([ 3.,  4., 10.], requires_grad=True)
+
+And we'll add `sum` to our function so it can take a vector (i.e., a rank-1 tensor), and return a scalar (i.e., a rank-0 tensor):
+
+我们会增加`sum`到我们的函数，所以它能取一个向量（即1阶张量）并后加一个标量（即，一个0阶张量）：
+
+```python
+def f(x): return (x**2).sum()
+
+yt = f(xt)
+yt
+```
+
+Out: tensor(125., grad_fn=<SumBackward0>)
+
+Our gradients are `2*xt`, as we'd expect!
+
+正如我们所预期的，我们的梯度是`2*xt`！
+
+```python
+yt.backward()
+xt.grad
+```
+
+Out: tensor([ 6.,  8., 20.])
+
+The gradients only tell us the slope of our function, they don't actually tell us exactly how far to adjust the parameters. But it gives us some idea of how far; if the slope is very large, then that may suggest that we have more adjustments to do, whereas if the slope is very small, that may suggest that we are close to the optimal value.
+
+这些梯度只告诉我们函数的斜率，他们没有真正的告诉我们具体调整参数多少。但它给了我们调整多少的一些想法。如果斜率非常大，其后可能建议我们多调整一些。而如果斜率非常小，那可能的建议是我们接近最优值了。
