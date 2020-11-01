@@ -854,3 +854,20 @@ We can change our weight by a little in the direction of the slope, calculate ou
 This basic idea goes all the way back to Isaac Newton, who pointed out that we can optimize arbitrary functions in this way. Regardless of how complicated our functions become, this basic approach of gradient descent will not significantly change. The only minor changes we will see later in this book are some handy ways we can make it faster, by finding better steps.
 
 这个基本想法完全来自艾萨克·牛顿，它指出我们能够用这种方法优化任意函数。不管我们的函数变得多么复杂，这个梯度下降的基本方法都不会有明显改变。在本书中稍晚我们会看到仅有的一点改变，是一些通过寻找更优的步骤能让它更快的实用方法，
+
+### Calculating Gradients
+
+### 计算梯度
+
+The one magic step is the bit where we calculate the gradients. As we mentioned, we use calculus as a performance optimization; it allows us to more quickly calculate whether our loss will go up or down when we adjust our parameters up or down. In other words, the gradients will tell us how much we have to change each weight to make our model better.
+
+一个神奇的步骤是我们计算梯度。正如我们提到的，我们使用微积分进行性能优化。当我们上调或上调我们的参数时，它允许我们更快的计算我们损失会上升还是下降。换句话说，梯度会告诉我们我们必须对每个权重调整多少以使得我们的模型更好。
+
+You may remember from your high school calculus class that the *derivative* of a function tells you how much a change in its parameterss will change its result. If not, don't worry, lots of us forget calculus once high school is behind us! But you will have to have some intuitive understanding of what a derivative is before you continue, so if this is all very fuzzy in your head, head over to Khan Academy and complete the [lessons on basic derivatives](https://www.khanacademy.org/math/differential-calculus/dc-diff-intro). You won't have to know how to calculate them yourselves, you just have to know what a derivative is.
+
+你可能记得你的高中微积分课程，一个函数的*导数*告诉你在它们的参数上调整多少会改变它的结果。如果不记的了，不要着急。我们大多数人一旦高中毕业就忘记微积分了！但在你继续之前，你将必须对导数是什么有一些直觉上的理解，所以如果在你的脑子里它非常模糊不清，前往可汗学院并完成[基础导数课程](https://www.khanacademy.org/math/differential-calculus/dc-diff-intro)。你不必知道如何自己计算他们，你只须知道一个导数是什么。
+
+The key point about a derivative is this: for any function, such as the quadratic function we saw in the previous section, we can calculate its derivative. The derivative is another function. It calculates the change, rather than the value. For instance, the derivative of the quadratic function at the value 3 tells us how rapidly the function changes at the value 3. More specifically, you may recall that gradient is defined as *rise/run*, that is, the change in the value of the function, divided by the change in the value of the parameter. When we know how our function will change, then we know what we need to do to make it smaller. This is the key to machine learning: having a way to change the parameters of a function to make it smaller. Calculus provides us with a computational shortcut, the derivative, which lets us directly calculate the gradients of our functions.
+
+关于导数的关键点是：对于任何函数，例如在之前部分我们看到的二次方程函数，我们能够计算它的导数。导数是另一个函数。它计算变化而不是数值。例如，在数值3上二次方程函数的导数告诉我们，在数值3上这个函数改变如何的快。更具体的说，你可能记得梯度被定义为*上升/运行*。也就是说，函数值的变化除以参数值的变化。当我们知道我们的函数将如何变化时，然后我们就知道我们需要做什么以使它更小。这是机器学习的关键：有个改变一个函数参数的方法，使函数更小。计算提供给我们一个计算的捷径：导数。这让我们可直接的计算我们函数的梯度。
+
