@@ -826,11 +826,17 @@ Here is a graph of that function:
 plot_function(f, 'x', 'x**2')
 ```
 
-Out: <img src="./_v_images/quadratic_graph.png" alt="quadratic_graph" style="zoom:90%;" />
+Out: <img src="./_v_images/quadratic_graph.png" alt="quadratic_graph" style="zoom:100%;" />
 
+The sequence of steps we described earlier starts by picking some random value for a parameter, and calculating the value of the loss:
 
+在早先我们描述的一系列步骤从为参数取随机值开始，并计算损失值：
 
+```python
+plot_function(f, 'x', 'x**2')
+plt.scatter(-1.5, f(-1.5), color='red');
+```
 
-
+Out: <img src="./_v_images/quadraticplot.png" alt="quadraticplot" style="zoom:100%;" />
 
 
