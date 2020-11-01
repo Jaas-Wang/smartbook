@@ -841,5 +841,16 @@ Out: <img src="./_v_images/quadraticplot.png" alt="quadraticplot" style="zoom:10
 
 Now we look to see what would happen if we increased or decreased our parameter by a little bit—the *adjustment*. This is simply the slope at a particular point:
 
+现在我们如果通过小小的*调整*，来增加或减小我们参数看看会发生什么。这是一个在特定点上简单的斜坡：
+
 <img src="./_v_images/grad_illustration.svg" alt="grad_illustration" style="zoom:110%;" />
 
+We can change our weight by a little in the direction of the slope, calculate our loss and adjustment again, and repeat this a few times. Eventually, we will get to the lowest point on our curve:
+
+我们能够在斜坡上的方向通过少许调整改变我们的权重，计算我们的损失和再次调整，并重复这一过程几次，我们会在曲线上达到最低点：
+
+<img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/chapter2_perfect.svg" alt="chapter2_perfect" style="zoom:100%;" />
+
+This basic idea goes all the way back to Isaac Newton, who pointed out that we can optimize arbitrary functions in this way. Regardless of how complicated our functions become, this basic approach of gradient descent will not significantly change. The only minor changes we will see later in this book are some handy ways we can make it faster, by finding better steps.
+
+这个基本想法完全来自艾萨克·牛顿，它指出我们能够用这种方法优化任意函数。不管我们的函数变得多么复杂，这个梯度下降的基本方法都不会有明显改变。在本书中稍晚我们会看到仅有的一点改变，是一些通过寻找更优的步骤能让它更快的实用方法，
