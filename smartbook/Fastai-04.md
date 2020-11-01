@@ -2,7 +2,7 @@
 
 # Under the Hood: Training a Digit Classifier
 
-# 追根溯源：训练一个数字分类
+# 追根溯源：训练一个数字分类器
 
 Having seen what it looks like to actually train a variety of models in Chapter 2, let’s now look under the hood and see exactly what is going on. We’ll start by using computer vision to introduce fundamental tools and concepts for deep learning.
 
@@ -894,3 +894,27 @@ Notice the special method `requires_grad_`? That's the magical incantation we us
 > a: This API might throw you off if you're coming from math or physics. In those contexts the "gradient" of a function is just another function (i.e., its derivative), so you might expect gradient-related APIs to give you a new function. But in deep learning, "gradients" usually means the *value* of a function's derivative at a particular argument value. The PyTorch API also puts the focus on the argument, not the function you're actually computing the gradients of. It may feel backwards at first, but it's just a different perspective.
 >
 > 亚：如果你来自数学或物理专业 这个API可能会让你失望。在那些情况下一个函数的“梯度”只是另一个函数（即它的导数），所以你可以预想到这些梯度相关的API给了你一个新函数。但在深度学习里，“梯度”通常表达的意思是在特定参数值上一个函数导数的*值*。PyTorch的API也注意力放在参数上，而不是我们正在实际计算梯度的函数上。在一开始可能感觉它倒退了，但是这只是不同的观点。
+
+Now we calculate our function with that value. Notice how PyTorch prints not just the value calculated, but also a note that it has a gradient function it'll be using to calculate our gradients when needed:
+
+现在我们用这个值来计算我们的函数。注意PyTorch的输出不仅是计算后的值，而且是有一个梯度函数的注解，当需要的时候，它将被用于计算我们的梯度：
+
+```python
+yt = f(xt)
+yt
+```
+
+Out: tensor(9., grad_fn=<PowBackward0>)
+
+Finally, we tell PyTorch to calculate the gradients for us:
+
+最后，我们告诉PyTorch为我们计算梯度：
+
+```python
+yt.backward()
+```
+
+The "backward" here refers to *backpropagation*, which is the name given to the process of calculating the derivative of each layer. We'll see how this is done exactly in chapter <chapter_foundations>, when we calculate the gradients of a deep neural net from scratch. This is called the "backward pass" of the network, as opposed to the "forward pass," which is where the activations are calculated. Life would probably be easier if `backward` was just called `calculate_grad`, but deep learning folks really do like to add jargon everywhere they can!
+
+这里的“backward”指的是*反向传播*，这个名字给出了每导计算导数的过程。当我们从头开始计算一个深度神经网络的梯度时，在<章节：基础>里我们会看到具体如何做的。这被称为网络的“反向传递”，与之相对的是“前向传递”，后者是计算激活的位置。如果`backward`只是被叫做`计算梯度`工作可能会更容易，但做深度学习的这些人真喜欢在任何能加的地方的增加术语！
+
