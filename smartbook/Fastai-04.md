@@ -869,5 +869,28 @@ You may remember from your high school calculus class that the *derivative* of a
 
 The key point about a derivative is this: for any function, such as the quadratic function we saw in the previous section, we can calculate its derivative. The derivative is another function. It calculates the change, rather than the value. For instance, the derivative of the quadratic function at the value 3 tells us how rapidly the function changes at the value 3. More specifically, you may recall that gradient is defined as *rise/run*, that is, the change in the value of the function, divided by the change in the value of the parameter. When we know how our function will change, then we know what we need to do to make it smaller. This is the key to machine learning: having a way to change the parameters of a function to make it smaller. Calculus provides us with a computational shortcut, the derivative, which lets us directly calculate the gradients of our functions.
 
-关于导数的关键点是：对于任何函数，例如在之前部分我们看到的二次方程函数，我们能够计算它的导数。导数是另一个函数。它计算变化而不是数值。例如，在数值3上二次方程函数的导数告诉我们，在数值3上这个函数改变如何的快。更具体的说，你可能记得梯度被定义为*上升/运行*。也就是说，函数值的变化除以参数值的变化。当我们知道我们的函数将如何变化时，然后我们就知道我们需要做什么以使它更小。这是机器学习的关键：有个改变一个函数参数的方法，使函数更小。计算提供给我们一个计算的捷径：导数。这让我们可直接的计算我们函数的梯度。
+关于导数的关键点是：对于任何函数，例如在之前部分我们看到的二次方程函数，我们能够计算它的导数。导数是另一个函数。它计算变化而不是数值。例如，在数值3上二次方程函数的导数告诉我们，在数值3上这个函数改变如何的快。更具体的说，你可能记得梯度被定义为*上升/运行*。也就是说，函数值的变化除以参数值的变化。当我们知道我们的函数将如何变化时，然后我们就知道我们需要做什么以使它更小。这是机器学习的关键：有个改变一个函数参数的方法，使函数更小。微积分提供给我们一个计算的捷径：导数。这让我们可直接的计算我们函数的梯度。
 
+One important thing to be aware of is that our function has lots of weights that we need to adjust, so when we calculate the derivative we won't get back one number, but lots of them—a gradient for every weight. But there is nothing mathematically tricky here; you can calculate the derivative with respect to one weight, and treat all the other ones as constant, then repeat that for each other weight. This is how all of the gradients are calculated, for every weight.
+
+一个需要注意的重要事情是我们的函数有很多权重需要调整，所以当我们计算导数时，不能只返回一个数，而是很多：对每个权重的梯度。但这里没有任何数学技巧，你能够计算一个权重的导数，并处理所有的其它权重为常数，然后对每个其它权重重复求导。
+
+We mentioned just now that you won't have to calculate any gradients yourself. How can that be? Amazingly enough, PyTorch is able to automatically compute the derivative of nearly any function! What's more, it does it very fast. Most of the time, it will be at least as fast as any derivative function that you can create by hand. Let's see an example.
+
+我们刚刚已经提到我不必自己计算任何梯度。那如何做到呢？非常奇妙，PyTorch能够自动计算几乎任何函数的导数！更重要的是，它做的非常快。大多数时间，至少它与你能手工创建的任何求导函数一样快。让我们看一个例子。
+
+First, let's pick a tensor value which we want gradients at:
+
+首先，让我们选择一个张量值，我们想在上面求梯度的：
+
+```python
+xt = tensor(3.).requires_grad_()
+```
+
+Notice the special method `requires_grad_`? That's the magical incantation we use to tell PyTorch that we want to calculate gradients with respect to that variable at that value. It is essentially tagging the variable, so PyTorch will remember to keep track of how to compute gradients of the other, direct calculations on it that you will ask for.
+
+注意这个特定方法`requires_grad_`？这是我们用于告诉PyTorch，在这个值上我们想要计算关于这个变量梯度的方法。
+
+> a: This API might throw you off if you're coming from math or physics. In those contexts the "gradient" of a function is just another function (i.e., its derivative), so you might expect gradient-related APIs to give you a new function. But in deep learning, "gradients" usually means the *value* of a function's derivative at a particular argument value. The PyTorch API also puts the focus on the argument, not the function you're actually computing the gradients of. It may feel backwards at first, but it's just a different perspective.
+>
+> 亚：如果你来自数学或物理专业 这个API可能会让你失望。在那些情况下一个函数的“梯度”只是另一个函数（即它的导数），所以你可以预想到这些梯度相关的API给了你一个新函数。但在深度学习里，“梯度”通常表达的意思是在特定参数值上一个函数导数的*值*。PyTorch的API也注意力放在参数上，而不是我们正在实际计算梯度的函数上。在一开始可能感觉它倒退了，但是这只是不同的观点。
