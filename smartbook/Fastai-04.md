@@ -839,4 +839,7 @@ plt.scatter(-1.5, f(-1.5), color='red');
 
 Out: <img src="./_v_images/quadraticplot.png" alt="quadraticplot" style="zoom:100%;" />
 
+Now we look to see what would happen if we increased or decreased our parameter by a little bit—the *adjustment*. This is simply the slope at a particular point:
+
+<img src="./_v_images/grad_illustration.svg" alt="grad_illustration" style="zoom:110%;" />
 
