@@ -809,3 +809,22 @@ There are many different ways to do each of these seven steps, and we will be le
 - 损失：这是塞缪尔提出的，他谈到*依据实际表现测试当前权重分配的有效性*，我们需要一些函数，如果模型是好的会返回一个小数值（标准方法是认为一个小的损失认为是好，而一个大的损失认为是坏，虽然这仅仅是一个惯例）。
 - 步进：一个简单的方法是算出一个权重应该被增加一点，还是被减少一点，也许只需要尝试一下：通过一个小数值增加权重，并看损失增加还是减小。一旦你发现正确的方向，然后你能够通过增加一点和减小一点来改变这个数值，直到你发现一个数值效果很好。然而，这太慢了！正如我们将要看不对劲的，计算的魔力允许我们直接计算出方向，及大致是多少，来改变每个权重，不用尝试这些小的改变。这个方法是通过计算*梯度*来做这个事情。通过使用更慢的手工过程也能取得相同精确的结果，这只是一个表现优化。
 - 停止：一旦我们已经决定用多少轮次来训练模型（对于此事在很早的列表中已经出给出了一些小建议），我们就应用这个决策。这就是决策被应用的地方。对于我们的数字分类，模型的精度开始变的糟糕或我们没有运行时间了，我们将会停止训练。
+
+Before applying these steps to our image classification problem, let's illustrate what they look like in a simpler case. First we will define a very simple function, the quadratic—let's pretend that this is our loss function, and `x` is a weight parameter of the function:
+
+应用这些步骤到我们图像分类问题之前，让我们在一个很简单的例子中插图说明他们什么样子。首先我们要定义一个非常简单的函数：二次方程。让我们假定这是我们的损失函数，并且`x`是这个函数的权重：
+
+```python
+def f(x): return x**2
+```
+
+Here is a graph of that function:
+
+这是该函数的图形：
+
+```python
+plot_function(f, 'x', 'x**2')
+```
+
+Out: <img src="./_v_images/quadratic_graph.png" alt="quadratic_graph" style="zoom:90%;" />
+
