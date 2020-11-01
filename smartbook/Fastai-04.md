@@ -828,3 +828,9 @@ plot_function(f, 'x', 'x**2')
 
 Out: <img src="./_v_images/quadratic_graph.png" alt="quadratic_graph" style="zoom:90%;" />
 
+
+
+
+
+
+
