@@ -751,6 +751,8 @@ To be more specific, here are the steps that we are going to require, to turn th
 6. Go back to the step 2, and *repeat* the process.
 7. Iterate until you decide to *stop* the training process (for instance, because the model is good enough or you don't want to wait any longer).
 
+
+
 1. *初始化*权重。
 2. 对每张图像使用权重来*预测* 它像是3或7。
 3. 基于这些预测，计算模型是如何的好（它的损失）。
@@ -795,3 +797,15 @@ step --重复--> predict
 end
 ```
 
+There are many different ways to do each of these seven steps, and we will be learning about them throughout the rest of this book. These are the details that make a big difference for deep learning practitioners, but it turns out that the general approach to each one generally follows some basic principles. Here are a few guidelines:
+
+有很多不同方法来做这七步中的第一步，我将在本书的其它部分学习他们。对于深度学习从业人员来说有些会带来很大差别的细节，但事实证明任何一些通用方法通常会遵循一些基本原则。这是一些指导方针：
+
+- Initialize:: We initialize the parameters to random values. This may sound surprising. There are certainly other choices we could make, such as initializing them to the percentage of times that pixel is activated for that category—but since we already know that we have a routine to improve these weights, it turns out that just starting with random weights works perfectly well.
+- Loss:: This is what Samuel referred to when he spoke of *testing the effectiveness of any current weight assignment in terms of actual performance*. We need some function that will return a number that is small if the performance of the model is good (the standard approach is to treat a small loss as good, and a large loss as bad, although this is just a convention).
+- Step:: A simple way to figure out whether a weight should be increased a bit, or decreased a bit, would be just to try it: increase the weight by a small amount, and see if the loss goes up or down. Once you find the correct direction, you could then change that amount by a bit more, and a bit less, until you find an amount that works well. However, this is slow! As we will see, the magic of calculus allows us to directly figure out in which direction, and by roughly how much, to change each weight, without having to try all these small changes. The way to do this is by calculating *gradients*. This is just a performance optimization, we would get exactly the same results by using the slower manual process as well.
+- Stop:: Once we've decided how many epochs to train the model for (a few suggestions for this were given in the earlier list), we apply that decision. This is where that decision is applied. For our digit classifier, we would keep training until the accuracy of the model started getting worse, or we ran out of time.
+- 初始化：我们用随机值来初始化参数。这可能听起来让人吃惊。我们确实可做其它选择，例如用这个分类像素被激活次数的百分比来初始化他们。但是因为我们已经知道，我们有一个例行程序来改善这些权重，事实证明，只从随机权重开始工作就十分有效。
+- 损失：这是塞缪尔提出的，他谈到*依据实际表现测试当前权重分配的有效性*，我们需要一些函数，如果模型是好的会返回一个小数值（标准方法是认为一个小的损失认为是好，而一个大的损失认为是坏，虽然这仅仅是一个惯例）。
+- 步进：一个简单的方法是算出一个权重应该被增加一点，还是被减少一点，也许只需要尝试一下：通过一个小数值增加权重，并看损失增加还是减小。一旦你发现正确的方向，然后你能够通过增加一点和减小一点来改变这个数值，直到你发现一个数值效果很好。然而，这太慢了！正如我们将要看不对劲的，计算的魔力允许我们直接计算出方向，及大致是多少，来改变每个权重，不用尝试这些小的改变。这个方法是通过计算*梯度*来做这个事情。通过使用更慢的手工过程也能取得相同精确的结果，这只是一个表现优化。
+- 停止：一旦我们已经决定用多少轮次来训练模型（对于此事在很早的列表中已经出给出了一些小建议），我们就应用这个决策。这就是决策被应用的地方。对于我们的数字分类，模型的精度开始变的糟糕或我们没有运行时间了，我们将会停止训练。
