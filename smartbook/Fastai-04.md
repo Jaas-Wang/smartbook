@@ -1027,3 +1027,29 @@ If the learning rate is too high, it may also "bounce" around, rather than actua
 Now let's apply all of this in an end-to-end example.
 
 现在让我们在一个端到端的例子中应用上述所有步骤。
+
+### An End-to-End SGD Example
+
+### 一个端到端随机梯度下降的例子
+
+We've seen how to use gradients to find a minimum. Now it's time to look at an SGD example and see how finding a minimum can be used to train a model to fit data better.
+
+我们已经看了如何利用梯度来寻找一个最小数。现在是时候来看一个随机梯度下降的例子，并看如何寻找一个最小值，这个值能够被用于训练一个更好拟合数的模型。
+
+Let's start with a simple, synthetic, example model. Imagine you were measuring the speed of a roller coaster as it went over the top of a hump. It would start fast, and then get slower as it went up the hill; it would be slowest at the top, and it would then speed up again as it went downhill. You want to build a model of how the speed changes over time. If you were measuring the speed manually every second for 20 seconds, it might look something like this:
+
+让我们从一个简单的合成实例模型开始！想像你正在测试一个过山车越过一个驼峰顶部的速度。它也许开始很快，然后在上山的时候速度变慢。它也会在顶部是最慢的，随后它下山的速度会再次加快。我想创建一个随着时间推移速度如何变化的模型。如果你正在手工测量20秒内每秒的速度，一些内容看起来可能像这样：
+
+```python
+time = torch.arange(0,20).float(); time
+```
+
+Out: tensor([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11., 12., 13., 14., 15., 16., 17., 18., 19.])
+
+```python
+speed = torch.randn(20)*3 + 0.75*(time-9.5)**2 + 1
+plt.scatter(time,speed);
+```
+
+Out: <img src="./_v_images/rollerspeed.png" alt="rollerspeed" style="zoom:100%;" />
+
