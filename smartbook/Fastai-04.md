@@ -1104,3 +1104,37 @@ params = torch.randn(3).requires_grad_()
 orig_params = params.clone()
 ```
 
+#### Step 2: Calculate the predictions
+
+#### 步骤二：计算预测
+
+Next, we calculate the predictions:
+
+下一步，我们计算预测：
+
+```python
+preds = f(time, params)
+```
+
+Let's create a little function to see how close our predictions are to our targets, and take a look:
+
+让我们创建一个小函数，来看我们的预测是如何接近我们的目标的，并输出图形看一下：
+
+```python
+def show_preds(preds, ax=None):
+    if ax is None: ax=plt.subplots()[1]
+    ax.scatter(time, speed)
+    ax.scatter(time, to_np(preds), color='red')
+    ax.set_ylim(-300,100)
+```
+
+```python
+show_preds(preds)
+```
+
+Out: <img src="./_v_images/show_preds.png" alt="show_preds" style="zoom:100%;" />
+
+This doesn't look very close—our random parameters suggest that the roller coaster will end up going backwards, since we have negative speeds!
+
+看起来不是非常接近，我们随机参数代表的是过山车最终会倒退，因为我们有负值速度！
+
