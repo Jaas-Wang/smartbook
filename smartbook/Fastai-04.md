@@ -970,3 +970,43 @@ Out: tensor([ 6.,  8., 20.])
 The gradients only tell us the slope of our function, they don't actually tell us exactly how far to adjust the parameters. But it gives us some idea of how far; if the slope is very large, then that may suggest that we have more adjustments to do, whereas if the slope is very small, that may suggest that we are close to the optimal value.
 
 这些梯度只告诉我们函数的斜率，他们没有真正的告诉我们具体调整参数多少。但它给了我们调整多少的一些想法。如果斜率非常大，其后可能建议我们多调整一些。而如果斜率非常小，那可能的建议是我们接近最优值了。
+
+### Stepping With a Learning Rate
+
+### 用学习率步进
+
+Deciding how to change our parameters based on the values of the gradients is an important part of the deep learning process. Nearly all approaches start with the basic idea of multiplying the gradient by some small number, called the *learning rate* (LR). The learning rate is often a number between 0.001 and 0.1, although it could be anything. Often, people select a learning rate just by trying a few, and finding which results in the best model after training (we'll show you a better approach later in this book, called the *learning rate finder*). Once you've picked a learning rate, you can adjust your parameters using this simple function:
+
+基于梯度值决定如何改变我们的参数是深度学习过程一个重要部分。几乎所有方法都是从一个小数乘以梯度的基本思想开始的，这个小数称为*学习率*（LR）。学习率通常是在0.001到0.1之间的一个数字，当然它能够是任何数字。通常，人们只是通过一点点尝试来选择一个学习率，并寻找那个结果在训练后是最好的模型（我们稍后在本书会给你展示一个更好的方法，称为*学习率查找器*）。一旦你选中了一个学习率，利用下面这个简单函数你就能够调整参数了：
+
+​	w -= gradient(w) * lr
+
+This is known as *stepping* your parameters, using an *optimizer step*.
+
+这被称为利用一个*优化步骤*，*步进* 你的参数。
+
+If you pick a learning rate that's too low, it can mean having to do a lot of steps. <descent_small> illustrates that.
+
+如果你选中的学习率太小，这意味着必须要做很多步。如下图<低学习率梯度下降>的插图说明。
+
+<div>
+  <p align="center">
+    <img src="./_v_images/chapter2_small.svg" alt="An illustration of gradient descent with a LR too low" width="400" caption="Gradient descent with low LR" id="descent_small" />
+  </p>
+  <p align="center">
+    低学习率梯度下降
+  </p>
+</div>
+
+But picking a learning rate that's too high is even worse—it can actually result in the loss getting *worse*, as we see in <descent_div>!
+
+如果选择的学习率太大是很糟糕的，在损失方向它实际的结果会更*糟*，正如下图所求<高学习率梯度下降>！
+
+<div>
+  <p align="center">
+    <img alt="An illustration of gradient descent with a LR too high" width="400" caption="Gradient descent with high LR" src="./_v_images/chapter2_div.svg" id="descent_div" />
+  </p>
+  <p align="center">
+    高学习率梯度下降
+  </p>
+</div>
