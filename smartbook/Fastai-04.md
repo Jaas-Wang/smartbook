@@ -1053,3 +1053,54 @@ plt.scatter(time,speed);
 
 Out: <img src="./_v_images/rollerspeed.png" alt="rollerspeed" style="zoom:100%;" />
 
+We've added a bit of random noise, since measuring things manually isn't precise. This means it's not that easy to answer the question: what was the roller coaster's speed? Using SGD we can try to find a function that matches our observations. We can't consider every possible function, so let's use a guess that it will be quadratic; i.e., a function of the form `a*(time**2)+(b*time)+c`.
+
+我们增加了一点随机噪声，因为手动测量并不精准。这意味着它不容易回答问题：过山车的速度是什么？利用随机梯度下降我们能够尝试找到一个函数用于比对我们的观测数据。我们不可能考虑到每个可能的函数，所以让我们用猜想的方式，它会是一个二次方程。即，函数形式是``a*(time**2)+(b*time)+c`。
+
+We want to distinguish clearly between the function's input (the time when we are measuring the coaster's speed) and its parameters (the values that define *which* quadratic we're trying). So, let's collect the parameters in one argument and thus separate the input, `t`, and the parameters, `params`, in the function's signature:
+
+我们想要函数的输入（当我们正在测量的过山车速度时间的时候）和它的参数（我们正在尝试定义的二次方程的值）之间有清晰区分。所以，让我们在一个传参中收集参数，从而在函数签名中拆分输入`t`和参数`params`：
+
+```python
+def f(t, params):
+    a,b,c = params
+    return a*(t**2) + (b*t) + c
+```
+
+In other words, we've restricted the problem of finding the best imaginable function that fits the data, to finding the best *quadratic* function. This greatly simplifies the problem, since every quadratic function is fully defined by the three parameters `a`, `b`, and `c`. Thus, to find the best quadratic function, we only need to find the best values for `a`, `b`, and `c`.
+
+换句话说，我们已经限定了拟合数据的可想像的最好的函数问题，来查找最好的*二次*函数。这是非常简单的问题，因为每个二次函数完全通过三个参数`a`、`b`和`c`来定义。因为，查找最好的二次函数，我们只需要找最好的`a`、`b`和`c`的值就行。
+
+If we can solve this problem for the three parameters of a quadratic function, we'll be able to apply the same approach for other, more complex functions with more parameters—such as a neural net. Let's find the parameters for `f` first, and then we'll come back and do the same thing for the MNIST dataset with a neural net.
+
+如果我们能够解决二次函数三个参数的问题，我们就能够对其它函数应用两样的方法，更复杂的函数拥有更多的参数，例如一个神经网络。让我们首先找`f`参数，然后我们会返回并对MNIST数据集用一个神经网络做同样的事情。
+
+We need to define first what we mean by "best." We define this precisely by choosing a *loss function*, which will return a value based on a prediction and a target, where lower values of the function correspond to "better" predictions. For continuous data, it's common to use *mean squared error*:
+
+我们需要首先定义我们“最好”的含义。我们通过选择一个*损失函数*来严谨的定义，这个函数会基于一个预测和一个目标返回一个值，函数最小值与“最好”预测相符。对于连续的数据，它通常用*均方误差*：
+
+```python
+def mse(preds, targets): return ((preds-targets)**2).mean()
+```
+
+Now, let's work through our 7 step process.
+
+现在，让我们通过7个步骤过程来处理。
+
+####  Step 1: Initialize the parameters
+
+#### 步骤一：初始化参数
+
+First, we initialize the parameters to random values, and tell PyTorch that we want to track their gradients, using `requires_grad_`:
+
+首先，我们初始化参数为随机值，并告诉PyTorch我们利用`requires_grad_`方法来跟踪他们的梯度：
+
+```python
+params = torch.randn(3).requires_grad_()
+```
+
+```python
+#hide
+orig_params = params.clone()
+```
+
