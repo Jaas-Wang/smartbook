@@ -1010,3 +1010,20 @@ But picking a learning rate that's too high is even worse—it can actually resu
     高学习率梯度下降
   </p>
 </div>
+
+If the learning rate is too high, it may also "bounce" around, rather than actually diverging; <<descent_bouncy>> shows how this has the result of taking many steps to train successfully.
+
+如果学习率太高，它可能会围着曲线*弹跳*，而不是发散。下图<弹跳学习率梯度下降>展示了如何花费了很多步取得这样的结果使训练成功。
+
+<div>
+  <p align="center">
+    <img alt="An illustation of gradient descent with a bouncy LR" width="400" caption="Gradient descent with bouncy LR" src="./_v_images/chapter2_bouncy.svg" id="descent_bouncy"/>
+  </p>
+  <p align="center">
+    弹跳学习率梯度下降
+  </p>
+</div>
+
+Now let's apply all of this in an end-to-end example.
+
+现在让我们在一个端到端的例子中应用上述所有步骤。
