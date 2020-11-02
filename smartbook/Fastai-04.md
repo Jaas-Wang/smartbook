@@ -1136,5 +1136,5 @@ Out: <img src="./_v_images/show_preds.png" alt="show_preds" style="zoom:100%;" /
 
 This doesn't look very close—our random parameters suggest that the roller coaster will end up going backwards, since we have negative speeds!
 
-看起来不是非常接近，我们随机参数代表的是过山车最终会倒退，因为我们有负值速度！
+看起来不是非常接近，我们随机参数代表的是过山车最终会倒退，因为我们的速度是负数！
 
