@@ -1138,3 +1138,53 @@ This doesn't look very close—our random parameters suggest that the roller coa
 
 看起来不是非常接近，我们随机参数代表的是过山车最终会倒退，因为我们的速度是负数！
 
+#### Step 3: Calculate the loss
+
+#### 步骤三：计算损失
+
+We calculate the loss as follows:
+
+接下来我们计算损失：
+
+```python
+loss = mse(preds, speed)
+loss
+```
+
+Out: tensor(25823.8086, grad_fn=<MeanBackward0>)
+
+Our goal is now to improve this. To do that, we'll need to know the gradients.
+
+我们的目标是现在来改善它。做这个事，我们需要知道梯度。
+
+#### Step 4: Calculate the gradients
+
+#### 步骤四：计算梯度
+
+The next step is to calculate the gradients. In other words, calculate an approximation of how the parameters need to change:
+
+下一步骤是来计算梯度。换名话说，计算一个参数如果改变的进似值：
+
+```python
+loss.backward()
+params.grad
+```
+
+Out: tensor([-53195.8594,  -3419.7146,   -253.8908])
+
+```python
+params.grad * 1e-5
+```
+
+Out: tensor([-0.5320, -0.0342, -0.0025])
+
+We can use these gradients to improve our parameters. We'll need to pick a learning rate (we'll discuss how to do that in practice in the next chapter; for now we'll just use 1e-5, or 0.00001):
+
+我们能够用这些梯度来改善我们的参数。我们将需要选择一个学习率（我们会在下一章节讨论在实践中如果来做。现在我们只用 1e-5或0.00001）
+
+```python
+params
+```
+
+Out: tensor([-0.7658, -0.7506,  1.3525], requires_grad=True)
+
