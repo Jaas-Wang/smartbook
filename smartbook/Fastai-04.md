@@ -1253,44 +1253,60 @@ Now we iterate. By looping and performing many improvements, we hope to reach a 
 for i in range(10): apply_step(params)
 ```
 
-<table>
+<table style="width: 200px;border-collapse: collapse;">
   <tr>
-    <td>Out: </td>
-    <td>5435.53662109375</td>
+    <td  style="width: 100px;">Out: </td>
+    <td  style="width: 200px;">5435.53662109375</td>
   </tr>
-    <td></td>
+    <td style="width: 100px;"></td>
     <td>1577.4495849609375</td>
   <tr>
-    <td></td>
+    <td style="width: 100px;"></td>
     <td>847.3780517578125</td>
   </tr>
   <tr>
-    <td></td>
+    <td style="width: 100px;"></td>
     <td>709.22265625</td>
   </tr>
   <tr>
-    <td></td>
+    <td style="width: 100px;"></td>
     <td>683.0757446289062</td>
   </tr>
   <tr>
-    <td></td>		
+    <td style="width: 100px;"></td>		
     <td>678.12451171875</td>
   </tr>
 	<tr>
-    <td></td>
+    <td style="width: 100px;"></td>
     <td>677.1839599609375</td>
   </tr>
   <tr>
-    <td></td>
+    <td style="width: 100px;"></td>
 		<td>677.0025024414062</td>
   </tr>
   <tr>
-    <td></td>
+    <td style="width: 100px;"></td>
 		<td>676.96435546875</td>
   </tr>
   <tr>
-    <td></td>
+    <td style="width: 100px;"></td>
 		<td>676.9537353515625</td>
   </tr>
 </table>
 
+```python
+#hide
+params = orig_params.detach().requires_grad_()
+```
+
+The loss is going down, just as we hoped! But looking only at these loss numbers disguises the fact that each iteration represents an entirely different quadratic function being tried, on the way to finding the best possible quadratic function. We can see this process visually if, instead of printing out the loss function, we plot the function at every step. Then we can see how the shape is approaching the best possible quadratic function for our data:
+
+正如我们所希望的，损失正在下降！
+
+```python
+_,axs = plt.subplots(1,4,figsize=(12,3))
+for ax in axs: show_preds(apply_step(params, False), ax)
+plt.tight_layout()
+```
+
+Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/tigh_plot.png" alt="tigh_plot" style="zoom:100%;" />
