@@ -1188,3 +1188,57 @@ params
 
 Out: tensor([-0.7658, -0.7506,  1.3525], requires_grad=True)
 
+#### Step 5: Step the weights
+
+#### 步骤五：步进权重
+
+Now we need to update the parameters based on the gradients we just calculated:
+
+现在我们需要基于我们刚刚计算过的梯度来重新参数：
+
+```python
+lr = 1e-5
+params.data -= lr * params.grad.data
+params.grad = None
+```
+
+> a: Understanding this bit depends on remembering recent history. To calculate the gradients we call `backward` on the `loss`. But this `loss` was itself calculated by `mse`, which in turn took `preds` as an input, which was calculated using `f` taking as an input `params`, which was the object on which we originally called `required_grads_`—which is the original call that now allows us to call `backward` on `loss`. This chain of function calls represents the mathematical composition of functions, which enables PyTorch to use calculus's chain rule under the hood to calculate these gradients.
+>
+> 亚：依赖所记住的最近过程来理解这一点。计算梯度我们调用`loss`上的`backward`。但这个`loss`是通过`mse`它自己计算的，mse反过来取`preds`做为输入，preds利用`params`做为输入的`f`计算得出的，params是我们最初称为`requires_grad_`上的对象，这一原始调用允许我们调用`loss`上的`backward`。这一函数链调用相当于数学的函数组装，这使得PyTorch能够在后台用微积分链规则来计算这些梯度。
+
+Let's see if the loss has improved:
+
+让我们看看损失是否已经改善：
+
+```python
+preds = f(time,params)
+mse(preds, speed)
+```
+
+Out: tensor(5435.5366, grad_fn=<MeanBackward0>)
+
+And take a look at the plot:
+
+并输出图形看一下：
+
+```python
+show_preds(preds)
+```
+
+Out: <img src="./_v_images/show_preds1.png" alt="show_preds1" style="zoom:100%;" />
+
+We need to repeat this a few times, so we'll create a function to apply one step:
+
+我们需要重复这一过程几次，所以我们要创建一个函数来应用这一步骤：
+
+```python
+def apply_step(params, prn=True):
+    preds = f(time, params)
+    loss = mse(preds, speed)
+    loss.backward()
+    params.data -= lr * params.grad.data
+    params.grad = None
+    if prn: print(loss.item())
+    return preds
+```
+
