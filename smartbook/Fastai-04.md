@@ -1301,7 +1301,7 @@ params = orig_params.detach().requires_grad_()
 
 The loss is going down, just as we hoped! But looking only at these loss numbers disguises the fact that each iteration represents an entirely different quadratic function being tried, on the way to finding the best possible quadratic function. We can see this process visually if, instead of printing out the loss function, we plot the function at every step. Then we can see how the shape is approaching the best possible quadratic function for our data:
 
-正如我们所希望的，损失正在下降！
+正如我们所希望的，损失正在下降！但这些损失数值看起来掩盖了每次迭代都代表尝试的是一个完全不同的二次函数，这是寻找最好可能性的二次函数方法。如果我们能够标定每一步的函数，来替代损失函数的输出，我们能够看到把这一可视化过程。然后我们能够看到相关步骤对我们的数据是如何接近最好可能性的二次函数：
 
 ```python
 _,axs = plt.subplots(1,4,figsize=(12,3))
@@ -1310,3 +1310,11 @@ plt.tight_layout()
 ```
 
 Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/tigh_plot.png" alt="tigh_plot" style="zoom:100%;" />
+
+#### Step 7: stop
+
+#### 步骤七：停止
+
+We just decided to stop after 10 epochs arbitrarily. In practice, we would watch the training and validation losses and our metrics to decide when to stop, as we've discussed.
+
+我们只是武断的决定10个轮次后就停止。正如我们已经讨论过的，在实践中，我们也许要看训练和验证损失及我们的指标来决定什么时候停止。
