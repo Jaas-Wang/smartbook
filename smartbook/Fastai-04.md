@@ -118,8 +118,8 @@ In a computer, everything is represented as a number. To view the numbers that m
 array(im3)[4:10,4:10]
 ```
 
-$
-\begin{matrix} Out:array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
+Out: $
+\begin{matrix} array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
 	& [&0,& 0,& 0,& 0,& 0,& 29&], \\ 
 	& [&0,& 0,& 0,& 48,& 166,& 224&], \\ 
 	& [&0,& 93,& 244,& 249,& 253,& 187&], \\
@@ -136,8 +136,8 @@ The `4:10` indicates we requested the rows from index 4 (included) to 10 (not in
 tensor(im3)[4:10,4:10]
 ```
 
-$
-\begin{matrix} Out:array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
+Out: $
+\begin{matrix} array([&[& 0, & 0, & 0, & 0, & 0, & 0&],\\ 
 	& [&0,& 0,& 0,& 0,& 0,& 29&], \\ 
 	& [&0,& 0,& 0,& 48,& 166,& 224&], \\ 
 	& [&0,& 93,& 244,& 249,& 253,& 187&], \\
@@ -781,6 +781,8 @@ step --repeat--> predict
 end
 ```
 
+
+
 ```mermaid
 graph LR
 init((初始化))
@@ -1294,6 +1296,7 @@ for i in range(10): apply_step(params)
   </tr>
 </table>
 
+
 ```python
 #hide
 params = orig_params.detach().requires_grad_()
@@ -1318,3 +1321,66 @@ Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/tigh_pl
 We just decided to stop after 10 epochs arbitrarily. In practice, we would watch the training and validation losses and our metrics to decide when to stop, as we've discussed.
 
 我们只是武断的决定10个轮次后就停止。正如我们已经讨论过的，在实践中，我们也许要看训练和验证损失及我们的指标来决定什么时候停止。
+
+### Summarizing Gradient Descent
+
+### 总结梯度下降
+
+```python
+#hide_input
+#id gradient_descent
+#caption The gradient descent process
+#alt Graph showing the steps for Gradient Descent
+gv('''
+init->predict->loss->gradient->step->stop
+step->predict[label=repeat]
+''')
+```
+
+```mermaid
+graph LR
+init((init))
+predict((predict))
+loss((loss))
+gradient((gradient))
+step((step))
+stop((stop))
+subgraph the_gradient_descent_process
+init --> predict --> loss --> gradient  --> step --> stop 
+end
+subgraph the_gradient_descent_process
+step --repeat--> predict
+end
+```
+```mermaid
+graph LR
+init((初始化))
+predict((预测))
+loss((损失))
+gradient((梯度))
+step((步进))
+stop((停止))
+subgraph 梯度下降过程
+init --> predict --> loss --> gradient  --> step --> stop 
+end
+subgraph 梯度下降过程
+step --重复--> predict
+end
+```
+
+To summarize, at the beginning, the weights of our model can be random (training *from scratch*) or come from a pretrained model (*transfer learning*). In the first case, the output we will get from our inputs won't have anything to do with what we want, and even in the second case, it's very likely the pretrained model won't be very good at the specific task we are targeting. So the model will need to *learn* better weights.
+
+总结一下，在一开始，我们模型的权重能够被随机化（*从零*开始训练）或来自一个预训练模型（*迁移学习*）。在第一个例子中，从我们的输入获得输出与我们我们想要做的事情没有任何关系，即使在第二个例子中，预训练模型非常可能在我们特定目标任务上不是非常的好。所以这个模型需要*学习* 更好的权重。
+
+We begin by comparing the outputs the model gives us with our targets (we have labeled data, so we know what result the model should give) using a *loss function*, which returns a number that we want to make as low as possible by improving our weights. To do this, we take a few data items (such as images) from the training set and feed them to our model. We compare the corresponding targets using our loss function, and the score we get tells us how wrong our predictions were. We then change the weights a little bit to make it slightly better.
+
+我们利用一个*损失函数*，通过对比模型给我们的输出与我们的目标（我们已经有了标注数据，所以我们知道模型应该给我们提供什么结果）开始，损失函数返回的数值，我们希望通过改善我们的权重使其尽可能的低。我们从训练集取一些数据（如图像）并把这些数据喂给我们的模型，来做这个事情。我们利用损失函数对比相符的目标，我们得到的分数会告诉我们的预测糟糕程度。然后我们稍微变更权重来让它稍稍好一些。
+
+To find how to change the weights to make the loss a bit better, we use calculus to calculate the *gradients*. (Actually, we let PyTorch do it for us!) Let's consider an analogy. Imagine you are lost in the mountains with your car parked at the lowest point. To find your way back to it, you might wander in a random direction, but that probably wouldn't help much. Since you know your vehicle is at the lowest point, you would be better off going downhill. By always taking a step in the direction of the steepest downward slope, you should eventually arrive at your destination. We use the magnitude of the gradient (i.e., the steepness of the slope) to tell us how big a step to take; specifically, we multiply the gradient by a number we choose called the *learning rate* to decide on the step size. We then *iterate* until we have reached the lowest point, which will be our parking lot, then we can *stop*.
+
+我们用微积分计算*梯度*来寻找如何改变权重以使损失稍微好点。（实际上，我们让PyTorch为我们做这个工作！）让我们思考一个推演。想像你在山里迷路了，你的车停放在最低点。你可能会感到奇怪，用一个随机的方向来寻找你返回停车场的路，这可能不会有太多帮助。因为你知道你的车在最低点，你最终应该抵达你的目的地。我们用梯度的大小（即，斜坡的陡峭度）来告诉我们一步是多大。通过我们选择的*学习率* 乘以梯度来决定一步的大小。然后我们*重复* 这些步骤直到我们搜索到最低点，这就是我们的汽车停靠点，这时我们就可以*停止*了。
+
+All of that we just saw can be transposed directly to the MNIST dataset, except for the loss function. Let's now see how we can define a good training objective.
+
+所有我们刚刚看到的这些内容，除了损失函数，都能够直接转移到MNIST数据集上去。现在让我们看看我们能够如果定义一个好的训练目标。
+
