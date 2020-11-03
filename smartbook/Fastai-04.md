@@ -1242,3 +1242,35 @@ def apply_step(params, prn=True):
     return preds
 ```
 
+#### Step 6: Repeat the process
+
+#### 步骤六：重复这一过程
+
+Now we iterate. By looping and performing many improvements, we hope to reach a good result:
+现在我们迭代。能够循环和做一些改善，我们希望找到一个好的结果：
+
+```python
+for i in range(10): apply_step(params)
+```
+
+<table>
+  <tr>
+    <td>Out: </td>
+    <td>5435.53662109375</td>
+  </tr>
+    <td></td>
+    <td>1577.4495849609375</td>
+  <tr>
+  </tr>
+</table>
+
+
+
+		847.3780517578125
+		709.22265625
+		683.0757446289062
+		678.12451171875
+		677.1839599609375
+		677.0025024414062
+		676.96435546875
+		676.9537353515625
