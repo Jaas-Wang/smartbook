@@ -1511,7 +1511,7 @@ The first element is the same as we calculated before, as we'd expect. This equa
 
 Let's check our accuracy. To decide if an output represents a 3 or a 7, we can just check whether it's greater than 0, so our accuracy for each item can be calculated (using broadcasting, so no loops!) with:
 
-让我们检查一下精度。决定一个输出代表3或7，我们只能够检查是否它比另大，所以我们对每项的精度能够被计算（用广播，而不是循环）：
+让我们检查一下精度。决定一个输出代表3或7，我们只能够检查是否它比零大，所以我们对每项的精度能够被计算（用广播，而不是循环）：
 
 ```python
 corrects = (preds>0.0).float() == train_y
@@ -1529,3 +1529,23 @@ Out:  $
 \end{matrix}
 $
 
+```python
+corrects.float().mean().item()
+```
+
+Out: 0.4912068545818329
+
+Now let's see what the change in accuracy is for a small change in one of the weights:
+
+现在让我们看一下，对于其中一个权重做个小的改变，精度方面会有什么样的变化：
+
+```python
+weights[0] *= 1.0001
+```
+
+```python
+preds = linear1(train_x)
+((preds>0.0).float() == train_y).float().mean().item()
+```
+
+Out: 0.4912068545818329
