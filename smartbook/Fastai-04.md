@@ -1561,3 +1561,37 @@ So, we need to choose a loss function. The obvious approach would be to use accu
 Unfortunately, we have a significant technical problem here. The gradient of a function is its *slope*, or its steepness, which can be defined as *rise over run*—that is, how much the value of the function goes up or down, divided by how much we changed the input. We can write this in mathematically as: `(y_new - y_old) / (x_new - x_old)`. This gives us a good approximation of the gradient when `x_new` is very similar to `x_old`, meaning that their difference is very small. But accuracy only changes at all when a prediction changes from a 3 to a 7, or vice versa. The problem is that a small change in weights from `x_old` to `x_new` isn't likely to cause any prediction to change, so `(y_new - y_old)` will almost always be 0. In other words, the gradient is 0 almost everywhere.
 
 很不幸，我们有一个重大的技术问题。一个函数的梯度是它的*斜率*，或它的陡度（能被定义为*随着运行上升*，即，函数值上升或下降多少），除以我们输入改变的大小。我们能够用数学方程式来表达：`(y_new - y_old) / (x_new - x_old)`。当`x_new`和`x_old`非常相似的时候，这就给了我们好的近似梯度，这意味着他们差异非常小。当预测改变从3到7的时候，精度才会完全改变，反之亦然。有个问题，在权重中从 `x_old` 到 `x_new`一个很小的改变不太可能引发任何预测的改变，所以`(y_new - y_old)`几乎一直是零。换句话说，梯度几乎在任何地方都是零。
+
+A very small change in the value of a weight will often not actually change the accuracy at all. This means it is not useful to use accuracy as a loss function—if we do, most of the time our gradients will actually be 0, and the model will not be able to learn from that number.
+
+在一个权重的数值中非常小的改变通常根本不会引发精度的实际改变。这意味着做为损失函数，它使用精度是没有帮助的，如果我们这样做了，绝大多数时间我们的梯度的实际上会是零，并且模型也无法从那些数字中学习。
+
+> S: In mathematical terms, accuracy is a function that is constant almost everywhere (except at the threshold, 0.5), so its derivative is nil almost everywhere (and infinity at the threshold). This then gives gradients that are 0 or infinite, which are useless for updating the model.
+>
+> 西：在数学的术语中，精度是一个几乎在任何地方都恒定不变的函数（除阈值是0.5），所以它的导数几乎在任何地方都是零（阈值是无限大）。然后给出的梯度要么是零，要么是无限大，这对更新模型没有任何用处。
+
+Instead, we need a loss function which, when our weights result in slightly better predictions, gives us a slightly better loss. So what does a "slightly better prediction" look like, exactly? Well, in this case, it means that if the correct answer is a 3 the score is a little higher, or if the correct answer is a 7 the score is a little lower.
+
+相替代的是，当我们的权重结果是稍微更好的预测的时候，我们需要给我们稍微更好损失的损失函数。那么一个“稍微更好的预测”看起来到底是什么样子呢？所以，在这个例子中，意味着如果正确的答案是3，其分数会稍微更高些，或者如果正确答案是7，其分数会稍微更低些。
+
+Let's write such a function now. What form does it take?
+
+让我们现在写一个这样的函数。它采取什么形式呢？
+
+The loss function receives not the images themseles, but the predictions from the model. Let's make one argument, `prds`, of values between 0 and 1, where each value is the prediction that an image is a 3. It is a vector (i.e., a rank-1 tensor), indexed over the images.
+
+损失函数所接收的没有图像自身，而是来自模型的预测。让我们指定一个取值范围在0和1之间的参数`prds`，每个都是图像3的预测值。它是一个向量（即1阶张量），依据图像进行的索引。
+
+The purpose of the loss function is to measure the difference between predicted values and the true values — that is, the targets (aka labels). Let's make another argument, `trgts`, with values of 0 or 1 which tells whether an image actually is a 3 or not. It is also a vector (i.e., another rank-1 tensor), indexed over the images.
+
+损失函数的目的是计量预测值和真实值之间的差异，真实值是目标（又称标签）。让我们指定另一个取值为0或1的参数`trgts`，这会告诉一个图像实际上是3或不是3.它也是一个依据图像索引的向量（即另一个1阶张量）。
+
+So, for instance, suppose we had three images which we knew were a 3, a 7, and a 3. And suppose our model predicted with high confidence (`0.9`) that the first was a 3, with slight confidence (`0.4`) that the second was a 7, and with fair confidence (`0.2`), but incorrectly, that the last was a 7. This would mean our loss function would receive these values as its inputs:
+
+所以，例如，假设我们有3张图像，我们知道分别为3、7、3。然后假设我们的模型预测非常确信（0.9）第一张是3，不太确信（0.4）第二张是7，然后不敢确信（0.2）且不正确的认为最后一张是7.也就代表我们的损失函数接收了这些数值做为输入：
+
+```python
+trgts  = tensor([1,0,1])
+prds   = tensor([0.9, 0.4, 0.2])
+```
+
