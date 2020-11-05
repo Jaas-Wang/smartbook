@@ -1406,3 +1406,22 @@ train_x.shape,train_y.shape
 ```
 
 Out: (torch.Size([12396, 784]), torch.Size([12396, 1]))
+
+A `Dataset` in PyTorch is required to return a tuple of `(x,y)` when indexed. Python provides a `zip` function which, when combined with `list`, provides a simple way to get this functionality:
+
+在PyTorch中一个`数据集`当被索引后需要后加一个`(x,y)`元组。Python提供了一个`zip`函数，当与`list`组合时，提供了一个简单方法来获取这一功能：
+
+```python
+dset = list(zip(train_x,train_y))
+x,y = dset[0]
+x.shape,y
+```
+
+Out: (torch.Size([784]), tensor([1]))
+
+```python
+valid_x = torch.cat([valid_3_tens, valid_7_tens]).view(-1, 28*28)
+valid_y = tensor([1]*len(valid_3_tens) + [0]*len(valid_7_tens)).unsqueeze(1)
+valid_dset = list(zip(valid_x,valid_y))
+```
+
