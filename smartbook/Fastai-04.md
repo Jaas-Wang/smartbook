@@ -1384,3 +1384,25 @@ All of that we just saw can be transposed directly to the MNIST dataset, except 
 
 所有我们刚刚看到的这些内容，除了损失函数，都能够直接转移到MNIST数据集上去。现在让我们看看我们能够如果定义一个好的训练目标。
 
+## The MNIST Loss Function
+
+## MNIST损失函数
+
+We already have our dependent variables `x`—these are the images themselves. We'll concatenate them all into a single tensor, and also change them from a list of matrices (a rank-3 tensor) to a list of vectors (a rank-2 tensor). We can do this using `view`, which is a PyTorch method that changes the shape of a tensor without changing its contents. `-1` is a special parameter to `view` that means "make this axis as big as necessary to fit all the data":
+
+我们已经有了依赖的变量`x`，这些变量值就是图像自身。我们会把所有图像串联一个单张量中，然后把他们从一个矩阵（三阶张量）列表改变为一个向量（2阶张量）列。我们通用用`view`方法来做这个工作，这是一个PyTorch方法，它能在不改变张量内容的情况下改变张量的形状。对于`view`来说`-1`是一个特殊的参数，意思是“使得这个坐标轴与必须适合的所有数据一样大”：
+
+```python
+train_x = torch.cat([stacked_threes, stacked_sevens]).view(-1, 28*28)
+```
+
+We need a label for each image. We'll use `1` for 3s and `0` for 7s:
+
+对每张图像我们都需要一个标签。我们会对图像3用`1`来表示，图像7用`0`来表示：
+
+```python
+train_y = tensor([1]*len(threes) + [0]*len(sevens)).unsqueeze(1)
+train_x.shape,train_y.shape
+```
+
+Out: (torch.Size([12396, 784]), torch.Size([12396, 1]))
