@@ -439,8 +439,8 @@ tns = tensor(data)
 arr  # numpy
 ```
 
-$
-\begin{matrix} Out: array([&[& 1, & 2, & 3&],\\ 
+Out: $
+\begin{matrix} array([&[& 1, & 2, & 3&],\\ 
 	& [&4,& 5,& 6&]]&)
 \end{matrix}
 $
@@ -449,8 +449,8 @@ $
 tns  # pytorch
 ```
 
-$
-\begin{matrix} Out: tensor([&[& 1, & 2, & 3&],\\ 
+Out: $
+\begin{matrix} tensor([&[& 1, & 2, & 3&],\\ 
 	& [&4,& 5,& 6&]]&)
 \end{matrix}
 $
@@ -496,8 +496,8 @@ And you can use the standard operators such as `+`, `-`, `*`, `/`:
 ```python
 tns+1
 ```
-$
-\begin{matrix} Out: tensor([&[& 2, & 3, & 4&],\\ 
+Out: $
+\begin{matrix} tensor([&[& 2, & 3, & 4&],\\ 
 	& [&5,& 6,& 7&]]&)
 \end{matrix}
 $
@@ -519,8 +519,8 @@ And will automatically change type as needed, for example from `int` to `float`:
 ```python
 tns*1.5
 ```
-$
-\begin{matrix} Out: tensor([&[& 1.5000, & 3.0000, & 4.5000&],\\ 
+Out: $
+\begin{matrix} tensor([&[& 1.5000, & 3.0000, & 4.5000&],\\ 
 	& [& 6.0000,& 7.5000 ,& 9.0000&]]&)
 \end{matrix}
 $
@@ -1479,3 +1479,53 @@ In this case, there's an extremely convenient mathematical operation that calcul
     矩阵乘法示意图
   </p>
 </div>
+
+This image shows two matrices, `A` and `B`, being multiplied together. Each item of the result, which we'll call `AB`, contains each item of its corresponding row of `A` multiplied by each item of its corresponding column of `B`, added together. For instance, row 1, column 2 (the orange dot with a red border) is calculated as a1,1∗b1,2+a1,2∗b2,2a1,1∗b1,2+a1,2∗b2,2. If you need a refresher on matrix multiplication, we suggest you take a look at the [Intro to Matrix Multiplication](https://youtu.be/kT4Mp9EdVqs) on *Khan Academy*, since this is the most important mathematical operation in deep learning.
+
+这个图显示了`A`和`B`两个相乘的矩阵。每个结果项我们称为`AB`，它包含了`A`相应行上的每项乘以`B`相应列上的每项，然后加总。例如，行1和列2（红色边线的橘黄色点）是a1,1∗b1,2+a1,2∗b2,2a1,1∗b1,2+a1,2∗b2,2计算后的结果。如果你需要复习矩阵乘法，我们建议你看一下*可汗学院*上的[矩阵乘法概述](https://youtu.be/kT4Mp9EdVqs)，因为这是深度学习中最重要的数学运算。
+
+In Python, matrix multiplication is represented with the `@` operator. Let's try it:
+
+在Python中，矩阵乘法用`@`运算符代表。让我们尝试一下：
+
+```python
+def linear1(xb): return xb@weights + bias
+preds = linear1(train_x)
+preds
+```
+
+Out: $
+\begin{matrix} tensor([&[20.2336],\\
+									&[17.0644],\\
+									&[15.2384],\\
+									&...,\\
+									&[18.3804],\\
+									&[23.8567],\\
+									&[28.6816]]&, grad\_fn=<AddBackward0>)
+\end{matrix}
+$
+
+The first element is the same as we calculated before, as we'd expect. This equation, `batch@weights + bias`, is one of the two fundamental equations of any neural network (the other one is the *activation function*, which we'll see in a moment).
+
+正如我们所期望的，第一个元素与我们以前的计算是一致的。`batch@weights + bias`这个等式，是神经网络两个基础等式中的一个（另一个是*激活函数*，稍后我们会看到它）。
+
+Let's check our accuracy. To decide if an output represents a 3 or a 7, we can just check whether it's greater than 0, so our accuracy for each item can be calculated (using broadcasting, so no loops!) with:
+
+让我们检查一下精度。决定一个输出代表3或7，我们只能够检查是否它比另大，所以我们对每项的精度能够被计算（用广播，而不是循环）：
+
+```python
+corrects = (preds>0.0).float() == train_y
+corrects
+```
+
+Out:  $
+\begin{matrix} tensor([&[True],\\
+									&[True],\\
+									&[True],\\
+									&...,\\
+									&[False],\\
+									&[False],\\
+									&[False]]&)
+\end{matrix}
+$
+
