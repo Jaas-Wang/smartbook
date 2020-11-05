@@ -1437,3 +1437,19 @@ def init_params(size, std=1.0): return (torch.randn(size)*std).requires_grad_()
 weights = init_params((28*28,1))
 ```
 
+The function `weights*pixels` won't be flexible enough—it is always equal to 0 when the pixels are equal to 0 (i.e., its *intercept* is 0). You might remember from high school math that the formula for a line is `y=w*x+b`; we still need the `b`. We'll initialize it to a random number too:
+
+函数`weights*pixels`不是足够的灵活，当像素等于零时它会一直等于零（即它*截距*是零）。我们可能记得高中数学的一个线性方式是`y=w*x+b`，我们一直需要`b`，我们也会初始化它为一个随机数：
+
+```python
+bias = init_params(1)
+```
+
+In neural networks, the `w` in the equation `y=w*x+b` is called the *weights*, and the `b` is called the *bias*. Together, the weights and bias make up the *parameters*.
+
+在神经网络中，在等式`y=w*x+b`中`w`被称为*权重*，`b`被称为*偏差*。权重和偏差在一起组成了*参数*。
+
+> jargon: Parameters: The *weights* and *biases* of a model. The weights are the `w` in the equation `w*x+b`, and the biases are the `b` in that equation.
+>
+> 术语：参数：一个模型的*权重*和*偏差*。在等式`w*x+b`中权重是`w`，偏差是`b`。
+
