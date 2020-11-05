@@ -1549,3 +1549,15 @@ preds = linear1(train_x)
 ```
 
 Out: 0.4912068545818329
+
+As we've seen, we need gradients in order to improve our model using SGD, and in order to calculate gradients we need some *loss function* that represents how good our model is. That is because the gradients are a measure of how that loss function changes with small tweaks to the weights.
+
+正如我们看到的，为了利用随机梯度下降来改善我们的模型我们需要梯度，并且为了计算梯度，我们需要代表我们模型是如何好的*损失函数*。因为梯度是损失函数如何微小调整权重的度量。
+
+So, we need to choose a loss function. The obvious approach would be to use accuracy, which is our metric, as our loss function as well. In this case, we would calculate our prediction for each image, collect these values to calculate an overall accuracy, and then calculate the gradients of each weight with respect to that overall accuracy.
+
+所以，我们需要来挑选一个损失函数。明显的方法应该是用我们的指标：精度，还有我们的损失函数。在这个例子中，我们对每张图像计算预测，收集这些值来计算一个整体精度，然后根据整体精度来计算每个权重的梯度。
+
+Unfortunately, we have a significant technical problem here. The gradient of a function is its *slope*, or its steepness, which can be defined as *rise over run*—that is, how much the value of the function goes up or down, divided by how much we changed the input. We can write this in mathematically as: `(y_new - y_old) / (x_new - x_old)`. This gives us a good approximation of the gradient when `x_new` is very similar to `x_old`, meaning that their difference is very small. But accuracy only changes at all when a prediction changes from a 3 to a 7, or vice versa. The problem is that a small change in weights from `x_old` to `x_new` isn't likely to cause any prediction to change, so `(y_new - y_old)` will almost always be 0. In other words, the gradient is 0 almost everywhere.
+
+很不幸，我们有一个重大的技术问题。一个函数的梯度是它的*斜率*，或它的陡度（能被定义为*随着运行上升*，即，函数值上升或下降多少），除以我们输入改变的大小。我们能够用数学方程式来表达：`(y_new - y_old) / (x_new - x_old)`。当`x_new`和`x_old`非常相似的时候，这就给了我们好的近似梯度，这意味着他们差异非常小。当预测改变从3到7的时候，精度才会完全改变，反之亦然。有个问题，在权重中从 `x_old` 到 `x_new`一个很小的改变不太可能引发任何预测的改变，所以`(y_new - y_old)`几乎一直是零。换句话说，梯度几乎在任何地方都是零。
