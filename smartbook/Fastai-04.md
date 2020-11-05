@@ -1453,3 +1453,29 @@ In neural networks, the `w` in the equation `y=w*x+b` is called the *weights*, a
 >
 > 术语：参数：一个模型的*权重*和*偏差*。在等式`w*x+b`中权重是`w`，偏差是`b`。
 
+We can now calculate a prediction for one image:
+
+对一个图像，现在我们能够计算预测值：
+
+```python
+(train_x[0]*weights.T).sum() + bias
+```
+
+Out: tensor([20.2336], grad_fn=<AddBackward0>)
+
+While we could use a Python `for` loop to calculate the prediction for each image, that would be very slow. Because Python loops don't run on the GPU, and because Python is a slow language for loops in general, we need to represent as much of the computation in a model as possible using higher-level functions.
+
+当我们使用Python的`for`循环来计算每一张图像时，那也许会非常慢。因为Python的循环不能在GPU上运行，并且因为通常对于循环Python是一个很慢的语言，我们需要在一个模型里尽可能使用高级函数来表述更多的计算。
+
+In this case, there's an extremely convenient mathematical operation that calculates `w*x` for every row of a matrix—it's called *matrix multiplication*. <matmul> shows what matrix multiplication looks like.
+
+在这个例子中，计算`w*x`为矩阵的每个行这是一个极为方便的数学操作。这称为*矩阵乘法*。下图为矩阵乘法的示意图。
+
+<div>
+  <p align="center">
+    <img src="./_v_images/matmul2.svg" alt="Matrix multiplication" width="400" caption="Matrix multiplication"  id="matmul"/>
+  </p>
+  <p align="center">
+    矩阵乘法示意图
+  </p>
+</div>
