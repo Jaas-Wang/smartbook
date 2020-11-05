@@ -1425,3 +1425,15 @@ valid_y = tensor([1]*len(valid_3_tens) + [0]*len(valid_7_tens)).unsqueeze(1)
 valid_dset = list(zip(valid_x,valid_y))
 ```
 
+Now we need an (initially random) weight for every pixel (this is the *initialize* step in our seven-step process):
+
+现在我们需要一个对每个像素的（随机初始）权重（在我们七步骤过程中，这是`初始化`步骤）：
+
+```python
+def init_params(size, std=1.0): return (torch.randn(size)*std).requires_grad_()
+```
+
+```PYTHON
+weights = init_params((28*28,1))
+```
+
