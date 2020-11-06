@@ -1595,3 +1595,30 @@ trgts  = tensor([1,0,1])
 prds   = tensor([0.9, 0.4, 0.2])
 ```
 
+Here's a first try at a loss function that measures the distance between `predictions` and `targets`:
+
+这是在损失函数上计量`预测` 和 `目标`之间差距的第一个尝试：
+
+```python
+def mnist_loss(predictions, targets):
+    return torch.where(targets==1, 1-predictions, predictions).mean()
+```
+
+We're using a new function, `torch.where(a,b,c)`. This is the same as running the list comprehension `[b[i] if a[i] else c[i] for i in range(len(a))]`, except it works on tensors, at C/CUDA speed. In plain English, this function will measure how distant each prediction is from 1 if it should be 1, and how distant it is from 0 if it should be 0, and then it will take the mean of all those distances.
+
+我们正在使用一个新的函数：`torch.where(a,b,c)`。这与运行的列表生成器 `[b[i] if a[i] else c[i] for i in range(len(a))]`类似，只是这个新的函数是以C/CUDA的速度运行在张量上。简单的来说，这个函数会测量每个预测与1的差距（如果它应该是1的话），或它与0的差距是多少（如果它应该是0的话），然后它会取所有这些差距的平均值。
+
+> note: Read the Docs: It's important to learn about PyTorch functions like this, because looping over tensors in Python performs at Python speed, not C/CUDA speed! Try running `help(torch.where)` now to read the docs for this function, or, better still, look it up on the PyTorch documentation site.
+>
+> 注解：阅读文档：它对于学习像这样的PyTorch函数是重要的，因为在Python中张量上的循环性能，没有C/CUDA运行速度快的！现在尝试运行`help(torch.where)`阅读这个函数的文档，或查找PyTorch的在线文档会更好。
+
+Let's try it on our `prds` and `trgts`:
+
+让我们在`prds` 和 `trgts`上尝试一下这个新函数：
+
+```python
+torch.where(trgts==1, 1-prds, prds)
+```
+
+Out: tensor([0.1000, 0.4000, 0.8000])
+
