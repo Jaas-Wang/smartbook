@@ -1668,3 +1668,32 @@ plot_function(torch.sigmoid, title='Sigmoid', min=-4, max=4)
 
 Out: <img src="./_v_images/sigmoid.png" alt="sigmoid" style="zoom:100%;" />
 
+As you can see, it takes any input value, positive or negative, and smooshes it onto an output value between 0 and 1. It's also a smooth curve that only goes up, which makes it easier for SGD to find meaningful gradients.
+
+正如你能看到的，它所取的任何输入值（正值或负值），并平滑输出0和1之间的值。它也是一个只向上的平滑曲线，使得它对随机梯度下降更容易找到有意义的梯度。
+
+Let's update `mnist_loss` to first apply `sigmoid` to the inputs:
+
+让我们更新`mnist_loss`首先用于`sigmoid`来做输入：
+
+```
+def mnist_loss(predictions, targets):
+    predictions = predictions.sigmoid()
+    return torch.where(targets==1, 1-predictions, predictions).mean()
+```
+
+Now we can be confident our loss function will work, even if the predictions are not between 0 and 1. All that is required is that a higher prediction corresponds to higher confidence an image is a 3.
+
+现在我们能够确信，即使预测不在0和1之间，我们的损失函数依然会有效。所有需要的是一个更高预测相当于更高的可信度一个图像是3.
+
+Having defined a loss function, now is a good moment to recapitulate why we did this. After all, we already had a metric, which was overall accuracy. So why did we define a loss?
+
+已经定义了一个损失函数，现在是时候来总结一下为什么我们做这个事情。毕竟我们已经有了一个整体精度的指标。那么为什么我们要定义一个损失那？
+
+The key difference is that the metric is to drive human understanding and the loss is to drive automated learning. To drive automated learning, the loss must be a function that has a meaningful derivative. It can't have big flat sections and large jumps, but instead must be reasonably smooth. This is why we designed a loss function that would respond to small changes in confidence level. This requirement means that sometimes it does not really reflect exactly what we are trying to achieve, but is rather a compromise between our real goal, and a function that can be optimized using its gradient. The loss function is calculated for each item in our dataset, and then at the end of an epoch the loss values are all averaged and the overall mean is reported for the epoch.
+
+一个关键的差异是指标驱动人类的理解而损失驱动自动学习。驱动自动学习，损失函数必须是个有意义导数的函数。它不能有很大的平坦部分和巨大的跳跃，而必须是合理的平滑。这就是为什么我们测试了一个损失函数，在可信的水平上响应小的改变。这个要求意味着有时候它不会真实准确的反应出我们努力实现的事情，而只是在我们真实目标间的一个妥协，并且利用它的梯度能够被优化的函数。损失函数是在我们的数据集中对每个项目计算的，然后在一个轮次的最后损失值是所有的平均值，并且对于这个轮次会被报告整体平均值。
+
+Metrics, on the other hand, are the numbers that we really care about. These are the values that are printed at the end of each epoch that tell us how our model is really doing. It is important that we learn to focus on these metrics, rather than the loss, when judging the performance of a model.
+
+另一方向，指标是我们真实关系的一些数字。这些数值会在每个轮次的最后打印输出，告诉我们模型实际上做的怎么样。当评判一个模型表现的时候，我们学会关注这些指标而不是损失是重要的，
