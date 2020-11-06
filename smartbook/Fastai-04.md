@@ -1750,3 +1750,33 @@ ds
 
 Out: (#26) [(0, 'a'),(1, 'b'),(2, 'c'),(3, 'd'),(4, 'e'),(5, 'f'),(6, 'g'),(7, 'h'),(8, 'i'),(9, 'j')...]
 
+When we pass a `Dataset` to a `DataLoader` we will get back many batches which are themselves tuples of tensors representing batches of independent and dependent variables:
+
+当我们传递一个`数据集`给`DataLoader`，我们会获得许多批次，它们自己的张量元组代表独立变量和因变量的批次：
+
+```
+dl = DataLoader(ds, batch_size=6, shuffle=True)
+list(dl)
+```
+
+Out:$
+\begin{matrix} [&(tensor([&17, &18, &10, &22, &8, &14]), ('r', 's', 'k', 'w', 'i', 'o')),\\
+				&(tensor([&20, &15, & 9, &13, &21, &12]), ('u', 'p', 'j', 'n', 'v', 'm')),\\
+				&(tensor([& 7, &25, & 6, & 5, &11, &23]), ('h', 'z', 'g', 'f', 'l', 'x')),\\
+				&(tensor([& 1, & 3, & 0, &24, &19, &16]), ('b', 'd', 'a', 'y', 't', 'q')),\\
+				& (tensor([&2, &4]), ('c', 'e'))]
+\end{matrix}
+$
+
+We are now ready to write our first training loop for a model using SGD!
+
+我们现在准备利用随机梯度下降编写我们的第一个模型训练循环了！
+
+
+
+
+
+
+
+
+
