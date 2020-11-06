@@ -1827,3 +1827,18 @@ batch.shape
 ```
 
 Out: torch.Size([4, 784])
+
+```python
+preds = linear1(batch)
+preds
+```
+
+Out: $
+\begin{array} /tensor([&[& -8.7744&],&\\
+				&[ &-8.0637&],&\\
+				&[ &-8.1532&],&\\
+				& [&-16.9030&]],& grad\_fn=<AddBackward0>)\\
+\end{array}
+$
+
+
