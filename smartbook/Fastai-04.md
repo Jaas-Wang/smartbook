@@ -1809,3 +1809,21 @@ xb.shape,yb.shape
 
 Out: (torch.Size([256, 784]), torch.Size([256, 1]))
 
+We'll do the same for the validation set:
+
+我们会做一个相同的验证集：
+
+```
+valid_dl = DataLoader(valid_dset, batch_size=256)
+```
+
+Let's create a mini-batch of size 4 for testing:
+
+让我们创建一个尺寸为4的最小批次用于测试：
+
+```
+batch = train_x[:4]
+batch.shape
+```
+
+Out: torch.Size([4, 784])
