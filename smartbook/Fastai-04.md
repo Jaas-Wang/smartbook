@@ -1631,3 +1631,17 @@ mnist_loss(prds,trgts)
 ```
 
 Out: tensor(0.4333)
+
+For instance, if we change our prediction for the one "false" target from `0.2` to `0.8` the loss will go down, indicating that this is a better prediction:
+
+例如，如果我们对一个“假”的目标预测从`0.2`进行改变到`0.8`，损失会降低，这就代表是一个好的预测结果：
+
+```python
+mnist_loss(tensor([0.9, 0.4, 0.8]),trgts)
+```
+
+Out: tensor(0.2333)
+
+One problem with `mnist_loss` as currently defined is that it assumes that predictions are always between 0 and 1. We need to ensure, then, that this is actually the case! As it happens, there is a function that does exactly that—let's take a look.
+
+`mnist_loss`作为当前定义的一个问题是，它假设预测总是在0和1之间。我们需要确保实际是这个样子！正好有一个函数可以做到这个事情，让我们看一下。
