@@ -1841,4 +1841,66 @@ Out: $
 \end{array}
 $
 
+```python
+loss = mnist_loss(preds, train_y[:4])
+loss
+```
 
+Out: tensor(0.9998, grad_fn=<MeanBackward0>)
+
+Now we can calculate the gradients:
+
+现在我们能够计算梯度：
+
+```
+loss.backward()
+weights.grad.shape,weights.grad.mean(),bias.grad
+```
+
+Out: (torch.Size([784, 1]), tensor(-0.0001), tensor([-0.0008]))
+
+Let's put that all in a function:
+
+让我们把所有过程放在一个函数中：
+
+```
+def calc_grad(xb, yb, model):
+    preds = model(xb)
+    loss = mnist_loss(preds, yb)
+    loss.backward()
+```
+
+and test it:
+
+并测试这个函数：
+
+```
+calc_grad(batch, train_y[:4], linear1)
+weights.grad.mean(),bias.grad
+```
+
+Out: (tensor(-5.4066e-05), tensor([-0.0004])) 
+
+But look what happens if we call it twice:
+
+但如果你调用它两次看看会发生什么：
+
+```
+calc_grad(batch, train_y[:4], linear1)
+weights.grad.mean(),bias.grad
+```
+
+Out: tensor(-8.1099e-05), tensor([-0.0006]))
+
+The gradients have changed! The reason for this is that `loss.backward` actually *adds* the gradients of `loss` to any gradients that are currently stored. So, we have to set the current gradients to 0 first:
+
+梯度已经改变了！原因是`loss.backward`实际上*加*了`loss`的梯度给当前存储的梯度。所以，我们必须在一开始设置当前权重为0：
+
+```
+weights.grad.zero_()
+bias.grad.zero_();
+```
+
+> note: Inplace Operations: Methods in PyTorch whose names end in an underscore modify their objects *in place*. For instance, `bias.zero_()` sets all elements of the tensor `bias` to 0.
+>
+> 注释：原地操作：在PyTorch中的名字结尾是下划线的方法，在*恰当*的地方修改他们的对象。例如，`bias.zero_()`设置张量`bias`的所有元素为0。
