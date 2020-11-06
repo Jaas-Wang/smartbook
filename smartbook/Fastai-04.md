@@ -1760,23 +1760,52 @@ list(dl)
 ```
 
 Out:$
-\begin{matrix} [&(tensor([&17, &18, &10, &22, &8, &14]), ('r', 's', 'k', 'w', 'i', 'o')),\\
-				&(tensor([&20, &15, & 9, &13, &21, &12]), ('u', 'p', 'j', 'n', 'v', 'm')),\\
-				&(tensor([& 7, &25, & 6, & 5, &11, &23]), ('h', 'z', 'g', 'f', 'l', 'x')),\\
-				&(tensor([& 1, & 3, & 0, &24, &19, &16]), ('b', 'd', 'a', 'y', 't', 'q')),\\
-				& (tensor([&2, &4]), ('c', 'e'))]
-\end{matrix}
+{\begin{array} {cccccccc}[&(tensor([&17, &18, &10, &22, &8, &14]), &('r', 's', 'k', 'w', 'i', 'o')),\\
+				&(tensor([&20, &15, & 9, &13, &21, &12]), &('u', 'p', 'j', 'n', 'v', 'm')),\\
+				&(tensor([& 7, &25, & 6, & 5, &11, &23]), &('h', 'z', 'g', 'f', 'l', 'x')),\\
+				&(tensor([& 1, & 3, & 0, &24, &19, &16]), &('b', 'd', 'a', 'y', 't', 'q')),\\
+				& (tensor([&2, &4]), &('c', 'e'))]
+\end{array}}
 $
 
 We are now ready to write our first training loop for a model using SGD!
 
 我们现在准备利用随机梯度下降编写我们的第一个模型训练循环了！
 
+## Putting It All Together
 
+## 合并所有过程
 
+It's time to implement the process we saw in <gradient_descent>. In code, our process will be implemented something like this for each epoch:
 
+现在来实施我们在<梯度下降>小节中看到的处理过程。在代码中，我们的过程对每个批次处理的内容如下所求：
 
+```python
+for x,y in dl:
+    pred = model(x)
+    loss = loss_func(pred, y)
+    loss.backward()
+    parameters -= parameters.grad * lr
+```
 
+First, let's re-initialize our parameters:
 
+首先让我们重新初始化我们的参数：
 
+```
+weights = init_params((28*28,1))
+bias = init_params(1)
+```
+
+A `DataLoader` can be created from a `Dataset`:
+
+从一个`数据集`中能够创建一个`DataLoader`：
+
+```
+dl = DataLoader(dset, batch_size=256)
+xb,yb = first(dl)
+xb.shape,yb.shape
+```
+
+Out: (torch.Size([256, 784]), torch.Size([256, 1]))
 
