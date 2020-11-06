@@ -1697,3 +1697,45 @@ The key difference is that the metric is to drive human understanding and the lo
 Metrics, on the other hand, are the numbers that we really care about. These are the values that are printed at the end of each epoch that tell us how our model is really doing. It is important that we learn to focus on these metrics, rather than the loss, when judging the performance of a model.
 
 另一方向，指标是我们真实关系的一些数字。这些数值会在每个轮次的最后打印输出，告诉我们模型实际上做的怎么样。当评判一个模型表现的时候，我们学会关注这些指标而不是损失是重要的，
+
+### SGD and Mini-Batches
+
+### 随机梯度下降和最小批次
+
+Now that we have a loss function that is suitable for driving SGD, we can consider some of the details involved in the next phase of the learning process, which is to change or update the weights based on the gradients. This is called an *optimization step*.
+
+现在我们有一个损失函数，它对于随机梯度下降是合适的，我们能够思考一些涉及学习过程的下一阶段的细节，用于基于梯度来改变或更新权重。这被称为*优化步骤*。
+
+In order to take an optimization step we need to calculate the loss over one or more data items. How many should we use? We could calculate it for the whole dataset, and take the average, or we could calculate it for a single data item. But neither of these is ideal. Calculating it for the whole dataset would take a very long time. Calculating it for a single item would not use much information, so it would result in a very imprecise and unstable gradient. That is, you'd be going to the trouble of updating the weights, but taking into account only how that would improve the model's performance on that single item.
+
+为了获得优化步骤，我们需要计算在一个或多个数据项上的损失。我们应该用多少呢？我们能够对整个数据集计算它，并取平均值，或我们只对单一数据项计算它。但这两者都不是理想的。对整个数据集计算它需要花费非常长的时候。对单一数据项来计算它也许没有更多有用的信息，所以它也许会产生一个非常不准确及不稳定的梯度。即，你将陷入更新权重的麻烦，且只考虑了如何在单一数据项上模型表现的优化。
+
+So instead we take a compromise between the two: we calculate the average loss for a few data items at a time. This is called a *mini-batch*. The number of data items in the mini-batch is called the *batch size*. A larger batch size means that you will get a more accurate and stable estimate of your dataset's gradients from the loss function, but it will take longer, and you will process fewer mini-batches per epoch. Choosing a good batch size is one of the decisions you need to make as a deep learning practitioner to train your model quickly and accurately. We will talk about how to make this choice throughout this book.
+
+所以我们在两者之间采取了一个妥协：每一次我们对少量数据计算平均损失。这被称为*最小批次*。在最小批次中数据项的数目被称为*批次尺寸*。一个更大的批次尺寸意味着你获得来自损失函数对你数据集的梯度更准确和更稳定的评估。但它会花费更长时间，且每个轮次你将处理更少的最小批次。为了快速和准确的训练你的模型，选择一个合适的批次尺寸是你做为一名深度学习行业人员需要做的一个决定。在这本书里我们会讨论如何做这个选择。
+
+Another good reason for using mini-batches rather than calculating the gradient on individual data items is that, in practice, we nearly always do our training on an accelerator such as a GPU. These accelerators only perform well if they have lots of work to do at a time, so it's helpful if we can give them lots of data items to work on. Using mini-batches is one of the best ways to do this. However, if you give them too much data to work on at once, they run out of memory—making GPUs happy is also tricky!
+
+在实践中，对于使用最小批次而不是计算单一数据项梯度的另一个合理原因是，我们几乎一直在加速器（例如GPU）上做我们的训练。这些加速器只有在我们同一时间做很多工作的时候它才会性能良好，所以如果我们能够给它们很多数据项来处理，这是有利的。使用最小批次来做这个事情是众多最优方法之一。然而，如果你同时给它们太多的处理数据，它们会内存溢出，让GPU开心也是很难的！
+
+As we saw in our discussion of data augmentation in <chapter_production>, we get better generalization if we can vary things during training. One simple and effective thing we can vary is what data items we put in each mini-batch. Rather than simply enumerating our dataset in order for every epoch, instead what we normally do is randomly shuffle it on every epoch, before we create mini-batches. PyTorch and fastai provide a class that will do the shuffling and mini-batch collation for you, called `DataLoader`.
+
+正如在<章节：产品>中我们看到的数据增强的讨论，训练期间如果我们能够多样化处理，我们会获得更好的泛化。一个简单且有效的处理是我们能够改变放入每个最小批次中的数据项。我们创建最小批次之前，标准的做法是对每个轮次随机打乱数据项，而不是简单的为每个轮次列举我们的数据集。PyTorch和fastai提供了一个名叫`DataLoader`的类，它会为你做这个洗牌和最小批次集合。
+
+A `DataLoader` can take any Python collection and turn it into an iterator over many batches, like so:
+
+`DataLoader`能够接受任何Python集合，并把它转化为多批次的迭代器，如下所示：
+
+```python
+coll = range(15)
+dl = DataLoader(coll, batch_size=5, shuffle=True)
+list(dl)
+```
+
+Out: $
+\begin{matrix} [&tensor([ &3, &12,  &8, &10,  &2&]),\\
+				&tensor([ &9, & 4,  &7, &14,  &5&]),\\
+				&tensor([ &1, &13,  &0,  &6, &11&])&]
+\end{matrix}
+$
+
