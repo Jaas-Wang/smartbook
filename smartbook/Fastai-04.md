@@ -1739,3 +1739,14 @@ Out: $
 \end{matrix}
 $
 
+For training a model, we don't just want any Python collection, but a collection containing independent and dependent variables (that is, the inputs and targets of the model). A collection that contains tuples of independent and dependent variables is known in PyTorch as a `Dataset`. Here's an example of an extremely simple `Dataset`:
+
+为了训练一个模型，我们不仅仅只想要Python集合，而是一个包含独立变量和因变量的集合（即，模型的输入和目标）。在PyTorch中，包含独立变量和因变量元组的集合被叫做`数据集`。下面是一个异常简单的`数据集`例子：
+
+```
+ds = L(enumerate(string.ascii_lowercase))
+ds
+```
+
+Out: (#26) [(0, 'a'),(1, 'b'),(2, 'c'),(3, 'd'),(4, 'e'),(5, 'f'),(6, 'g'),(7, 'h'),(8, 'i'),(9, 'j')...]
+
