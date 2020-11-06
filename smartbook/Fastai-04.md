@@ -1622,3 +1622,12 @@ torch.where(trgts==1, 1-prds, prds)
 
 Out: tensor([0.1000, 0.4000, 0.8000])
 
+You can see that this function returns a lower number when predictions are more accurate, when accurate predictions are more confident (higher absolute values), and when inaccurate predictions are less confident. In PyTorch, we always assume that a lower value of a loss function is better. Since we need a scalar for the final loss, `mnist_loss` takes the mean of the previous tensor:
+
+你能够看到，当预测更加精准时，即预测精度更确信（更高的绝对值），预测不准确是更低的确信，这个函数会返回更小的数值。在PyTorch中，我们一直假设一个更低的损失函数值是更好的。因为我们需要一个对最终损失的纯量，`mnist_loss`取了之前张量的平均值：
+
+```python
+mnist_loss(prds,trgts)
+```
+
+Out: tensor(0.4333)
