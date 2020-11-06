@@ -1645,3 +1645,26 @@ Out: tensor(0.2333)
 One problem with `mnist_loss` as currently defined is that it assumes that predictions are always between 0 and 1. We need to ensure, then, that this is actually the case! As it happens, there is a function that does exactly that—let's take a look.
 
 `mnist_loss`作为当前定义的一个问题是，它假设预测总是在0和1之间。我们需要确保实际是这个样子！正好有一个函数可以做到这个事情，让我们看一下。
+
+### Sigmoid
+
+### S型函数
+
+The `sigmoid` function always outputs a number between 0 and 1. It's defined as follows:
+
+`sigmoid`函数一些输出0和1之间的数字。它的定义如下：
+
+```
+def sigmoid(x): return 1/(1+torch.exp(-x))
+```
+
+PyTorch defines an accelerated version for us, so we don’t really need our own. This is an important function in deep learning, since we often want to ensure values are between 0 and 1. This is what it looks like:
+
+PyTorch为我们定义了一个加速版，所以并需要我们自己来实际定义。在深度学习中这是一个重要函数，因为我们经常要确保数值在0和1之间。它看起来像如下形式：
+
+```python
+plot_function(torch.sigmoid, title='Sigmoid', min=-4, max=4)
+```
+
+Out: <img src="./_v_images/sigmoid.png" alt="sigmoid" style="zoom:100%;" />
+
