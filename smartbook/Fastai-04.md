@@ -1255,47 +1255,20 @@ Now we iterate. By looping and performing many improvements, we hope to reach a 
 for i in range(10): apply_step(params)
 ```
 
-<table style="width: 200px;border-collapse: collapse;">
-  <tr>
-    <td  style="width: 100px;">Out: </td>
-    <td  style="width: 200px;">5435.53662109375</td>
-  </tr>
-    <td style="width: 100px;"></td>
-    <td>1577.4495849609375</td>
-  <tr>
-    <td style="width: 100px;"></td>
-    <td>847.3780517578125</td>
-  </tr>
-  <tr>
-    <td style="width: 100px;"></td>
-    <td>709.22265625</td>
-  </tr>
-  <tr>
-    <td style="width: 100px;"></td>
-    <td>683.0757446289062</td>
-  </tr>
-  <tr>
-    <td style="width: 100px;"></td>		
-    <td>678.12451171875</td>
-  </tr>
-	<tr>
-    <td style="width: 100px;"></td>
-    <td>677.1839599609375</td>
-  </tr>
-  <tr>
-    <td style="width: 100px;"></td>
-		<td>677.0025024414062</td>
-  </tr>
-  <tr>
-    <td style="width: 100px;"></td>
-		<td>676.96435546875</td>
-  </tr>
-  <tr>
-    <td style="width: 100px;"></td>
-		<td>676.9537353515625</td>
-  </tr>
-</table>
-
+Out:  $
+\begin{array} {}
+	5435.53662109375\\
+	1577.4495849609375\\
+	847.3780517578125\\
+	709.22265625\\
+	683.0757446289062\\
+	678.12451171875\\
+	677.1839599609375\\
+	677.0025024414062\\
+	676.96435546875\\
+	676.9537353515625
+\end{array}
+$
 
 ```python
 #hide
@@ -1519,14 +1492,14 @@ corrects
 ```
 
 Out:  $
-\begin{matrix} tensor([&[True],\\
+\begin{array} {l}tensor([&[True],\\
 									&[True],\\
 									&[True],\\
 									&...,\\
 									&[False],\\
 									&[False],\\
 									&[False]]&)
-\end{matrix}
+\end{array}
 $
 
 ```python
@@ -1733,10 +1706,10 @@ list(dl)
 ```
 
 Out: $
-\begin{matrix} [&tensor([ &3, &12,  &8, &10,  &2&]),\\
-				&tensor([ &9, & 4,  &7, &14,  &5&]),\\
-				&tensor([ &1, &13,  &0,  &6, &11&])&]
-\end{matrix}
+\begin{array}{rr} [tensor([ 3, &12,  &8, &10,  &2]),\\
+				tensor([ 9, & 4,  &7, &14,  &5]),\\
+				tensor([ 1, &13,  &0,  &6, &11])]
+\end{array}
 $
 
 For training a model, we don't just want any Python collection, but a collection containing independent and dependent variables (that is, the inputs and targets of the model). A collection that contains tuples of independent and dependent variables is known in PyTorch as a `Dataset`. Here's an example of an extremely simple `Dataset`:
@@ -1760,11 +1733,17 @@ list(dl)
 ```
 
 Out:$
-{\begin{array} {cccccccc}[&(tensor([&17, &18, &10, &22, &8, &14]), &('r', 's', 'k', 'w', 'i', 'o')),\\
-				&(tensor([&20, &15, & 9, &13, &21, &12]), &('u', 'p', 'j', 'n', 'v', 'm')),\\
-				&(tensor([& 7, &25, & 6, & 5, &11, &23]), &('h', 'z', 'g', 'f', 'l', 'x')),\\
-				&(tensor([& 1, & 3, & 0, &24, &19, &16]), &('b', 'd', 'a', 'y', 't', 'q')),\\
-				& (tensor([&2, &4]), &('c', 'e'))]
+{\begin{array} {l}
+	\begin{array}{rrrrrrrl}
+		[(tensor([&17, &18, &10, &22, &8, &14]), &('r', 's', 'k', 'w', 'i', 'o')),\\
+		(tensor([&20, &15, & 9, &13, &21, &12]), &('u', 'p', 'j', 'n', 'v', 'm')),\\
+		(tensor([& 7, &25, & 6, & 5, &11, &23]), &('h', 'z', 'g', 'f', 'l', 'x')),\\
+		(tensor([& 1, & 3, & 0, &24, &19, &16]), &('b', 'd', 'a', 'y', 't', 'q')),
+	\end{array}		
+	\\		
+	\begin{array}{lrr} 
+		\ (tensor([&2,& 4]), ('c', 'e'))]
+	\end{array}
 \end{array}}
 $
 
@@ -1834,7 +1813,7 @@ preds
 ```
 
 Out: $
-\begin{array} /tensor([&[& -8.7744&],&\\
+\begin{array}{llrll} tensor([&[& -8.7744&],&\\
 				&[ &-8.0637&],&\\
 				&[ &-8.1532&],&\\
 				& [&-16.9030&]],& grad\_fn=<AddBackward0>)\\
@@ -1904,3 +1883,102 @@ bias.grad.zero_();
 > note: Inplace Operations: Methods in PyTorch whose names end in an underscore modify their objects *in place*. For instance, `bias.zero_()` sets all elements of the tensor `bias` to 0.
 >
 > 注释：原地操作：在PyTorch中的名字结尾是下划线的方法，在*恰当*的地方修改他们的对象。例如，`bias.zero_()`设置张量`bias`的所有元素为0。
+
+Our only remaining step is to update the weights and biases based on the gradient and learning rate. When we do so, we have to tell PyTorch not to take the gradient of this step too—otherwise things will get very confusing when we try to compute the derivative at the next batch! If we assign to the `data` attribute of a tensor then PyTorch will not take the gradient of that step. Here's our basic training loop for an epoch:
+
+我们保保留了基于梯度和学习率更新权重和偏差这个步骤。当我们做这个事情时，我们也要必须告诉PyTorch不要接受梯度这一步骤，否则当你尝试计算下一个批次的导数时，事情就会变的让人迷惑！如果我们给一个张量的`数据`属性赋值，PyTorch会不会采纳梯度这一步骤。这是我们对每个轮次的基础训练循环：
+
+```
+def train_epoch(model, lr, params):
+    for xb,yb in dl:
+        calc_grad(xb, yb, model)
+        for p in params:
+            p.data -= p.grad*lr
+            p.grad.zero_()
+```
+
+We also want to check how we're doing, by looking at the accuracy of the validation set. To decide if an output represents a 3 or a 7, we can just check whether it's greater than 0. So our accuracy for each item can be calculated (using broadcasting, so no loops!) with:
+
+通过查看验证集的精度我们也想检查一下做的怎么样。为了判断一个输出代表3还是7，我们只用检查它是不是比0大就可以。所以对每一个数据项我们的精度计算（用传播而不是循环）如下：
+
+```
+(preds>0.0).float() == train_y[:4]
+```
+
+Out: $
+\begin{array} /tensor([&[&False&],&\\
+				&[ &True&],&\\
+				&[ &True&],&\\
+				&[&False&]])\\
+\end{array}
+$
+
+
+That gives us this function to calculate our validation accuracy:
+
+下面提供的这个函数来计算我们验证集的精度：
+
+```
+def batch_accuracy(xb, yb):
+    preds = xb.sigmoid()
+    correct = (preds>0.5) == yb
+    return correct.float().mean()
+```
+
+We can check it works:
+
+我们能够检查它的工作情况：
+
+```
+batch_accuracy(linear1(batch), train_y[:4])
+```
+
+Out: tensor(0.5000)
+
+and then put the batches together:
+
+然后把所有批次集中在一起：
+
+```
+def validate_epoch(model):
+    accs = [batch_accuracy(model(xb), yb) for xb,yb in valid_dl]
+    return round(torch.stack(accs).mean().item(), 4)
+```
+
+```
+validate_epoch(linear1)
+```
+
+Out: 0.5219
+
+That's our starting point. Let's train for one epoch, and see if the accuracy improves:
+
+这是我们的开始点。让我们对一个轮次进行训练，并看精度是否有所改善：
+
+```
+lr = 1.
+params = weights,bias
+train_epoch(linear1, lr, params)
+validate_epoch(linear1)
+```
+
+Out: 0.6883
+
+Then do a few more:
+
+然后多做几次：
+
+```
+for i in range(20):
+    train_epoch(linear1, lr, params)
+    print(validate_epoch(linear1), end=' ')
+```
+
+Out:  $\begin{array}{rrrrrrrrrr} 
+	0.8314& 0.9017& 0.9227& 0.9349& 0.9438& 0.9501 &0.9535 &0.9564& 0.9594& 0.9618 \\
+	0.9613& 0.9638& 0.9643 &0.9652& 0.9662& 0.9677& 0.9687& 0.9691 &0.9691& 0.9696 
+	\end{array}$
+
+Looking good! We're already about at the same accuracy as our "pixel similarity" approach, and we've created a general-purpose foundation we can build on. Our next step will be to create an object that will handle the SGD step for us. In PyTorch, it's called an *optimizer*.
+
+看起来很好！在我们的“像素相似性”方法中，我们已经有了同样的精度，并且我们已创建一个所能建立的通用基础。下一步我们会创建一个拥有随机梯度下降步骤的对象。在PyTorch中，它被称为*优化器*。
