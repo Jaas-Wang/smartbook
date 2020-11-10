@@ -1981,4 +1981,226 @@ Out:  $\begin{array}{rrrrrrrrrr}
 
 Looking good! We're already about at the same accuracy as our "pixel similarity" approach, and we've created a general-purpose foundation we can build on. Our next step will be to create an object that will handle the SGD step for us. In PyTorch, it's called an *optimizer*.
 
-看起来很好！在我们的“像素相似性”方法中，我们已经有了同样的精度，并且我们已创建一个所能建立的通用基础。下一步我们会创建一个拥有随机梯度下降步骤的对象。在PyTorch中，它被称为*优化器*。
+看起来很好！在我们的“像素相似性”方法中，我们已经有了同样的精度，并且我们已创建一个所能建立的通用目的的基础训练程序。下一步我们会创建一个拥有随机梯度下降步骤的对象。在PyTorch中，它被称为*优化器*。
+
+### Creating an Optimizer
+
+### 创建一个优化器
+
+Because this is such a general foundation, PyTorch provides some useful classes to make it easier to implement. The first thing we can do is replace our `linear` function with PyTorch's `nn.Linear` module. A *module* is an object of a class that inherits from the PyTorch `nn.Module` class. Objects of this class behave identically to standard Python functions, in that you can call them using parentheses and they will return the activations of a model.
+
+因为这是那些通用基础构建，PyTorch提供了一些容易使用且有用类。首先做的事情是我们用PyTorch的`nn.Linear`模块的替换我们的`linear`。一个*模块*是继承了PyTorch对象`nn.Module`的类对象，这个类对象与标准的Python函数表现相同，因此你能用圆括号调用他们并他们会返回一个模型的激活数值。
+
+`nn.Linear` does the same thing as our `init_params` and `linear` together. It contains both the *weights* and *biases* in a single class. Here's how we replicate our model from the previous section:
+
+`nn.Linear`做的事情与我们的`init_params`和`linear`合并在一起做的事情相同。在单一类内它包含了*权重*和*偏差*两部分。这里是我们如何从之前的小节复制我们的模型：
+
+```
+linear_model = nn.Linear(28*28,1)
+```
+
+Every PyTorch module knows what parameters it has that can be trained; they are available through the `parameters` method:
+
+每个PyTorch模块知道它所能训练的参数，他们通过`parameters`方法能够获得：
+
+```
+w,b = linear_model.parameters()
+w.shape,b.shape
+```
+
+Out: (torch.Size([1, 784]), torch.Size([1]))
+
+We can use this information to create an optimizer:
+
+我们能够利用这个信息来创建一个优化器：
+
+```
+class BasicOptim:
+    def __init__(self,params,lr): self.params,self.lr = list(params),lr
+
+    def step(self, *args, **kwargs):
+        for p in self.params: p.data -= p.grad.data * self.lr
+
+    def zero_grad(self, *args, **kwargs):
+        for p in self.params: p.grad = None
+```
+
+We can create our optimizer by passing in the model's parameters:
+
+通过传递在模型中的参数，我们能够穿件一个优化器：
+
+```
+opt = BasicOptim(linear_model.parameters(), lr)
+```
+
+Our training loop can now be simplified to:
+
+我们的训练训练循环现在可简化为：
+
+```
+def train_epoch(model):
+    for xb,yb in dl:
+        calc_grad(xb, yb, model)
+        opt.step()
+        opt.zero_grad()
+```
+
+Our validation function doesn't need to change at all:
+
+我们的验证函数完全不需要改变：
+
+```
+validate_epoch(linear_model)
+```
+
+Out: 0.4157
+
+Let's put our little training loop in a function, to make things simpler:
+
+让我们把小训练循环放在一个函数中，来使得事情更加简洁：
+
+```
+def train_model(model, epochs):
+    for i in range(epochs):
+        train_epoch(model)
+        print(validate_epoch(model), end=' ')
+```
+
+The results are the same as in the previous section:
+
+In [ ]:
+
+```
+train_model(linear_model, 20)
+```
+
+Out:  $\begin{array}{r}
+		0.4932 &0.8618 &0.8203& 0.9102& 0.9331& 0.9468& 0.9555& 0.9629& 0.9658& 0.9673 \\
+		0.9687 &0.9707 &0.9726 &0.9751 &0.9761 &0.9761 &0.9775 &0.978 &0.9785& 0.9785 
+	\end{array}$
+
+fastai provides the `SGD` class which, by default, does the same thing as our `BasicOptim`:
+
+fastai通过默认的方式提供了`SGD`类，做的事情与我们的`BasicOptim`相同：
+
+```
+linear_model = nn.Linear(28*28,1)
+opt = SGD(linear_model.parameters(), lr)
+train_model(linear_model, 20)
+```
+
+Out:  $\begin{array}{r}
+	0.4932 &0.852& 0.8335& 0.9116 &0.9326 &0.9473& 0.9555& 0.9624& 0.9648& 0.9668 \\
+	0.9692 &0.9712& 0.9731& 0.9746& 0.9761& 0.9765& 0.9775& 0.978& 0.9785& 0.9785 
+\end{array}$
+
+fastai also provides `Learner.fit`, which we can use instead of `train_model`. To create a `Learner` we first need to create a `DataLoaders`, by passing in our training and validation `DataLoader`s:
+
+fastai也提供了`Learner.fit`，我们能够用于替代`train_model`。创建一个`Learner`前我们首先需要通过传递训练和验证`DataLoader`来创建一个`DataLoaders`：
+
+```
+dls = DataLoaders(dl, valid_dl)
+```
+
+To create a `Learner` without using an application (such as `cnn_learner`) we need to pass in all the elements that we've created in this chapter: the `DataLoaders`, the model, the optimization function (which will be passed the parameters), the loss function, and optionally any metrics to print:
+
+不使用任何网络应用（例如`cnn_learner`）来创建一个`learner`，我们需要给它传送所有本章创建的元素：`DataLoaders`，模型，优化函数（会被传送参数），损失函数和可选的那些指标输出：
+
+```
+learn = Learner(dls, nn.Linear(28*28,1), opt_func=SGD,
+                loss_func=mnist_loss, metrics=batch_accuracy)
+```
+
+Now we can call `fit`:
+
+现在我们就能够调用`fit`了：
+
+```
+learn.fit(10, lr=lr)
+```
+
+<table style="width: 200px;border-collapse: collapse;" >
+  <tr>
+    <td  style="width: 50px;" align="center">epoch</td>
+    <td  style="width: 200px;" align="center">train_loss</td>
+    <td  style="width: 200px;" align="center">valid_loss</td>
+    <td  style="width: 200px;" align="center">batch_accuracy</td>
+    <td  style="width: 200px;" align="center">time</td>
+  </tr>
+    <td style="width: 100px;" align="center">0</td>
+    <td align="right">0.636857</td>
+  	<td align="right">0.503549</td>
+  	<td align="right">0.495584</td>
+  	<td align="right">00:00</td>
+  <tr>
+    <td style="width: 100px;" align="center">1</td>
+    <td align="right">0.545725</td>
+  	<td align="right">0.170281</td>
+  	<td align="right">0.866045</td>
+  	<td align="right">00:00</td>
+  </tr>
+  <tr>
+    <td style="width: 100px;" align="center">2</td>
+    <td align="right">0.199223</td>
+  	<td align="right">0.184893</td>
+  	<td align="right">0.831207</td>
+  	<td align="right">00:00</td>
+  </tr>
+  <tr>
+    <td style="width: 100px;" align="center">3</td>
+    <td align="right">0.086580</td>
+  	<td align="right">0.107836</td>
+  	<td align="right">0.911187</td>
+  	<td align="right">00:00</td>
+  </tr>
+  <tr>
+    <td style="width: 100px;" align="center">4</td>
+    <td align="right">0.045185</td>
+  	<td align="right">0.078481</td>
+  	<td align="right">0.932777</td>
+  	<td align="right">00:00</td>
+  </tr>
+  <tr>
+    <td style="width: 100px;" align="center">5</td>
+    <td align="right">0.029108</td>
+  	<td align="right">0.062792</td>
+  	<td align="right">0.946516</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">6</td>
+    <td align="right">0.022560</td>
+  	<td align="right">0.053017</td>
+  	<td align="right">0.955348</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">7</td>
+    <td align="right">0.019687</td>
+  	<td align="right">0.046500</td>
+  	<td align="right">0.962218</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">8</td>
+    <td align="right">0.018252</td>
+  	<td align="right">0.041929</td>
+  	<td align="right">0.965162</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">9</td>
+    <td align="right">0.017402</td>
+  	<td align="right">0.038573</td>
+  	<td align="right">0.967615</td>
+  	<td align="right">00:00</td>
+  </tr>  
+</table>		
+
+As you can see, there's nothing magic about the PyTorch and fastai classes. They are just convenient pre-packaged pieces that make your life a bit easier! (They also provide a lot of extra functionality we'll be using in future chapters.)
+
+With these classes, we can now replace our linear model with a neural network.
+
+正如你能看到的，关于PyTorcht和fastai类没有任何魔力。他们只是相对方便的预包装，使得更加容易使用！（他们也提供了很多外部功能，在后续章节我们会用到他们。）
+
+利用这些类，我们现在能够替换我们的神经网络线性模型。
