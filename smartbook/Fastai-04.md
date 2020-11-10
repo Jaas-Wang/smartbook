@@ -2228,3 +2228,29 @@ def simple_net(xb):
 That's it! All we have in `simple_net` is two linear classifiers with a `max` function between them.
 
 就是它！在`simple_net`中我们所拥有的是两个线性分类器之间有一个`max`功能。
+
+Here, `w1` and `w2` are weight tensors, and `b1` and `b2` are bias tensors; that is, parameters that are initially randomly initialized, just like we did in the previous section:
+
+这里的`w1`和`w2`是权重张量，`b1`和`b2`是偏差张量。正如之前小节我们做的那样，这些参数在最初被随机的初始化：
+
+```
+w1 = init_params((28*28,30))
+b1 = init_params(30)
+w2 = init_params((30,1))
+b2 = init_params(1)
+```
+
+The key point about this is that `w1` has 30 output activations (which means that `w2` must have 30 input activations, so they match). That means that the first layer can construct 30 different features, each representing some different mix of pixels. You can change that `30` to anything you like, to make the model more or less complex.
+
+关键点是`w1`有30个输出激活（这意味着`w2`必须有30个输入激活，这样他们就匹配了）。这代表第一层构建了30个不同的特征，每个代表一些不同像素的混合。你能够改变这个`30`为任何你喜欢的数字，以使得的模型更加或更少的复杂度。
+
+That little function `res.max(tensor(0.0))` is called a *rectified linear unit*, also known as *ReLU*. We think we can all agree that *rectified linear unit* sounds pretty fancy and complicated... But actually, there's nothing more to it than `res.max(tensor(0.0))`—in other words, replace every negative number with a zero. This tiny function is also available in PyTorch as `F.relu`:
+
+`res.max(tensor(0.0))`这个小功能被称为*线性整流函数*，也被称为*ReLU*。我们认为全部接受*线性整流函数*听起来很奇特和复杂...但事实上，相比`res.max(tensor(0.0))`这里并没有增加任何东西。换句话，它会替换每个负值为零。这个小功能在PyTorch中也可获得，名为`F.relu`：
+
+```python
+plot_function(F.relu)
+```
+
+Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/relu.png" alt="relu" style="zoom:100%;" />
+
