@@ -2204,3 +2204,27 @@ With these classes, we can now replace our linear model with a neural network.
 正如你能看到的，关于PyTorcht和fastai类没有任何魔力。他们只是相对方便的预包装，使得更加容易使用！（他们也提供了很多外部功能，在后续章节我们会用到他们。）
 
 利用这些类，我们现在能够替换我们的神经网络线性模型。
+
+## Adding a Nonlinearity
+
+## 增加一个非线性
+
+So far we have a general procedure for optimizing the parameters of a function, and we have tried it out on a very boring function: a simple linear classifier. A linear classifier is very constrained in terms of what it can do. To make it a bit more complex (and able to handle more tasks), we need to add something nonlinear between two linear classifiers—this is what gives us a neural network.
+
+Here is the entire definition of a basic neural network:
+
+到目前为止对于函数的参数优化我们有了一个通用程序，并且在一个很无聊的功能上（一个简单的线性分类器）我们尝试了一下它。一个线性分类器基于它可做的内容有很大限制。让它稍微更加复杂一些（并能够处理更多任务），我们需要在两个线性分类器之间增加非线性，这就是给我们神经网络的原因。
+
+下面是一个基础神经网络的完整定义：
+
+```
+def simple_net(xb): 
+    res = xb@w1 + b1
+    res = res.max(tensor(0.0))
+    res = res@w2 + b2
+    return res
+```
+
+That's it! All we have in `simple_net` is two linear classifiers with a `max` function between them.
+
+就是它！在`simple_net`中我们所拥有的是两个线性分类器之间有一个`max`功能。
