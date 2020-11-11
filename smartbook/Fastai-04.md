@@ -2629,3 +2629,50 @@ This is why deep learning can do things which seem rather magical such fantastic
 2. 为任何函数寻找最优参数集的一个方法（随机梯度下降）
 
 这就是为什么深度学习能够做的事情好像有点奇幻，如此奇妙。相信这个能够解决任何问题的简单技术组合，是我们发现许多学生不得不采纳的最大步骤之一。它似乎太好了以至于感觉不真实，事实上应该比这个更困难和更复杂吗？我们的建议：试验它！我们刚刚在MNIST数据集上尝试了它，并且我们看到了结果。自从我们从零开始自己做了每一个事情（除了计算梯度），我们知道在这个场景背后没有隐藏特殊的魔法。
+
+### Going Deeper
+
+### 继续深入
+
+There is no need to stop at just two linear layers. We can add as many as we want, as long as we add a nonlinearity between each pair of linear layers. As you will learn, however, the deeper the model gets, the harder it is to optimize the parameters in practice. Later in this book you will learn about some simple but brilliantly effective techniques for training deeper models.
+
+不需要止步于仅仅两个线性层。只要我们在每对线性层之间增加一个激活函数，我们就能够增加任何我们想加的层数量。然而，正如我们将要学到的，在实践中，更深的模型，它的参数优化就更困难。后续在本书我们会学到关于深度模型的训练一些简单但巧妙有效的技术。
+
+We already know that a single nonlinearity with two linear layers is enough to approximate any function. So why would we use deeper models? The reason is performance. With a deeper model (that is, one with more layers) we do not need to use as many parameters; it turns out that we can use smaller matrices with more layers, and get better results than we would get with larger matrices, and few layers.
+
+我们已经知道一个激活函数加两个线性层足以近似任何函数。那么我们为什么还要用更深的模型？原因是性能。一个更深的模型（有更多的层），我们不需要使用太多的参数。事实证明有更多的层我们能够使用更小的矩阵，并且取得的结果也比更少的层且更大的矩阵更好。
+
+That means that we can train the model more quickly, and it will take up less memory. In the 1990s researchers were so focused on the universal approximation theorem that very few were experimenting with more than one nonlinearity. This theoretical but not practical foundation held back the field for years. Some researchers, however, did experiment with deep models, and eventually were able to show that these models could perform much better in practice. Eventually, theoretical results were developed which showed why this happens. Today, it is extremely unusual to find anybody using a neural network with just one nonlinearity.
+
+这就意味着我们能够更快的训练醋，并且它也会占用更少的内存。在1990年代，研究人员如此关注通用近似原理，以至于很少有人用超过一个激活函数做实验。这个不是特别基础的理论阻止这一领域好多年。然而，有一些研究人员在实践中利用深度模型实验并最终能够显示出这些模型能够表现更好。最终发展出的理论结果显示了为什么会发生的原因。如今，发现有人只使用一个激活函数的神经网络是极为不寻常的。
+
+Here what happens when we train an 18-layer model using the same approach we saw in <chapter_intro>:
+
+在这里当我们利用在<章节：概述>中看到的相同方法训练一个18层模型的时候，看会发生什么：
+
+```
+dls = ImageDataLoaders.from_folder(path)
+learn = cnn_learner(dls, resnet18, pretrained=False,
+                    loss_func=F.cross_entropy, metrics=accuracy)
+learn.fit_one_cycle(1, 0.1)
+```
+
+<table style="width: 200px;border-collapse: collapse;" >
+  <tr>
+    <td  style="width: 50px;" align="center">epoch</td>
+    <td  style="width: 200px;" align="center">train_loss</td>
+    <td  style="width: 200px;" align="center">valid_loss</td>
+    <td  style="width: 200px;" align="center">batch_accuracy</td>
+    <td  style="width: 200px;" align="center">time</td>
+  </tr>
+    <td style="width: 100px;" align="center">0</td>
+    <td align="right">0.082089</td>
+  	<td align="right">0.009578</td>
+  	<td align="right">0.997056</td>
+  	<td align="right">00:11</td>
+  <tr>
+</table>
+
+Nearly 100% accuracy! That's a big difference compared to our simple neural net. But as you'll learn in the remainder of this book, there are just a few little tricks you need to use to get such great results from scratch yourself. You already know the key foundational pieces. (Of course, even once you know all the tricks, you'll nearly always want to work with the pre-built classes provided by PyTorch and fastai, because they save you having to think about all the little details yourself.)
+
+近乎100%的精度！相比我们的简单神经网络这是一个巨大的差异。但正如你在本书剩余部分学到的内容，这些只是一些小技巧。你自己在从零开始的时候，需要使用它们来获得如此好的结果。你已经学到了关键基础部分。（当然，一旦你知道了所有技巧，你就几乎会一直想用PyTorch和fastai提供的预建类来工作，因为它们确保你不必自己想所有的小细节。）
