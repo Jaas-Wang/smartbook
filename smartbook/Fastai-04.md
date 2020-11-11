@@ -810,7 +810,7 @@ There are many different ways to do each of these seven steps, and we will be le
 - 初始化：我们用随机值来初始化参数。这可能听起来让人吃惊。我们确实可做其它选择，例如用这个分类像素被激活次数的百分比来初始化他们。但是因为我们已经知道，我们有一个例行程序来改善这些权重，事实证明，只从随机权重开始工作就十分有效。
 - 损失：这是塞缪尔提出的，他谈到*依据实际表现测试当前权重分配的有效性*，我们需要一些函数，如果模型是好的会返回一个小数值（标准方法是认为一个小的损失认为是好，而一个大的损失认为是坏，虽然这仅仅是一个惯例）。
 - 步进：一个简单的方法是算出一个权重应该被增加一点，还是被减少一点，也许只需要尝试一下：通过一个小数值增加权重，并看损失增加还是减小。一旦你发现正确的方向，然后你能够通过增加一点和减小一点来改变这个数值，直到你发现一个数值效果很好。然而，这太慢了！正如我们将要看不对劲的，计算的魔力允许我们直接计算出方向，及大致是多少，来改变每个权重，不用尝试这些小的改变。这个方法是通过计算*梯度*来做这个事情。通过使用更慢的手工过程也能取得相同精确的结果，这只是一个表现优化。
-- 停止：一旦我们已经决定用多少轮次来训练模型（对于此事在很早的列表中已经出给出了一些小建议），我们就应用这个决策。这就是决策被应用的地方。对于我们的数字分类，模型的精度开始变的糟糕或我们没有运行时间了，我们将会停止训练。
+- 停止：一旦我们已经决定用多少周期来训练模型（对于此事在很早的列表中已经出给出了一些小建议），我们就应用这个决策。这就是决策被应用的地方。对于我们的数字分类，模型的精度开始变的糟糕或我们没有运行时间了，我们将会停止训练。
 
 Before applying these steps to our image classification problem, let's illustrate what they look like in a simpler case. First we will define a very simple function, the quadratic—let's pretend that this is our loss function, and `x` is a weight parameter of the function:
 
@@ -1293,7 +1293,7 @@ Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/tigh_pl
 
 We just decided to stop after 10 epochs arbitrarily. In practice, we would watch the training and validation losses and our metrics to decide when to stop, as we've discussed.
 
-我们只是武断的决定10个轮次后就停止。正如我们已经讨论过的，在实践中，我们也许要看训练和验证损失及我们的指标来决定什么时候停止。
+我们只是武断的决定10个周期后就停止。正如我们已经讨论过的，在实践中，我们也许要看训练和验证损失及我们的指标来决定什么时候停止。
 
 ### Summarizing Gradient Descent
 
@@ -1665,11 +1665,11 @@ Having defined a loss function, now is a good moment to recapitulate why we did 
 
 The key difference is that the metric is to drive human understanding and the loss is to drive automated learning. To drive automated learning, the loss must be a function that has a meaningful derivative. It can't have big flat sections and large jumps, but instead must be reasonably smooth. This is why we designed a loss function that would respond to small changes in confidence level. This requirement means that sometimes it does not really reflect exactly what we are trying to achieve, but is rather a compromise between our real goal, and a function that can be optimized using its gradient. The loss function is calculated for each item in our dataset, and then at the end of an epoch the loss values are all averaged and the overall mean is reported for the epoch.
 
-一个关键的差异是指标驱动人类的理解而损失驱动自动学习。驱动自动学习，损失函数必须是个有意义导数的函数。它不能有很大的平坦部分和巨大的跳跃，而必须是合理的平滑。这就是为什么我们测试了一个损失函数，在可信的水平上响应小的改变。这个要求意味着有时候它不会真实准确的反应出我们努力实现的事情，而只是在我们真实目标间的一个妥协，并且利用它的梯度能够被优化的函数。损失函数是在我们的数据集中对每个项目计算的，然后在一个轮次的最后损失值是所有的平均值，并且对于这个轮次会被报告整体平均值。
+一个关键的差异是指标驱动人类的理解而损失驱动自动学习。驱动自动学习，损失函数必须是个有意义导数的函数。它不能有很大的平坦部分和巨大的跳跃，而必须是合理的平滑。这就是为什么我们测试了一个损失函数，在可信的水平上响应小的改变。这个要求意味着有时候它不会真实准确的反应出我们努力实现的事情，而只是在我们真实目标间的一个妥协，并且利用它的梯度能够被优化的函数。损失函数是在我们的数据集中对每个项目计算的，然后在一个周期的最后损失值是所有的平均值，并且对于这个周期会被报告整体平均值。
 
 Metrics, on the other hand, are the numbers that we really care about. These are the values that are printed at the end of each epoch that tell us how our model is really doing. It is important that we learn to focus on these metrics, rather than the loss, when judging the performance of a model.
 
-另一方向，指标是我们真实关系的一些数字。这些数值会在每个轮次的最后打印输出，告诉我们模型实际上做的怎么样。当评判一个模型表现的时候，我们学会关注这些指标而不是损失是重要的，
+另一方向，指标是我们真实关系的一些数字。这些数值会在每个周期的最后打印输出，告诉我们模型实际上做的怎么样。当评判一个模型表现的时候，我们学会关注这些指标而不是损失是重要的，
 
 ### SGD and Mini-Batches
 
@@ -1685,7 +1685,7 @@ In order to take an optimization step we need to calculate the loss over one or 
 
 So instead we take a compromise between the two: we calculate the average loss for a few data items at a time. This is called a *mini-batch*. The number of data items in the mini-batch is called the *batch size*. A larger batch size means that you will get a more accurate and stable estimate of your dataset's gradients from the loss function, but it will take longer, and you will process fewer mini-batches per epoch. Choosing a good batch size is one of the decisions you need to make as a deep learning practitioner to train your model quickly and accurately. We will talk about how to make this choice throughout this book.
 
-所以我们在两者之间采取了一个妥协：每一次我们对少量数据计算平均损失。这被称为*最小批次*。在最小批次中数据项的数目被称为*批次尺寸*。一个更大的批次尺寸意味着你获得来自损失函数对你数据集的梯度更准确和更稳定的评估。但它会花费更长时间，且每个轮次你将处理更少的最小批次。为了快速和准确的训练你的模型，选择一个合适的批次尺寸是你做为一名深度学习行业人员需要做的一个决定。在这本书里我们会讨论如何做这个选择。
+所以我们在两者之间采取了一个妥协：每一次我们对少量数据计算平均损失。这被称为*最小批次*。在最小批次中数据项的数目被称为*批次尺寸*。一个更大的批次尺寸意味着你获得来自损失函数对你数据集的梯度更准确和更稳定的评估。但它会花费更长时间，且每个周期你将处理更少的最小批次。为了快速和准确的训练你的模型，选择一个合适的批次尺寸是你做为一名深度学习行业人员需要做的一个决定。在这本书里我们会讨论如何做这个选择。
 
 Another good reason for using mini-batches rather than calculating the gradient on individual data items is that, in practice, we nearly always do our training on an accelerator such as a GPU. These accelerators only perform well if they have lots of work to do at a time, so it's helpful if we can give them lots of data items to work on. Using mini-batches is one of the best ways to do this. However, if you give them too much data to work on at once, they run out of memory—making GPUs happy is also tricky!
 
@@ -1693,7 +1693,7 @@ Another good reason for using mini-batches rather than calculating the gradient 
 
 As we saw in our discussion of data augmentation in <chapter_production>, we get better generalization if we can vary things during training. One simple and effective thing we can vary is what data items we put in each mini-batch. Rather than simply enumerating our dataset in order for every epoch, instead what we normally do is randomly shuffle it on every epoch, before we create mini-batches. PyTorch and fastai provide a class that will do the shuffling and mini-batch collation for you, called `DataLoader`.
 
-正如在<章节：产品>中我们看到的数据增强的讨论，训练期间如果我们能够多样化处理，我们会获得更好的泛化。一个简单且有效的处理是我们能够改变放入每个最小批次中的数据项。我们创建最小批次之前，标准的做法是对每个轮次随机打乱数据项，而不是简单的为每个轮次列举我们的数据集。PyTorch和fastai提供了一个名叫`DataLoader`的类，它会为你做这个洗牌和最小批次集合。
+正如在<章节：产品>中我们看到的数据增强的讨论，训练期间如果我们能够多样化处理，我们会获得更好的泛化。一个简单且有效的处理是我们能够改变放入每个最小批次中的数据项。我们创建最小批次之前，标准的做法是对每个周期随机打乱数据项，而不是简单的为每个周期列举我们的数据集。PyTorch和fastai提供了一个名叫`DataLoader`的类，它会为你做这个洗牌和最小批次集合。
 
 A `DataLoader` can take any Python collection and turn it into an iterator over many batches, like so:
 
@@ -1886,7 +1886,7 @@ bias.grad.zero_();
 
 Our only remaining step is to update the weights and biases based on the gradient and learning rate. When we do so, we have to tell PyTorch not to take the gradient of this step too—otherwise things will get very confusing when we try to compute the derivative at the next batch! If we assign to the `data` attribute of a tensor then PyTorch will not take the gradient of that step. Here's our basic training loop for an epoch:
 
-我们保保留了基于梯度和学习率更新权重和偏差这个步骤。当我们做这个事情时，我们也要必须告诉PyTorch不要接受梯度这一步骤，否则当你尝试计算下一个批次的导数时，事情就会变的让人迷惑！如果我们给一个张量的`数据`属性赋值，PyTorch会不会采纳梯度这一步骤。这是我们对每个轮次的基础训练循环：
+我们保保留了基于梯度和学习率更新权重和偏差这个步骤。当我们做这个事情时，我们也要必须告诉PyTorch不要接受梯度这一步骤，否则当你尝试计算下一个批次的导数时，事情就会变的让人迷惑！如果我们给一个张量的`数据`属性赋值，PyTorch会不会采纳梯度这一步骤。这是我们对每个周期的基础训练循环：
 
 ```
 def train_epoch(model, lr, params):
@@ -1953,7 +1953,7 @@ Out: 0.5219
 
 That's our starting point. Let's train for one epoch, and see if the accuracy improves:
 
-这是我们的开始点。让我们对一个轮次进行训练，并看精度是否有所改善：
+这是我们的开始点。让我们对一个周期进行训练，并看精度是否有所改善：
 
 ```
 lr = 1.
@@ -2213,7 +2213,7 @@ So far we have a general procedure for optimizing the parameters of a function, 
 
 Here is the entire definition of a basic neural network:
 
-到目前为止对于函数的参数优化我们有了一个通用程序，并且在一个很无聊的功能上（一个简单的线性分类器）我们尝试了一下它。一个线性分类器基于它可做的内容有很大限制。让它稍微更加复杂一些（并能够处理更多任务），我们需要在两个线性分类器之间增加非线性，这就是给我们神经网络的原因。
+到目前为止对于函数的参数优化我们有了一个通用程序，并且在一个很无聊的函数上（一个简单的线性分类器）我们尝试了一下它。一个线性分类器基于它可做的内容有很大限制。让它稍微更加复杂一些（并能够处理更多任务），我们需要在两个线性分类器之间增加非线性，这就是给我们神经网络的原因。
 
 下面是一个基础神经网络的完整定义：
 
@@ -2227,7 +2227,7 @@ def simple_net(xb):
 
 That's it! All we have in `simple_net` is two linear classifiers with a `max` function between them.
 
-就是它！在`simple_net`中我们所拥有的是两个线性分类器之间有一个`max`功能。
+就是它！在`simple_net`中我们所拥有的是两个线性分类器之间有一个`max`函数。
 
 Here, `w1` and `w2` are weight tensors, and `b1` and `b2` are bias tensors; that is, parameters that are initially randomly initialized, just like we did in the previous section:
 
@@ -2260,9 +2260,366 @@ Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/relu.pn
 
 The basic idea is that by using more linear layers, we can have our model do more computation, and therefore model more complex functions. But there's no point just putting one linear layout directly after another one, because when we multiply things together and then add them up multiple times, that could be replaced by multiplying different things together and adding them up just once! That is to say, a series of any number of linear layers in a row can be replaced with a single linear layer with a different set of parameters.
 
-基本想法是通过利用更多线性层，我们能让模型做更多的计算，因此模型会有更多复杂功能。但直接在另外一层后面只放一个线性层没有意义，因为当我们把事物乘起来，然后把它们相加多次，能够用通过乘不同的事物然后加它们一次来替换！也就是说，在一行中一系列任意数字的线性层能够被拥有不同参数集合的单一线性层所替换。
+基本想法是通过利用更多线性层，我们能让模型做更多的计算，因此模型会有更多复杂函数。但直接在另外一层后面只放一个线性层没有意义，因为当我们把事物乘起来，然后把它们相加多次，能够用通过乘不同的事物然后加它们一次来替换！也就是说，在一行中一系列任意数字的线性层能够被拥有不同参数集合的单一线性层所替换。
 
 But if we put a nonlinear function between them, such as `max`, then this is no longer true. Now each linear layer is actually somewhat decoupled from the other ones, and can do its own useful work. The `max` function is particularly interesting, because it operates as a simple `if` statement.
 
-但如果我们在它们之间放一个非线性功能，例如`max`，然而这就不再成立了。现在每个线性层实际是相互之间是分离的，能够做它们自己有帮助的工作。`max`功能是特别有趣，因为它作为一个简单的`if`语句来运行。
+但如果我们在它们之间放一个非线性函数，例如`max`，然而这就不再成立了。现在每个线性层实际是相互之间是分离的，能够做它们自己有帮助的工作。`max`函数是特别有趣，因为它作为一个简单的`if`语句来运行。
+
+> S: Mathematically, we say the composition of two linear functions is another linear function. So, we can stack as many linear classifiers as we want on top of each other, and without nonlinear functions between them, it will just be the same as one linear classifier.
+>
+> 西：理论上，我们认为两个线性函数组合是另一个线性函数。所以，我们能够在每个线性分类器上叠加任何数量的线性分类器，并在他们这间不用包含任何非线性函数，它会只会与一个线性分类器相同。
+
+Amazingly enough, it can be mathematically proven that this little function can solve any computable problem to an arbitrarily high level of accuracy, if you can find the right parameters for `w1` and `w2` and if you make these matrices big enough. For any arbitrarily wiggly function, we can approximate it as a bunch of lines joined together; to make it closer to the wiggly function, we just have to use shorter lines. This is known as the *universal approximation theorem*. The three lines of code that we have here are known as *layers*. The first and third are known as *linear layers*, and the second line of code is known variously as a *nonlinearity*, or *activation function*.
+
+足够令人惊讶，它能被理论证明这个小函数能够以任何高的精度水平来解决任意可计算的问题，如果你能够找到对`w1`和`w2`正确的参数且如果你使得这些矩阵足够的大。对任意波动函数，我们能够近似认为它是一束连接在一起的线。我们只需要用更短的线，以使它更接近波动函数。这被称为*通过近似定理*（或万能逼近定理）。这里我们所写的三行代码被称为*层*。第一和第三被称为*线性层*，第二行代码被称为*非线性*或*激活函数*。
+
+Just like in the previous section, we can replace this code with something a bit simpler, by taking advantage of PyTorch:
+
+正如在之前小节的内容，我们能够通过利用PyTorch，用一些更简单的代码来替换：
+
+```
+simple_net = nn.Sequential(
+    nn.Linear(28*28,30),
+    nn.ReLU(),
+    nn.Linear(30,1)
+)
+```
+
+`nn.Sequential` creates a module that will call each of the listed layers or functions in turn.
+
+`nn.Sequential`创建了一个依次调用所列示的每一层或函数的模块。
+
+`nn.ReLU` is a PyTorch module that does exactly the same thing as the `F.relu` function. Most functions that can appear in a model also have identical forms that are modules. Generally, it's just a case of replacing `F` with `nn` and changing the capitalization. When using `nn.Sequential`, PyTorch requires us to use the module version. Since modules are classes, we have to instantiate them, which is why you see `nn.ReLU()` in this example.
+
+`nn.ReLU`是一个PyTorch模块，它做的事情与`F.relu`完全相同。在一个模型中出现的大多数函数也具有与模型相同的格式。通常来说，它只是用`nn`替换`F`的一个例子，并改变了字母的大小写。当使用`nn.Sequential`时，PyTorch需要我们使用模块的版本。因为模块是一些类，我们必须实例化它们，在本例子中这就是为什么你看到了`nn.ReLU()`了。
+
+Because `nn.Sequential` is a module, we can get its parameters, which will return a list of all the parameters of all the modules it contains. Let's try it out! As this is a deeper model, we'll use a lower learning rate and a few more epochs.
+
+因为`nn.Sequential`是一个模块，你能够获取它的参数，包含返回的所有模块的全部参数的一个列表 。让我们试验一下！在这个深度模型上，我们会用一个更低的学习率和更多的周期。
+
+```python
+learn = Learner(dls, simple_net, opt_func=SGD,
+                loss_func=mnist_loss, metrics=batch_accuracy)
+```
+
+```python
+#hide_output
+learn.fit(40, 0.1)
+```
+
+<table style="width: 200px;border-collapse: collapse;" >
+  <tr>
+    <td  style="width: 50px;" align="center">epoch</td>
+    <td  style="width: 200px;" align="center">train_loss</td>
+    <td  style="width: 200px;" align="center">valid_loss</td>
+    <td  style="width: 200px;" align="center">batch_accuracy</td>
+    <td  style="width: 200px;" align="center">time</td>
+  </tr>
+    <td style="width: 100px;" align="center">0</td>
+    <td align="right">0.305828</td>
+  	<td align="right">0.399663</td>
+  	<td align="right">0.508341</td>
+  	<td align="right">00:00</td>
+  <tr>
+    <td style="width: 100px;" align="center">1</td>
+    <td align="right">0.142960</td>
+  	<td align="right">0.225702</td>
+  	<td align="right">0.807655</td>
+  	<td align="right">00:00</td>
+  </tr>
+  <tr>
+    <td style="width: 100px;" align="center">2</td>
+    <td align="right">0.079516</td>
+  	<td align="right">0.113519</td>
+  	<td align="right">0.919529</td>
+  	<td align="right">00:00</td>
+  </tr>
+  <tr>
+    <td style="width: 100px;" align="center">3</td>
+    <td align="right">0.052391</td>
+  	<td align="right">0.076792</td>
+  	<td align="right">0.943081</td>
+  	<td align="right">00:00</td>
+  </tr>
+  <tr>
+    <td style="width: 100px;" align="center">4</td>
+    <td align="right">0.039796</td>
+  	<td align="right">0.060083</td>
+  	<td align="right">0.956330</td>
+  	<td align="right">00:00</td>
+  </tr>
+  <tr>
+    <td style="width: 100px;" align="center">5</td>
+    <td align="right">0.033368</td>
+  	<td align="right">0.050713</td>
+  	<td align="right">0.963690</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">6</td>
+    <td align="right">0.029680</td>
+  	<td align="right">0.044797</td>
+  	<td align="right">0.965653</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">7</td>
+    <td align="right">0.027290</td>
+  	<td align="right">0.040729</td>
+  	<td align="right">0.968106</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">8</td>
+    <td align="right">0.025568</td>
+  	<td align="right">0.037771</td>
+  	<td align="right">0.968597</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">9</td>
+    <td align="right">0.024233</td>
+  	<td align="right">0.035508</td>
+  	<td align="right">0.970559</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">10</td>
+    <td align="right">0.023149</td>
+  	<td align="right">0.033714</td>
+  	<td align="right">0.972031</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">11</td>
+    <td align="right">0.022242</td>
+  	<td align="right">0.032243</td>
+  	<td align="right">0.972522</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">12</td>
+    <td align="right">0.021468</td>
+  	<td align="right">0.031006</td>
+  	<td align="right">0.973503</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">13</td>
+    <td align="right">0.020796</td>
+  	<td align="right">0.029944</td>
+  	<td align="right">0.974485</td>
+  	<td align="right">00:00</td>
+  </tr>  
+  <tr>
+    <td style="width: 100px;" align="center">14</td>
+    <td align="right">0.020207</td>
+  	<td align="right">0.029016</td>
+  	<td align="right">0.975466</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">15</td>
+    <td align="right">0.019683</td>
+  	<td align="right">0.028196</td>
+  	<td align="right">0.976448</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">16</td>
+    <td align="right">0.019215</td>
+  	<td align="right">0.027463</td>
+  	<td align="right">0.976448</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">17</td>
+    <td align="right">0.018791</td>
+  	<td align="right">0.026806</td>
+  	<td align="right">0.976938</td>
+  	<td align="right">00:00</td>
+  </tr>
+  <tr>
+    <td style="width: 100px;" align="center">18</td>
+    <td align="right">0.018405</td>
+  	<td align="right">0.026212</td>
+  	<td align="right">0.977920</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">19</td>
+    <td align="right">0.018051</td>
+  	<td align="right">0.025671</td>
+  	<td align="right">0.977920</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">20</td>
+    <td align="right">0.017725</td>
+  	<td align="right">0.025179</td>
+  	<td align="right">0.977920</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">21</td>
+    <td align="right">0.017422</td>
+  	<td align="right">0.024728</td>
+  	<td align="right">0.978410</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">22</td>
+    <td align="right">0.017141</td>
+  	<td align="right">0.024313</td>
+  	<td align="right">0.978901</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">23</td>
+    <td align="right">0.016878</td>
+  	<td align="right">0.023932</td>
+  	<td align="right">0.979392</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">24</td>
+    <td align="right">0.016632</td>
+  	<td align="right">0.023580</td>
+  	<td align="right">0.979882</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">25</td>
+    <td align="right">0.016400</td>
+  	<td align="right">0.023254</td>
+  	<td align="right">0.979882</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">26</td>
+    <td align="right">0.016181</td>
+  	<td align="right">0.022952</td>
+  	<td align="right">0.979882</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">27</td>
+    <td align="right">0.015975</td>
+  	<td align="right">0.022672</td>
+  	<td align="right">0.980864</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">28</td>
+    <td align="right">0.015779</td>
+  	<td align="right">0.022411</td>
+  	<td align="right">0.980864</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">29</td>
+    <td align="right">0.015593</td>
+  	<td align="right">0.022168</td>
+  	<td align="right">0.981845</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">30</td>
+    <td align="right">0.015417</td>
+  	<td align="right">0.021941</td>
+  	<td align="right">0.981845</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">31</td>
+    <td align="right">0.015249</td>
+  	<td align="right">0.021728</td>
+  	<td align="right">0.981845</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">32</td>
+    <td align="right">0.015088</td>
+  	<td align="right">0.021529</td>
+  	<td align="right">0.981845</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">33</td>
+    <td align="right">0.014935</td>
+  	<td align="right">0.021341</td>
+  	<td align="right">0.981845</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">34</td>
+    <td align="right">0.014788</td>
+  	<td align="right">0.021164</td>
+  	<td align="right">0.981845</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">35</td>
+    <td align="right">0.014647</td>
+  	<td align="right">0.020998</td>
+  	<td align="right">0.982336</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">36</td>
+    <td align="right">0.014512</td>
+  	<td align="right">0.020840</td>
+  	<td align="right">0.982826</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">37</td>
+    <td align="right">0.014382</td>
+  	<td align="right">0.020691</td>
+  	<td align="right">0.982826</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">38</td>
+    <td align="right">0.014257</td>
+  	<td align="right">0.020550</td>
+  	<td align="right">0.982826</td>
+  	<td align="right">00:00</td>
+  </tr> 
+  <tr>
+    <td style="width: 100px;" align="center">39</td>
+    <td align="right">0.014136</td>
+  	<td align="right">0.020415</td>
+  	<td align="right">0.982826</td>
+  	<td align="right">00:00</td>
+  </tr> 
+</table>	
+
+We're not showing the 40 lines of output here to save room; the training process is recorded in `learn.recorder`, with the table of output stored in the `values` attribute, so we can plot the accuracy over training as:
+
+为了节省空间我们没有在这里显示输出的40行信息。训练过程被记录在`learn.recorder`中，利用输出表存储在`values`属性中，我们能够描绘训练过程的精度为：
+
+```
+plt.plot(L(learn.recorder.values).itemgot(2));
+```
+
+Out: ![img](data:image/png;base64,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) 
+
+And we can view the final accuracy:
+
+我们能够查看最终的精度：
+
+```
+learn.recorder.values[-1][2]
+```
+
+Out: 0.982826292514801
+
+At this point we have something that is rather magical:
+
+1. A function that can solve any problem to any level of accuracy (the neural network) given the correct set of parameters
+2. A way to find the best set of parameters for any function (stochastic gradient descent)
+
+This is why deep learning can do things which seem rather magical such fantastic things. Believing that this combination of simple techniques can really solve any problem is one of the biggest steps that we find many students have to take. It seems too good to be true—surely things should be more difficult and complicated than this? Our recommendation: try it out! We just tried it on the MNIST dataset and you have seen the results. And since we are doing everything from scratch ourselves (except for calculating the gradients) you know that there is no special magic hiding behind the scenes.
 
