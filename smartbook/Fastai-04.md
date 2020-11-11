@@ -2623,3 +2623,9 @@ At this point we have something that is rather magical:
 
 This is why deep learning can do things which seem rather magical such fantastic things. Believing that this combination of simple techniques can really solve any problem is one of the biggest steps that we find many students have to take. It seems too good to be true—surely things should be more difficult and complicated than this? Our recommendation: try it out! We just tried it on the MNIST dataset and you have seen the results. And since we are doing everything from scratch ourselves (except for calculating the gradients) you know that there is no special magic hiding behind the scenes.
 
+在这一点上我们有个比较奇幻的事情：
+
+1. 一个函数在给定正确参数集的情况下，能够以任何精度水平来解决任何问题（神经网络）
+2. 为任何函数寻找最优参数集的一个方法（随机梯度下降）
+
+这就是为什么深度学习能够做的事情好像有点奇幻，如此奇妙。相信这个能够解决任何问题的简单技术组合，是我们发现许多学生不得不采纳的最大步骤之一。它似乎太好了以至于感觉不真实，事实上应该比这个更困难和更复杂吗？我们的建议：试验它！我们刚刚在MNIST数据集上尝试了它，并且我们看到了结果。自从我们从零开始自己做了每一个事情（除了计算梯度），我们知道在这个场景背后没有隐藏特殊的魔法。
