@@ -2254,3 +2254,15 @@ plot_function(F.relu)
 
 Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/relu.png" alt="relu" style="zoom:100%;" />
 
+> J: There is an enormous amount of jargon in deep learning, including terms like *rectified linear unit*. The vast vast majority of this jargon is no more complicated than can be implemented in a short line of code, as we saw in this example. The reality is that for academics to get their papers published they need to make them sound as impressive and sophisticated as possible. One of the ways that they do that is to introduce jargon. Unfortunately, this has the result that the field ends up becoming far more intimidating and difficult to get into than it should be. You do have to learn the jargon, because otherwise papers and tutorials are not going to mean much to you. But that doesn't mean you have to find the jargon intimidating. Just remember, when you come across a word or phrase that you haven't seen before, it will almost certainly turn to be referring to a very simple concept.
+>
+> 杰：在深度学习中有巨大数量的术语，包括像*线性整流函数*这样的术语。正如我们在本例中看到的，绝大多数术语用一小段代码就能来实现，不会非常复杂。实际上对于学术派为了让他们的论文发表，需要让他们的研究成果尽可能的令人印象深刻和成熟。他们可做的众多方法之一就是引入术语。不幸的是，这产生的后果是本领域本应更容易进入，最终变的更让人恐惧和更困难进入。我必须学习术语，否则文章和指引对你来说将没有多大意义。但这并不意味你必须面对查找术语的恐惧。只要记住，当你遇到一个你以前没有看到过的词或短语时，它几乎很确定的会被转为很简单的参考概念。
+
+The basic idea is that by using more linear layers, we can have our model do more computation, and therefore model more complex functions. But there's no point just putting one linear layout directly after another one, because when we multiply things together and then add them up multiple times, that could be replaced by multiplying different things together and adding them up just once! That is to say, a series of any number of linear layers in a row can be replaced with a single linear layer with a different set of parameters.
+
+基本想法是通过利用更多线性层，我们能让模型做更多的计算，因此模型会有更多复杂功能。但直接在另外一层后面只放一个线性层没有意义，因为当我们把事物乘起来，然后把它们相加多次，能够用通过乘不同的事物然后加它们一次来替换！也就是说，在一行中一系列任意数字的线性层能够被拥有不同参数集合的单一线性层所替换。
+
+But if we put a nonlinear function between them, such as `max`, then this is no longer true. Now each linear layer is actually somewhat decoupled from the other ones, and can do its own useful work. The `max` function is particularly interesting, because it operates as a simple `if` statement.
+
+但如果我们在它们之间放一个非线性功能，例如`max`，然而这就不再成立了。现在每个线性层实际是相互之间是分离的，能够做它们自己有帮助的工作。`max`功能是特别有趣，因为它作为一个简单的`if`语句来运行。
+
