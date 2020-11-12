@@ -24,6 +24,8 @@
 
 [第一章 概述   中英文翻译对比：Fastai-01.md](./smartbook/Fastai-01.md)  [（英文原书：01_intro.ipynb）](./englishbook/01_intro.ipynb)
 
+[第二章 产品   中英文翻译对比：Fastai-02.md](./smartbook/Fastai-02.md)  [（英文原书：02_production.ipynb）](./englishbook/02_production.ipynb)
+
 [第三章 数据伦理  中英文翻译对比：Fastai-03.md](./smartbook/Fastai-03.md)   [（英文原书：03_ethics.ipynb）](./englishbook/03_ethics.ipynb)
 
 [第四章 mnist基础  中英文翻译对比：Fastai-04.md](./smartbook/Fastai-04.md)   [（英文原书：04_mnist_basics.ipynb）](./englishbook/04_mnist_basics.ipynb)
