@@ -26,6 +26,8 @@
 
 [第三章 数据伦理  中英文翻译对比：Fastai-03.md](./smartbook/Fastai-03.md)   [（英文原书：03_ethics.ipynb）](./englishbook/03_ethics.ipynb)
 
-[第四章 mnist基础  中英文翻译对比：Fastai-04.md](./smartbook/Fastai-04.md)   [（英文原书：04_mnist_basics.ipynb）](./englishbook/03_ethics.ipynb)
+[第四章 mnist基础  中英文翻译对比：Fastai-04.md](./smartbook/Fastai-04.md)   [（英文原书：04_mnist_basics.ipynb）](./englishbook/04_mnist_basics.ipynb)
+
+[第五章 基于宠物品种的图像分类  中英文翻译对比：Fastai-05.md](./smartbook/Fastai-05.md)   [（英文原书：05_pet_breeds.ipynb）](./englishbook/05_pet_breeds.ipynb)
 
  
