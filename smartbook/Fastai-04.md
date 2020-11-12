@@ -2753,46 +2753,86 @@ A neural network contains a number of layers. Each layer is either *linear* or *
 ## 调研问卷
 
 1. How is a grayscale image represented on a computer? How about a color image?
-2. How are the files and folders in the `MNIST_SAMPLE` dataset structured? Why?
-3. Explain how the "pixel similarity" approach to classifying digits works.
-4. What is a list comprehension? Create one now that selects odd numbers from a list and doubles them.
-5. What is a "rank-3 tensor"?
-6. What is the difference between tensor rank and shape? How do you get the rank from the shape?
-7. What are RMSE and L1 norm?
-8. How can you apply a calculation on thousands of numbers at once, many thousands of times faster than a Python loop?
-9. Create a 3×3 tensor or array containing the numbers from 1 to 9. Double it. Select the bottom-right four numbers.
-10. What is broadcasting?
-11. Are metrics generally calculated using the training set, or the validation set? Why?
-12. What is SGD?
-13. Why does SGD use mini-batches?
-14. What are the seven steps in SGD for machine learning?
-15. How do we initialize the weights in a model?
-16. What is "loss"?
-17. Why can't we always use a high learning rate?
-18. What is a "gradient"?
-19. Do you need to know how to calculate gradients yourself?
-20. Why can't we use accuracy as a loss function?
-21. Draw the sigmoid function. What is special about its shape?
-22. What is the difference between a loss function and a metric?
-23. What is the function to calculate new weights using a learning rate?
-24. What does the `DataLoader` class do?
-25. Write pseudocode showing the basic steps taken in each epoch for SGD.
-26. Create a function that, if passed two arguments `[1,2,3,4]` and `'abcd'`, returns `[(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd')]`. What is special about that output data structure?
-27. What does `view` do in PyTorch?
-28. What are the "bias" parameters in a neural network? Why do we need them?
-29. What does the `@` operator do in Python?
-30. What does the `backward` method do?
-31. Why do we have to zero the gradients?
-32. What information do we have to pass to `Learner`?
-33. Show Python or pseudocode for the basic steps of a training loop.
-34. What is "ReLU"? Draw a plot of it for values from `-2` to `+2`.
-35. What is an "activation function"?
-36. What's the difference between `F.relu` and `nn.ReLU`?
-37. The universal approximation theorem shows that any function can be approximated as closely as needed using just one nonlinearity. So why do we normally use more?
+2. 在计算机里一张灰度图是怎样展示的？图片的颜色是怎样的？
+3. How are the files and folders in the `MNIST_SAMPLE` dataset structured? Why?
+4. 在`MNIST_SAMPLE`数据集中文件和目录的结构是怎样的？为什么？
+5. Explain how the "pixel similarity" approach to classifying digits works.
+6. 解释“像素相似性”方法来分类数字是怎样工作的。
+7. What is a list comprehension? Create one now that selects odd numbers from a list and doubles them.
+8. 列表生成器是什么？现在创建一个，从列表中选择奇数并对它们加倍。
+9. What is a "rank-3 tensor"?
+10. 什么是一个“三阶张向”？
+11. What is the difference between tensor rank and shape? How do you get the rank from the shape?
+12. 张量的阶和形状之间的区别是什么？从形状中你如何获得阶？
+13. What are RMSE and L1 norm?
+14. RMSE和L1正则是什么？
+15. How can you apply a calculation on thousands of numbers at once, many thousands of times faster than a Python loop?
+16. 你如何能够同时对数以千计的数值上进行计算，faster比Python循环快成千上万倍吗？
+17. Create a 3×3 tensor or array containing the numbers from 1 to 9. Double it. Select the bottom-right four numbers.
+18. 穿件一个3×3的张量或数组，数值范围从1 到9并对它们进行加倍处理。选择右下部的4个数值。
+19. What is broadcasting?
+20. 什么是传播？
+21. Are metrics generally calculated using the training set, or the validation set? Why?
+22. 通常使用训练集或验证集计算指标吗？为什么？
+23. What is SGD?
+24. 什么是随机梯度下降？
+25. Why does SGD use mini-batches?
+26. 为什么用最小批次来做梯度下降？
+27. What are the seven steps in SGD for machine learning?
+28. 对于机器深度随机梯度下降中的7个步骤是什么？
+29. How do we initialize the weights in a model?
+30. 在一个模型中我们如何初始化权重？
+31. What is "loss"?
+32. 什么是“损失”？
+33. Why can't we always use a high learning rate?
+34. 为什么我们不能一直使用高学习率？
+35. What is a "gradient"?
+36. 什么是“梯度”？
+37. Do you need to know how to calculate gradients yourself?
+38. 你需要知道如何自己来计算梯度吗？
+39. Why can't we use accuracy as a loss function?
+40. 为什么我们不能使用精度作为损失函数？
+41. Draw the sigmoid function. What is special about its shape?
+42. 画S型函数曲线。它的形状具体是什么样子？
+43. What is the difference between a loss function and a metric?
+44. 损失函数和指标之间的差异是什么？
+45. What is the function to calculate new weights using a learning rate?
+46. 使用一个学习率计算新权重的函数是什么？
+47. What does the `DataLoader` class do?
+48. `DataLoader`类做了什么？
+49. Write pseudocode showing the basic steps taken in each epoch for SGD.
+50. 编写伪代码，来展示对随机梯度下降每个周期中所采纳的基础步骤。
+51. Create a function that, if passed two arguments `[1,2,3,4]` and `'abcd'`, returns `[(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd')]`. What is special about that output data structure?
+52. 创建一个函数，如果传递两个参数`[1,2,3,4]`和`abcd`，并返回`[(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd')]`。数据的数据结构具体是什么样的？
+53. What does `view` do in PyTorch?
+54. 在PyTorch中`view`做了什么？
+55. What are the "bias" parameters in a neural network? Why do we need them?
+56. 在一个神经网络中“变差”参数是什么？为什么我们需要他们？
+57. What does the `@` operator do in Python?
+58. 在Python中操作符`@`做了什么工作？
+59. What does the `backward` method do?
+60. `backward`方法做了什么工作？
+61. Why do we have to zero the gradients?
+62. 为什么我们必须零化梯度？
+63. What information do we have to pass to `Learner`?
+64. 我们必须传递给`Learner`什么信息？
+65. Show Python or pseudocode for the basic steps of a training loop.
+66. 对于训练循环的基础步骤展示Python或伪代码。
+67. What is "ReLU"? Draw a plot of it for values from `-2` to `+2`.
+68. 什么是“ReLU”？对于从`-2` 到 `+2`的值绘制一个图。
+69. What is an "activation function"?
+70. 什么是“激活函数”？
+71. What's the difference between `F.relu` and `nn.ReLU`?
+72.  `F.relu` 和 `nn.ReLU`之间的差异是什么？
+73. The universal approximation theorem shows that any function can be approximated as closely as needed using just one nonlinearity. So why do we normally use more?
+74. 通用近似原理展示了只用一个非线性函数就能根据需要尽可能的近似任何函数。那么，通常情况下我们为什么会大量使用？
 
 ### Further Research
 
 ### 未来研究
 
 1. Create your own implementation of `Learner` from scratch, based on the training loop shown in this chapter.
-2. Complete all the steps in this chapter using the full MNIST datasets (that is, for all digits, not just 3s and 7s). This is a significant project and will take you quite a bit of time to complete! You'll need to do some of your own research to figure out how to overcome some obstacles you'll meet on the way.
+2. 基于本章节所展示的训练循环，从零开始创建你自己的`Learner`的实践。
+3. Complete all the steps in this chapter using the full MNIST datasets (that is, for all digits, not just 3s and 7s). This is a significant project and will take you quite a bit of time to complete! You'll need to do some of your own research to figure out how to overcome some obstacles you'll meet on the way.
+4. 利用完整的MNIST数据集完成本章节的全部步骤（即，对所有数字，而不仅仅对3和7）。这是一个重要项目，会花费你相当多的时间来完成！你将需要做一些你自己的研究，以想出如何解决你在做这个项目过程中所遇到的一些障碍。
+
