@@ -205,7 +205,7 @@ Out: (6131, 6265)
 
 > note: List Comprehensions: List and dictionary comprehensions are a wonderful feature of Python. Many Python programmers use them every day, including the authors of this book—they are part of "idiomatic Python." But programmers coming from other languages may have never seen them before. There are a lot of great tutorials just a web search away, so we won't spend a long time discussing them now. Here is a quick explanation and example to get you started. A list comprehension looks like this: `new_list = [f(o) for o in a_list if o>0]`. This will return every element of `a_list` that is greater than 0, after passing it to the function `f`. There are three parts here: the collection you are iterating over (`a_list`), an optional filter (`if o>0`), and something to do to each element (`f(o)`). It's not only shorter to write but way faster than the alternative ways of creating the same list with a loop.
 >
-> 注释：列表生成器：列表和目录生成器是Python一个非常好的功能。许多Python程序员每天都会用它们，也包括本书的作者，他们是“Python惯用语”的一部分。但是来自其它语言的程序员之前可能多来没有看过他们。这里有很多只用网页所搜的极好的指引，所以现在我们不会花费太长时间讨论他们。这有一个快速解释和让我们开始的例子。一个列表生成器看起来像这样：`new_list = [f(o) for o in a_list if o>0]`。这会返回每一个`a_list`大于0的元素，之后把它传递给函数`f`。这里有三部分：收集你在（`a_list`）之上的迭代，一个操作过滤器（`if o>0`），和对每个元素进行处理的（`f(o)`）。它不仅仅编写短小，而且此方法相比使用循环创建相同列表的替代方法要更快。
+> 注解：列表生成器：列表和目录生成器是Python一个非常好的功能。许多Python程序员每天都会用它们，也包括本书的作者，他们是“Python惯用语”的一部分。但是来自其它语言的程序员之前可能多来没有看过他们。这里有很多只用网页所搜的极好的指引，所以现在我们不会花费太长时间讨论他们。这有一个快速解释和让我们开始的例子。一个列表生成器看起来像这样：`new_list = [f(o) for o in a_list if o>0]`。这会返回每一个`a_list`大于0的元素，之后把它传递给函数`f`。这里有三部分：收集你在（`a_list`）之上的迭代，一个操作过滤器（`if o>0`），和对每个元素进行处理的（`f(o)`）。它不仅仅编写短小，而且此方法相比使用循环创建相同列表的替代方法要更快。
 
 We'll also check that one of the images looks okay. Since we now have tensors (which Jupyter by default will print as values), rather than PIL images (which Jupyter by default will display as images), we need to use fastai's `show_image` function to display it:
 
@@ -395,7 +395,7 @@ We just completed various mathematical operations on PyTorch tensors. If you've 
 
 (Note that fastai adds some features to NumPy and PyTorch to make them a bit more similar to each other. If any code in this book doesn't work on your computer, it's possible that you forgot to include a line like this at the start of your notebook: `from fastai.vision.all import *`.)
 
-（注释：fastai增加了一些NumPy和PyTorch特性，以使得它们彼此间有点类似。如果在本收中的任何代码无法在你本地运行，可能你在笔记开头忘记包含像这样的一行代码：`from fastai.vision.all import *`。）
+（注解：fastai增加了一些NumPy和PyTorch特性，以使得它们彼此间有点类似。如果在本收中的任何代码无法在你本地运行，可能你在笔记开头忘记包含像这样的一行代码：`from fastai.vision.all import *`。）
 
 But what are arrays and tensors, and why should you care?
 
@@ -1882,7 +1882,7 @@ bias.grad.zero_();
 
 > note: Inplace Operations: Methods in PyTorch whose names end in an underscore modify their objects *in place*. For instance, `bias.zero_()` sets all elements of the tensor `bias` to 0.
 >
-> 注释：原地操作：在PyTorch中的名字结尾是下划线的方法，在*恰当*的地方修改他们的对象。例如，`bias.zero_()`设置张量`bias`的所有元素为0。
+> 注解：原地操作：在PyTorch中的名字结尾是下划线的方法，在*恰当*的地方修改他们的对象。例如，`bias.zero_()`设置张量`bias`的所有元素为0。
 
 Our only remaining step is to update the weights and biases based on the gradient and learning rate. When we do so, we have to tell PyTorch not to take the gradient of this step too—otherwise things will get very confusing when we try to compute the derivative at the next batch! If we assign to the `data` attribute of a tensor then PyTorch will not take the gradient of that step. Here's our basic training loop for an epoch:
 
@@ -2272,7 +2272,7 @@ But if we put a nonlinear function between them, such as `max`, then this is no 
 
 Amazingly enough, it can be mathematically proven that this little function can solve any computable problem to an arbitrarily high level of accuracy, if you can find the right parameters for `w1` and `w2` and if you make these matrices big enough. For any arbitrarily wiggly function, we can approximate it as a bunch of lines joined together; to make it closer to the wiggly function, we just have to use shorter lines. This is known as the *universal approximation theorem*. The three lines of code that we have here are known as *layers*. The first and third are known as *linear layers*, and the second line of code is known variously as a *nonlinearity*, or *activation function*.
 
-足够令人惊讶，它能被理论证明这个小函数能够以任何高的精度水平来解决任意可计算的问题，如果你能够找到对`w1`和`w2`正确的参数且如果你使得这些矩阵足够的大。对任意波动函数，我们能够近似认为它是一束连接在一起的线。我们只需要用更短的线，以使它更接近波动函数。这被称为*通过近似定理*（或万能逼近定理）。这里我们所写的三行代码被称为*层*。第一和第三被称为*线性层*，第二行代码被称为*非线性*或*激活函数*。
+足够令人惊讶，它能被理论证明这个小函数能够以任何高的精度水平来解决任意可计算的问题，如果你能够找到对`w1`和`w2`正确的参数且如果你使得这些矩阵足够的大。对任意波动函数，我们能够近似认为它是一束连接在一起的线。我们只需要用更短的线，以使它更接近波动函数。这被称为*通过近似定理*（或万能逼近定理）。这里我们所写的三行代码被称为*层*。第一和第三被称为*线性层*，第二行代码被称为*非线性函数*或*激活函数*。
 
 Just like in the previous section, we can replace this code with something a bit simpler, by taking advantage of PyTorch:
 
@@ -2636,15 +2636,15 @@ This is why deep learning can do things which seem rather magical such fantastic
 
 There is no need to stop at just two linear layers. We can add as many as we want, as long as we add a nonlinearity between each pair of linear layers. As you will learn, however, the deeper the model gets, the harder it is to optimize the parameters in practice. Later in this book you will learn about some simple but brilliantly effective techniques for training deeper models.
 
-不需要止步于仅仅两个线性层。只要我们在每对线性层之间增加一个激活函数，我们就能够增加任何我们想加的层数量。然而，正如我们将要学到的，在实践中，更深的模型，它的参数优化就更困难。后续在本书我们会学到关于深度模型的训练一些简单但巧妙有效的技术。
+不需要止步于仅仅两个线性层。只要我们在每对线性层之间增加一个非线性函数，我们就能够增加任何我们想加的层数量。然而，正如我们将要学到的，在实践中，更深的模型，它的参数优化就更困难。后续在本书我们会学到关于深度模型的训练一些简单但巧妙有效的技术。
 
 We already know that a single nonlinearity with two linear layers is enough to approximate any function. So why would we use deeper models? The reason is performance. With a deeper model (that is, one with more layers) we do not need to use as many parameters; it turns out that we can use smaller matrices with more layers, and get better results than we would get with larger matrices, and few layers.
 
-我们已经知道一个激活函数加两个线性层足以近似任何函数。那么我们为什么还要用更深的模型？原因是性能。一个更深的模型（有更多的层），我们不需要使用太多的参数。事实证明有更多的层我们能够使用更小的矩阵，并且取得的结果也比更少的层且更大的矩阵更好。
+我们已经知道一个非线性函数加两个线性层足以近似任何函数。那么我们为什么还要用更深的模型？原因是性能。一个更深的模型（有更多的层），我们不需要使用太多的参数。事实证明有更多的层我们能够使用更小的矩阵，并且取得的结果也比更少的层且更大的矩阵更好。
 
 That means that we can train the model more quickly, and it will take up less memory. In the 1990s researchers were so focused on the universal approximation theorem that very few were experimenting with more than one nonlinearity. This theoretical but not practical foundation held back the field for years. Some researchers, however, did experiment with deep models, and eventually were able to show that these models could perform much better in practice. Eventually, theoretical results were developed which showed why this happens. Today, it is extremely unusual to find anybody using a neural network with just one nonlinearity.
 
-这就意味着我们能够更快的训练醋，并且它也会占用更少的内存。在1990年代，研究人员如此关注通用近似原理，以至于很少有人用超过一个激活函数做实验。这个不是特别基础的理论阻止这一领域好多年。然而，有一些研究人员在实践中利用深度模型实验并最终能够显示出这些模型能够表现更好。最终发展出的理论结果显示了为什么会发生的原因。如今，发现有人只使用一个激活函数的神经网络是极为不寻常的。
+这就意味着我们能够更快的训练醋，并且它也会占用更少的内存。在1990年代，研究人员如此关注通用近似原理，以至于很少有人用超过一个非线性函数做实验。这个不是特别基础的理论阻止这一领域好多年。然而，有一些研究人员在实践中利用深度模型实验并最终能够显示出这些模型能够表现更好。最终发展出的理论结果显示了为什么会发生的原因。如今，发现有人只使用一个非线性函数的神经网络是极为不寻常的。
 
 Here what happens when we train an 18-layer model using the same approach we saw in <chapter_intro>:
 
@@ -2676,3 +2676,123 @@ learn.fit_one_cycle(1, 0.1)
 Nearly 100% accuracy! That's a big difference compared to our simple neural net. But as you'll learn in the remainder of this book, there are just a few little tricks you need to use to get such great results from scratch yourself. You already know the key foundational pieces. (Of course, even once you know all the tricks, you'll nearly always want to work with the pre-built classes provided by PyTorch and fastai, because they save you having to think about all the little details yourself.)
 
 近乎100%的精度！相比我们的简单神经网络这是一个巨大的差异。但正如你在本书剩余部分学到的内容，这些只是一些小技巧。你自己在从零开始的时候，需要使用它们来获得如此好的结果。你已经学到了关键基础部分。（当然，一旦你知道了所有技巧，你就几乎会一直想用PyTorch和fastai提供的预建类来工作，因为它们确保你不必自己想所有的小细节。）
+
+## Jargon Recap
+
+## 术语总结
+
+Congratulations: you now know how to create and train a deep neural network from scratch! We've gone through quite a few steps to get to this point, but you might be surprised at how simple it really is.
+
+恭喜，你现在知道如何从零开始创建并训练一个深度神经网络了！我们经历了完整的几步到达现在这个程度，但你可能惊讶于它实际上是如此简单。
+
+Now that we are at this point, it is a good opportunity to define, and review, some jargon and key concepts.
+
+A neural network contains a lot of numbers, but they are only of two types: numbers that are calculated, and the parameters that these numbers are calculated from. This gives us the two most important pieces of jargon to learn:
+
+- Activations:: Numbers that are calculated (both by linear and nonlinear layers)
+- Parameters:: Numbers that are randomly initialized, and optimized (that is, the numbers that define the model)
+
+现在我们达到了这个程度，这是一个来定义和复查一些术语和关键概念的好时机。
+
+一个神经网络包含大量数值，但它们只有两种类型：被计算得出数值和那些被计算得出的数值所依赖的参数。这就给了我们要学习的两个最重要的术语：
+
+- 激活：被计算得出的数值（通过线性和非线性层两者）
+- 参数：被随机初始化的数值，并被优化（即，定义模型的数值）
+
+We will often talk in this book about activations and parameters. Remember that they have very specific meanings. They are numbers. They are not abstract concepts, but they are actual specific numbers that are in your model. Part of becoming a good deep learning practitioner is getting used to the idea of actually looking at your activations and parameters, and plotting them and testing whether they are behaving correctly.
+
+在本书我们会经常谈到激活和参数。记住它们有很特殊的含义。它们是数值。它们不是抽象的概念，在你的模型内它们实际上是具体的数值。成为一个好的深度学习从业者的必要素质是要习惯于保持实际看你的激活和参数的想法，并绘制它们及测试它们的行为是否正确。
+
+Our activations and parameters are all contained in *tensors*. These are simply regularly shaped arrays—for example, a matrix. Matrices have rows and columns; we call these the *axes* or *dimensions*. The number of dimensions of a tensor is its *rank*. There are some special tensors:
+
+- Rank zero: scalar
+- Rank one: vector
+- Rank two: matrix
+
+我们的激活和参数都被容纳在*张量*中 。有一些简单的形成数组的规律：如一个矩阵。矩阵有行和列，我们称其为*坐标轴*和*维度*。一个张量维度数是它的*阶*。这里有一些特定的张量：
+
+- 零阶：标量
+- 一阶：向量
+- 二阶：矩阵
+
+A neural network contains a number of layers. Each layer is either *linear* or *nonlinear*. We generally alternate between these two kinds of layers in a neural network. Sometimes people refer to both a linear layer and its subsequent nonlinearity together as a single layer. Yes, this is confusing. Sometimes a nonlinearity is referred to as an *activation function*.
+
+<dljargon1> summarizes the key concepts related to SGD.
+
+一个神经网络包含许多层。每层要么是*线性*要么是*非线性*。在一个神经网络中我们通常在些两种层类型间轮替。有时候人们认为一个线性层和它随后非线性函数两者合并在一起视为一个层。是的，这让人感到迷惑。有时候一个非线性函数被称为*激活函数*。
+
+| Term | Meaning|
+| ----------------------| --------------------------------------- |
+|ReLU | Function that returns 0 for negative numbers and doesn't change positive numbers.|
+|Mini-batch | A smll group of inputs and labels gathered together in two arrays. A gradient descent step is updated on this batch (rather than a whole epoch).|
+|Forward pass | Applying the model to some input and computing the predictions.|
+|Loss | A value that represents how well (or badly) our model is doing.|
+|Gradient | The derivative of the loss with respect to some parameter of the model.|
+|Backard pass | Computing the gradients of the loss with respect to all model parameters.|
+|Gradient descent | Taking a step in the directions opposite to the gradients to make the model parameters a little bit better.|
+|Learning rate | The size of the step we take when applying SGD to update the parameters of the model.|
+
+
+> note: *Choose Your Own Adventure* Reminder: Did you choose to skip over chapters 2 & 3, in your excitement to peek under the hood? Well, here's your reminder to head back to chapter 2 now, because you'll be needing to know that stuff very soon!
+
+| 术语                       | 含义                                                         |
+| -------------------------- | ------------------------------------------------------------ |
+| 线性整流函数(ReLU)         | 对负数返回另，对正数不做任何改变。                           |
+| 最小批次(Mini-batch)       | 在两个数组中输入和标签聚合在一起的小数据包。一个梯度下降步骤是在这个小批次上的更新（而不是整个周期）。 |
+| 顺推法(Forward pass)       | 应用模型根据一些输入并计算预测。                             |
+| 损失(Loss)                 | 代表我们正在运转的模型怎样的好（或不好）的一个值。           |
+| 梯度(Gradient)             | 关于模型一些参数的损失导数。                                 |
+| 逆推法(Backard pass)       | 计算关于全部模型参数的损失梯度。                             |
+| 梯度下降(Gradient descent) | 梯度相反方向的步进，使得模型参数变的稍微更好一些。           |
+| 学习率(Learning rate)      | 当应用随机梯度下降来更新模型的参数时，我们所采取的步进大小。 |
+
+> 注解：提示*选择你自己的冒险*：你是否出于你兴奋瞥一眼深层次内容而选择略过第二章节和第三章节？好吧，现在在这里提示你返回第二章节，因为你需要很快就要知道这个内容！
+
+## Questionnaire
+
+## 调研问卷
+
+1. How is a grayscale image represented on a computer? How about a color image?
+2. How are the files and folders in the `MNIST_SAMPLE` dataset structured? Why?
+3. Explain how the "pixel similarity" approach to classifying digits works.
+4. What is a list comprehension? Create one now that selects odd numbers from a list and doubles them.
+5. What is a "rank-3 tensor"?
+6. What is the difference between tensor rank and shape? How do you get the rank from the shape?
+7. What are RMSE and L1 norm?
+8. How can you apply a calculation on thousands of numbers at once, many thousands of times faster than a Python loop?
+9. Create a 3×3 tensor or array containing the numbers from 1 to 9. Double it. Select the bottom-right four numbers.
+10. What is broadcasting?
+11. Are metrics generally calculated using the training set, or the validation set? Why?
+12. What is SGD?
+13. Why does SGD use mini-batches?
+14. What are the seven steps in SGD for machine learning?
+15. How do we initialize the weights in a model?
+16. What is "loss"?
+17. Why can't we always use a high learning rate?
+18. What is a "gradient"?
+19. Do you need to know how to calculate gradients yourself?
+20. Why can't we use accuracy as a loss function?
+21. Draw the sigmoid function. What is special about its shape?
+22. What is the difference between a loss function and a metric?
+23. What is the function to calculate new weights using a learning rate?
+24. What does the `DataLoader` class do?
+25. Write pseudocode showing the basic steps taken in each epoch for SGD.
+26. Create a function that, if passed two arguments `[1,2,3,4]` and `'abcd'`, returns `[(1, 'a'), (2, 'b'), (3, 'c'), (4, 'd')]`. What is special about that output data structure?
+27. What does `view` do in PyTorch?
+28. What are the "bias" parameters in a neural network? Why do we need them?
+29. What does the `@` operator do in Python?
+30. What does the `backward` method do?
+31. Why do we have to zero the gradients?
+32. What information do we have to pass to `Learner`?
+33. Show Python or pseudocode for the basic steps of a training loop.
+34. What is "ReLU"? Draw a plot of it for values from `-2` to `+2`.
+35. What is an "activation function"?
+36. What's the difference between `F.relu` and `nn.ReLU`?
+37. The universal approximation theorem shows that any function can be approximated as closely as needed using just one nonlinearity. So why do we normally use more?
+
+### Further Research
+
+### 未来研究
+
+1. Create your own implementation of `Learner` from scratch, based on the training loop shown in this chapter.
+2. Complete all the steps in this chapter using the full MNIST datasets (that is, for all digits, not just 3s and 7s). This is a significant project and will take you quite a bit of time to complete! You'll need to do some of your own research to figure out how to overcome some obstacles you'll meet on the way.
