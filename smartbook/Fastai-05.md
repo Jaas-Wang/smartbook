@@ -111,3 +111,44 @@ We do not have the space to give you a complete regular expression tutorial here
 > a: Not only are regular expressions dead handy, but they also have interesting roots. They are "regular" because they were originally examples of a "regular" language, the lowest rung within the Chomsky hierarchy, a grammar classification developed by linguist Noam Chomsky, who also wrote *Syntactic Structures*, the pioneering work searching for the formal grammar underlying human language. This is one of the charms of computing: it may be that the hammer you reach for every day in fact came from a spaceship.
 >
 > 亚：正则表达式不仅仅很好用，他们也有一个很有趣的词根。他们是“正则”，因为他们源于一种“正则”语言的例子，在乔姆斯基等级里它是最低等级，这个等级是由语言学家诺姆·乔姆斯基开发的一个语法分类，他也编写了*句法结构*，基于人类语言对于正式说法的先驱研究工作。这是极具魅力的计算之一：它可能是你每天要伸手去拿，而实际上来是自太空飞船的锤子。
+
+When you are writing a regular expression, the best way to start is just to try it against one example at first. Let's use the `findall` method to try a regular expression against the filename of the `fname` object:
+
+当你正在编写一个正式表达式时，首先依据一个例子进行尝试是最好的开始方法。让我们用`findall`方法来尝试一个正则表达式处理`fname`对象的文件名：
+
+```
+re.findall(r'(.+)_\d+.jpg$', fname.name)
+```
+
+Out: ['great_pyrenees']
+
+This regular expression plucks out all the characters leading up to the last underscore character, as long as the subsequence characters are numerical digits and then the JPEG file extension.
+
+只要后续字符是数字数值，再然后是JPEG扩展文件名，这个正则表达式就会摘出从开始直到最后一个下划线前的所有字符。
+
+Now that we confirmed the regular expression works for the example, let's use it to label the whole dataset. fastai comes with many classes to help with labeling. For labeling with regular expressions, we can use the `RegexLabeller` class. In this example we use the data block API we saw in <chapter_production> (in fact, we nearly always use the data block API—it's so much more flexible than the simple factory methods we saw in <chapter_intro>):
+
+现在根据这个例子，我们确认正则表达式起做用了，让我们用它来标注整个数据集。fastai提供了很多类来帮助处理标注。对于使用正则表达式做标注，我们能够用`RegexLabeller`类。在这个例子中，我们使用在<章节：产品>中看到的数据块API（实际上，我们几乎一直使用数据块API，它比我们在<章节：概述>中看到的简单工厂方法要灵活的多）：
+
+```
+pets = DataBlock(blocks = (ImageBlock, CategoryBlock),
+                 get_items=get_image_files, 
+                 splitter=RandomSplitter(seed=42),
+                 get_y=using_attr(RegexLabeller(r'(.+)_\d+.jpg$'), 'name'),
+                 item_tfms=Resize(460),
+                 batch_tfms=aug_transforms(size=224, min_scale=0.75))
+dls = pets.dataloaders(path/"images")
+```
+
+One important piece of this `DataBlock` call that we haven't seen before is in these two lines:
+
+`DataBlock`一个重要调用部分的两行代码，我们之前没有看到过：
+
+```python
+item_tfms=Resize(460),
+batch_tfms=aug_transforms(size=224, min_scale=0.75)
+```
+
+These lines implement a fastai data augmentation strategy which we call *presizing*. Presizing is a particular way to do image augmentation that is designed to minimize data destruction while maintaining good performance.
+
+这些代码行执行的是一个fastai数据参数策略，我们称为*填孔处理*。填孔处理是一个处理图像参数的特定方法，这个设计用来当维持好的性能性最小化数据破坏。
