@@ -151,4 +151,42 @@ batch_tfms=aug_transforms(size=224, min_scale=0.75)
 
 These lines implement a fastai data augmentation strategy which we call *presizing*. Presizing is a particular way to do image augmentation that is designed to minimize data destruction while maintaining good performance.
 
-这些代码行执行的是一个fastai数据参数策略，我们称为*填孔处理*。填孔处理是一个处理图像参数的特定方法，这个设计用来当维持好的性能性最小化数据破坏。
+这些代码行执行的是一个fastai数据增强策略，我们称为*填孔处理*。填孔处理是一个处理图像扩展的特定方法，这个设计用来当维持好的性能时最小化数据破坏。
+
+## Presizing
+
+## 填孔处理
+
+We need our images to have the same dimensions, so that they can collate into tensors to be passed to the GPU. We also want to minimize the number of distinct augmentation computations we perform. The performance requirement suggests that we should, where possible, compose our augmentation transforms into fewer transforms (to reduce the number of computations and the number of lossy operations) and transform the images into uniform sizes (for more efficient processing on the GPU).
+
+我们需要图像有相同的维度，所以他们就能够整理到张量中传递给GPU。我们也希望最小化我们执行的不同增强计算的数量。性能需求建议下我们应该尽可能压缩我们的增强转换组成为更少的转换（压缩计算数量和有损操作数量）并转换图像为相同尺寸（在GPU上更有效的处理）。
+
+The challenge is that, if performed after resizing down to the augmented size, various common data augmentation transforms might introduce spurious empty zones, degrade data, or both. For instance, rotating an image by 45 degrees fills corner regions of the new bounds with emptyness, which will not teach the model anything. Many rotation and zooming operations will require interpolating to create pixels. These interpolated pixels are derived from the original image data but are still of lower quality.
+
+这样做的挑战是，如果调整尺寸到增强尺寸后执行，很多常见的增强转换会导致虚假的空域，或数据质量退化，或同时出现这两种问题。例如， 通过45度转换一张图片，填充新的空白边界的角区域，不会教会模型任何东西。很多转换和缩放操作会需要插值来创建像素。这些插值像素是从原始图像数据衍生得来的，但依然质量是很低的。
+
+To work around these challenges, presizing adopts two strategies that are shown in <presizing>:
+
+1. Resize images to relatively "large" dimensions—that is, dimensions significantly larger than the target training dimensions.
+2. Compose all of the common augmentation operations (including a resize to the final target size) into one, and perform the combined operation on the GPU only once at the end of processing, rather than performing the operations individually and interpolating multiple times.
+
+来处理这些挑战，填孔处理采用了两个策略，这些策略<训练集上的填孔处理>上有所展示：
+
+1. 调整图像到相对应的“大”量度，即，量度比目标训练维度明显更大。
+2. 组合所有常见增强操作（包括调整到最终的目标尺寸）为一步，并在最终处理时，GPU上只执行组合操作一次，而不是独立的执行各操作及插值多次。
+
+The first step, the resize, creates images large enough that they have spare margin to allow further augmentation transforms on their inner regions without creating empty zones. This transformation works by resizing to a square, using a large crop size. On the training set, the crop area is chosen randomly, and the size of the crop is selected to cover the entire width or height of the image, whichever is smaller.
+
+调整大小的第一步，创建足够大的图像，他们有备用边缘以允许未来在内部区域增强转换，而不会产生空域。这一转换工作通过利用大剪切尺寸来调整图像尺寸为正方形。在训练集上，剪切面积是随机选择的，且剪切的尺寸是通过覆盖整个图像的宽或高，以最小者为准进行选定的。
+
+In the second step, the GPU is used for all data augmentation, and all of the potentially destructive operations are done together, with a single interpolation at the end.
+
+在第二步，GPU用于对所有数据增强，且所有潜在的破坏操作一起完成，并最终用一次插值。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00060.png" alt="Presizing on the training set" width="600" caption="Presizing on the training set" id="presizing" />
+  </p>
+  <p align="center">图：训练集上的填孔处理</p>
+</div>
+
