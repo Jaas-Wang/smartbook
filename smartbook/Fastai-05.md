@@ -243,3 +243,35 @@ You can see that the image on the right is less well defined and has reflection 
 The fastai library also provides simple ways to check your data looks right before training a model, which is an extremely important step. We'll look at those next.
 
 fastai库提供了一些简单方法，在训练模型前来检查你的数据看起来是否正确，这是异常重要的步骤。后续我们会看到这些方法。
+
+### Checking and Debugging a DataBlock
+
+### 检查并调试一个DataBlock
+
+We can never just assume that our code is working perfectly. Writing a `DataBlock` is just like writing a blueprint. You will get an error message if you have a syntax error somewhere in your code, but you have no guarantee that your template is going to work on your data source as you intend. So, before training a model you should always check your data. You can do this using the `show_batch` method:
+
+永远不能假定我们的代码会完美的运行。编写一个`DataBlock`只是就像写一个规划。如果在你的代码中的某个地方有语法错误你会收到错误消息，但你不能保证你的模板会如你计划的那样在你的数据资源上运行。所以，开始训练一个模型前，你应该一直检查你的数据。你可以用`show_batch`方法来进行检查：
+
+```
+dls.show_batch(nrows=1, ncols=3)
+```
+
+Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/batch_1.png" alt="batch_1" style="zoom:100%;" />
+
+Take a look at each image, and check that each one seems to have the correct label for that breed of pet. Often, data scientists work with data with which they are not as familiar as domain experts may be: for instance, I actually don't know what a lot of these pet breeds are. Since I am not an expert on pet breeds, I would use Google images at this point to search for a few of these breeds, and make sure the images look similar to what I see in this output.
+
+看一下每一张图像，并检查每张图像是否有正确的宠物品种标注。通常，数据科学家处理的数据，他们可能并会与领域专家一样熟悉：例如，我实际上并不知道这些宠物品种是什么。因为我不是一个宠物品种专家，在这一点上我也许会用谷歌图片来搜索一些这些品种，并确保在输出时与我们看到这些图像看起来是相似的。
+
+If you made a mistake while building your `DataBlock`, it is very likely you won't see it before this step. To debug this, we encourage you to use the `summary` method. It will attempt to create a batch from the source you give it, with a lot of details. Also, if it fails, you will see exactly at which point the error happens, and the library will try to give you some help. For instance, one common mistake is to forget to use a `Resize` transform, so you en up with pictures of different sizes and are not able to batch them. Here is what the summary would look like in that case (note that the exact text may have changed since the time of writing, but it will give you an idea):
+
+如果在创建你的`DataBlock`时你犯了一个错误，在这一步这前你极有可能不会看到它。来调试一下，我们鼓励你使用`summary`方法。它会尝试从你给定的资源上创建一个批次，并带有很多细节。此外，如果它失败了，你会准确的看到哪个点产生了错误，并且库会尝试给你一些帮助。例如，一个常发生的错误是会忘记使用一个`Resize`转换，所以最终你会用不同尺寸的图像且无法批处理它们。在本下例中summary可能看起来是这样的（注解：由于编写时间原因，准确的文字描述可能发生了变化，但它会给你一个启示）：
+
+```python
+#hide_output
+pets1 = DataBlock(blocks = (ImageBlock, CategoryBlock),
+                 get_items=get_image_files, 
+                 splitter=RandomSplitter(seed=42),
+                 get_y=using_attr(RegexLabeller(r'(.+)_\d+.jpg$'), 'name'))
+pets1.summary(path/"images")
+```
+
