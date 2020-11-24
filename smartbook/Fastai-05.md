@@ -238,7 +238,7 @@ Out:<img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/crop-ima
 
 You can see that the image on the right is less well defined and has reflection padding artifacts in the bottom-left corner; also, the grass iat the top left has disappeared entirely. We find that in practice using presizing significantly improves the accuracy of models, and often results in speedups too.
 
-你能够看到右侧的图像不是很好，且在左下角反映出人工填充痕迹，并且左上的青草完全的消失了。在实践中我们发现，使用填孔处理可极大的改善模型精度，且通常也会加快速度。
+你能够看到右侧的图像不是很好，且在左下角反映出人工填充痕迹，并且图像左上角的青草完全消失不见了。在实践中我们发现，使用填孔处理可极大的改善模型精度，且通常也会加快速度。
 
 The fastai library also provides simple ways to check your data looks right before training a model, which is an extremely important step. We'll look at those next.
 
