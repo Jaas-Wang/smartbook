@@ -190,3 +190,56 @@ In the second step, the GPU is used for all data augmentation, and all of the po
   <p align="center">图：训练集上的填孔处理</p>
 </div>
 
+This picture shows the two steps:
+
+1. *Crop full width or height*: This is in `item_tfms`, so it's applied to each individual image before it is copied to the GPU. It's used to ensure all images are the same size. On the training set, the crop area is chosen randomly. On the validation set, the center square of the image is always chosen.
+2. *Random crop and augment*: This is in `batch_tfms`, so it's applied to a batch all at once on the GPU, which means it's fast. On the validation set, only the resize to the final size needed for the model is done here. On the training set, the random crop and any other augmentations are done first.
+
+这张图像展示了两个步骤：
+
+1. *宽或高全尺寸剪切* ：这个步骤在`item_tfms`中，所以在剪切到GPU前它用于每张独立的图像。它用于确保所有图像是相同的尺寸。在训练集上，剪切面积是随机选择的。在验证集上一直选择的是图像中心区域。
+2. *随机剪切和增强* ：这个步骤在`batch_tfms`中，所以它立刻用于GPU上的一个批次，这意味着它很快。在验证集上，仅仅调整到模型最终所需要的大小。在训练集上，随机剪切和任何其它增强是首要做的。
+
+To implement this process in fastai you use `Resize` as an item transform with a large size, and `RandomResizedCrop` as a batch transform with a smaller size. `RandomResizedCrop` will be added for you if you include the `min_scale` parameter in your `aug_transforms` function, as was done in the `DataBlock` call in the previous section. Alternatively, you can use `pad` or `squish` instead of `crop` (the default) for the initial `Resize`.
+
+在fastai中来实施这一过程，我们用`Resize`做为对一个大尺寸的图像项转换，`RandomResizedCrop`作为一个更小尺寸的批次转换。如果在你的`aug_transforms`函数中包含了`min_scale`参数，会为你添加`RandomResizedCrop`，正如在前一部分`DataBlock`中调用的那样。或者，对于最初的`Resize`你能够使用`pad`或`squish`替代`crop`（默认）。
+
+<interpolations> shows the difference between an image that has been zoomed, interpolated, rotated, and then interpolated again (which is the approach used by all other deep learning libraries), shown here on the right, and an image that has been zoomed and rotated as one operation and then interpolated just once on the left (the fastai approach), shown here on the left.
+
+<interpolations>代码展示了他们的差异，一张图像被放大、插值、旋转，然后再次插值（所有其它深度学习库所使用的方法）被展示在右侧，及一张图像放大和旋转做为一次操作然后只是插值一次（这是fastai方法）被展示在左侧。
+
+```
+#hide_input
+#id interpolations
+#caption A comparison of fastai's data augmentation strategy (left) and the traditional approach (right).
+dblock1 = DataBlock(blocks=(ImageBlock(), CategoryBlock()),
+                   get_y=parent_label,
+                   item_tfms=Resize(460))
+dls1 = dblock1.dataloaders([(Path.cwd()/'images'/'grizzly.jpg')]*100, bs=8)
+dls1.train.get_idxs = lambda: Inf.ones
+x,y = dls1.valid.one_batch()
+_,axs = subplots(1, 2)
+
+x1 = TensorImage(x.clone())
+x1 = x1.affine_coord(sz=224)
+x1 = x1.rotate(draw=30, p=1.)
+x1 = x1.zoom(draw=1.2, p=1.)
+x1 = x1.warp(draw_x=-0.2, draw_y=0.2, p=1.)
+
+tfms = setup_aug_tfms([Rotate(draw=30, p=1, size=224), Zoom(draw=1.2, p=1., size=224),
+                       Warp(draw_x=-0.2, draw_y=0.2, p=1., size=224)])
+x = Pipeline(tfms)(x)
+#x.affine_coord(coord_tfm=coord_tfm, sz=size, mode=mode, pad_mode=pad_mode)
+TensorImage(x[0]).show(ctx=axs[0])
+TensorImage(x1[0]).show(ctx=axs[1]);
+```
+
+Out:<img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/crop-image.png" alt="crop-image" style="zoom:100%;" />
+
+You can see that the image on the right is less well defined and has reflection padding artifacts in the bottom-left corner; also, the grass iat the top left has disappeared entirely. We find that in practice using presizing significantly improves the accuracy of models, and often results in speedups too.
+
+你能够看到右侧的图像不是很好，且在左下角反映出人工填充痕迹，并且左上的青草完全的消失了。在实践中我们发现，使用填孔处理可极大的改善模型精度，且通常也会加快速度。
+
+The fastai library also provides simple ways to check your data looks right before training a model, which is an extremely important step. We'll look at those next.
+
+fastai库提供了一些简单方法，在训练模型前来检查你的数据看起来是否正确，这是异常重要的步骤。后续我们会看到这些方法。
