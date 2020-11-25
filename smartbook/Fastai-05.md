@@ -275,3 +275,79 @@ pets1 = DataBlock(blocks = (ImageBlock, CategoryBlock),
 pets1.summary(path/"images")
 ```
 
+ ```python
+Setting-up type transforms pipelines
+Collecting items from /Users/Y.H/.fastai/data/oxford-iiit-pet/images
+Found 7390 items
+2 datasets of sizes 5912,1478
+Setting up Pipeline: PILBase.create
+Setting up Pipeline: partial -> Categorize -- {'vocab': None, 'add_na': False}
+
+Building one sample
+  Pipeline: PILBase.create
+    starting from
+      /Users/Y.H/.fastai/data/oxford-iiit-pet/images/saint_bernard_60.jpg
+    applying PILBase.create gives
+      PILImage mode=RGB size=375x500
+  Pipeline: partial -> Categorize -- {'vocab': (#37) ['Abyssinian','Bengal','Birman','Bombay','British_Shorthair','Egyptian_Mau','Maine_Coon','Persian','Ragdoll','Russian_Blue'...], 'add_na': False}
+    starting from
+      /Users/Y.H/.fastai/data/oxford-iiit-pet/images/saint_bernard_60.jpg
+    applying partial gives
+      saint_bernard
+    applying Categorize -- {'vocab': (#37) ['Abyssinian','Bengal','Birman','Bombay','British_Shorthair','Egyptian_Mau','Maine_Coon','Persian','Ragdoll','Russian_Blue'...], 'add_na': False} gives
+      TensorCategory(30)
+
+Final sample: (PILImage mode=RGB size=375x500, TensorCategory(30))
+
+Setting up after_item: Pipeline: ToTensor
+Setting up before_batch: Pipeline: 
+Setting up after_batch: Pipeline: IntToFloatTensor -- {'div': 255.0, 'div_mask': 1}
+
+Building one batch
+Applying item_tfms to the first sample:
+  Pipeline: ToTensor
+    starting from
+      (PILImage mode=RGB size=375x500, TensorCategory(30))
+    applying ToTensor gives
+      (TensorImage of size 3x500x375, TensorCategory(30))
+
+Adding the next 3 samples
+
+No before_batch transform to apply
+
+Collating items in a batch
+Error! It's not possible to collate your items in a batch
+Could not collate the 0-th members of your tuples because got the following shapes
+torch.Size([3, 500, 375]),torch.Size([3, 333, 500]),torch.Size([3, 352, 500]),torch.Size([3, 500, 354])
+ ```
+
+You can see exactly how we gathered the data and split it, how we went from a filename to a *sample* (the tuple (image, category)), then what item transforms were applied and how it failed to collate those samples in a batch (because of the different shapes).
+
+你能够准确的看到我们怎样收集数据并分割它，我们希望怎样从一个文件名到一个*样本*（元组（图像，分类）），然后数据项转换应用用它收集那些在一个批次中的样本是如何失败的（因为形状的不同）。
+
+Once you think your data looks right, we generally recommend the next step should be using to train a simple model. We often see people put off the training of an actual model for far too long. As a result, they don't actually find out what their baseline results look like. Perhaps your probem doesn't need lots of fancy domain-specific engineering. Or perhaps the data doesn't seem to train the model all. These are things that you want to know as soon as possible. For this initial test, we'll use the same simple model that we used in <chapter_intro>:
+
+一旦你认为你的数据看起来是好的，通常我们建议接下来的步骤应该是用来训练一个简单的模型。我们经常看到人们被一个实际训练的模型拖延太久了。这导致他们并不能实际找出他们基线结果是什么样子。也许你的问题并不是需要太多花哨的特定领域工程。或者也许数据似乎不能全部来训练模型。这些事情你知道的越快越好。对于这个初始测试，我们会用在<章节：概述>中使用过的，同样简单的模型：
+
+```
+learn = cnn_learner(dls, resnet34, metrics=error_rate)
+learn.fine_tune(2)
+```
+
+| epoch | train_loss | valid_loss | error_rate |  time |
+| ----: | ---------: | ---------: | ---------: | ----: |
+|     0 |   1.551305 |   0.322132 |   0.106225 | 00:19 |
+
+| epoch | train_loss | valid_loss | error_rate |  time |
+| ----: | ---------: | ---------: | ---------: | ----: |
+|     0 |   0.529473 |   0.312148 |   0.095399 | 00:23 |
+|     1 |   0.330207 |   0.245883 |   0.080514 | 00:24 |
+
+As we've briefly discussed before, the table shown when we fit a model shows us the results after each epoch of training. Remember, an epoch is one complete pass through all of the images in the data. The columns shown are the average loss over the items of the training set, the loss on the validation set, and any metrics that we requested—in this case, the error rate.
+
+正如我们之前做过的简短讨论，当我们拟合一个模型时每个周期训练后展示给我们如表格中显示的结果。记住，一个周期是完整遍历数据中所有的图像一个过程。列展示的是训练集数据项的平均损失，验证集上的损失，以及在本例中我们需要的那些指标：错误率。
+
+Remember that *loss* is whatever function we've decided to use to optimize the parameters of our model. But we haven't actually told fastai what loss function we want to use. So what is it doing? fastai will generally try to select an appropriate loss function based on what kind of data and model you are using. In this case we have image data and a categorical outcome, so fastai will default to using *cross-entropy loss*.
+
+记住*损失*是我们已经决定用于来优化我们模型参数的那种函数。但实际上我们并没有告诉fastai我们想用损失函数。那么它做了什么？fastai通常会基于数据类型和你所使用的模型，尝试选择一个合适的损失函数。在这个例子中，我们有图像数据和一个分类输出，所以fastai会默认使用*交叉熵损失函数*（即 *cross-entropy loss*）。
+
