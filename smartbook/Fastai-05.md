@@ -351,3 +351,78 @@ Remember that *loss* is whatever function we've decided to use to optimize the p
 
 记住*损失*是我们已经决定用于来优化我们模型参数的那种函数。但实际上我们并没有告诉fastai我们想用损失函数。那么它做了什么？fastai通常会基于数据类型和你所使用的模型，尝试选择一个合适的损失函数。在这个例子中，我们有图像数据和一个分类输出，所以fastai会默认使用*交叉熵损失函数*（即 *cross-entropy loss*）。
 
+## Cross-Entropy Loss
+
+## 交叉熵损失函数
+
+*Cross-entropy loss* is a loss function that is similar to the one we used in the previous chapter, but (as we'll see) has two benefits:
+
+- It works even when our dependent variable has more than two categories.
+- It results in faster and more reliable training.
+
+在之前的章节我们使用过一种损失函数，*交叉熵损失函数*与它相似，但（正如我们会看到的）有两个好处：
+
+- 即使当我们的因变量有超过两个类别时它也可以工作。
+- 其结果是更快和更可靠的训练。
+
+In order to understand how cross-entropy loss works for dependent variables with more than two categories, we first have to understand what the actual data and activations that are seen by the loss function look like.
+
+为了理解超过两个类别的因变量交叉熵损失函数如何工作的，我们首先必须要理解通过损失函数看到的真实数据和激活的情况。
+
+### Viewing Activations and Labels
+
+### 观察激活和标注
+
+Let's take a look at the activations of our model. To actually get a batch of real data from our `DataLoaders`, we can use the `one_batch` method:
+
+让我们看一下我们模型的激活。来自我们的`DataLoaders`实际取得的一个批次真实数据，我们可以使用`one_batch`方法：
+
+```
+x,y = dls.one_batch()
+```
+
+As you see, this returns the dependent and independent variables, as a mini-batch. Let's see what is actually contained in our dependent variable:
+
+正如你看到的，这返回的是一个最小批次的因变量和自变量。让我们看一下在因变量里实际包含了什么：
+
+```
+y
+```
+
+Out:$\begin{matrix}TensorCategory([& 0,  &5,& 23,& 36,&  5, &20, &29, &34, &33,& 32,& 31,\\
+ &24, &12, &36,&  8,& 26, &30, & 2,& 12,& 17,&  7,& 23, \\
+&12,& 29, &21, & 4, &35,& 33, & 0, &20, &26,& 30, & 3, \\
+& 6, &36, & 2, &17, &32,& 11, & 6, & 3, &30, & 5,& 26,\\
+& 26,& 29,&  7,& 36,&31,& 26,& 26, & 8, &13,& 30,& 11,  \end{matrix}\\
+\begin{matrix}&&&&&&&&&12, &36,& 31, &34,& 20,& 15,&  8, & 8,& 23&], device='cuda:5') \end{matrix}$
+
+Our batch size is 64, so we have 64 rows in this tensor. Each row is a single integer between 0 and 36, representing our 37 possible pet breeds. We can view the predictions (that is, the activations of the final layer of our neural network) using `Learner.get_preds`. This function either takes a dataset index (0 for train and 1 for valid) or an iterator of batches. Thus, we can pass it a simple list with our batch to get our predictions. It returns predictions and targets by default, but since we already have the targets, we can effectively ignore them by assigning to the special variable `_`:
+
+我们批处理尺寸大小是64，所以在这个张量里我们有64行。每一行是介于0到36之间的整数，代表了我们37个可能宠物品种。我们能够用`Learner.get_preds`来观察预测情况（即我们的神经网络最后一层的激活）。这个函数要么接受一个数据集的索引（0代表训练，1代表验证）要么接受批次的迭代器。因而，我们能够传递给它一个包含我们批次的简单列表来得到我们的预测。它默认会返回预测和目标，但因为我们已经有了目标，我们能够通过分配一个特定变量`_`来有效的忽略它们：
+
+```
+preds,_ = learn.get_preds(dl=[(x,y)])
+preds[0]
+```
+
+Out: $\begin{matrix}tensor([
+&9.9911e-01,& 5.0433e-05, &3.7515e-07, &8.8590e-07, &8.1794e-05,& 1.8991e-05, &9.9280e-06, \\
+&5.4656e-07, &6.7920e-06, &2.3486e-04, &3.7872e-04, &2.0796e-05,& 4.0443e-07,& 1.6933e-07, \\
+&2.0502e-07, &3.1354e-08,&9.4115e-08, &2.9782e-06,& 2.0243e-07,& 8.5262e-08, &1.0900e-07,\\
+ &1.0175e-07, &4.4780e-09,& 1.4285e-07, &1.0718e-07, &8.1411e-07, &3.6618e-07,& 4.0950e-07, \\
+&3.8525e-08, &2.3660e-07, &5.3747e-08, &2.5448e-07,&6.5860e-08,& 8.0937e-05, &2.7464e-07,\\
+ &5.6760e-07,& 1.5462e-08 ]) \end{matrix}$
+
+The actual predictions are 37 probabilities between 0 and 1, which add up to 1 in total:
+
+实际预测是37个0到1之间的概率，他们合计为1：
+
+```
+len(preds[0]),preds[0].sum()
+```
+
+Out: (37, tensor(1.0000))
+
+To transform the activations of our model into predictions like this, we used something called the *softmax* activation function.
+
+转换我们模型的激活为像这样的预测，我们使用了叫做*softmax*的激活函数。
