@@ -486,13 +486,15 @@ Out: $\begin{array}{r} tensor(
 
 In <chapter_mnist_basics>, our neural net created a single activation per image, which we passed through the `sigmoid` function. That single activation represented the model's confidence that the input was a 3. Binary problems are a special case of classification problems, because the target can be treated as a single boolean value, as we did in `mnist_loss`. But binary problems can also be thought of in the context of the more general group of classifiers with any number of categories: in this case, we happen to have two categories. As we saw in the bear classifier, our neural net will return one activation per category.
 
-在<章节：MNIST基础>中，我们创建了每张图像单激活的神经网络，我们通过`sigmoid`函数传递。单激活代表模型确信输入是数据3。二进制问题是一个特定的分类问题事例，因为目标能够作为单布尔值进行处理，正如我们在`mnist_loss`做的那样。但二进制问题也能被认为任意数值类别情况下更加通用的组分类器：在这个例子中，我们恰巧有两个类别。正如在熊分类器中我们看到的，我们的神经网络会返回每个类别的一个激活。
+在<章节：MNIST基础>中，我们创建了每张图像单激活的神经网络，我们通过`sigmoid`函数传递。单激活代表模型置信度为输入数据是数字3。二值问题是一个特定的分类问题事例，因为目标能够作为单布尔值进行处理，正如我们在`mnist_loss`做的那样。但二值问题也能被认为任意数值类别情况下更加通用的组分类器：在这个例子中，我们恰巧有两个类别。正如在熊分类器中我们看到的，我们的神经网络会返回每个类别的一个激活。
 
 So in the binary case, what do those activations really indicate? A single pair of activations simply indicates the *relative* confidence of the input being a 3 versus being a 7. The overall values, whether they are both high, or both low, don't matter—all that matters is which is higher, and by how much.
 
+那么在二值事例中，那些激活真正表明了什么呢？一对激活简单的指示输入的*相对*置信度是数字3不是数字7。整个数值，两者是否都高或都低，并不是问题，问题在于哪个更高，高多少。
+
 We would expect that since this is just another way of representing the same problem, that we would be able to use `sigmoid` directly on the two-activation version of our neural net. And indeed we can! We can just take the *difference* between the neural net activations, because that reflects how much more sure we are of the input being a 3 than a 7, and then take the sigmoid of that:
 
-In [ ]:
+我们会期望，因为这只是代表相同问题的别一个方法，我们能够在我们的神经网络的双激活版本上直接使用`sigmoid`函数。并且我们真的能够这样！我们只需要求神经神经激活间的*差*，因为这反映了我们输入的数字为3比为7更确信多少，然后求它的S函数：
 
 ```
 (acts[:,0]-acts[:,1]).sigmoid()
@@ -501,6 +503,8 @@ In [ ]:
 Out: tensor([0.6025, 0.5021, 0.1332, 0.9966, 0.5959, 0.3661])
 
 The second column (the probability of it being a 7) will then just be that value subtracted from 1. Now, we need a way to do all this that also works for more than two columns. It turns out that this function, called `softmax`, is exactly that:
+
+
 
 ```python
 def softmax(x): return exp(x) / exp(x).sum(dim=1, keepdim=True)
@@ -536,3 +540,5 @@ What does this function do in practice? Taking the exponential ensures all our n
 Intuitively, the softmax function *really* wants to pick one class among the others, so it's ideal for training a classifier when we know each picture has a definite label. (Note that it may be less ideal during inference, as you might want your model to sometimes tell you it doesn't recognize any of the classes that it has seen during training, and not pick a class because it has a slightly bigger activation score. In this case, it might be better to train a model using multiple binary output columns, each using a sigmoid activation.)
 
 Softmax is the first part of the cross-entropy loss—the second part is log likeklihood.
+
+Softmax是交叉熵损失函数的第一部分，第二部分是对数似然。
