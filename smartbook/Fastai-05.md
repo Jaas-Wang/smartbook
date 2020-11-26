@@ -234,7 +234,7 @@ TensorImage(x[0]).show(ctx=axs[0])
 TensorImage(x1[0]).show(ctx=axs[1]);
 ```
 
-Out:<img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/crop-image.png" alt="crop-image" style="zoom:100%;" />
+Out:<img src="./_v_images/crop-image.png" alt="crop-image" style="zoom:100%;" />
 
 You can see that the image on the right is less well defined and has reflection padding artifacts in the bottom-left corner; also, the grass iat the top left has disappeared entirely. We find that in practice using presizing significantly improves the accuracy of models, and often results in speedups too.
 
@@ -256,7 +256,7 @@ We can never just assume that our code is working perfectly. Writing a `DataBloc
 dls.show_batch(nrows=1, ncols=3)
 ```
 
-Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/batch_1.png" alt="batch_1" style="zoom:100%;" />
+Out: <img src="./_v_images/batch_1.png" alt="batch_1" style="zoom:100%;" />
 
 Take a look at each image, and check that each one seems to have the correct label for that breed of pet. Often, data scientists work with data with which they are not as familiar as domain experts may be: for instance, I actually don't know what a lot of these pet breeds are. Since I am not an expert on pet breeds, I would use Google images at this point to search for a few of these breeds, and make sure the images look similar to what I see in this output.
 
@@ -426,3 +426,113 @@ Out: (37, tensor(1.0000))
 To transform the activations of our model into predictions like this, we used something called the *softmax* activation function.
 
 转换我们模型的激活为像这样的预测，我们使用了叫做*softmax*的激活函数。
+
+### Softmax
+
+### Softmax激活函数
+
+In our classification model, we use the softmax activation function in the final layer to ensure that the activations are all between 0 and 1, and that they sum to 1.
+
+Softmax is similar to the sigmoid function, which we saw earlier. As a reminder sigmoid looks like this:
+
+在我们的分类模型中，我们在最后的层使用softmax激活函数以确保激活都处于0到1之间，且它们的合计为1.
+
+Softmax与我们早先看到的S函数类似。提醒一下S函数看起来像这个样子：
+
+```
+plot_function(torch.sigmoid, min=-4,max=4)
+```
+
+Out: ![img](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXcAAAD7CAYAAACRxdTpAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADh0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uMy4xLjEsIGh0dHA6Ly9tYXRwbG90bGliLm9yZy8QZhcZAAAgAElEQVR4nO3deXiV5Z3/8fcXCCQkJEAIYd9BNg1IBEHRtmpdplYdbLUq7rWgtrZO/dXqaNW206mdjh2trTpFccO14saorVoVl1HCEiEsYQ9bSCBk35Pv74+EThqDOUCS55yTz+u6znVxntzBj+GcDw/3c5/7MXdHRESiS5egA4iISNtTuYuIRCGVu4hIFFK5i4hEIZW7iEgU6hZ0AIB+/fr5iBEjgo4hIhJRli9fvs/dU1r6WliU+4gRI8jIyAg6hohIRDGz7Yf6mqZlRESiUEjlbmY3mlmGmVWZ2cJWxv7IzHLNrMjMHjWzHm2SVEREQhbqmftu4BfAo182yMzOBG4FTgNGAKOAu48in4iIHIGQyt3dX3L3l4H9rQy9Aljg7lnufgD4OXDl0UUUEZHD1dZz7pOAzCbPM4FUM0tu4/+OiIh8ibYu9wSgqMnzg7/u1XygmV3XOI+fkZ+f38YxREQ6t7Yu91Igscnzg78uaT7Q3R9x93R3T09JaXGZpoiIHKG2XueeBaQBzzc+TwP2untrc/UiIlHN3Skoqya3uJK84irySirZW1zF1GG9mT227U9wQyp3M+vWOLYr0NXMYoFad69tNvQJYKGZPQ3sAf4VWNh2cUVEwlN1bT27CivYeaCcnQcq2HWggt2FFewqrGBPUSW5xZVU19Z/4fvmf2V0cOVOQ0n/rMnzy4C7zexRYC0w0d1z3P1NM7sX+BsQB/y52feJiESsmrp6cgrK2ZJfxtZ9pWzdV862fWXkFJSzp6iC+ib3PuraxRiQGMug3rFMGdqbgb1jGZDY8OifGEv/Xj1I6dWD2Jiu7ZLVwuFOTOnp6a7tB0QkXNTVO1v3lbI+t4TsvaVs3FvCxrxStu8vo6bu/zqzT88YRvSLZ3jfngxLjmdY354M7RPHkL49Se3Vg25d23cTADNb7u7pLX0tLPaWEREJSmVNHRtyS1i9q4is3UVk7S5mQ24JVY1TKF0MhifHM6Z/AmdMTGVMSgKjUuIZ1S+BpJ4xAac/NJW7iHQa7k5OQTnLtx9gZU4hmTsLWben+O9n40lxMUwalMjcE4czYWAi4wf2YnRKQrtNnbQnlbuIRK36emddbjGfbings60FZGw/wL7SKgDiu3fluCG9uXb2KI4bnMTkwUkM6ROHmQWcum2o3EUkqmzbV8aHm/bx0aZ9fLx5P0UVNQAM6RPH7LH9mDa8D+kj+jC2fy+6domOIm+Jyl1EIlplTR2fbN7PexvyeC87n+37ywEYlBTL1yemMnN0MjNGJTO4d1zASTuWyl1EIk5heTV/XbuXt9ft5YPsfVTU1BEb04VZo/txzckjmT02hRHJPaNmiuVIqNxFJCIcKKvmzaxc/mf1Hj7ZvJ/aemdgUiwXThvCaRP6c+Ko5Ii88NleVO4iErYqquv4y9pcXl21m/ez86mtd4Yn9+S7p4zi7MkDOHZwUqc+O/8yKncRCSvuzoqcA7y4fCevZ+6hpKqWAYmxXH3ySL6ZNohJgxJV6CFQuYtIWCgqr+HPK3ay6LMcNuWVEhfTlXOOHcicaYM5cWQyXaJ4ZUt7ULmLSKDW7i5m4cdbeWXVbqpq60kb2pt75xzHOccNJKGHKupI6ScnIh2uvt55e91eFny4lU+3FhAb04V/Pn4Il504jEmDkoKOFxVU7iLSYapq63h55S4e/mALW/LLGNw7jtvOGc9F6cPCep+WSKRyF5F2V1lTx7Of5fDQ+1vILa5k0qBE7v/OVM6ZPKDdd07srFTuItJuKmvqePrTHB56fzP5JVVMH9mX33zrOE4e008rXtqZyl1E2lxtXT0vLt/Jf72zkT1FlcwancwD35nKiaOSg47WaajcRaTNuDtvr8vjV2+sY0t+GVOG9ua330pj1ph+QUfrdFTuItIm1uwq4uevr+XTrQWMSonnkbnTOGNiqqZfAqJyF5GjUlBWzW/e2sCzy3Lo07M7Pz9vEhdPH0aMLpQGSuUuIkekvt5Z9FkOv3lrA6VVtVw1ayQ/PGMsibFa0hgOVO4ictjW5xbz05dWszKnkJmjkrn7vEmMS+0VdCxpQuUuIiGrrKnj/nc28sgHW0iMi+G+i9I4f8pgzauHIZW7iIRkZc4BbnnxczbllXLhtCHcfs4E+sR3DzqWHILKXUS+VFVtHff9dSOPfLCZ1MRYHr96OqeOSwk6lrRC5S4ih5S9t4Sbnl3Fuj3FXJQ+lNu/MUEXTCOEyl1EvsDdefzjbfzqjfUk9OjGny5P5/SJqUHHksOgcheRf1BYXs2PX/ict9ft5avHpHDvhWmk9OoRdCw5TCp3Efm75dsP8INnVpJXUskd35jI1SeN0EqYCKVyFxHcncc+2sa//c86BvaO5cV5s0gb2jvoWHIUVO4inVx5dS0/fWk1r6zazekTUvntt9NIitNF00inchfpxHL2l3Pdkxls2FvCLWcew/xTR+tG1FEipJ19zKyvmS02szIz225mlxxiXA8ze8jM9ppZgZm9ZmaD2zayiLSFTzbv57wHP2RPUSULr5rODV8do2KPIqFu2/YgUA2kApcCfzSzSS2MuwmYCRwHDAIKgQfaIKeItKFFn+Ywd8GnJCf04JUbTtKHkqJQq+VuZvHAHOAOdy919w+BV4G5LQwfCbzl7nvdvRJ4FmjpLwERCUBdvfPz19dy2+LVnDy2Hy9dP4sR/eKDjiXtIJQ593FAnbtnNzmWCZzawtgFwH+Z2cGz9kuBN446pYgctYrqOn743EreytrLlbNGcMc3JtJV0zBRK5RyTwCKmh0rAlra3zMbyAF2AXXAauDGln5TM7sOuA5g2LBhIcYVkSOxv7SKax7PIHNnIXd+YyJXnzwy6EjSzkKZcy8FEpsdSwRKWhj7RyAWSAbigZc4xJm7uz/i7ununp6Sovk+kfayo6CcCx/6hPW5xTx02TQVeycRSrlnA93MbGyTY2lAVgtj04CF7l7g7lU0XEydbma6O65IANbtKWbOHz+moKyap6+dwZmTBgQdSTpIq+Xu7mU0nIHfY2bxZnYScB7wZAvDlwGXm1mSmcUA1wO73X1fW4YWkdYt21bAtx/+hC5mvDBvJtOG9w06knSgUJdCXg/EAXnAM8B8d88ys9lmVtpk3I+BSmAjkA+cA1zQhnlFJARLN+Yzd8GnpCT04MX5M3ULvE4opE+ounsBcH4Lx5fScMH14PP9NKyQEZGA/CUrlxsXrWRUSjxPXjNDOzp2Utp+QCSKvJa5mx8+t4rJg5N4/KoT6N1Tt8HrrFTuIlHilVW7+NFzq0gf3pcFV6bTS3dM6tRU7iJR4OWVu7j5+VWcMKIvj155AvE99Nbu7PQKEIlwB4t9+siGYu/ZXW9rUbmLRLQln+/h5udXMWNkMo9eeQJx3bsGHUnCRKhLIUUkzPwlK5ebnl3J8cP6sODKdBW7/AOVu0gEej87nxsXrWTS4CQeu0pTMfJFKneRCJOxrYDvPZnB6P4JPHHVdK2KkRap3EUiyNrdxVy1cBmDkuJ48prpJPVUsUvLVO4iEWLrvjIuf/QzEnp048lrZ9AvQZ88lUNTuYtEgLziSuYu+JR6d568ZgaDe8cFHUnCnMpdJMwVV9ZwxWPLKCirZuFVJzCmf0Lr3ySdnspdJIxV1dYx78nlbNxbwkOXTeO4Ib2DjiQRQuunRMJUfb3z4xc+5+PN+7nvojROGac7lknodOYuEqZ+/dZ6Xsvcza1nj+eCqUOCjiMRRuUuEoae+t/tPPz+Fi47cRjfO2VU0HEkAqncRcLMu+v3cucra/ja+P7cde4kzCzoSBKBVO4iYWTt7mJuXLSSiYMSeeA7U+nWVW9ROTJ65YiEibziSq59fBlJcTEsuEJ7ssvR0atHJAxUVNfx3ScyKKyo4YV5M0lNjA06kkQ4lbtIwBqWPGby+a4iHr5sGpMGJQUdSaKApmVEAnb/uxtZsnoPt541nq9PGhB0HIkSKneRAL2xeg+/e3sjc44fwnVa8ihtSOUuEpCs3UXc/HwmU4f15pcXTNaSR2lTKneRAOwrreK6J5bTu2cMD8+dRmyMbpEnbUsXVEU6WE1dPTc8vYJ9pVW8OG8W/XtpZYy0PZW7SAf75ZJ1fLq1gPsuSuPYIVoZI+1D0zIiHeiFjB0s/Hgb15w8UpuBSbtSuYt0kM93FnL7y2uYNTqZn549Pug4EuVU7iIdYH9pFfOeXE5KQg9+f8nx2jNG2p3m3EXaWW1dPT94diX7yqr587xZ9I3vHnQk6QRCOn0ws75mttjMysxsu5ld8iVjjzezD8ys1Mz2mtlNbRdXJPL8x1+y+WjTfn5x/mRdQJUOE+qZ+4NANZAKTAGWmFmmu2c1HWRm/YA3gR8BLwLdAV01kk7rzTW5PPT+Zi6ZMYxvpw8NOo50Iq2euZtZPDAHuMPdS939Q+BVYG4Lw28G3nL3p929yt1L3H1d20YWiQxb8kv58QuZpA3tzc/OnRh0HOlkQpmWGQfUuXt2k2OZwKQWxp4IFJjZx2aWZ2avmdmwtggqEknKq2uZ/9QKYroaf7j0eHp00ydQpWOFUu4JQFGzY0VArxbGDgGuAG4ChgFbgWda+k3N7DozyzCzjPz8/NATi4Q5d+f2xWvIzivhdxdPZXDvuKAjSScUSrmXAonNjiUCJS2MrQAWu/syd68E7gZmmdkXriK5+yPunu7u6SkpKYebWyRsPf1pDotX7uKHp43j1HF6bUswQin3bKCbmY1tciwNyGph7OeAN3l+8Nfa7k46hdU7i7jntbWcMi6F739tTNBxpBNrtdzdvQx4CbjHzOLN7CTgPODJFoY/BlxgZlPMLAa4A/jQ3QvbMrRIOCoqr+H6RctJTujO7y6aQpcuOqeR4IT6MbnrgTggj4Y59PnunmVms82s9OAgd38XuA1Y0jh2DHDINfEi0cLd+fGLmewprOT3lxyvDypJ4EJa5+7uBcD5LRxfSsMF16bH/gj8sU3SiUSIPy3dyl/X7uWOb0xk2vA+QccR0d4yIkdr+fYD/PrN9Zw1aQBXnzQi6DgigMpd5KgcKKvm+4tWMLB3LL++8DjdKk/ChjYOEzlC9fXOv7yQyb7Sav48fxZJcTFBRxL5O525ixyh/166hXfX53H7P03QhmASdlTuIkdg+fYC7n1rA+ccO4DLZw4POo7IF6jcRQ5Twzz7Sgb3juPf52ieXcKT5txFDoO78+Mm8+yJsZpnl/CkM3eRw/CnpVt5Z30et50zXvPsEtZU7iIhWpnTsJ79zEmpXDFrRNBxRL6Uyl0kBEXlNdy4aCUDkmK598I0zbNL2NOcu0gr3J2f/Plz9hZX8sK8mVrPLhFBZ+4irXjik+28mZXLT84az9Rh2jdGIoPKXeRLrNlVxC+XrONr4/tz7eyRQccRCZnKXeQQSipruHHRCpITuvPbb2meXSKL5txFWuDu3LZ4DTsOVPDsdSfSR/uzS4TRmbtIC55btoPXMndz8xnjOGFE36DjiBw2lbtIMxtyS/jZq1mcPKYf808dHXQckSOichdpory6lhsWraBXbAz36T6oEsE05y7SxJ2vZLE5v5SnrplBSq8eQccROWI6cxdp9OflO3lx+U6+/7WxnDSmX9BxRI6Kyl0E2JRXwr++vIbpI/ty02ljg44jctRU7tLpVVTXccPTK4nr3pX7L55KV82zSxTQnLt0ene9msWGvSU8fvV0BiTFBh1HpE3ozF06tZdX7uK5jB1c/5XRnDouJeg4Im1G5S6d1qa8Um5bvJoTRvTh5jPGBR1HpE2p3KVTaphnX0FsTFfu/85UunXVW0Gii+bcpVM6OM++8KoTGJgUF3QckTan0xXpdF5asZPnMnZww1dH85Vj+gcdR6RdqNylU9m4t4TbFzesZ//R6Zpnl+ilcpdOo6yqlvlPryC+R1d+r3l2iXKac5dOwd25ffFqtjTuG9M/UevZJbqFdOpiZn3NbLGZlZnZdjO7pJXx3c1svZntbJuYIkdn0Wc5vLxqNz86fRyztG+MdAKhnrk/CFQDqcAUYImZZbp71iHG3wLkAQlHH1Hk6Hy+s5C7X13LqeNSuOGrY4KOI9IhWj1zN7N4YA5wh7uXuvuHwKvA3EOMHwlcBvyqLYOKHInC8mrmP7WClF49tD+7dCqhTMuMA+rcPbvJsUxg0iHGPwDcBlQcZTaRo1Jf7/zwuVXkl1Txh0uPp6/ugyqdSCjlngAUNTtWBPRqPtDMLgC6ufvi1n5TM7vOzDLMLCM/Pz+ksCKH44F3N/HehnzuPHciaUN7Bx1HpEOFUu6lQGKzY4lASdMDjdM39wLfD+U/7O6PuHu6u6enpGjDJmlb723I43fvZHPB1MFcOmNY0HFEOlwoF1SzgW5mNtbdNzYeSwOaX0wdC4wAlpoZQHcgycxygRPdfVubJBZpRc7+cm56dhXHpPbi3y44lsbXo0in0mq5u3uZmb0E3GNm19KwWuY8YFazoWuAoU2ezwJ+DxwPaN5FOkRFdR3znlqOu/Pw3GnEde8adCSRQIT6Eb3rgTgaljc+A8x39ywzm21mpQDuXuvuuQcfQAFQ3/i8rl3SizTh7tz+8mrW5RbzXxdPZXhyfNCRRAIT0jp3dy8Azm/h+FIOsZbd3d8DhhxNOJHD8cQn23lpxS5+ePpYvjpeG4JJ56bNNSQqfLJ5P/e8vpbTJ6Tyg6/pBtciKneJeLsKK7hh0QpGJPfkvovS9EElEVTuEuEqa+r43pMZ1NTW88jl6fSKjQk6kkhY0K6QErHcnVte/Jys3cX86fJ0RqdoKyORg3TmLhHrD+9t5rXM3dxy5jGcNiE16DgiYUXlLhHpL1m5/OatDZw3ZRDzTx0ddByRsKNyl4izPreYHz23irQhSfx6znH6BKpIC1TuElHyS6q4ZmEGCbHdeHhuOrEx+gSqSEt0QVUiRmVNHdc9mUFBWTUvzJvJgCTdKk/kUFTuEhEOroxZmVPIQ5dNY/LgpKAjiYQ1TctIRLjvr9m8lrmbn5w1nrMmDwg6jkjYU7lL2Ht+2Q7uf3cTF6UPZd6po4KOIxIRVO4S1pZuzOe2xas5ZVwKv7hgslbGiIRI5S5ha92eYuY/tYIx/RN48JKpxHTVy1UkVHq3SFjaeaCcKx/7jIQe3XjsqhO0Z4zIYVK5S9g5UFbN5Y9+RkV1HU9cM52BSXFBRxKJOFoKKWGlorqOqx9fxs4DFTx1zQzGpfYKOpJIRNKZu4SN6tp6rn96OZk7Crn/4qlMH9k36EgiEUtn7hIW6uqdf3khk79tyOdX/3ys1rKLHCWduUvg3J07X1nDa5m7ufXs8Xxn+rCgI4lEPJW7BMrdufetDTz9aQ7zTh3NPG3fK9ImVO4SqPvf2cQf39vMJTOG8ZOzjgk6jkjUULlLYB5+fzP3vZ3NhdOG8Ivz9OlTkbakcpdAPPbRVn71xnrOTRvEr+ccR5cuKnaRtqTVMtLhHv1wK/e8vpazJg3gP7+dRlcVu0ibU7lLh/rT0i38Ysk6zpo0gAe0X4xIu9E7SzrMwWI/e7KKXaS96cxd2p2788C7m/jPv2bzT8cO5HcXT1Gxi7Qzlbu0K3fn399cz8Pvb2HO8UP49Zxj6aZiF2l3KndpN3X1zs9eXcNT/5vD3BOHc/c3J2lVjEgHUblLu6iqrePm5zJZsnoP3zt1FLeeNV7r2EU6UEj/Pjazvma22MzKzGy7mV1yiHG3mNkaMysxs61mdkvbxpVIUFpVy9ULl7Fk9R5uP2cCPz17gopdpIOFeub+IFANpAJTgCVmlunuWc3GGXA58DkwGviLme1w92fbKrCEt7ziSq5+fBnr9pTw22+lMWfakKAjiXRKrZ65m1k8MAe4w91L3f1D4FVgbvOx7n6vu69w91p33wC8ApzU1qElPGXvLeGCP3zMlvwy/nR5uopdJEChTMuMA+rcPbvJsUxg0pd9kzX8O3w20PzsXqLQR5v2MecPH1NdV8/z35vJV8f3DzqSSKcWSrknAEXNjhUBrd3/7K7G3/+xlr5oZteZWYaZZeTn54cQQ8LV059u54pHP2Ng71hevuEkJg9OCjqSSKcXypx7KZDY7FgiUHKobzCzG2mYe5/t7lUtjXH3R4BHANLT0z2ktBJWauvq+fnra3n8k+2cOi6FBy6ZSmJsTNCxRITQyj0b6GZmY919Y+OxNA4x3WJmVwO3Aqe4+862iSnhpqCsmh88s5IPN+3ju7NHcuvZE7QBmEgYabXc3b3MzF4C7jGza2lYLXMeMKv5WDO7FPg34KvuvqWtw0p4WL2ziHlPLSe/tIp7LzyOb6cPDTqSiDQT6ufArwfigDzgGWC+u2eZ2WwzK20y7hdAMrDMzEobHw+1bWQJ0vMZO5jz0McAvDhvpopdJEyFtM7d3QuA81s4vpSGC64Hn49su2gSTsqra7nzlSxeXL6Tk8f04/7vTKVvfPegY4nIIWj7AWnVhtwSbli0gs35pfzgtLHcdNpYza+LhDmVuxySu/PUpzn8cslaEnrE8NQ1MzhpTL+gY4lICFTu0qL8kip+8ufPeXd9HqeMS+E/vnUc/XvFBh1LREKkcpcveHNNLrcvXk1JVS13nTuRy2eO0Fa9IhFG5S5/V1BWzc9ezeK1zN1MGpTIMxdNYVxqax9EFpFwpHIX3J0lq/dw16tZFFXUcPMZ45j/ldG6FZ5IBFO5d3I7Csq585U1/G1DPscOTuLJa2YwYWDz3SZEJNKo3Dupqto6Fny4lQfe2YQZ3PGNiVwxc7jubyoSJVTundB7G/K4+7W1bN1XxhkTU7nrm5MY3Dsu6Fgi0oZU7p3Ixr0l/OqN9by7Po9R/eJ5/OrpnDouJehYItIOVO6dQH5JFb97O5tnl+2gZ/eu/PTs8Vx10ki6d9MUjEi0UrlHsaLyGh5ZuplHP9xGTV09c08czg9OG6s9YUQ6AZV7FCqurOHxj7bx30u3UFxZyzfTBvGjM8Yxsl980NFEpIOo3KNIYXk1j320jUc/2kpJZS2nT+jPzWccw8RBWtoo0tmo3KPArsIKFizdyrPLciivruPMSal8/2tjdS9TkU5M5R7BVu0o5LGPtvL653sw4Ny0QVx3yih9CElEVO6RprKmjjfX5LLw422s2lFIQo9uXDFzBNfMHqm16iLydyr3CLElv5RnPsvhxeU7OVBew8h+8dx17kQuTB9KQg/9MYrIP1IrhLHiyhqWfL6HF5fvZPn2A3TrYpwxMZVLZwxn1uhkbcMrIoekcg8zlTV1vLchn1czd/HOujyqausZ0z+BW88ezz9PHUz/RN0wQ0Rap3IPA5U1dXyQnc8ba3J5e91eSipr6ZfQnYtPGMr5UwczZWhvzHSWLiKhU7kHpKCsmr+tz+PtdXv5IDufsuo6kuJiOHPSAL6ZNohZo5O1Q6OIHDGVewepq3fW7CrivQ35vJ+dx6odhdQ7pCb24JtTBnP25AHMHJ2sG2SISJtQubcTd2dzfhn/u2U/H23ax8eb91NUUYMZHDc4iRu/NpbTJ/Rn8qAkXRgVkTancm8jNXX1rNtTTMa2A2RsL+CzrQXsK60GYFBSLF+fmMrJY/tx8ph+JCf0CDitiEQ7lfsRcHd2Hqhg9a4iVu0oZNWOQlbvLKKipg5oKPPZY1OYMbIvM0YlMyK5py6IikiHUrm3orq2ns35pazPLWbdnhLW7i5mze4iCstrAOjetQsTByVy0QlDSR/Rh+OH9WGQPikqIgFTuTeqrKlj674yNueXsimvlI15pWTnlrB1Xxm19Q5A925dGJeawNmTBzB5cBKTByUxYWCibnohImGnU5V7UUUNOw+Us6OgnO37y8kpKGfb/jK27Stnd1EF3tDhmMHQPj0Zl5rA6RNTGT+gFxMGJjKqX7yWJ4pIRIiaci+rqiWvpIo9RRXsLa4kt6iK3YUV7CmqYFdhJTsPlFNSWfsP39O7ZwwjkuOZPrIvI5LjGZUSz5j+CYzsF09sTNeA/k9ERI5eRJf739bncc/ra8krrqSsuu4LX0+Ki2FQ7zgGJcUyfUQfhvTpyeA+cQzr25OhfXuSFBcTQGoRkfYXUrmbWV9gAfB1YB/wU3df1MI4A/4duLbx0ALgJ+4HJzzaVu+eMUwcmMhXjkmhf69Y+vfqwcCkWAY0Pnp2j+i/u0REjlio7fcgUA2kAlOAJWaW6e5ZzcZdB5wPpAEO/BXYAjzUNnH/0dRhfXjw0j7t8VuLiES0Vq8Omlk8MAe4w91L3f1D4FVgbgvDrwB+6+473X0X8FvgyjbMKyIiIQhl6cc4oM7ds5scywQmtTB2UuPXWhsnIiLtKJRyTwCKmh0rAnqFMLYISLAWPp5pZteZWYaZZeTn54eaV0REQhBKuZcCze+4nAiUhDA2ESht6YKquz/i7ununp6SkhJqXhERCUEo5Z4NdDOzsU2OpQHNL6bSeCwthHEiItKOWi13dy8DXgLuMbN4MzsJOA94soXhTwA3m9lgMxsE/AuwsA3ziohICEL9LP31QByQBzwDzHf3LDObbWalTcY9DLwGrAbWAEsaj4mISAcKaZ27uxfQsH69+fGlNFxEPfjcgf/X+BARkYBYO3149PBCmOUD24/w2/vR8KnZcBOuuSB8synX4VGuwxONuYa7e4srUsKi3I+GmWW4e3rQOZoL11wQvtmU6/Ao1+HpbLm0f62ISBRSuYuIRKFoKPdHgg5wCOGaC8I3m3IdHuU6PJ0qV8TPuYuIyBdFw5m7iIg0o3IXEYlCKncRkSgUdeVuZmPNrNLMngo6C4CZPWVme8ys2Myyzeza1r+r3TP1MLMFZrbdzErMbKWZnR10LgAzu7FxK+gqM1sYcJa+ZrbYzMoaf1aXBJmnMVPY/HyaCvPXVNi9B5tqr86KxpuMPggsCzpEE78CrnH3KjMbD7xnZivdfXmAmboBO4BTgRzgHOB5MzvW3bcFmAtgN/AL4Ewa9jMKUqi3l+xI4fTzaSqcX1Ph+B5sql06K2cH3BsAAAI1SURBVKrO3M3sYqAQeCfoLAe5e5a7Vx182vgYHWAk3L3M3e9y923uXu/urwNbgWlB5mrM9pK7vwzsDzLHYd5essOEy8+nuTB/TYXde/Cg9uysqCl3M0sE7qFhm+GwYmZ/MLNyYD2wB/ifgCP9AzNLpeF2itp7//8czu0lpZlwe02F43uwvTsrasod+DmwwN13BB2kOXe/nobbEs6mYW/8qi//jo5jZjHA08Dj7r4+6Dxh5HBuLylNhONrKkzfg+3aWRFR7mb2npn5IR4fmtkU4HTgvnDK1XSsu9c1/tN+CDA/HHKZWRcabrpSDdzYnpkOJ1eYOJzbS0qjjn5NHY6OfA+2piM6KyIuqLr7V77s62b2Q2AEkNN4L+4EoKuZTXT344PKdQjdaOf5vlByNd60fAENFwvPcfea9swUaq4w8vfbS7r7xsZjum3klwjiNXWE2v09GIKv0M6dFRFn7iF4hIY/rCmNj4douAvUmUGGMrP+ZnaxmSWYWVczOxP4DvBukLka/RGYAJzr7hVBhznIzLqZWSzQlYYXe6yZdfhJyGHeXrLDhMvP5xDC7jUVxu/B9u8sd4+6B3AX8FQY5EgB3qfhangxDbcf/G4Y5BpOw4qBShqmHw4+Lg2DbHfxfysaDj7uCihLX+BloIyG5X2X6OcTWa+pcH0PHuLPtU07SxuHiYhEoWiZlhERkSZU7iIiUUjlLiIShVTuIiJRSOUuIhKFVO4iIlFI5S4iEoVU7iIiUej/A4awfmYB+Gr6AAAAAElFTkSuQmCC)
+
+We can apply this function to a single column of activations from a neural network, and get back a column of numbers between 0 and 1, so it's a very useful activation function for our final layer.
+
+我们能够把这一函数应用到神经网络单一列的激活，并获取一列介于0到1之间的数值，所以对于我们最后的层它是一个非常有用的激活函数。
+
+Now think about what happens if we want to have more categories in our target (such as our 37 pet breeds). That means we'll need more activations than just a single column: we need an activation *per category*. We can create, for instance, a neural net that predicts 3s and 7s that returns two activations, one for each class—this will be a good first step toward creating the more general approach. Let's just use some random numbers with a standard deviation of 2 (so we multiply `randn` by 2) for this example, assuming we have 6 images and 2 possible categories (where the first column represents 3s and the second is 7s):
+
+现在想一下，如果我们想在我们目标中（例如我们有37个宠物品种）有更多的类别会发生什么。这意味着我们会需要更多的激活而不仅仅是一个单列：我们需要一个*宠物分类*的激活。例如，我们能够创建一个神经网络来返回两个激活来预测数字3和数字7，每个类别一个激活。这是来创建更加通用方法的好的开端。在本例中我们只用标准差为2的一些随机数（所以我们用2乘以`randn`），假设我们有6张图像和2个分类（第一列代表数字3，第二列代表数字7）：
+
+```
+#hide
+torch.random.manual_seed(42);
+acts = torch.randn((6,2))*2
+acts
+```
+
+Out: $\begin{array}{r} tensor(
+		&[[ &0.6734, & 0.2576&],\\
+       & [ &0.4689, & 0.4607&],\\
+       & [&-2.2457, &-0.3727&],\\
+       & [& 4.4164, &-1.2760&],\\
+       & [& 0.9233, & 0.5347&],\\
+       & [& 1.0698, & 1.6187&]]&)\end{array}$
+
+We can't just take the sigmoid of this directly, since we don't get rows that add to 1 (i.e., we want the probability of being a 3 plus the probability of being a 7 to add up to 1):
+
+我们不能指示直接采纳S函数，因为我们不能取所有的行且总计为1（即，我们认为数字3的概率加上数字7的概率总计为1）：
+
+```
+acts.sigmoid()
+```
+
+Out: $\begin{array}{r} tensor(
+		&[[&0.6623, &0.5641&],\\
+        &[&0.6151, &0.6132&],\\
+        &[&0.0957, &0.4079&],\\
+        &[&0.9881, &0.2182&],\\
+        &[&0.7157, &0.6306&],\\
+        &[&0.7446, &0.8346&]]&) \end{array}$
+
+In <chapter_mnist_basics>, our neural net created a single activation per image, which we passed through the `sigmoid` function. That single activation represented the model's confidence that the input was a 3. Binary problems are a special case of classification problems, because the target can be treated as a single boolean value, as we did in `mnist_loss`. But binary problems can also be thought of in the context of the more general group of classifiers with any number of categories: in this case, we happen to have two categories. As we saw in the bear classifier, our neural net will return one activation per category.
+
+在<章节：MNIST基础>中，我们创建了每张图像单激活的神经网络，我们通过`sigmoid`函数传递。单激活代表模型确信输入是数据3。二进制问题是一个特定的分类问题事例，因为目标能够作为单布尔值进行处理，正如我们在`mnist_loss`做的那样。但二进制问题也能被认为任意数值类别情况下更加通用的组分类器：在这个例子中，我们恰巧有两个类别。正如在熊分类器中我们看到的，我们的神经网络会返回每个类别的一个激活。
+
+So in the binary case, what do those activations really indicate? A single pair of activations simply indicates the *relative* confidence of the input being a 3 versus being a 7. The overall values, whether they are both high, or both low, don't matter—all that matters is which is higher, and by how much.
+
+We would expect that since this is just another way of representing the same problem, that we would be able to use `sigmoid` directly on the two-activation version of our neural net. And indeed we can! We can just take the *difference* between the neural net activations, because that reflects how much more sure we are of the input being a 3 than a 7, and then take the sigmoid of that:
+
+In [ ]:
+
+```
+(acts[:,0]-acts[:,1]).sigmoid()
+```
+
+Out: tensor([0.6025, 0.5021, 0.1332, 0.9966, 0.5959, 0.3661])
+
+The second column (the probability of it being a 7) will then just be that value subtracted from 1. Now, we need a way to do all this that also works for more than two columns. It turns out that this function, called `softmax`, is exactly that:
+
+```python
+def softmax(x): return exp(x) / exp(x).sum(dim=1, keepdim=True)
+```
+
+> jargon: Exponential function (exp): Literally defined as `e**x`, where `e` is a special number approximately equal to 2.718. It is the inverse of the natural logarithm function. Note that `exp` is always positive, and it increases *very* rapidly!
+
+Let's check that `softmax` returns the same values as `sigmoid` for the first column, and those values subtracted from 1 for the second column:
+
+In [ ]:
+
+```
+sm_acts = torch.softmax(acts, dim=1)
+sm_acts
+```
+
+Out: $\begin{array}{r} tensor(
+		&[[&0.6025,& 0.3975&],\\
+        &[&0.5021, &0.4979&],\\
+        &[&0.1332, &0.8668&],\\
+        &[&0.9966, &0.0034&],\\
+        &[&0.5959, &0.4041&],\\
+        &[&0.3661, &0.6339&]]&)\end{array}$
+
+`softmax` is the multi-category equivalent of `sigmoid`—we have to use it any time we have more than two categories and the probabilities of the categories must add to 1, and we often use it even when there are just two categories, just to make things a bit more consistent. We could create other functions that have the properties that all activations are between 0 and 1, and sum to 1; however, no other function has the same relationship to the sigmoid function, which we've seen is smooth and symmetric. Also, we'll see shortly that the softmax function works well hand-in-hand with the loss function we will look at in the next section.
+
+If we have three output activations, such as in our bear classifier, calculating softmax for a single bear image would then look like something like <>.
+
+<img src="./_v_images/att_00062.png" alt="Bear softmax example" width="280" id="bear_softmax" caption="Example of softmax on the bear classifier" />
+
+What does this function do in practice? Taking the exponential ensures all our numbers are positive, and then dividing by the sum ensures we are going to have a bunch of numbers that add up to 1. The exponential also has a nice property: if one of the numbers in our activations `x` is slightly bigger than the others, the exponential will amplify this (since it grows, well... exponentially), which means that in the softmax, that number will be closer to 1.
+
+Intuitively, the softmax function *really* wants to pick one class among the others, so it's ideal for training a classifier when we know each picture has a definite label. (Note that it may be less ideal during inference, as you might want your model to sometimes tell you it doesn't recognize any of the classes that it has seen during training, and not pick a class because it has a slightly bigger activation score. In this case, it might be better to train a model using multiple binary output columns, each using a sigmoid activation.)
+
+Softmax is the first part of the cross-entropy loss—the second part is log likeklihood.
