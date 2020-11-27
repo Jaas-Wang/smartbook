@@ -504,17 +504,19 @@ Out: tensor([0.6025, 0.5021, 0.1332, 0.9966, 0.5959, 0.3661])
 
 The second column (the probability of it being a 7) will then just be that value subtracted from 1. Now, we need a way to do all this that also works for more than two columns. It turns out that this function, called `softmax`, is exactly that:
 
-
+第二列（它是数字7的概率）只是从1减去的值。现在我们需要一个方法也做所有的这些超过两列的处理。被称为`softmax`的方法准确来说是这样的：
 
 ```python
 def softmax(x): return exp(x) / exp(x).sum(dim=1, keepdim=True)
 ```
 
 > jargon: Exponential function (exp): Literally defined as `e**x`, where `e` is a special number approximately equal to 2.718. It is the inverse of the natural logarithm function. Note that `exp` is always positive, and it increases *very* rapidly!
+>
+> 术语：指数函数（exp）：字面上的定义是`e**x`，`e`是一个特定近似等于2.718的数值。它是自然对数函数的倒数函数。注释`exp`一直是正值，并且它的增长*非常* 快速！
 
 Let's check that `softmax` returns the same values as `sigmoid` for the first column, and those values subtracted from 1 for the second column:
 
-In [ ]:
+我们来查看一下，`softmax`返回了`sigmoid`第一列同样的值，并且第二列的那些数值从1减去的：
 
 ```
 sm_acts = torch.softmax(acts, dim=1)
@@ -531,13 +533,26 @@ Out: $\begin{array}{r} tensor(
 
 `softmax` is the multi-category equivalent of `sigmoid`—we have to use it any time we have more than two categories and the probabilities of the categories must add to 1, and we often use it even when there are just two categories, just to make things a bit more consistent. We could create other functions that have the properties that all activations are between 0 and 1, and sum to 1; however, no other function has the same relationship to the sigmoid function, which we've seen is smooth and symmetric. Also, we'll see shortly that the softmax function works well hand-in-hand with the loss function we will look at in the next section.
 
-If we have three output activations, such as in our bear classifier, calculating softmax for a single bear image would then look like something like <>.
+If we have three output activations, such as in our bear classifier, calculating softmax for a single bear image would then look like something like <bear_softmax>.
 
-<img src="./_v_images/att_00062.png" alt="Bear softmax example" width="280" id="bear_softmax" caption="Example of softmax on the bear classifier" />
+`softmax`是`sigmoid`的多分类等效式，我们有超过两个分类且分类的概率必须合计为时，我们必须无一例外的使用它。及时只有两个分类我们也经常使用它，只是为了保证事物更加的一致。我们能够创建其它函数，它们具有所有激活在0到1之间，且合计为1的属性。然而，其它函数都没有与S函数相同的逻辑关系，我们已经看过的平滑与对称。另外，在下一小节，我们将会很快看到softmax函数与损失函数非常好的协同工作。
+
+如果我们有三个激活输出，正如在我们的熊分类中那样，对于单个熊的图像计算softmax，然后会看到如<熊分类softmax例子>中的内容。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00062.png" alt="Bear softmax example" width="280" id="bear_softmax" caption="Example of softmax on the bear classifier" />
+  </p>
+  <p align="center">图：熊分类softmax例子</p>
+</div>
 
 What does this function do in practice? Taking the exponential ensures all our numbers are positive, and then dividing by the sum ensures we are going to have a bunch of numbers that add up to 1. The exponential also has a nice property: if one of the numbers in our activations `x` is slightly bigger than the others, the exponential will amplify this (since it grows, well... exponentially), which means that in the softmax, that number will be closer to 1.
 
+在实践中这个函数做了什么事情呢？谈论的指数可确保我们所有的数值是正的，然后除以合计数，以确保我们会有一组总计为1的数值。指数也有一个很好的属性：如果在我们激活`x`中的其中一个数值稍微比其它数据更大，指数会对些放大（由于它称指数级的增长），这意味在softmax中数值会接近1 。
+
 Intuitively, the softmax function *really* wants to pick one class among the others, so it's ideal for training a classifier when we know each picture has a definite label. (Note that it may be less ideal during inference, as you might want your model to sometimes tell you it doesn't recognize any of the classes that it has seen during training, and not pick a class because it has a slightly bigger activation score. In this case, it might be better to train a model using multiple binary output columns, each using a sigmoid activation.)
+
+直观的说，softmax函数*实际* 想从其它类型中取出一个类，所以当我们知道每一张图片有明确的标签，训练一个分类器它是理想的。（注解，在推理期间它可能不是太理想，你可能希望你的模型有时候告诉你它不能识别训练期间看到的任何分类，没有选出分类是因为它有一个稍微大一点的激活分数。在这个例子中，可能最好训练一个使用多个二值输出列的模型，每一列使用一个S激活。）
 
 Softmax is the first part of the cross-entropy loss—the second part is log likeklihood.
 
