@@ -398,7 +398,7 @@ Out:$\begin{matrix}TensorCategory([& 0,  &5,& 23,& 36,&  5, &20, &29, &34, &33,&
 
 Our batch size is 64, so we have 64 rows in this tensor. Each row is a single integer between 0 and 36, representing our 37 possible pet breeds. We can view the predictions (that is, the activations of the final layer of our neural network) using `Learner.get_preds`. This function either takes a dataset index (0 for train and 1 for valid) or an iterator of batches. Thus, we can pass it a simple list with our batch to get our predictions. It returns predictions and targets by default, but since we already have the targets, we can effectively ignore them by assigning to the special variable `_`:
 
-我们批处理尺寸大小是64，所以在这个张量里我们有64行。每一行是介于0到36之间的整数，代表了我们37个可能宠物品种。我们能够用`Learner.get_preds`来观察预测情况（即我们的神经网络最后一层的激活）。这个函数要么接受一个数据集的索引（0代表训练，1代表验证）要么接受批次的迭代器。因而，我们能够传递给它一个包含我们批次的简单列表来得到我们的预测。它默认会返回预测和目标，但因为我们已经有了目标，我们能够通过分配一个特定变量`_`来有效的忽略它们：
+我们批处理尺寸大小是64，所以在这个张量里我们有64行。每一行是介于从0到36之间的整数，代表了我们37个可能宠物品种。我们能够用`Learner.get_preds`来观察预测情况（即我们的神经网络最后一层的激活）。这个函数要么接受一个数据集的索引（0代表训练，1代表验证）要么接受批次的迭代器。因而，我们能够传递给它一个包含我们批次的简单列表来得到我们的预测。它默认会返回预测和目标，但因为我们已经有了目标，我们能够通过分配一个特定变量`_`来有效的忽略它们：
 
 ```
 preds,_ = learn.get_preds(dl=[(x,y)])
@@ -415,7 +415,7 @@ Out: $\begin{matrix}tensor([
 
 The actual predictions are 37 probabilities between 0 and 1, which add up to 1 in total:
 
-实际预测是37个0到1之间的概率，他们合计为1：
+实际预测是37个从0到1之间的概率，他们合计为1：
 
 ```
 len(preds[0]),preds[0].sum()
@@ -435,7 +435,7 @@ In our classification model, we use the softmax activation function in the final
 
 Softmax is similar to the sigmoid function, which we saw earlier. As a reminder sigmoid looks like this:
 
-在我们的分类模型中，我们在最后的层使用softmax激活函数以确保激活都处于0到1之间，且它们的合计为1.
+在我们的分类模型中，我们在最后的层使用softmax激活函数以确保激活都处于从0到1之间，且它们的合计为1.
 
 Softmax与我们早先看到的S函数类似。提醒一下S函数看起来像这个样子：
 
@@ -447,7 +447,7 @@ Out: ![img](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXcAAAD7CAYAAACRxdTpAA
 
 We can apply this function to a single column of activations from a neural network, and get back a column of numbers between 0 and 1, so it's a very useful activation function for our final layer.
 
-我们能够把这一函数应用到神经网络单一列的激活，并获取一列介于0到1之间的数值，所以对于我们最后的层它是一个非常有用的激活函数。
+我们能够把这一函数应用到神经网络单一列的激活，并获取一列介于从0到1之间的数值，所以对于我们最后的层它是一个非常有用的激活函数。
 
 Now think about what happens if we want to have more categories in our target (such as our 37 pet breeds). That means we'll need more activations than just a single column: we need an activation *per category*. We can create, for instance, a neural net that predicts 3s and 7s that returns two activations, one for each class—this will be a good first step toward creating the more general approach. Let's just use some random numbers with a standard deviation of 2 (so we multiply `randn` by 2) for this example, assuming we have 6 images and 2 possible categories (where the first column represents 3s and the second is 7s):
 
@@ -535,7 +535,7 @@ Out: $\begin{array}{r} tensor(
 
 If we have three output activations, such as in our bear classifier, calculating softmax for a single bear image would then look like something like <bear_softmax>.
 
-`softmax`是`sigmoid`的多分类等效式，我们有超过两个分类且分类的概率必须合计为时，我们必须无一例外的使用它。及时只有两个分类我们也经常使用它，只是为了保证事物更加的一致。我们能够创建其它函数，它们具有所有激活在0到1之间，且合计为1的属性。然而，其它函数都没有与S函数相同的逻辑关系，我们已经看过的平滑与对称。另外，在下一小节，我们将会很快看到softmax函数与损失函数非常好的协同工作。
+`softmax`是`sigmoid`的多分类等效式，我们有超过两个分类且分类的概率必须合计为时，我们必须无一例外的使用它。及时只有两个分类我们也经常使用它，只是为了保证事物更加的一致。我们能够创建其它函数，它们具有所有激活在从0到1之间，且合计为1的属性。然而，其它函数都没有与S函数相同的逻辑关系，我们已经看过的平滑与对称。另外，在下一小节，我们将会很快看到softmax函数与损失函数非常好的协同工作。
 
 如果我们有三个激活输出，正如在我们的熊分类中那样，对于单个熊的图像计算softmax，然后会看到如<熊分类softmax例子>中的内容。
 
@@ -548,7 +548,7 @@ If we have three output activations, such as in our bear classifier, calculating
 
 What does this function do in practice? Taking the exponential ensures all our numbers are positive, and then dividing by the sum ensures we are going to have a bunch of numbers that add up to 1. The exponential also has a nice property: if one of the numbers in our activations `x` is slightly bigger than the others, the exponential will amplify this (since it grows, well... exponentially), which means that in the softmax, that number will be closer to 1.
 
-在实践中这个函数做了什么事情呢？谈论的指数可确保我们所有的数值是正的，然后除以合计数，以确保我们会有一组总计为1的数值。指数也有一个很好的属性：如果在我们激活`x`中的其中一个数值稍微比其它数据更大，指数会对些放大（由于它称指数级的增长），这意味在softmax中数值会接近1 。
+在实践中这个函数做了什么事情呢？使用指数可确保我们所有的数值是正的，然后除以合计数，以确保我们会有一组总计为1的数值。指数也有一个很好的属性：如果在我们激活`x`中的其中一个数值稍微比其它数据更大，指数会对些放大（由于它称指数级的增长），这意味在softmax中数值会接近1 。
 
 Intuitively, the softmax function *really* wants to pick one class among the others, so it's ideal for training a classifier when we know each picture has a definite label. (Note that it may be less ideal during inference, as you might want your model to sometimes tell you it doesn't recognize any of the classes that it has seen during training, and not pick a class because it has a slightly bigger activation score. In this case, it might be better to train a model using multiple binary output columns, each using a sigmoid activation.)
 
@@ -557,3 +557,124 @@ Intuitively, the softmax function *really* wants to pick one class among the oth
 Softmax is the first part of the cross-entropy loss—the second part is log likeklihood.
 
 Softmax是交叉熵损失函数的第一部分，第二部分是对数似然。
+
+### Log Likelihood
+
+### 对数似然
+
+When we calculated the loss for our MNIST example in the last chapter we used:
+
+在上一章节中，在我们计算MNIST损失的例子中，我们使用了：
+
+```python
+def mnist_loss(inputs, targets):
+    inputs = inputs.sigmoid()
+    return torch.where(targets==1, 1-inputs, inputs).mean()
+```
+
+Just as we moved from sigmoid to softmax, we need to extend the loss function to work with more than just binary classification—it needs to be able to classify any number of categories (in this case, we have 37 categories). Our activations, after softmax, are between 0 and 1, and sum to 1 for each row in the batch of predictions. Our targets are integers between 0 and 36.
+
+正如我们从sigmoid转移到softmax，我们需要扩展损失函数以处理不仅仅二值分类，它需要能够分类任意数量种类（在例中，我们有37个种类）。在softmax之后，我们的激活处于从0到1之间，且批处理预测的全部行合计为1。我们的目标是在从0到36之间的整型数值。
+
+In the binary case, we used `torch.where` to select between `inputs` and `1-inputs`. When we treat a binary classification as a general classification problem with two categories, it actually becomes even easier, because (as we saw in the previous section) we now have two columns, containing the equivalent of `inputs` and `1-inputs`. So, all we need to do is select from the appropriate column. Let's try to implement this in PyTorch. For our synthetic 3s and 7s example, let's say these are our labels:
+
+在二值事例中，我们用了`torch.where`来选择从`inputs`到`1-inputs`之间的值。当我们处理一个有二个类型普通分类的二值分类问题时，实际上它甚至变的更容易，因为（正好我们在之前小节看到的）现在我们有二列，包含了`inputs`和`1-inputs`的等价物。所以，所有我们需要做的是从合适的列中做选择。让我们在PyTorch中尝试执行。对于我们人造的数字3和7的例子，假设这些是我们的标签：
+
+```
+targ = tensor([0,1,0,1,1,0])
+```
+
+and these are the softmax activations:
+
+用这些是softmax激活：
+
+```
+sm_acts
+```
+
+Out[ ]:
+
+```
+tensor([[0.6025, 0.3975],
+        [0.5021, 0.4979],
+        [0.1332, 0.8668],
+        [0.9966, 0.0034],
+        [0.5959, 0.4041],
+        [0.3661, 0.6339]])
+```
+
+Then for each item of `targ` we can use that to select the appropriate column of `sm_acts` using tensor indexing, like so:
+
+In [ ]:
+
+```
+idx = range(6)
+sm_acts[idx, targ]
+```
+
+Out[ ]:
+
+```
+tensor([0.6025, 0.4979, 0.1332, 0.0034, 0.4041, 0.3661])
+```
+
+To see exactly what's happening here, let's put all the columns together in a table. Here, the first two columns are our activations, then we have the targets, the row index, and finally the result shown immediately above:
+
+In [ ]:
+
+```
+#hide_input
+from IPython.display import HTML
+df = pd.DataFrame(sm_acts, columns=["3","7"])
+df['targ'] = targ
+df['idx'] = idx
+df['loss'] = sm_acts[range(6), targ]
+t = df.style.hide_index()
+#To have html code compatible with our script
+html = t._repr_html_().split('</style>')[1]
+html = re.sub(r'<table id="([^"]+)"\s*>', r'<table >', html)
+display(HTML(html))
+```
+
+|        3 |          7 | targ |  idx |       loss |
+| -------: | ---------: | ---: | ---: | ---------: |
+| 0.602469 |   0.397531 |    0 |    0 |   0.602469 |
+| 0.502065 |   0.497935 |    1 |    1 |   0.497935 |
+| 0.133188 |   0.866811 |    0 |    2 |   0.133188 |
+|  0.99664 | 0.00336017 |    1 |    3 | 0.00336017 |
+| 0.595949 |   0.404051 |    1 |    4 |   0.404051 |
+| 0.366118 |   0.633882 |    0 |    5 |   0.366118 |
+
+Looking at this table, you can see that the final column can be calculated by taking the `targ` and `idx` columns as indices into the two-column matrix containing the `3` and `7` columns. That's what `sm_acts[idx, targ]` is actually doing.
+
+The really interesting thing here is that this actually works just as well with more than two columns. To see this, consider what would happen if we added an activation column for every digit (0 through 9), and then `targ` contained a number from 0 to 9. As long as the activation columns sum to 1 (as they will, if we use softmax), then we'll have a loss function that shows how well we're predicting each digit.
+
+We're only picking the loss from the column containing the correct label. We don't need to consider the other columns, because by the definition of softmax, they add up to 1 minus the activation corresponding to the correct label. Therefore, making the activation for the correct label as high as possible must mean we're also decreasing the activations of the remaining columns.
+
+PyTorch provides a function that does exactly the same thing as `sm_acts[range(n), targ]` (except it takes the negative, because when applying the log afterward, we will have negative numbers), called `nll_loss` (*NLL* stands for *negative log likelihood*):
+
+In [ ]:
+
+```
+-sm_acts[idx, targ]
+```
+
+Out[ ]:
+
+```
+tensor([-0.6025, -0.4979, -0.1332, -0.0034, -0.4041, -0.3661])
+```
+
+In [ ]:
+
+```
+F.nll_loss(sm_acts, targ, reduction='none')
+```
+
+Out[ ]:
+
+```
+tensor([-0.6025, -0.4979, -0.1332, -0.0034, -0.4041, -0.3661])
+```
+
+Despite its name, this PyTorch function does not take the log. We'll see why in the next section, but first, let's see why taking the logarithm can be useful.
