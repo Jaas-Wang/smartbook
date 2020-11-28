@@ -524,12 +524,12 @@ sm_acts
 ```
 
 Out: $\begin{array}{r} tensor(
-		&[[&0.6025,& 0.3975&],\\
-        &[&0.5021, &0.4979&],\\
-        &[&0.1332, &0.8668&],\\
-        &[&0.9966, &0.0034&],\\
-        &[&0.5959, &0.4041&],\\
-        &[&0.3661, &0.6339&]]&)\end{array}$
+		&[[0.6025, 0.3975],\\
+        &[0.5021, 0.4979],\\
+        &[0.1332, 0.8668],\\
+        &[0.9966, 0.0034],\\
+        &[0.5959, 0.4041],\\
+        &[0.3661, 0.6339]]&)\end{array}$
 
 `softmax` is the multi-category equivalent of `sigmoid`—we have to use it any time we have more than two categories and the probabilities of the categories must add to 1, and we often use it even when there are just two categories, just to make things a bit more consistent. We could create other functions that have the properties that all activations are between 0 and 1, and sum to 1; however, no other function has the same relationship to the sigmoid function, which we've seen is smooth and symmetric. Also, we'll see shortly that the softmax function works well hand-in-hand with the loss function we will look at in the next section.
 
@@ -586,41 +586,34 @@ targ = tensor([0,1,0,1,1,0])
 
 and these are the softmax activations:
 
-用这些是softmax激活：
+这些是softmax激活：
 
 ```
 sm_acts
 ```
 
-Out[ ]:
-
-```
-tensor([[0.6025, 0.3975],
-        [0.5021, 0.4979],
-        [0.1332, 0.8668],
-        [0.9966, 0.0034],
-        [0.5959, 0.4041],
-        [0.3661, 0.6339]])
-```
+Out: $\begin{array}{r} tensor(
+		&[[0.6025, 0.3975],\\
+        &[0.5021, 0.4979],\\
+        &[0.1332, 0.8668],\\
+        &[0.9966, 0.0034],\\
+        &[0.5959, 0.4041],\\
+        &[0.3661, 0.6339]]&)\end{array}$
 
 Then for each item of `targ` we can use that to select the appropriate column of `sm_acts` using tensor indexing, like so:
 
-In [ ]:
+然后对于`targ`的每个数据项，使用张量索引我们能够用其来选择`sm_acts`的合适列，像这样：
 
 ```
 idx = range(6)
 sm_acts[idx, targ]
 ```
 
-Out[ ]:
-
-```
-tensor([0.6025, 0.4979, 0.1332, 0.0034, 0.4041, 0.3661])
-```
+Out: tensor([0.6025, 0.4979, 0.1332, 0.0034, 0.4041, 0.3661])
 
 To see exactly what's happening here, let's put all the columns together in a table. Here, the first two columns are our activations, then we have the targets, the row index, and finally the result shown immediately above:
 
-In [ ]:
+来看一下到底这里发生了什么，我们把所有列放在一个表里。这里的头两列是我们的激活，然后是我们的目标值，行索引，以及最后立即展示上面的结果：
 
 ```
 #hide_input
@@ -647,34 +640,32 @@ display(HTML(html))
 
 Looking at this table, you can see that the final column can be calculated by taking the `targ` and `idx` columns as indices into the two-column matrix containing the `3` and `7` columns. That's what `sm_acts[idx, targ]` is actually doing.
 
+看这个表，你能够看到最后一行能够通过`targ`和`idx`列作为包含`3`和`7`两列矩阵的索引而计算得出。 这就是`sm_acts[idx, targ]`实际做的事情。
+
 The really interesting thing here is that this actually works just as well with more than two columns. To see this, consider what would happen if we added an activation column for every digit (0 through 9), and then `targ` contained a number from 0 to 9. As long as the activation columns sum to 1 (as they will, if we use softmax), then we'll have a loss function that shows how well we're predicting each digit.
+
+真正有有趣的事情是，这个功能实际上对于更多列（大于两列）也一样有效。为此，考虑一下如果我们对每个数字（从0到9）都增加一个激活会发生什么，且`targ`包含的数值从0到9。只要所有激活列的合计为1（如果我们使用softmax它们就会有这样的结果），然后我们会用一个损失函数展示我们预测每个数字的良好情况。
 
 We're only picking the loss from the column containing the correct label. We don't need to consider the other columns, because by the definition of softmax, they add up to 1 minus the activation corresponding to the correct label. Therefore, making the activation for the correct label as high as possible must mean we're also decreasing the activations of the remaining columns.
 
+我们只从包含正确标签的列选取损失。我们不需要考虑其它列，因为依据softmax的定义，他们合计为1，减去正确标签的相应激活。因为，对于正确标签使其激活尽可能的高，这就一定意味着我们已经减小了剩余列的激活。
+
 PyTorch provides a function that does exactly the same thing as `sm_acts[range(n), targ]` (except it takes the negative, because when applying the log afterward, we will have negative numbers), called `nll_loss` (*NLL* stands for *negative log likelihood*):
 
-In [ ]:
+Pytorch提供了一个函数叫做`nll_loss`（NLL为负的对于似然），做了与`sm_acts[range(n), targ]`完全相同的事情（除了它取负，因为在之后的应用对数时，我们会有一个负数）：
 
 ```
 -sm_acts[idx, targ]
 ```
 
-Out[ ]:
-
-```
-tensor([-0.6025, -0.4979, -0.1332, -0.0034, -0.4041, -0.3661])
-```
-
-In [ ]:
+Out: tensor([-0.6025, -0.4979, -0.1332, -0.0034, -0.4041, -0.3661])
 
 ```
 F.nll_loss(sm_acts, targ, reduction='none')
 ```
 
-Out[ ]:
-
-```
-tensor([-0.6025, -0.4979, -0.1332, -0.0034, -0.4041, -0.3661])
-```
+Out: tensor([-0.6025, -0.4979, -0.1332, -0.0034, -0.4041, -0.3661])
 
 Despite its name, this PyTorch function does not take the log. We'll see why in the next section, but first, let's see why taking the logarithm can be useful.
+
+尽管它名字了，但这个PyTorch函数并没有采用对数。在之后的小节里我们会看到为什么这样，但首先，让我们看一下为什么采纳对数能够有用。
