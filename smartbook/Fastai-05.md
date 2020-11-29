@@ -2,7 +2,7 @@
 
 # 图像分类
 
-Now that you understand what deep learning is, what it's for, and how to create and deploy a model, it's time for us to go deeper! In an ideal world deep learning practitioners wouldn't have to know every detail of how things work under the hood… But as yet, we don't live in an ideal world. The truth is, to make your model really work, and work reliably, there are a lot of details you have to get right, and a lot of details that you have to check. This process requires being able to look inside your neural network as it trains, and as it makes predictions, find possible problems, and know how to fix them.
+Now that you understand what deep learning is, what it's for, and how to create and deploy a model, it's time for us to go deeper! In an ideal world deep learning practitioners wouldn't have to know every detail of how things work under the hood… But as yet, we don't live in an ideal world. The truth is, to make your model really work, and work reliably, there are a lot of details you have to get right, and a lot of details that you have to check. This process requires being able to look inside your neural network as it trains, and as it make s predictions, find possible problems, and know how to fix them.
 
 现在你理解了深度学习是什么，为了什么，且如何创建和部署一个模型，对我们来说是时候更深一步了！在理想的世界里深度学习行业者不需要知道事物深层次如何运作的所有细节...但到目前为止，我们并不是生活在一个理想的世界里。真像是，要使得你的模型真正的工作且可行，有太多的细节你必须正确处理，很多细节你需要检查。这一过程需要能够查看你所训练的神经网络内部，并在它做出预测后查找可能的问题，及要知道如何来修复它们。
 
@@ -512,7 +512,7 @@ def softmax(x): return exp(x) / exp(x).sum(dim=1, keepdim=True)
 
 > jargon: Exponential function (exp): Literally defined as `e**x`, where `e` is a special number approximately equal to 2.718. It is the inverse of the natural logarithm function. Note that `exp` is always positive, and it increases *very* rapidly!
 >
-> 术语：指数函数（exp）：字面上的定义是`e**x`，`e`是一个特定近似等于2.718的数值。它是自然对数函数的倒数函数。注释`exp`一直是正值，并且它的增长*非常* 快速！
+> 术语：指数函数（exp）：字面上的定义是`e**x`，`e`是一个特定近似等于2.718的数值。它是自然对数函数的逆函数。注释`exp`一直是正值，并且它的增长*非常* 快速！
 
 Let's check that `softmax` returns the same values as `sigmoid` for the first column, and those values subtracted from 1 for the second column:
 
@@ -669,3 +669,104 @@ Out: tensor([-0.6025, -0.4979, -0.1332, -0.0034, -0.4041, -0.3661])
 Despite its name, this PyTorch function does not take the log. We'll see why in the next section, but first, let's see why taking the logarithm can be useful.
 
 尽管它名字了，但这个PyTorch函数并没有采用对数。在之后的小节里我们会看到为什么这样，但首先，让我们看一下为什么采纳对数能够有用。
+
+### Taking the Log
+
+### 采纳对数 
+
+The function we saw in the previous section works quite well as a loss function, but we can make it a bit better. The problem is that we are using probabilities, and probabilities cannot be smaller than 0 or greater than 1. That means that our model will not care whether it predicts 0.99 or 0.999. Indeed, those numbers are so close together—but in another sense, 0.999 is 10 times more confident than 0.99. So, we want to transform our numbers between 0 and 1 to instead be between negative infinity and infinity. There is a mathematical function that does exactly this: the *logarithm* (available as `torch.log`). It is not defined for numbers less than 0, and looks like this:
+
+在之前的小节我们看到这个函数作为损失函数工作的十分好，但我们能够使它更好一点。问题是我们使用了概率，且概率不能比0小或比1大。意味我们模型将不考虑它测试是0.99或0.999。确实，那些数字是如何的接近，但其它视角看，0.999比0.99的确信度多10倍。所以，作为替代我们想转换0和1之间的数值到负无穷和正无穷。这里有一个数学函数可准确的做这个事情：对数（以`torch.log`获得）。对于比0小的数值它没有定义，看起来是下面这个样子：
+
+```
+plot_function(torch.log, min=0,max=4)
+```
+
+Out: ![img](data:image/png;base64,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)
+
+Does "logarithm" ring a bell? The logarithm function has this identity:
+
+“对数”有印象吗？对数函数有这个特点：
+
+```
+y = b**a
+a = log(y,b)
+```
+
+In this case, we're assuming that `log(y,b)` returns *log y base b*. However, PyTorch actually doesn't define `log` this way: `log` in Python uses the special number `e` (2.718...) as the base.
+
+在这个例子中，我们假设`log(y,b)`返回`b为底的对数y`，PyTorch实际上没有定义`log`这个方法：在Python中`对数`使用特定数值`e`(2.718...)为底。
+
+Perhaps a logarithm is something that you have not thought about for the last 20 years or so. But it's a mathematical idea that is going to be really critical for many things in deep learning, so now would be a great time to refresh your memory. The key thing to know about logarithms is this relationship:
+
+也许对数是你大约近20年没有想过的事情。但是它将是一个在深度学习中对于很多事情是真正关键的数学概念，所以现在也许是恢复你的记忆的最好时刻吧。关于对数关键要知道的事情是这个逻辑关系：
+
+```
+log(a*b) = log(a)+log(b)
+```
+
+When we see it in that format, it looks a bit boring; but think about what this really means. It means that logarithms increase linearly when the underlying signal increases exponentially or multiplicatively. This is used, for instance, in the Richter scale of earthquake severity, and the dB scale of noise levels. It's also often used on financial charts, where we want to show compound growth rates more clearly. Computer scientists love using logarithms, because it means that modification, which can create really really large and really really small numbers, can be replaced by addition, which is much less likely to result in scales that are difficult for our computers to handle.
+
+当我们在这样的格式中看到它时，看起来有点无聊。但想一下这真正表达的意思是什么。它表达的意思是当呈极大的几何级数或乘法倍数级增长时对数呈线性增长。例如，这被用于地震严重程度的里氏等级和噪声水平的分贝等级。它也经常被用于金融图表，我们想来展示更加清晰的组合增长率。计算机科学家喜欢使用对数，因为它意味能创建的真正十分十分巨大和十分十分小的数值，通过加法进行修改替换，这极不可能导致在规模计算上我们计算机会处理困难。
+
+> s: It's not just computer scientists that love logs! Until computers came along, engineers and scientists used a special ruler called a "slide rule" that did multiplication by adding logarithms. Logarithms are widely used in physics, for multiplying very big or very small numbers, and many other fields.
+>
+> 西：不只是计算机科学家喜爱对数！在计算机出现之前，工程师和科学家使用一种称为“滑尺”的特殊尺子，通过加对数做乘法计算。对数在物理学中，非常大或非常小的数值乘法和很多其它领域都被广泛使用。
+
+Taking the mean of the positive or negative log of our probabilities (depending on whether it's the correct or incorrect class) gives us the *negative log likelihood* loss. In PyTorch, `nll_loss` assumes that you already took the log of the softmax, so it doesn't actually do the logarithm for you.
+
+对于我们的概率取正或负对数的平均值（依据它是正确或错误的分类）提供给我们*负对数似然*损失。在PyTorch中，`nll_loss`假定我们已经取了softmax的对数，所以它不实际上不会对为计算对数。
+
+> warning: Confusing Name, Beware: The nll in `nll_loss` stands for "negative log likelihood," but it doesn't actually take the log at all! It assumes you have *already* taken the log. PyTorch has a function called `log_softmax` that combines `log` and `softmax` in a fast and accurate way. `nll_loss` is deigned to be used after `log_softmax`.
+>
+> 提醒：当心混淆命名：在`nll_loss`中的nll代表的是“负对数似然”，但它实际上根本没有取对数！它假设你*已经*取了对数。PyTorch有一个名为`log_softmax`的函数，它以快速且准确的方法把`log`和`softmax`组合在一起。`nll_loss`被设计用于`log_softmax`之后。
+
+When we first take the softmax, and then the log likelihood of that, that combination is called *cross-entropy loss*. In PyTorch, this is available as `nn.CrossEntropyLoss` (which, in practice, actually does `log_softmax` and then `nll_loss`):
+
+当我们首次采用softmax，且随后对它做对数似然时，这个组合被称为*交叉熵损失*。在PyTorch中以`nn.CrossEntropyLoss`获得（事实上，它实际做了`log_softmax`且随后做了`nll_loss`）：
+
+```
+loss_func = nn.CrossEntropyLoss()
+```
+
+As you see, this is a class. Instantiating it gives you an object which behaves like a function:
+
+正如你看到的，这是一个类。实例化后它提供给你一个操作操函数的对象：
+
+```
+loss_func(acts, targ)
+```
+
+Out: tensor(1.8045)
+
+All PyTorch loss functions are provided in two forms, the class just shown above, and also a plain functional form, available in the `F` namespace:
+
+所有的PyTorch损失函数以两种形式被提供，如上所示的类，用另外一种纯函数的形式，在`F`命名空间中可获取：
+
+```
+F.cross_entropy(acts, targ)
+```
+
+Out: tensor(1.8045)
+
+Either one works fine and can be used in any situation. We've noticed that most people tend to use the class version, and that's more often used in PyTorch's official docs and examples, so we'll tend to use that too.
+
+By default PyTorch loss functions take the mean of the loss of all items. You can use `reduction='none'` to disable that:
+
+每一个都运行极好且能够被用于任何情况下。我们已经提到绝大多数人倾向使用类版本，且在PyTorch的官方文档和例子中它更经常使用，所以我们也会倾向使用它。
+
+PyTorch损失函数在默认情况下会求所有数据项的损失平均值。你能够用`reduction='none'`来禁用它：
+
+```
+nn.CrossEntropyLoss(reduction='none')(acts, targ)
+```
+
+Out: tensor([0.5067, 0.6973, 2.0160, 5.6958, 0.9062, 1.0048])
+
+> s: An interesting feature about cross-entropy loss appears when we consider its gradient. The gradient of `cross_entropy(a,b)` is just `softmax(a)-b`. Since `softmax(a)` is just the final activation of the model, that means that the gradient is proportional to the difference between the prediction and the target. This is the same as mean squared error in regression (assuming there's no final activation function such as that added by `y_range`), since the gradient of `(a-b)**2` is `2*(a-b)`. Because the gradient is linear, that means we won't see sudden jumps or exponential increases in gradients, which should lead to smoother training of models.
+>
+> 西：当我们思考交叉熵的梯度时，对于交叉熵损失就显示出一个有趣的特征。`cross_entropy(a,b)`的梯度就是`softmax(a)-b`。因为`softmax(a)`就是最终的模型激活，这表达的意思是梯度对于预测和目标间的差异是成比例的。在回归中它与均方误差是相同的（假定没有最终的激活函数，例如通过`y_range`添加的函数），因为`(a-b)**2`的梯度是`2*(a-b)`。因为梯度是线性的，这意味着在梯度中我们不会看到突然的跳跃或指数级增长，它应该会导致模型的训练更加平滑。
+
+We have now seen all the pieces hidden behind our loss function. But while this puts a number on how well (or badly) our model is doing, it does nothing to help us know if it's actually any good. Let's now see some ways to interpret our model's predictions.
+
+我们现在已经看到了损失函数背后的所有隐藏部分。但当为我们模型做的是如何好（或坏）提供一个数值时，它无助于让我们知道是否它有实际的什么好处。现在让我们看一些方法来解释我们模型的预测。
