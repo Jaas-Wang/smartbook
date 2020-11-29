@@ -770,3 +770,42 @@ Out: tensor([0.5067, 0.6973, 2.0160, 5.6958, 0.9062, 1.0048])
 We have now seen all the pieces hidden behind our loss function. But while this puts a number on how well (or badly) our model is doing, it does nothing to help us know if it's actually any good. Let's now see some ways to interpret our model's predictions.
 
 我们现在已经看到了损失函数背后的所有隐藏部分。但当为我们模型做的是如何好（或坏）提供一个数值时，它无助于让我们知道是否它有实际的什么好处。现在让我们看一些方法来解释我们模型的预测。
+
+## Model Interpretation
+
+It's very hard to interpret loss functions directly, because they are designed to be things computers can differentiate and optimize, not things that people can understand. That's why we have metrics. These are not used in the optimization process, but just to help us poor humans understand what's going on. In this case, our accuracy is looking pretty good already! So where are we making mistakes?
+
+We saw in <> that we can use a confusion matrix to see where our model is doing well, and where it's doing badly:
+
+In [ ]:
+
+```
+#width 600
+interp = ClassificationInterpretation.from_learner(learn)
+interp.plot_confusion_matrix(figsize=(12,12), dpi=60)
+```
+
+Out: <img src="./_v_images/confusion_matrix.png" alt="confusion_matrix" style="zoom:100%;" />
+
+Oh dear—in this case, a confusion matrix is very hard to read. We have 37 different breeds of pet, which means we have 37×37 entries in this giant matrix! Instead, we can use the `most_confused` method, which just shows us the cells of the confusion matrix with the most incorrect predictions (here, with at least 5 or more):
+
+哎，天呀！在这个例子中，混淆矩阵是非常难读的。我们有37个不同品种的宠物，这代表在这个巨大矩阵里我们有37×37个条目！作为替代，我们能够用`most_confused`方法，它只给我们显示最不正确预测的混淆矩阵单元格（这里，至少5个或更多）：
+
+```
+interp.most_confused(min_val=5)
+```
+
+Out: $\begin{array}{l}
+[('american\_pit\_bull\_terrier', 'staffordshire\_bull\_terrier', 10),\\
+ ('Ragdoll', 'Birman', 8),\\
+ ('Siamese', 'Birman', 6),\\
+ ('Bengal', 'Egyptian\_Mau', 5),\\
+ ('american\_pit\_bull\_terrier', 'american\_bulldog', 5)] \end{array}$
+
+Since we are not pet breed experts, it is hard for us to know whether these category errors reflect actual difficulties in recognizing breeds. So again, we turn to Google. A little bit of Googling tells us that the most common category errors shown here are actually breed differences that even expert breeders sometimes disagree about. So this gives us some comfort that we are on the right track.
+
+We seem to have a good baseline. What can we do now to make it even better?
+
+因为我们并不是宠物品种专家，对我们来说很难知道是否这些分类错误实际反映了在识别品种方面的差异。所以我们再次求助于谷歌。谷歌简单搜索后告诉我们最常见的分类错误显示这实际上是品种差异，即使是品种专家有时也有不同意见。所以这给了我们一丝安慰，我们在正确的路径上。
+
+我们似乎有了一个好的基线。现在我们能做什么来使它更好？
