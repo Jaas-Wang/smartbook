@@ -1171,7 +1171,7 @@ In 2013 a PhD student, Matt Zeiler, and his supervisor, Rob Fergus, published th
 
 This picture requires some explanation. For each layer, the image part with the light gray background shows the reconstructed weights pictures, and the larger section at the bottom shows the parts of the training images that most strongly matched each set of weights. For layer 1, what we can see is that the model has discovered weights that represent diagonal, horizontal, and vertical edges, as well as various different gradients. (Note that for each layer only a subset of the features are shown; in practice there are thousands across all of the layers.) These are the basic building blocks that the model has learned for computer vision. They have been widely analyzed by neuroscientists and computer vision researchers, and it turns out that these learned building blocks are very similar to the basic visual machinery in the human eye, as well as the handcrafted computer vision features that were developed prior to the days of deep learning. The next layer is represented in <img_layer2>.
 
-这张图片需要一些解释。图片用了浅灰背景部分为每层展示了重建权重图，在底部更大的区域展示训练图片每个权重集最匹配部分。对于层 1，我们能够发现模型已经发现了代表对角线，水平线和垂直边缘，以及各种不同类型的渐变权重。（注意这里只对每层的特征子集做了展示。实践中所有层上都会有数千个。）对于计算机视觉这是一些模型已经学到的基础构建模块。他们已经被神经科学家和计算机视觉研究人员广泛的分析了，并得出这些学到的构建模型与人类眼睛的基础可视化机制和深度学习时代之前开发的手工计算机视觉特征是非常类似的。下一层被展示在<层 二图>内。
+这张图片需要一些解释。图片用了浅灰背景部分为每层展示了重建权重图，在底部更大的区域展示训练图片每个权重集最匹配部分。对于层 1，我们能够发现模型已经发现了代表对角线，水平线和垂直边缘，以及各种不同类型的渐变权重。（注意这里只对每层的特征子集做了展示。实践中所有层上都会有数千个。）对于计算机视觉这是一些模型已经学到的基础构建模块。他们已经被神经科学家和计算机视觉研究人员广泛的分析了，并得出这些学到的构建模型与人类眼睛的基础可视化机制和深度学习时代之前开发的手工计算机视觉特征是非常类似的。下一层被展示在<层二图>内。
 
 <div style="text-align:center">
   <p align="center">
