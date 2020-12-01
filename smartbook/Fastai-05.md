@@ -104,7 +104,7 @@ In this case, we need a regular expression that extracts the pet breed from the 
 
 在这个例子中，我们用正则表达示从文件名中抽取宠物品种。
 
-We do not have the space to give you a complete regular expression tutorial here,but there are many excellent ones online and we know that many of you will already be familiar with this wonderful tool. If you're not, that is totally fine—this is a great opportunity for you to rectify that! We find that regular expressions are one of the most useful tools in our programming toolkit, and many of our students tell us that this is one of the things they are most excited to learn about. So head over to Google and search for "regular expressions tutorial" now, and then come back here after you've had a good look around. The [book's website](https://book.fast.ai/) also provides a list of our favorites.
+We do not have the space to give you a complete regular expression tutorial here, but there are many excellent ones online and we know that many of you will already be familiar with this wonderful tool. If you're not, that is totally fine—this is a great opportunity for you to rectify that! We find that regular expressions are one of the most useful tools in our programming toolkit, and many of our students tell us that this is one of the things they are most excited to learn about. So head over to Google and search for "regular expressions tutorial" now, and then come back here after you've had a good look around. The [book's website](https://book.fast.ai/) also provides a list of our favorites.
 
 在这里我们没有时间给你一个完整的正则表达式的指导，但是有很多优秀的在线教程，并且我们知道对于其中的一些优秀的工具你已经熟知了。如果你不知道，完全没有关系，对你来说这是一个很好的修正机会！我们发现在我们程序工具箱里正则表达式是最有用的工具之一并且我们的很多学生告诉我们学习它是他们的最激动的事情之一。所以现在到谷歌并搜索“正则表达式指引”吧，然后充分看完后再返回到这里。[本书网站](https://book.fast.ai/) 也提供了我们收藏的列表。
 
@@ -161,7 +161,7 @@ We need our images to have the same dimensions, so that they can collate into te
 
 我们需要图像有相同的维度，所以他们就能够整理到张量中传递给GPU。我们也希望最小化我们执行的不同增强计算的数量。性能需求建议下我们应该尽可能压缩我们的增强转换组成为更少的转换（压缩计算数量和有损操作数量）并转换图像为相同尺寸（在GPU上更有效的处理）。
 
-The challenge is that, if performed after resizing down to the augmented size, various common data augmentation transforms might introduce spurious empty zones, degrade data, or both. For instance, rotating an image by 45 degrees fills corner regions of the new bounds with emptyness, which will not teach the model anything. Many rotation and zooming operations will require interpolating to create pixels. These interpolated pixels are derived from the original image data but are still of lower quality.
+The challenge is that, if performed after resizing down to the augmented size, various common data augmentation transforms might introduce spurious empty zones, degrade data, or both. For instance, rotating an image by 45 degrees fills corner regions of the new bounds with emptiness, which will not teach the model anything. Many rotation and zooming operations will require interpolating to create pixels. These interpolated pixels are derived from the original image data but are still of lower quality.
 
 这样做的挑战是，如果调整尺寸到增强尺寸后执行，很多常见的增强转换会导致虚假的空域，或数据质量退化，或同时出现这两种问题。例如， 通过45度转换一张图片，填充新的空白边界的角区域，不会教会模型任何东西。很多转换和缩放操作会需要插值来创建像素。这些插值像素是从原始图像数据衍生得来的，但依然质量是很低的。
 
@@ -262,7 +262,7 @@ Take a look at each image, and check that each one seems to have the correct lab
 
 看一下每一张图像，并检查每张图像是否有正确的宠物品种标注。通常，数据科学家处理的数据，他们可能并会与领域专家一样熟悉：例如，我实际上并不知道这些宠物品种是什么。因为我不是一个宠物品种专家，在这一点上我也许会用谷歌图片来搜索一些这些品种，并确保在输出时与我们看到这些图像看起来是相似的。
 
-If you made a mistake while building your `DataBlock`, it is very likely you won't see it before this step. To debug this, we encourage you to use the `summary` method. It will attempt to create a batch from the source you give it, with a lot of details. Also, if it fails, you will see exactly at which point the error happens, and the library will try to give you some help. For instance, one common mistake is to forget to use a `Resize` transform, so you en up with pictures of different sizes and are not able to batch them. Here is what the summary would look like in that case (note that the exact text may have changed since the time of writing, but it will give you an idea):
+If you made a mistake while building your `DataBlock`, it is very likely you won't see it before this step. To debug this, we encourage you to use the `summary` method. It will attempt to create a batch from the source you give it, with a lot of details. Also, if it fails, you will see exactly at which point the error happens, and the library will try to give you some help. For instance, one common mistake is to forget to use a `Resize` transform, so you end up with pictures of different sizes and are not able to batch them. Here is what the summary would look like in that case (note that the exact text may have changed since the time of writing, but it will give you an idea):
 
 如果在创建你的`DataBlock`时你犯了一个错误，在这一步这前你极有可能不会看到它。来调试一下，我们鼓励你使用`summary`方法。它会尝试从你给定的资源上创建一个批次，并带有很多细节。此外，如果它失败了，你会准确的看到哪个点产生了错误，并且库会尝试给你一些帮助。例如，一个常发生的错误是会忘记使用一个`Resize`转换，所以最终你会用不同尺寸的图像且无法批处理它们。在本下例中summary可能看起来是这样的（注解：由于编写时间原因，准确的文字描述可能发生了变化，但它会给你一个启示）：
 
@@ -554,7 +554,7 @@ Intuitively, the softmax function *really* wants to pick one class among the oth
 
 直观的说，softmax函数*实际* 想从其它类型中取出一个类，所以当我们知道每一张图片有明确的标签，训练一个分类器它是理想的。（注解，在推理期间它可能不是太理想，你可能希望你的模型有时候告诉你它不能识别训练期间看到的任何分类，没有选出分类是因为它有一个稍微大一点的激活分数。在这个例子中，可能最好训练一个使用多个二值输出列的模型，每一列使用一个S激活。）
 
-Softmax is the first part of the cross-entropy loss—the second part is log likeklihood.
+Softmax is the first part of the cross-entropy loss—the second part is log likelihood.
 
 Softmax是交叉熵损失函数的第一部分，第二部分是对数似然。
 
@@ -705,9 +705,9 @@ Perhaps a logarithm is something that you have not thought about for the last 20
 log(a*b) = log(a)+log(b)
 ```
 
-When we see it in that format, it looks a bit boring; but think about what this really means. It means that logarithms increase linearly when the underlying signal increases exponentially or multiplicatively. This is used, for instance, in the Richter scale of earthquake severity, and the dB scale of noise levels. It's also often used on financial charts, where we want to show compound growth rates more clearly. Computer scientists love using logarithms, because it means that modification, which can create really really large and really really small numbers, can be replaced by addition, which is much less likely to result in scales that are difficult for our computers to handle.
+When we see it in that format, it looks a bit boring; but think about what this really means. It means that logarithms increase linearly when the underlying signal increases exponentially or multiplicatively. This is used, for instance, in the Richter scale of earthquake severity, and the dB scale of noise levels. It's also often used on financial charts, where we want to show compound growth rates more clearly. Computer scientists love using logarithms, because it means that multiplication, which can create really really large and really really small numbers, can be replaced by addition, which is much less likely to result in scales that are difficult for our computers to handle.
 
-当我们在这样的格式中看到它时，看起来有点无聊。但想一下这真正表达的意思是什么。它表达的意思是当呈极大的几何级数或乘法倍数级增长时对数呈线性增长。例如，这被用于地震严重程度的里氏等级和噪声水平的分贝等级。它也经常被用于金融图表，我们想来展示更加清晰的组合增长率。计算机科学家喜欢使用对数，因为它意味能创建的真正十分十分巨大和十分十分小的数值，通过加法进行修改替换，这极不可能导致在规模计算上我们计算机会处理困难。
+当我们在这样的格式中看到它时，看起来有点无聊。但想一下这真正表达的意思是什么。它表达的意思是当呈极大的几何级数或乘法倍数级增长时对数呈线性增长。例如，这被用于地震严重程度的里氏等级和噪声水平的分贝等级。它也经常被用于金融图表，我们想来展示更加清晰的组合增长率。计算机科学家喜欢使用对数，因为这代表乘法所能创建的十分十分巨大和十分十分小的数值，能够通过加法进行替换计算，这就极不可能导致在规模计算上我们计算机会处理困难。
 
 > s: It's not just computer scientists that love logs! Until computers came along, engineers and scientists used a special ruler called a "slide rule" that did multiplication by adding logarithms. Logarithms are widely used in physics, for multiplying very big or very small numbers, and many other fields.
 >
@@ -1099,3 +1099,22 @@ Another decision you have to make when training the model is for how long to tra
 
 在训练模型时，我们必须做的另一个决策是对模型训练多长时间。接下来是我们会考虑这一问题。
 
+### Selecting the Number of Epochs
+
+### 选择周期数
+
+Often you will find that you are limited by time, rather than generalization and accuracy, when choosing how many epochs to train for. So your first approach to training should be to simply pick a number of epochs that will train in the amount of time that you are happy to wait for. Then look at the training and validation loss plots, as shown above, and in particular your metrics, and if you see that they are still getting better even in your final epochs, then you know that you have not trained for too long.
+
+当选择多少周期来训练模型，你常常会发现你被时间所限制，而不是泛化和精度。所以你的第一个方法是训练应该简单选取一个周期数，训练所花费的时间你很高兴去等待。然后看如上所展示的训练和验证损失图，尤其你的指标和你看到在最后的那些周期甚至依然变的更好，然后你就知道你还没有训练时间过长。
+
+On the other hand, you may well see that the metrics you have chosen are really getting worse at the end of training. Remember, it's not just that we're looking for the validation loss to get worse, but the actual metrics. Your validation loss will first get worse during training because the model gets overconfident, and only later will get worse because it is incorrectly memorizing the data. We only care in practice about the latter issue. Remember, our loss function is just something that we use to allow our optimizer to have something it can differentiate and optimize; it's not actually the thing we care about in practice.
+
+另一方面，也许在训练的结尾你很可能看到你已经选择的指标实际变的很糟。记住，它不仅是你正在寻找的验证损失变糟，而且还有实际的指标。训练期间你的验证损失交付首先变差，因为模型变的过于自信，并且其后只会变的更更糟，因为它不正确的记忆了数据。在实践中我们只关心后一个问题。记住，我们的损失函数只是那些我们用于允许优化器具有区分和优化能够功能。在实践中它没能我们可以实际关注的东西。
+
+Before the days of 1cycle training it was very common to save the model at the end of each epoch, and then select whichever model had the best accuracy out of all of the models saved in each epoch. This is known as *early stopping*. However, this is very unlikely to give you the best answer, because those epochs in the middle occur before the learning rate has had a chance to reach the small values, where it can really find the best result. Therefore, if you find that you have overfit, what you should actually do is retrain your model from scratch, and this time select a total number of epochs based on where your previous best results were found.
+
+1个循环训练的几天前，在每个周期末尾保存模型是极为正常的，然后选出在每个周期所有保存的模型里最好精度输出的模型。这被称为*早停法*。虽然这极不可能给你最好的答案，因为在学习率已经改变来搜寻小的数值前，那些中间发生的周期能够确定找到最好的结果。因而，如果你发现你过拟了，你实际应该做的是对你的模型从开始重新训练，这次选择一个周期总数是基于你之前发现的最好结果。
+
+If you have the time to train for more epochs, you may want to instead use that time to train more parameters—that is, use a deeper architecture.
+
+如果你有时间来训练更多周期，你可能想用这些时间来训练更多的参数。也就是说，使用更深的架构。
