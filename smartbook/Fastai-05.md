@@ -930,26 +930,37 @@ This final linear layer is unlikely to be of any use for us when we are fine-tun
 
 This newly added linear layer will have entirely random weights. Therefore, our model prior to fine-tuning has entirely random outputs. But that does not mean that it is an entirely random model! All of the layers prior to the last one have been carefully trained to be good at image classification tasks in general. As we saw in the images from the [Zeiler and Fergus paper](https://arxiv.org/pdf/1311.2901.pdf) in <chapter_intro> (see <img_layer1> through <img_layer4>), the first few layers encode very general concepts, such as finding gradients and edges, and later layers encode concepts that are still very useful for us, such as finding eyeballs and fur.
 
-新增加的线性层会有完全随机的权重。因此，我们模型最先微调时会有完全随机的输出。但是这并不代表它是一个完全随机的模型！在最后一层之前的所有层通常已经被严谨的训练了，擅长图像分类任务。在<章节：概述>中我们看到了来自[齐勒和弗格斯论文](https://arxiv.org/pdf/1311.2901.pdf)的图片（参见<层一图>到<层四图>），
+新增加的线性层会有完全随机的权重。因此，我们模型最先微调时会有完全随机的输出。但是这并不代表它是一个完全随机的模型！在最后一层之前的所有层通常已经被严谨的训练了，擅长图像分类任务。在<章节：概述>中我们看到了来自[齐勒和弗格斯论文](https://arxiv.org/pdf/1311.2901.pdf)的图片（参见<层一图>到<层四图>），开始的几层编码了非常普通的概念，如查找斜坡和边缘，后面的层编码了对我们更加非常有用的概念，如查找眼球和皮毛。
 
 We want to train a model in such a way that we allow it to remember all of these generally useful ideas from the pretrained model, use them to solve our particular task (classify pet breeds), and only adjust them as required for the specifics of our particular task.
 
+我们想以某种方法来训练模型，我们允许它记住所有来自预训练模型的这些有用的常用概念，用它们来解决我们的特定问题（分类宠物品种），并对于我们特定任务的具体细节只对他们做必要调整。
+
 Our challenge when fine-tuning is to replace the random weights in our added linear layers with weights that correctly achieve our desired task (classifying pet breeds) without breaking the carefully pretrained weights and the other layers. There is actually a very simple trick to allow this to happen: tell the optimizer to only update the weights in those randomly added final layers. Don't change the weights in the rest of the neural network at all. This is called *freezing* those pretrained layers.
+
+在微调时我们的挑战是去替换在我们增加的线性层中的随机权重，这些权重可正确的完成我们所期望的任务（分类宠物品种）而不会破坏严谨的预训练权重和其它层。这里有一个实用的小技巧以允许达成这一目标：告诉优化器只更新那些随机增加的最终层中的权重。完全不改变神经网络其它层的权重。这被称为*解冻* 那些预训练层。
 
 When we create a model from a pretrained network fastai automatically freezes all of the pretrained layers for us. When we call the `fine_tune` method fastai does two things:
 
 - Trains the randomly added layers for one epoch, with all other layers frozen
 - Unfreezes all of the layers, and trains them all for the number of epochs requested
 
+当我们创建一个来自一个预训练网络模型，fastai自动的对我们冻结所有预训练层。当我们调用`fine_tune`方法时，fastai做两件事情：
+
+- 连同其它冻结的层，训练随机增加层一个周期
+- 解冻所有层，并训练他们所有周期术语的要求
+
 Although this is a reasonable default approach, it is likely that for your particular dataset you may get better results by doing things slightly differently. The `fine_tune` method has a number of parameters you can use to change its behavior, but it might be easiest for you to just call the underlying methods directly if you want to get some custom behavior. Remember that you can see the source code for the method by using the following syntax:
+
+不过这是一个合理的默认方法，对于你的特定数据集通过做轻微的调整你可能会获得更好的结果，这是有可能的。`fine_tune`方法有参数数值，你能够用来改变它的行为，但对你来说，如果你想获取一些自定义行为，只要直接调用底层方面可能会更容易些。记住，通过使用下面的语法你能够看到这个方法的源代码：
 
 ```
 learn.fine_tune??
 ```
 
-So let's try doing this manually ourselves. First of all we will train the randomly added layers for three epochs, using `fit_one_cycle`. As mentioned in <>, `fit_one_cycle` is the suggested way to train models without using `fine_tune`. We'll see why later in the book; in short, what `fit_one_cycle` does is to start training at a low learning rate, gradually increase it for the first section of training, and then gradually decrease it again for the last section of training.
+So let's try doing this manually ourselves. First of all we will train the randomly added layers for three epochs, using `fit_one_cycle`. As mentioned in <chapter_intro>, `fit_one_cycle` is the suggested way to train models without using `fine_tune`. We'll see why later in the book; in short, what `fit_one_cycle` does is to start training at a low learning rate, gradually increase it for the first section of training, and then gradually decrease it again for the last section of training.
 
-In [ ]:
+那么让我们尝试自己手动做这个操作。首先我们会使用`fit_one_cycle`来训练随机增加的层三个周期。正如在<章节：概述>里提到的，`fit_one_cycle`是建议方法来训练模型而不用`fine_tune`。其后在本书我们会看到为什么。简短的说，`fit_one_cycle`所做的是从一个很低的学习率开始，对于训练的第一阶段逐步增加它，然后在训练的最后阶段再逐步的减小它。
 
 ```
 learn.fine_tune??
@@ -968,7 +979,7 @@ learn.fit_one_cycle(3, 3e-3)
 
 Then we'll unfreeze the model:
 
-In [ ]:
+这样你会看到解冻的模型：
 
 ```
 learn.unfreeze()
@@ -976,7 +987,7 @@ learn.unfreeze()
 
 and run `lr_find` again, because having more layers to train, and weights that have already been trained for three epochs, means our previously found learning rate isn't appropriate any more:
 
-In [ ]:
+然后再次运行`lr_find`，因为有很多层要要训练，且权重已经被训练了三个周期，这表示我们之前找到的学习率不再合适：
 
 ```
 learn.lr_find()
@@ -990,7 +1001,9 @@ Note that the graph is a little different from when we had random weights: we do
 
 Let's train at a suitable learning rate:
 
-In [ ]:
+注意，这个图与你有随机权重时的图会有一些不同：我们没有骤然下降，这表明模型正在训练中。那是因为我们的模型已经被训练过了。在陡然上升前，在这里我们有一个平坦的区域，我们应该在陡然上升前取一个好的点—如，1e-5。具有最大梯度的这个点不是我们这里要寻找的，我们应该忽略它。
+
+让我们在一个合适的学习率上训练：
 
 ```
 learn.fit_one_cycle(6, lr_max=1e-5)
@@ -1006,3 +1019,5 @@ learn.fit_one_cycle(6, lr_max=1e-5)
 |     5 |   0.173164 |   0.202301 |   0.059540 | 00:25 |
 
 This has improved our model a bit, but there's more we can do. The deepest layers of our pretrained model might not need as high a learning rate as the last ones, so we should probably use different learning rates for those—this is known as using *discriminative learning rates*.
+
+这已经稍微改善了一点我们的模型，但我们还能做的更多。我们预训练模型的最深层可能不需要有最后那些层一样高的学习率，所以对于那些层我们可能应该使用不同的学习率，这被称为使用*区别学习率*。
