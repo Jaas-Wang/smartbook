@@ -1203,3 +1203,63 @@ If cross-entropy loss hasn't "clicked" for you just yet, don't worry—you'll ge
 Remember: the choices made in the implementation of cross-entropy loss are not the only possible choices that could have been made. Just like when we looked at regression we could choose between mean squared error and mean absolute difference (L1). If you have other ideas for possible functions that you think might work, feel free to give them a try in this chapter's notebook! (Fair warning though: you'll probably find that the model will be slower to train, and less accurate. That's because the gradient of cross-entropy loss is proportional to the difference between the activation and the target, so SGD always gets a nicely scaled step for the weights.)
 
 记住：在实现交叉熵损失里做出的选择不是所能做出的唯一可能的选择。正如当我们看到回归时我们能够在均方误差和平均绝对差(L1)之间选择。如果你对概率函数有其它可行的想法，在本章的notebook中大胆的对相关想法做个尝试！（合理警告：你可能会发现模型训练的更慢，精度稍差。这是因为交叉熵的梯度是在激活和目标间的差异是成比例，所以随机梯度下降对于权重总会获得极好的标度步进。）
+
+## Questionnaire
+
+## 练习题
+
+1. Why do we first resize to a large size on the CPU, and then to a smaller size on the GPU?
+2. 为什么我们首先在CPU上调整图像到一个大尺寸，然后在GPU上调整图像为一个更小的尺寸？
+3. If you are not familiar with regular expressions, find a regular expression tutorial, and some problem sets, and complete them. Have a look on the book's website for suggestions.
+4. 如果你不熟悉正则表达式，找一个正则表达式的指引和一些问题集，并完成他们。看一下本书网站的一些建议。
+5. What are the two ways in which data is most commonly provided, for most deep learning datasets?
+6. 对于大多数深度学习数据集，数据最常见提供的两个方法是什么？
+7. Look up the documentation for `L` and try using a few of the new methods that it adds.
+8. 查找`L`的文档并尝试使用一些它增加的新方法。
+9. Look up the documentation for the Python `pathlib` module and try using a few methods of the `Path` class.
+10. 查找Python`pathlib`模块文档，并尝试使用`path`类一些方法。
+11. Give two examples of ways that image transformations can degrade the quality of the data.
+12. 举出图像转换方法能够降低数据质量的两个例子。
+13. What method does fastai provide to view the data in a `DataLoaders`?
+14. fastai提供了什么方法来查看`DataLoaders`中的数据？
+15. What method does fastai provide to help you debug a `DataBlock`?
+16. fastai提供了什么方法来帮助我们调试一个`DataBlock`？
+17. Should you hold off on training a model until you have thoroughly cleaned your data?
+18. 在你彻底清洗你的数据前，你应该训练模型吗？
+19. What are the two pieces that are combined into cross-entropy loss in PyTorch?
+20. 在PyTorch中组合的两部分进入交叉熵损失是什么？
+21. What are the two properties of activations that softmax ensures? Why is this important?
+22. softmax确保激活的两个特性是什么？为什么它是重要的？
+23. When might you want your activations to not have these two properties?
+24. 你可能在什么时候不希望你的激活有这两个特性？
+25. Calculate the `exp` and `softmax` columns of <bear_softmax> yourself (i.e., in a spreadsheet, with a calculator, or in a notebook).
+26. 你自己计算<熊分类softmax例子>的`exp`和`softmax`列（即，在电子表格页内，用计算器或在一个notebook里）
+27. Why can't we use `torch.where` to create a loss function for datasets where our label can have more than two categories?
+28. 为什么我们不能够用`torch.where`对多于两类标注的数据集创建损失函数？
+29. What is the value of log(-2)? Why?
+30. log(-2)的值是什么？为什么？
+31. What are two good rules of thumb for picking a learning rate from the learning rate finder?
+32. 对于选取一个来自学习率查找器的两个好的经验准则是什么？
+33. What two steps does the `fine_tune` method do?
+34. `fine_tune`方法做了哪两个步骤？
+35. In Jupyter Notebook, how do you get the source code for a method or function?
+36. 在Jupyter Notebook中，你怎么获取一个方法或函数的源代码？
+37. What are discriminative learning rates?
+38. 区分学习率是什么？
+39. How is a Python `slice` object interpreted when passed as a learning rate to fastai?
+40. 当Python`slice`对象作为学习率传递给fastai时是如何解释的？
+41. Why is early stopping a poor choice when using 1cycle training?
+42. 当使用一个循环训练时过早的停止为什么是一个不好的选择？
+43. What is the difference between `resnet50` and `resnet101`?
+44. `resnet50`和`resnet101`间的差异是什么？
+45. What does `to_fp16` do?
+46. `to_fp16`做了什么？
+
+### Further Research
+
+### 未来研究
+
+1. Find the paper by Leslie Smith that introduced the learning rate finder, and read it.
+2. 找到介绍学习率查找器的莱斯利·史密斯论文，并阅读。
+3. See if you can improve the accuracy of the classifier in this chapter. What's the best accuracy you can achieve? Look on the forums and the book's website to see what other students have achieved with this dataset, and how they did it.
+4. 看一下你能否改进本章分类器的精度。你能够完成的最好的精度是什么？查找论坛和本书的网站，看一下其它同学使用这个数据集已经完成什么样的成果，和他们是如何做到的。
