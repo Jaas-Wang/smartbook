@@ -1198,7 +1198,8 @@ We also discussed cross-entropy loss. This part of the book is worth spending pl
 
 If cross-entropy loss hasn't "clicked" for you just yet, don't worry—you'll get there! First, go back to the last chapter and make sure you really understand `mnist_loss`. Then work gradually through the cells of the notebook for this chapter, where we step through each piece of cross-entropy loss. Make sure you understand what each calculation is doing, and why. Try creating some small tensors yourself and pass them into the functions, to see what they return.
 
-
+如果交叉熵损失还不能让你理解，不要着急，你会弄懂的！首先，返回到上一章并确保你真正理解了`mnist_loss`。然后通过本章的notebook逐步运行单元格，这里我们分步处理了交叉熵损失的每一部分。确保你理解每个计算做了什么和为什么。尝试自己创建一些小的张量，并把它们传给这些函数看他们返回的内容。
 
 Remember: the choices made in the implementation of cross-entropy loss are not the only possible choices that could have been made. Just like when we looked at regression we could choose between mean squared error and mean absolute difference (L1). If you have other ideas for possible functions that you think might work, feel free to give them a try in this chapter's notebook! (Fair warning though: you'll probably find that the model will be slower to train, and less accurate. That's because the gradient of cross-entropy loss is proportional to the difference between the activation and the target, so SGD always gets a nicely scaled step for the weights.)
 
+记住：在实现交叉熵损失里做出的选择不是所能做出的唯一可能的选择。正如当我们看到回归时我们能够在均方误差和平均绝对差(L1)之间选择。如果你对概率函数有其它可行的想法，在本章的notebook中大胆的对相关想法做个尝试！（合理警告：你可能会发现模型训练的更慢，精度稍差。这是因为交叉熵的梯度是在激活和目标间的差异是成比例，所以随机梯度下降对于权重总会获得极好的标度步进。）
