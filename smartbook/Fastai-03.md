@@ -910,7 +910,7 @@ One of our reviewers for this book, Fred Monroe, used to work in hedge fund trad
 
 ## Questionnaire
 
-## 调查问卷
+## 练习题
 
 1. Does ethics provide a list of "right answers"?
 2. How can working with people of different backgrounds help when considering ethical questions?

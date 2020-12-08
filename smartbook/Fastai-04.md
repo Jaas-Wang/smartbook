@@ -2750,7 +2750,7 @@ A neural network contains a number of layers. Each layer is either *linear* or *
 
 ## Questionnaire
 
-## 调研问卷
+## 练习题
 
 1. How is a grayscale image represented on a computer? How about a color image?
 2. 在计算机里一张灰度图是怎样展示的？图片的颜色是怎样的？

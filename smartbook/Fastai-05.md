@@ -1182,4 +1182,23 @@ In this case, we're not seeing a clear win from the deeper model. This is useful
 
 在这里你会看到我们又返回使用`fine_tune`方法，因为它真的很好用！我们能够传递`freeze_epochs`来告诉fastai，当冻结的时候训练多少个周期。对于大多数据集它会自动变化合适的学习率。
 
-在这个例子中，我们没有看到来自模型的清晰胜利。记住这一点是很有必要的：对于你的特定案例更大的模型未必是更好的模型！在你扩大规模之前确保你尝试使用小模型。
+在这个例子中，我们没有看到来自模型的清晰胜利。记住这一点是很有必要的：对于你的特定案例更大的模型未必是更好的模型！在你开始扩大规模之前确保你尝试使用小模型。
+
+## Conclusion
+
+## 结尾
+
+In this chapter you learned some important practical tips, both for getting your image data ready for modeling (presizing, data block summary) and for fitting the model (learning rate finder, unfreezing, discriminative learning rates, setting the number of epochs, and using deeper architectures). Using these tools will help you to build more accurate image models, more quickly.
+
+在本章节你学到了一些重要且实用的建议，它们是准备你的建模图像数据（填孔处理、数据块总结）和拟合模型（学习率查找器、解冻层、区别学习率、设置周期数和使用更深的架构）。利用这些工作会帮助你来更快更精准的构建图像模型。
+
+We also discussed cross-entropy loss. This part of the book is worth spending plenty of time on. You aren't likely to need to actually implement cross-entropy loss from scratch yourself in practice, but it's really important you understand the inputs to and output from that function, because it (or a variant of it, as we'll see in the next chapter) is used in nearly every classification model. So when you want to debug a model, or put a model in production, or improve the accuracy of a model, you're going to need to be able to look at its activations and loss, and understand what's going on, and why. You can't do that properly if you don't understand your loss function.
+
+我们也讨论了交叉熵损失。这部分是值得花费大量的时间来学习的。实践中我不可能需要自己实际从零开始来改善交叉熵损失 ，但是你理解函数输入和函数输出这真的很重要。因为它（或它的变量，我们在下个章节会看到）几乎会被用在每个分类模型中。所以当你想要调试一个模型，或在产品中放置一个模型，或改善一个模型的精度的时候，你将需要能够看它的激活和损失，及理解发生了什么和为什么发生。如果你不能理解你的损失函数，你就不能正确的做这具事情。
+
+If cross-entropy loss hasn't "clicked" for you just yet, don't worry—you'll get there! First, go back to the last chapter and make sure you really understand `mnist_loss`. Then work gradually through the cells of the notebook for this chapter, where we step through each piece of cross-entropy loss. Make sure you understand what each calculation is doing, and why. Try creating some small tensors yourself and pass them into the functions, to see what they return.
+
+
+
+Remember: the choices made in the implementation of cross-entropy loss are not the only possible choices that could have been made. Just like when we looked at regression we could choose between mean squared error and mean absolute difference (L1). If you have other ideas for possible functions that you think might work, feel free to give them a try in this chapter's notebook! (Fair warning though: you'll probably find that the model will be slower to train, and less accurate. That's because the gradient of cross-entropy loss is proportional to the difference between the activation and the target, so SGD always gets a nicely scaled step for the weights.)
+
