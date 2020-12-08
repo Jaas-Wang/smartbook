@@ -1153,7 +1153,7 @@ The other downside of deeper architectures is that they take quite a bit longer 
 
 You can't really know ahead of time what the best architecture for your particular problem is—you need to try training some. So let's try a ResNet-50 now with mixed precision:
 
-
+对你来说具体的问题是，实际上你无法提前知道最好的架构是什么。你需要尝试做一些训练。所以现在让我们尝试利用混合精度做一个ResNet-50架构模型训练：
 
 ```
 from fastai.callback.fp16 import *
@@ -1179,3 +1179,7 @@ learn.fine_tune(6, freeze_epochs=3)
 You'll see here we've gone back to using `fine_tune`, since it's so handy! We can pass `freeze_epochs` to tell fastai how many epochs to train for while frozen. It will automatically change learning rates appropriately for most datasets.
 
 In this case, we're not seeing a clear win from the deeper model. This is useful to remember—bigger models aren't necessarily better models for your particular case! Make sure you try small models before you start scaling up.
+
+在这里你会看到我们又返回使用`fine_tune`方法，因为它真的很好用！我们能够传递`freeze_epochs`来告诉fastai，当冻结的时候训练多少个周期。对于大多数据集它会自动变化合适的学习率。
+
+在这个例子中，我们没有看到来自模型的清晰胜利。记住这一点是很有必要的：对于你的特定案例更大的模型未必是更好的模型！在你扩大规模之前确保你尝试使用小模型。
