@@ -1118,3 +1118,64 @@ Before the days of 1cycle training it was very common to save the model at the e
 If you have the time to train for more epochs, you may want to instead use that time to train more parameters—that is, use a deeper architecture.
 
 如果你有时间来训练更多周期，你可能想用这些时间来训练更多的参数。也就是说，使用更深的架构。
+
+### Deeper Architectures
+
+### 更深的架构
+
+In general, a model with more parameters can model your data more accurately. (There are lots and lots of caveats to this generalization, and it depends on the specifics of the architectures you are using, but it is a reasonable rule of thumb for now.) For most of the architectures that we will be seeing in this book, you can create larger versions of them by simply adding more layers. However, since we want to use pretrained models, we need to make sure that we choose a number of layers that have already been pretrained for us.
+
+通过来说，有更多参数的模型能够更准确的做数据建模。（对于这个总结这里有很多很多注意事项，且它依赖于你正在使用的具体架构，对于现在来说，它是一个合理的经验准则。）在本书我们会看到绝大多数架构，通过简单的增加更多的层你就能够创建这些架构的更大版本。然而，因为我们想使用预训练模型，对我们来说，需要确保我们选择了已经被预训练过了的一些层。
+
+This is why, in practice, architectures tend to come in a small number of variants. For instance, the ResNet architecture that we are using in this chapter comes in variants with 18, 34, 50, 101, and 152 layer, pretrained on ImageNet. A larger (more layers and parameters; sometimes described as the "capacity" of a model) version of a ResNet will always be able to give us a better training loss, but it can suffer more from overfitting, because it has more parameters to overfit with.
+
+在实践中，这就是为什么架构倾向出现少量遍体的原因。例如，我们在本章节使用的ResNet架构出现了在ImageNet上预训练的18，34，50，101和152层的变种。ResNet的更大（更多层和参数，有时候这被描述为一个模型的“能力”）版本能够总会给我们一个更好的训练损失，但是它能遭遇来自过度拟合的影响，因为它有更多参数过拟。
+
+In general, a bigger model has the ability to better capture the real underlying relationships in your data, and also to capture and memorize the specific details of your individual images.
+
+通常来说，一个更大的模型具有更好的捕捉你数据中真实的潜在关联的能力，且也来捕捉和记忆你个人图像集的详细细节。
+
+However, using a deeper model is going to require more GPU RAM, so you may need to lower the size of your batches to avoid an *out-of-memory error*. This happens when you try to fit too much inside your GPU and looks like:
+
+然而，使用更深的模型交付需要更多的GPU内存，所以你可能需要减小你的批次尺寸以避免*内存溢出错误*。当你在GPU内尝试去做太多时就会发生如下的情况：
+
+```
+Cuda runtime error: out of memory
+```
+
+You may have to restart your notebook when this happens. The way to solve it is to use a smaller batch size, which means passing smaller groups of images at any given time through your model. You can pass the batch size you want to the call creating your `DataLoaders` with `bs=`.
+
+当发生这种情况的时候你需要重启notebook。解决这个问题的方案是使用更小批次尺寸，这表示在任何给定的时间内，通过你的模型传递更小的图像组。你所希望能够通过传递批次尺寸，利用`bs=`调用创建你的`DataLoaders`。
+
+The other downside of deeper architectures is that they take quite a bit longer to train. One technique that can speed things up a lot is *mixed-precision training*. This refers to using less-precise numbers (*half-precision floating point*, also called *fp16*) where possible during training. As we are writing these words in early 2020, nearly all current NVIDIA GPUs support a special feature called *tensor cores* that can dramatically speed up neural network training, by 2-3x. They also require a lot less GPU memory. To enable this feature in fastai, just add `to_fp16()` after your `Learner` creation (you also need to import the module).
+
+更深的框架的另一个缺点是他们要花费更长的时间来训练。一个技术能够加速这一进程，它是*混合精度训练*。这是指训练期间尽可能使用较低精度数值（*半精度浮点*，也被称为*fp16*）。在2020年初在我们写下这些建议时，几乎当前所有英伟达GPU支持一个特定功能称为*张量计算核心*，它能戏剧化的加快神经网络训练速度2到3倍。它只需要少量的GPU内存。在fastai上只需要在创建你的`Learner`后增加`to_fp16()`就能够启用这一功能（你也需要引入模块）。
+
+You can't really know ahead of time what the best architecture for your particular problem is—you need to try training some. So let's try a ResNet-50 now with mixed precision:
+
+
+
+```
+from fastai.callback.fp16 import *
+learn = cnn_learner(dls, resnet50, metrics=error_rate).to_fp16()
+learn.fine_tune(6, freeze_epochs=3)
+```
+
+| epoch | train_loss | valid_loss | error_rate |  time |
+| ----: | ---------: | ---------: | ---------: | ----: |
+|     0 |   1.427505 |   0.310554 |   0.098782 | 00:21 |
+|     1 |   0.606785 |   0.302325 |   0.094723 | 00:22 |
+|     2 |   0.409267 |   0.294803 |   0.091340 | 00:21 |
+
+| epoch | train_loss | valid_loss | error_rate |  time |
+| ----: | ---------: | ---------: | ---------: | ----: |
+|     0 |   0.261121 |   0.274507 |   0.083897 | 00:26 |
+|     1 |   0.296653 |   0.318649 |   0.084574 | 00:26 |
+|     2 |   0.242356 |   0.253677 |   0.069012 | 00:26 |
+|     3 |   0.150684 |   0.251438 |   0.065629 | 00:26 |
+|     4 |   0.094997 |   0.239772 |   0.064276 | 00:26 |
+|     5 |   0.061144 |   0.228082 |   0.054804 | 00:26 |
+
+You'll see here we've gone back to using `fine_tune`, since it's so handy! We can pass `freeze_epochs` to tell fastai how many epochs to train for while frozen. It will automatically change learning rates appropriately for most datasets.
+
+In this case, we're not seeing a clear win from the deeper model. This is useful to remember—bigger models aren't necessarily better models for your particular case! Make sure you try small models before you start scaling up.
