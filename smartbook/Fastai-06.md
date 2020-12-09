@@ -32,5 +32,70 @@ In practice, we have not seen many examples of people training multi-label class
 
 First, let's see what a multi-label dataset looks like, then we'll explain how to get it ready for our model. You'll see that the architecture of the model does not change from the last chapter; only the loss function does. Let's start with the data.
 
-首先，我们看一下多标签数据集看起来是什么样子，然后我们会解释如何为我们的模型把它准备好。你会在看到从上一章节开始，模型的架构没有做变化，只是变了损失函数。让我们从这个数据开始。
+首先，我们看一下多标签数据集看起来是什么样子，然后我们会解释如何为我们的模型把它准备好。你会在看到从上一章节开始，模型的架构没有做变化，只是变了损失函数。让我们从数据开始。
 
+### The Data
+
+### 数据
+
+For our example we are going to use the PASCAL dataset, which can have more than one kind of classified object per image.
+
+We begin by downloading and extracting the dataset as per usual:
+
+我们的例子会使用PASCAL数据集，这个数据集对每张图像有超过一个种类的分类对象。与平常一样我们开始下载并抽取数据集：
+
+```
+from fastai.vision.all import *
+path = untar_data(URLs.PASCAL_2007)
+```
+
+This dataset is different from the ones we have seen before, in that it is not structured by filename or folder but instead comes with a CSV (comma-separated values) file telling us what labels to use for each image. We can inspect the CSV file by reading it into a Pandas DataFrame:
+
+这个数据集与我们以前看到的那些是不同的，也就是说它没有通过文件名或文件夹结构化，而是用CSV（逗号分割值）文件告诉我们每一张图像所用的标签是什么。我们能够把它读取到Pandas DataFrame里，来查看这个CSV文件：
+
+```
+df = pd.read_csv(path/'train.csv')
+df.head()
+```
+
+<table style="width: 370px;border-collapse: collapse;" >
+  <tr>
+    <td  style="width: 10px;" align="center"></td>
+    <td  style="width: 100px;" align="center">fname</td>
+    <td  style="width: 160px;" align="center">labels</td>
+    <td  style="width: 100px;" align="center">is_valid</td>
+  </tr>
+    <td align="center" font-weight="bold">0</td>
+    <td align="right">000005.jpg</td>
+  	<td align="right">chair</td>
+  	<td align="right">True</td>
+  </tr>
+  </tr>
+    <td align="center">1</td>
+    <td align="right">000007.jpg</td>
+  	<td align="right">car</td>
+  	<td align="right">True</td>
+  </tr>
+  </tr>
+    <td align="center">2</td>
+    <td align="right">000009.jpg</td>
+  	<td align="right">horse person</td>
+  	<td align="right">True</td>
+  </tr>
+  </tr>
+    <td align="center">3</td>
+    <td align="right">000012.jpg</td>
+  	<td align="right">car</td>
+  	<td align="right">False</td>
+  </tr>
+  </tr>
+    <td align="center" >4</td>
+    <td align="right">000016.jpg</td>
+  	<td align="right">bicycle</td>
+  	<td align="right">True</td>
+  </tr>
+</table>
+
+As you can see, the list of categories in each image is shown as a space-delimited string.
+
+正如你能看到的，每张图像的分类列表被显示为一个空格分割字符串。
