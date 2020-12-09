@@ -13,3 +13,4 @@ In this chapter we are going to look at two other types of computer vision probl
 In the process will study more deeply the output activations, targets, and loss functions in deep learning models.
 
 在这个过程中会学习在深度学习模型中更深层的输出激活、目标和损失函数。
+
