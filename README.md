@@ -22,14 +22,16 @@
 -Mark 也许[Fairness and Machine Learning: Limitations and Opportunities](https://fairmlbook.org/#course-materials)是下一本翻译的著作。愿望也许会实现吧！！！Bless me!
 ## 目录
 
-[第一章 概述   中英文翻译对比：Fastai-01.md](./smartbook/Fastai-01.md)  [（英文原书：01_intro.ipynb）](./englishbook/01_intro.ipynb)
+[第一章 概述   中英文翻译对比：Fastai-01.md](./smartbook/Fastai-01.md)  [（英文原书：01_intro.ipynb）](./englishbook/01_intro.ipynb)（未校对）
 
-[第二章 产品   中英文翻译对比：Fastai-02.md](./smartbook/Fastai-02.md)  [（英文原书：02_production.ipynb）](./englishbook/02_production.ipynb) （一位美女小伙伴翻译的，还没有校对）
+[第二章 产品   中英文翻译对比：Fastai-02.md](./smartbook/Fastai-02.md)  [（英文原书：02_production.ipynb）](./englishbook/02_production.ipynb) （小仙女翻译的，未校对）
 
-[第三章 数据伦理  中英文翻译对比：Fastai-03.md](./smartbook/Fastai-03.md)   [（英文原书：03_ethics.ipynb）](./englishbook/03_ethics.ipynb)
+[第三章 数据伦理  中英文翻译对比：Fastai-03.md](./smartbook/Fastai-03.md)   [（英文原书：03_ethics.ipynb）](./englishbook/03_ethics.ipynb)（未校对）
 
-[第四章 mnist基础  中英文翻译对比：Fastai-04.md](./smartbook/Fastai-04.md)   [（英文原书：04_mnist_basics.ipynb）](./englishbook/04_mnist_basics.ipynb)
+[第四章 mnist基础  中英文翻译对比：Fastai-04.md](./smartbook/Fastai-04.md)   [（英文原书：04_mnist_basics.ipynb）](./englishbook/04_mnist_basics.ipynb)（未校对）
 
-[第五章 基于宠物品种的图像分类  中英文翻译对比：Fastai-05.md](./smartbook/Fastai-05.md)   [（英文原书：05_pet_breeds.ipynb）](./englishbook/05_pet_breeds.ipynb)
+[第五章 基于宠物品种的图像分类  中英文翻译对比：Fastai-05.md](./smartbook/Fastai-05.md)   [（英文原书：05_pet_breeds.ipynb）](./englishbook/05_pet_breeds.ipynb)（未校对）
+
+[第六章 多标签分类  中英文翻译对比：Fastai-06.md](./smartbook/Fastai-06.md)   [（英文原书：06_multicat.ipynb）](./englishbook/06_multicat.ipynb)（翻译中）
 
  
