@@ -65,31 +65,32 @@ df.head()
     <td  style="width: 160px;" align="center">labels</td>
     <td  style="width: 100px;" align="center">is_valid</td>
   </tr>
-    <td align="center" font-weight="bold">0</td>
+  <tr>
+    <td align="center" font-weight="bold"><strong>0</strong></td>
     <td align="right">000005.jpg</td>
   	<td align="right">chair</td>
   	<td align="right">True</td>
   </tr>
   </tr>
-    <td align="center">1</td>
+    <td align="center"><strong>1</strong></td>
     <td align="right">000007.jpg</td>
   	<td align="right">car</td>
   	<td align="right">True</td>
   </tr>
   </tr>
-    <td align="center">2</td>
+    <td align="center"><strong>2</strong></td>
     <td align="right">000009.jpg</td>
   	<td align="right">horse person</td>
   	<td align="right">True</td>
   </tr>
   </tr>
-    <td align="center">3</td>
+    <td align="center"><strong>3</strong></td>
     <td align="right">000012.jpg</td>
   	<td align="right">car</td>
   	<td align="right">False</td>
   </tr>
   </tr>
-    <td align="center" >4</td>
+    <td align="center" ><strong>4</strong></td>
     <td align="right">000016.jpg</td>
   	<td align="right">bicycle</td>
   	<td align="right">True</td>
@@ -99,3 +100,130 @@ df.head()
 As you can see, the list of categories in each image is shown as a space-delimited string.
 
 正如你能看到的，每张图像的分类列表被显示为一个空格分割字符串。
+
+### Sidebar: Pandas and DataFrames
+
+### 侧边栏：Pandas and DataFrames
+
+No, it’s not actually a panda! *Pandas* is a Python library that is used to manipulate and analyze tabular and time series data. The main class is `DataFrame`, which represents a table of rows and columns. You can get a DataFrame from a CSV file, a database table, Python dictionaries, and many other sources. In Jupyter, a DataFrame is output as a formatted table, as shown here.
+
+You can access rows and columns of a DataFrame with the `iloc` property, as if it were a matrix:
+
+是的，实际上它并不是熊猫！*Pandas*是一个Python库，用于操作和分析表格形式和时间序列数据。主要的类是`DataFrame`，它相当于一个有行和列的表。你能够从CSV文件、数据库表、Python字典和一些其它资源获取DataFrame。在Jupyter中，一个DataFrame输出的是一个格式化后的表，正如下面显示的。
+
+你利用`iloc`特性能够获取一个DataFrame的行和列，好像它是一个矩阵：
+
+```
+df.iloc[:,0]
+```
+
+Out: $\begin{array}{l,c}
+0 &      000005.jpg \\
+1&       000007.jpg  \\
+2&       000009.jpg \\
+3&       000012.jpg  \\
+4&       000016.jpg  \\
+&           ...      \\
+5006&    009954.jpg \\
+5007&    009955.jpg \\
+5008&    009958.jpg  \\
+5009&    009959.jpg  \\
+5010&    009961.jpg  \end{array}$
+$\begin{array}{l}&&Name: fname, Length: 5011, dtype: object
+ \end{array}$
+
+```
+df.iloc[0,:]
+# Trailing :s are always optional (in numpy, pytorch, pandas, etc.),
+#   so this is equivalent:
+df.iloc[0]
+```
+
+Out: $\begin{array}{l,r} 
+fname   &    000005.jpg\\
+labels  &         chair\\
+is\_valid &         True\end{array}$
+$\begin{array}{l}&&Name: 0,& dtype: object
+\end{array}$
+
+You can also grab a column by name by indexing into a DataFrame directly:
+
+
+
+```
+df['fname']
+```
+
+Out: $\begin{array}{l,c} 0  &     000005.jpg\\
+1      & 000007.jpg\\
+2      & 000009.jpg\\
+3      & 000012.jpg\\
+4      & 000016.jpg\\
+       &    ...    \\
+5006   & 009954.jpg\\
+5007   & 009955.jpg\\
+5008   & 009958.jpg\\
+5009   & 009959.jpg\\
+5010   & 009961.jpg\end{array}$
+$\begin{array}{l,l}&&Name: fname,& Length: 5011,& dtype: object\end{array}$
+
+You can create new columns and do calculations using columns:
+
+
+
+```
+tmp_df = pd.DataFrame({'a':[1,2], 'b':[3,4]})
+tmp_df
+```
+
+<table style="width: 30px;border-collapse: collapse;" >
+  <tr>
+    <td  style="width: 10px;" align="center"></td>
+    <td  style="width: 10px;" align="center"><strong>a</strong></td>
+    <td  style="width: 10px;" align="center"><strong>b</strong></td>
+  </tr>
+  <tr>
+    <td align="center" font-weight="bold"><strong>0</strong></td>
+    <td align="right">1</td>
+  	<td align="right">3</td>
+  </tr>
+  <tr>
+    <td align="center" font-weight="bold"><strong>1</strong></td>
+    <td align="right">2</td>
+  	<td align="right">4</td>
+  </tr>
+</table>
+
+In [9]:
+
+```
+tmp_df['c'] = tmp_df['a']+tmp_df['b']
+tmp_df
+```
+
+<table style="width: 30px;border-collapse: collapse;" >
+  <tr>
+    <td  style="width: 10px;" align="center"></td>
+    <td  style="width: 10px;" align="center"><strong>a</strong></td>
+    <td  style="width: 10px;" align="center"><strong>b</strong></td>
+    <td  style="width: 10px;" align="center"><strong>c</strong></td> 
+  </tr>
+  <tr>
+    <td align="center" font-weight="bold"><strong>0</strong></td>
+    <td align="right">1</td>
+  	<td align="right">3</td>
+    <td align="right">4</td>
+  </tr>
+  <tr>
+    <td align="center" font-weight="bold"><strong>1</strong></td>
+    <td align="right">2</td>
+  	<td align="right">4</td>
+  	<td align="right">6</td>
+  </tr>
+</table>
+
+Pandas is a fast and flexible library, and an important part of every data scientist’s Python toolbox. Unfortunately, its API can be rather confusing and surprising, so it takes a while to get familiar with it. If you haven’t used Pandas before, we’d suggest going through a tutorial; we are particularly fond of the book [*Python for Data Analysis*](http://shop.oreilly.com/product/0636920023784.do) by Wes McKinney, the creator of Pandas (O'Reilly). It also covers other important libraries like `matplotlib` and `numpy`. We will try to briefly describe Pandas functionality we use as we come across it, but will not go into the level of detail of McKinney’s book.
+
+### End sidebar
+
+Now that we have seen what the data looks like, let's make it ready for model training.
