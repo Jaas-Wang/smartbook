@@ -148,7 +148,7 @@ $\begin{array}{l}&&Name: 0,& dtype: object
 
 You can also grab a column by name by indexing into a DataFrame directly:
 
-
+你也能够通过列名直接索引到DataFrame中去来抓起一列：
 
 ```
 df['fname']
@@ -169,7 +169,7 @@ $\begin{array}{l,l}&&Name: fname,& Length: 5011,& dtype: object\end{array}$
 
 You can create new columns and do calculations using columns:
 
-
+你能够创建一个新列并用列做计算：
 
 ```
 tmp_df = pd.DataFrame({'a':[1,2], 'b':[3,4]})
@@ -193,8 +193,6 @@ tmp_df
   	<td align="right">4</td>
   </tr>
 </table>
-
-In [9]:
 
 ```
 tmp_df['c'] = tmp_df['a']+tmp_df['b']
@@ -224,6 +222,12 @@ tmp_df
 
 Pandas is a fast and flexible library, and an important part of every data scientist’s Python toolbox. Unfortunately, its API can be rather confusing and surprising, so it takes a while to get familiar with it. If you haven’t used Pandas before, we’d suggest going through a tutorial; we are particularly fond of the book [*Python for Data Analysis*](http://shop.oreilly.com/product/0636920023784.do) by Wes McKinney, the creator of Pandas (O'Reilly). It also covers other important libraries like `matplotlib` and `numpy`. We will try to briefly describe Pandas functionality we use as we come across it, but will not go into the level of detail of McKinney’s book.
 
+Pandas是一个快速和灵活的库，它是每个数据科学的Python工具箱一个很重要的部分。不幸的是，它的API让人比较混乱和惊讶，所以需要花一段时间来熟悉它。如果你之前没有用过Pandas，我们建议你通过一个指引来学习使用它。我们特别喜欢由Pandas的创始人韦斯·麦金尼编写的书[Pyhon数据分析](http://shop.oreilly.com/product/0636920023784.do)（欧莱礼媒体发行）。它也覆盖了其它重要的库，如`matploatlib`和`numpy`的内容。我们会尝试简短的描述我们所使用的Pandas功能设计，但是不会达到麦金尼著作的细节水平。
+
 ### End sidebar
 
+### 侧边栏结束
+
 Now that we have seen what the data looks like, let's make it ready for model training.
+
+既然我们已经知道了数据的样子，那让我们为模型训练做好准备。
