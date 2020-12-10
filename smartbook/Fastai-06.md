@@ -231,3 +231,206 @@ Pandas是一个快速和灵活的库，它是每个数据科学的Python工具�
 Now that we have seen what the data looks like, let's make it ready for model training.
 
 既然我们已经知道了数据的样子，那让我们为模型训练做好准备。
+
+### Constructing a DataBlock
+
+How do we convert from a `DataFrame` object to a `DataLoaders` object? We generally suggest using the data block API for creating a `DataLoaders` object, where possible, since it provides a good mix of flexibility and simplicity. Here we will show you the steps that we take to use the data blocks API to construct a `DataLoaders` object in practice, using this dataset as an example.
+
+我们如果从一个`DataFrame`对象转换为一个`DataLoaders`对象？对于创建一个`DataLoaders`对象，我们通常建议尽可能使用数据块API，因为它提供了柔性和简洁的完美融合。这里我们使用这个数据集做为一个例子，给你展示实践中使用数据块API来构建一个`DataLoaders`对象的步骤。
+
+As we have seen, PyTorch and fastai have two main classes for representing and accessing a training set or validation set:
+
+- `Dataset`:: A collection that returns a tuple of your independent and dependent variable for a single item
+- `DataLoader`:: An iterator that provides a stream of mini-batches, where each mini-batch is a tuple of a batch of independent variables and a batch of dependent variables
+
+正如你看到的，PyTorch和fastai有两个主要的类代表和访问训练集和验证集：
+
+- `Dataset`：一个集合，返回单一数据自变量和因变量的一个元组
+- `DataLoader`：一个迭代器，提供一串最小批次，每一最小批次是一个自变量批次和因变量批次的元组
+
+On top of these, fastai provides two classes for bringing your training and validation sets together:
+
+- `Datasets`:: An object that contains a training `Dataset` and a validation `Dataset`
+- `DataLoaders`:: An object that contains a training `DataLoader` and a validation `DataLoader`
+
+在这些之上，fastai提供了两个类把你的训练和验证集汇集在一起：
+
+- `Datasets`：一个对象，包含一个训练`Dataset`和一个验证`Dataset`
+- `DataLoaders`：一个对象，包含一个训练`DataLoader`和一个验证`DataLoader`
+
+Since a `DataLoader` builds on top of a `Dataset` and adds additional functionality to it (collating multiple items into a mini-batch), it’s often easiest to start by creating and testing `Datasets`, and then look at `DataLoaders` after that’s working.
+
+
+
+When we create a `DataBlock`, we build up gradually, step by step, and use the notebook to check our data along the way. This is a great way to make sure that you maintain momentum as you are coding, and that you keep an eye out for any problems. It’s easy to debug, because you know that if a problem arises, it is in the line of code you just typed!
+
+Let’s start with the simplest case, which is a data block created with no parameters:
+
+
+
+```
+dblock = DataBlock()
+```
+
+We can create a `Datasets` object from this. The only thing needed is a source—in this case, our DataFrame:
+
+
+
+```
+dsets = dblock.datasets(df)
+```
+
+This contains a `train` and a `valid` dataset, which we can index into:
+
+
+
+```
+len(dsets.train),len(dsets.valid)
+```
+
+Out: (4009, 1002)
+
+```
+x,y = dsets.train[0]
+x,y
+```
+
+Out: $\begin{array}{llr}
+(&fname  &     008663.jpg\\
+&labels         & car person\\
+&is\_valid     &           False\\\end{array}$
+$ \begin{array}{l}& &&        Name: 4346, &dtype: object,\end{array}$
+$ \begin{array}{llllr}&&&  fname       &008663.jpg\\
+ &&& labels    &  car person\\
+ &&& is\_valid &  False\end{array}$
+$ \begin{array}{llr}&&& Name: 4346,& dtype: object&)\end{array}$
+
+As you can see, this simply returns a row of the DataFrame, twice. This is because by default, the data block assumes we have two things: input and target. We are going to need to grab the appropriate fields from the DataFrame, which we can do by passing `get_x` and `get_y` functions:
+
+
+
+```
+x['fname']
+```
+
+Out: '008663.jpg'
+
+```
+dblock = DataBlock(get_x = lambda r: r['fname'], get_y = lambda r: r['labels'])
+dsets = dblock.datasets(df)
+dsets.train[0]
+```
+
+Out: ('005620.jpg', 'aeroplane')
+
+As you can see, rather than defining a function in the usual way, we are using Python’s `lambda` keyword. This is just a shortcut for defining and then referring to a function. The following more verbose approach is identical:
+
+In [16]:
+
+```
+def get_x(r): return r['fname']
+def get_y(r): return r['labels']
+dblock = DataBlock(get_x = get_x, get_y = get_y)
+dsets = dblock.datasets(df)
+dsets.train[0]
+```
+
+Out: ('002549.jpg', 'tvmonitor')
+
+Lambda functions are great for quickly iterating, but they are not compatible with serialization, so we advise you to use the more verbose approach if you want to export your `Learner` after training (lambdas are fine if you are just experimenting).
+
+We can see that the independent variable will need to be converted into a complete path, so that we can open it as an image, and the dependent variable will need to be split on the space character (which is the default for Python’s `split` function) so that it becomes a list:
+
+
+
+```
+def get_x(r): return path/'train'/r['fname']
+def get_y(r): return r['labels'].split(' ')
+dblock = DataBlock(get_x = get_x, get_y = get_y)
+dsets = dblock.datasets(df)
+dsets.train[0]
+```
+
+Out: (Path('/home/jhoward/.fastai/data/pascal_2007/train/002844.jpg'), ['train'])
+
+To actually open the image and do the conversion to tensors, we will need to use a set of transforms; block types will provide us with those. We can use the same block types that we have used previously, with one exception: the `ImageBlock` will work fine again, because we have a path that points to a valid image, but the `CategoryBlock` is not going to work. The problem is that block returns a single integer, but we need to be able to have multiple labels for each item. To solve this, we use a `MultiCategoryBlock`. This type of block expects to receive a list of strings, as we have in this case, so let’s test it out:
+
+
+
+```
+dblock = DataBlock(blocks=(ImageBlock, MultiCategoryBlock),
+                   get_x = get_x, get_y = get_y)
+dsets = dblock.datasets(df)
+dsets.train[0]
+```
+
+Out: (PILImage mode=RGB size=500x375,
+         TensorMultiCategory([0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0.]))
+
+As you can see, our list of categories is not encoded in the same way that it was for the regular `CategoryBlock`. In that case, we had a single integer representing which category was present, based on its location in our vocab. In this case, however, we instead have a list of zeros, with a one in any position where that category is present. For example, if there is a one in the second and fourth positions, then that means that vocab items two and four are present in this image. This is known as *one-hot encoding*. The reason we can’t easily just use a list of category indices is that each list would be a different length, and PyTorch requires tensors, where everything has to be the same length.
+
+> jargon: One-hot encoding: Using a vector of zeros, with a one in each location that is represented in the data, to encode a list of integers.
+
+Let’s check what the categories represent for this example (we are using the convenient `torch.where` function, which tells us all of the indices where our condition is true or false):
+
+
+
+```
+idxs = torch.where(dsets.train[0][1]==1.)[0]
+dsets.train.vocab[idxs]
+```
+
+Out: (#1) ['dog']
+
+With NumPy arrays, PyTorch tensors, and fastai’s `L` class, we can index directly using a list or vector, which makes a lot of code (such as this example) much clearer and more concise.
+
+We have ignored the column `is_valid` up until now, which means that `DataBlock` has been using a random split by default. To explicitly choose the elements of our validation set, we need to write a function and pass it to `splitter` (or use one of fastai's predefined functions or classes). It will take the items (here our whole DataFrame) and must return two (or more) lists of integers:
+
+
+
+```
+def splitter(df):
+    train = df.index[~df['is_valid']].tolist()
+    valid = df.index[df['is_valid']].tolist()
+    return train,valid
+
+dblock = DataBlock(blocks=(ImageBlock, MultiCategoryBlock),
+                   splitter=splitter,
+                   get_x=get_x, 
+                   get_y=get_y)
+
+dsets = dblock.datasets(df)
+dsets.train[0]
+```
+
+Out: (PILImage mode=RGB size=500x333,
+         TensorMultiCategory([0., 0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]))
+
+As we have discussed, a `DataLoader` collates the items from a `Dataset` into a mini-batch. This is a tuple of tensors, where each tensor simply stacks the items from that location in the `Dataset` item.
+
+Now that we have confirmed that the individual items look okay, there's one more step we need to ensure we can create our `DataLoaders`, which is to ensure that every item is of the same size. To do this, we can use `RandomResizedCrop`:
+
+
+
+```
+dblock = DataBlock(blocks=(ImageBlock, MultiCategoryBlock),
+                   splitter=splitter,
+                   get_x=get_x, 
+                   get_y=get_y,
+                   item_tfms = RandomResizedCrop(128, min_scale=0.35))
+dls = dblock.dataloaders(df)
+```
+
+And now we can display a sample of our data:
+
+
+
+```
+dls.show_batch(nrows=1, ncols=3)
+```
+
+Out: <img src="./_v_images/mulcat.png" alt="mulcat" style="zoom:100%;" />
+
+Remember that if anything goes wrong when you create your `DataLoaders` from your `DataBlock`, or if you want to view exactly what happens with your `DataBlock`, you can use the `summary` method we presented in the last chapter.
+
+Our data is now ready for training a model. As we will see, nothing is going to change when we create our `Learner`, but behind the scenes, the fastai library will pick a new loss function for us: binary cross-entropy.
