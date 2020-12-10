@@ -234,6 +234,8 @@ Now that we have seen what the data looks like, let's make it ready for model tr
 
 ### Constructing a DataBlock
 
+### 创建一个数据块
+
 How do we convert from a `DataFrame` object to a `DataLoaders` object? We generally suggest using the data block API for creating a `DataLoaders` object, where possible, since it provides a good mix of flexibility and simplicity. Here we will show you the steps that we take to use the data blocks API to construct a `DataLoaders` object in practice, using this dataset as an example.
 
 我们如果从一个`DataFrame`对象转换为一个`DataLoaders`对象？对于创建一个`DataLoaders`对象，我们通常建议尽可能使用数据块API，因为它提供了柔性和简洁的完美融合。这里我们使用这个数据集做为一个例子，给你展示实践中使用数据块API来构建一个`DataLoaders`对象的步骤。
@@ -260,13 +262,15 @@ On top of these, fastai provides two classes for bringing your training and vali
 
 Since a `DataLoader` builds on top of a `Dataset` and adds additional functionality to it (collating multiple items into a mini-batch), it’s often easiest to start by creating and testing `Datasets`, and then look at `DataLoaders` after that’s working.
 
-
+因为`DataLoader`构建在`Dataset`之上并增加了附加功能（把多个数据项收集在一个最小批次内），通常最简单的开始创建和测试`Datasets`，然后在运行后查看`DataLoaders`。
 
 When we create a `DataBlock`, we build up gradually, step by step, and use the notebook to check our data along the way. This is a great way to make sure that you maintain momentum as you are coding, and that you keep an eye out for any problems. It’s easy to debug, because you know that if a problem arises, it is in the line of code you just typed!
 
 Let’s start with the simplest case, which is a data block created with no parameters:
 
+当你创建一个`数据块`时，我们要一步一步的逐步建立，并用notebook来逐步检查我们的数据。这是一个确保你保持编码动力的一个绝佳方法，然后随时关注出现的任何问题。它很容易调试，因为你知道如果一个问题产生，这个问题就在你刚刚敲击完成的代码行内！
 
+让我们从不传参创建一个数据块这个最简单的例子开始：
 
 ```
 dblock = DataBlock()
@@ -274,7 +278,7 @@ dblock = DataBlock()
 
 We can create a `Datasets` object from this. The only thing needed is a source—in this case, our DataFrame:
 
-
+这样我们就能够创建一个`Datasets`对象。在这个例子中唯一需要的一个源是—我们的DataFrame：
 
 ```
 dsets = dblock.datasets(df)
@@ -282,7 +286,7 @@ dsets = dblock.datasets(df)
 
 This contains a `train` and a `valid` dataset, which we can index into:
 
-
+它包含了一个我们能够索引到的`训练`和`验证`数据集，
 
 ```
 len(dsets.train),len(dsets.valid)
@@ -307,7 +311,7 @@ $ \begin{array}{llr}&&& Name: 4346,& dtype: object&)\end{array}$
 
 As you can see, this simply returns a row of the DataFrame, twice. This is because by default, the data block assumes we have two things: input and target. We are going to need to grab the appropriate fields from the DataFrame, which we can do by passing `get_x` and `get_y` functions:
 
-
+正如你看到的，这个例子返回了两次数据帧的一行数据。因为这是默认的，数据块假设我们有两件事：输入和目标。我们需要从DataFrame合适的区域中抓取，可以通过传递`get_x`和`get_y`函数来做：
 
 ```
 x['fname']
@@ -325,7 +329,7 @@ Out: ('005620.jpg', 'aeroplane')
 
 As you can see, rather than defining a function in the usual way, we are using Python’s `lambda` keyword. This is just a shortcut for defining and then referring to a function. The following more verbose approach is identical:
 
-In [16]:
+正如你所看到的，我们使用了Python的`lambda`关键字，而不是在普通的方法中定义一个函数。这只是定义的一个快捷方式，然后引用一个函数。下面是相同的更为冗长的方法：
 
 ```
 def get_x(r): return r['fname']
@@ -341,7 +345,7 @@ Lambda functions are great for quickly iterating, but they are not compatible wi
 
 We can see that the independent variable will need to be converted into a complete path, so that we can open it as an image, and the dependent variable will need to be split on the space character (which is the default for Python’s `split` function) so that it becomes a list:
 
-
+Lambda函数对于快速迭代是极好的，但它们不兼任序列化，所以如果你想训练后输出你的`Learner`，我们建议你使用更为冗长的方法。（如果你只是做个尝试，lambdas是非常好的）
 
 ```
 def get_x(r): return path/'train'/r['fname']
