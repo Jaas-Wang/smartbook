@@ -359,7 +359,7 @@ Out: (Path('/home/jhoward/.fastai/data/pascal_2007/train/002844.jpg'), ['train']
 
 To actually open the image and do the conversion to tensors, we will need to use a set of transforms; block types will provide us with those. We can use the same block types that we have used previously, with one exception: the `ImageBlock` will work fine again, because we have a path that points to a valid image, but the `CategoryBlock` is not going to work. The problem is that block returns a single integer, but we need to be able to have multiple labels for each item. To solve this, we use a `MultiCategoryBlock`. This type of block expects to receive a list of strings, as we have in this case, so let’s test it out:
 
-
+实际打开图片并做张量转换，我们会需要做一些列的转换。块类型会提供我们那些步骤。我们能够使用先前已经使用过的相同块类型，但有一个例外：`ImageBlock`会运行良好，因为我们有一个指向有效图像的路径，但是`CategoryBlock`将不会运行。问题是块返回一个单整形，但我们需要能够对每个数据项有多标签。为了解决这个问题，我们使用`MultiCateoryBlock`类型。这个块类型要求接收字符串列表，正如在这个例子中我们已经有的数据那样，让我们测试一下它的输出：
 
 ```
 dblock = DataBlock(blocks=(ImageBlock, MultiCategoryBlock),
@@ -375,9 +375,13 @@ As you can see, our list of categories is not encoded in the same way that it wa
 
 > jargon: One-hot encoding: Using a vector of zeros, with a one in each location that is represented in the data, to encode a list of integers.
 
+正如你看到的，我们的分类列表没有以`CategoryBlock`同样的规则方法编码。在那个例子中，基于在我们词汇中它的位置，我们有一个单整形代表现在分类。虽然在这个例子中，有一个很多0列表，列表中1所在的位置是当前的分类。例如，如果1在第二和第四的位置，这就表示在这个图像中，代表两个和四个词汇数据项。这被称为*独热编码*。我们不能轻易的只用一个分类列表索引，原因是出每一列会是不一样的长度，而PyTorch需要张量，张量里所有事物必须是相同的长度。
+
+> 术语：独热编码：使用包含一个1的0失量（1所在的每个位置是数据中所代表的类型），来编码整型列表。
+
 Let’s check what the categories represent for this example (we are using the convenient `torch.where` function, which tells us all of the indices where our condition is true or false):
 
-
+在这个例子中，我们检查一下分类代表的是什么（我们使用`torch.where`函数转换，这会告诉我们的条件是真还是假的所有索引）：
 
 ```
 idxs = torch.where(dsets.train[0][1]==1.)[0]
@@ -388,9 +392,11 @@ Out: (#1) ['dog']
 
 With NumPy arrays, PyTorch tensors, and fastai’s `L` class, we can index directly using a list or vector, which makes a lot of code (such as this example) much clearer and more concise.
 
+利用NumPy数组，PyTorch张量和fastai的`L`类，我们能够使用列表或失量生成一些更清晰和更简洁的代码（如这个例子）直接索引。
+
 We have ignored the column `is_valid` up until now, which means that `DataBlock` has been using a random split by default. To explicitly choose the elements of our validation set, we need to write a function and pass it to `splitter` (or use one of fastai's predefined functions or classes). It will take the items (here our whole DataFrame) and must return two (or more) lists of integers:
 
-
+到目前为止，我们已经忽略了`is_valid`列，这表示`DataBlock`已经通过默认的方式使用了随机分割。来明确的选择我们验证集的元素，我们需要编写一个函数并把它传递给`splitter`（或使用fastai先前定义的函数和类的一种）。它会携带数据项（在这里是我们整个DataFrame）并必须返回两个（或更多）整形列表： 
 
 ```
 def splitter(df):
@@ -412,9 +418,11 @@ Out: (PILImage mode=RGB size=500x333,
 
 As we have discussed, a `DataLoader` collates the items from a `Dataset` into a mini-batch. This is a tuple of tensors, where each tensor simply stacks the items from that location in the `Dataset` item.
 
+正如我们已经讨论过的，一个`DataLoader`从一个`Dataset`收集数据项到一个最小批次中。这是一个张量元组，每个张量简单的堆砌来自`Dataset`项中该位置的数据条目。
+
 Now that we have confirmed that the individual items look okay, there's one more step we need to ensure we can create our `DataLoaders`, which is to ensure that every item is of the same size. To do this, we can use `RandomResizedCrop`:
 
-
+现在我们已经确信独立的数据项是没有问题的，还有一步需要确保我们能够创建每个数据项是相同尺寸的`DataLoaders`。为了做到这一点，我们可以使用`RandomResizedCrop`方法：
 
 ```
 dblock = DataBlock(blocks=(ImageBlock, MultiCategoryBlock),
@@ -427,7 +435,7 @@ dls = dblock.dataloaders(df)
 
 And now we can display a sample of our data:
 
-
+现在我们能够展示一个我们数据的实例：
 
 ```
 dls.show_batch(nrows=1, ncols=3)
@@ -437,4 +445,9 @@ Out: <img src="./_v_images/mulcat.png" alt="mulcat" style="zoom:100%;" />
 
 Remember that if anything goes wrong when you create your `DataLoaders` from your `DataBlock`, or if you want to view exactly what happens with your `DataBlock`, you can use the `summary` method we presented in the last chapter.
 
+记住，当创建来自你`DataBlock`的`DataLoaders`时，如果有任何问题，或如果你希望准确的看到你的`DataBlock`发生了什么，你可以使用在上一章节我们讲解的`summary`方法。
+
 Our data is now ready for training a model. As we will see, nothing is going to change when we create our `Learner`, but behind the scenes, the fastai library will pick a new loss function for us: binary cross-entropy.
+
+我们现在准备好了训练模型的数据。我们会看到，当我们创建我们的`Learner`时没有什么东西会改变，但是背后的景象是，fastai库会为我们选取一个新的损失函数：二值交叉熵。
+
