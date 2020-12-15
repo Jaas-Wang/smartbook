@@ -489,9 +489,9 @@ Out: TensorImage([ 0.7476, -1.1988,  4.5421, -1.5915, -0.6749,  0.0343, -2.4930,
 
 > 注释：获取模型激活：知道如何手动的获取一个最小批次，并把它传递到模型中去，然后查看激活和损失情况，这对于调试你的模型是非常重要的。它对学习也非常有帮助。因此你能够准确的看到到底发生了什么。
 
-They aren’t yet scaled to between 0 and 1, but we learned how to do that in <>, using the `sigmoid` function. We also saw how to calculate a loss based on this—this is our loss function from <>, with the addition of `log` as discussed in the last chapter:
+They aren’t yet scaled to between 0 and 1, but we learned how to do that in <chapter_mnist_basics>, using the `sigmoid` function. We also saw how to calculate a loss based on this—this is our loss function from <chapter_mnist_basics>, with the addition of `log` as discussed in the last chapter:
 
-In [26]:
+他们还没有缩放到0到1之间，但在<章节：mnist基础>中我们知道如何利用`sigmoid`函数来做。我们也看了如何基于此计算损失函数（这是来自<章节：mnist基础>的损失函数，并增加了在上一章节讨论过的`对数`）：
 
 ```
 def binary_cross_entropy(inputs, targets):
@@ -503,6 +503,11 @@ Note that because we have a one-hot-encoded dependent variable, we can't directl
 
 - `softmax`, as we saw, requires that all predictions sum to 1, and tends to push one activation to be much larger than the others (due to the use of `exp`); however, we may well have multiple objects that we're confident appear in an image, so restricting the maximum sum of activations to 1 is not a good idea. By the same reasoning, we may want the sum to be *less* than 1, if we don't think *any* of the categories appear in an image.
 - `nll_loss`, as we saw, returns the value of just one activation: the single activation corresponding with the single label for an item. This doesn't make sense when we have multiple labels.
+
+请注意，因为我们有了独热编码因变量，我们不能直接使用`nll_loss`或`softmax`（并且因而我们不能使用`交叉熵`）：
+
+- `softmax`，我们知道它的预测合计需要为1，并倾向输出一个远大于其它的激活（由于`指数函数`的使用）。而然，我们可能会有多个目标我们是确认会出现在图像中，所以限制激活的最大合计为1就不是一个好主意了。基于同样的原因，如果我们不认为*其它*的分类显示在图像中，我们可能希望合计*小于*1。
+- `nll_loss`，我们知道它只返回一个激活的值：单激活对应于对于每个数据项的单标签。当我们有多个标签时它就没有意义了。
 
 On the other hand, the `binary_cross_entropy` function, which is just `mnist_loss` along with `log`, provides just what we need, thanks to the magic of PyTorch's elementwise operations. Each activation will be compared to each target for each column, so we don't have to do anything to make this function work for multiple columns.
 
