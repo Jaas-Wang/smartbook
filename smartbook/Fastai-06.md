@@ -451,3 +451,221 @@ Our data is now ready for training a model. As we will see, nothing is going to 
 
 我们现在准备好了训练模型的数据。我们会看到，当我们创建我们的`Learner`时没有什么东西会改变，但是背后的景象是，fastai库会为我们选取一个新的损失函数：二值交叉熵。
 
+### Binary Cross-Entropy
+
+### 二值交叉熵
+
+Now we'll create our `Learner`. We saw in <chapter_mnist_basics> that a `Learner` object contains four main things: the model, a `DataLoaders` object, an `Optimizer`, and the loss function to use. We already have our `DataLoaders`, we can leverage fastai's `resnet` models (which we'll learn how to create from scratch later), and we know how to create an `SGD` optimizer. So let's focus on ensuring we have a suitable loss function. To do this, let's use `cnn_learner` to create a `Learner`, so we can look at its activations:
+
+现在来创建我们的`Learner`。在<章节：mnist基础>中我们看了`Learner`对象包含四个主要内容：模型、`DataLoaders`对象、优化器和要使用的损失函数。我们已经有了`DataLoaders`，能够利用fastai的`resnet`模型（后面我们会学习如何从零开始创建这一模型），我们知道如何创建一个`SGD`优化器。所以让我们聚焦在确保我们会有一个合适的损失函数。为此，让我们使用`cnn_learner`来创建一个`Learner`，以便我们能够查看它的激活情况：
+
+```
+learn = cnn_learner(dls, resnet18)
+```
+
+We also saw that the model in a `Learner` is generally an object of a class inheriting from `nn.Module`, and that we can call it using parentheses and it will return the activations of a model. You should pass it your independent variable, as a mini-batch. We can try it out by grabbing a mini batch from our `DataLoader` and then passing it to the model:
+
+在学习器里我们也会看到模型通常是从`nn.Module`继承的一个类对象，并且我们能够使用圆括号调用它，同时它会返回模型的激活。你应该把你的自变量作为最小批次传给它。我们能够尝试从我们的`DataLoader`中抓取一个最小批次，然后把它传给模型：
+
+```
+x,y = to_cpu(dls.train.one_batch())
+activs = learn.model(x)
+activs.shape
+```
+
+Out: torch.Size([64, 20])
+
+Think about why `activs` has this shape—we have a batch size of 64, and we need to calculate the probability of each of 20 categories. Here’s what one of those activations looks like:
+
+想一下，为什么激活是这个形状。我们有一个大小为64的批次，同时我们需要计算20个分类的每个概率。下面是那些激活其中一个的样子：
+
+```
+activs[0]
+```
+
+Out: TensorImage([ 0.7476, -1.1988,  4.5421, -1.5915, -0.6749,  0.0343, -2.4930, -0.8330, -0.3817, -1.4876, -0.1683,  2.1547, -3.4151,         -1.1743,  0.1530, -1.6801, -2.3067,  0.7063, -1.3358, -0.3715], grad_fn=<AliasBackward>)
+
+> note: Getting Model Activations: Knowing how to manually get a mini-batch and pass it into a model, and look at the activations and loss, is really important for debugging your model. It is also very helpful for learning, so that you can see exactly what is going on.
+
+> 注释：获取模型激活：知道如何手动的获取一个最小批次，并把它传递到模型中去，然后查看激活和损失情况，这对于调试你的模型是非常重要的。它对学习也非常有帮助。因此你能够准确的看到到底发生了什么。
+
+They aren’t yet scaled to between 0 and 1, but we learned how to do that in <>, using the `sigmoid` function. We also saw how to calculate a loss based on this—this is our loss function from <>, with the addition of `log` as discussed in the last chapter:
+
+In [26]:
+
+```
+def binary_cross_entropy(inputs, targets):
+    inputs = inputs.sigmoid()
+    return -torch.where(targets==1, inputs, 1-inputs).log().mean()
+```
+
+Note that because we have a one-hot-encoded dependent variable, we can't directly use `nll_loss` or `softmax` (and therefore we can't use `cross_entropy`):
+
+- `softmax`, as we saw, requires that all predictions sum to 1, and tends to push one activation to be much larger than the others (due to the use of `exp`); however, we may well have multiple objects that we're confident appear in an image, so restricting the maximum sum of activations to 1 is not a good idea. By the same reasoning, we may want the sum to be *less* than 1, if we don't think *any* of the categories appear in an image.
+- `nll_loss`, as we saw, returns the value of just one activation: the single activation corresponding with the single label for an item. This doesn't make sense when we have multiple labels.
+
+On the other hand, the `binary_cross_entropy` function, which is just `mnist_loss` along with `log`, provides just what we need, thanks to the magic of PyTorch's elementwise operations. Each activation will be compared to each target for each column, so we don't have to do anything to make this function work for multiple columns.
+
+> j: One of the things I really like about working with libraries like PyTorch, with broadcasting and elementwise operations, is that quite frequently I find I can write code that works equally well for a single item or a batch of items, without changes. `binary_cross_entropy` is a great example of this. By using these operations, we don't have to write loops ourselves, and can rely on PyTorch to do the looping we need as appropriate for the rank of the tensors we're working with.
+
+PyTorch already provides this function for us. In fact, it provides a number of versions, with rather confusing names!
+
+`F.binary_cross_entropy` and its module equivalent `nn.BCELoss` calculate cross-entropy on a one-hot-encoded target, but do not include the initial `sigmoid`. Normally for one-hot-encoded targets you'll want `F.binary_cross_entropy_with_logits` (or `nn.BCEWithLogitsLoss`), which do both sigmoid and binary cross-entropy in a single function, as in the preceding example.
+
+The equivalent for single-label datasets (like MNIST or the Pet dataset), where the target is encoded as a single integer, is `F.nll_loss` or `nn.NLLLoss` for the version without the initial softmax, and `F.cross_entropy` or `nn.CrossEntropyLoss` for the version with the initial softmax.
+
+Since we have a one-hot-encoded target, we will use `BCEWithLogitsLoss`:
+
+In [27]:
+
+```
+loss_func = nn.BCEWithLogitsLoss()
+loss = loss_func(activs, y)
+loss
+```
+
+Out[27]:
+
+```
+TensorImage(1.0342, grad_fn=<AliasBackward>)
+```
+
+We don't actually need to tell fastai to use this loss function (although we can if we want) since it will be automatically chosen for us. fastai knows that the `DataLoaders` has multiple category labels, so it will use `nn.BCEWithLogitsLoss` by default.
+
+One change compared to the last chapter is the metric we use: because this is a multilabel problem, we can't use the accuracy function. Why is that? Well, accuracy was comparing our outputs to our targets like so:
+
+```python
+def accuracy(inp, targ, axis=-1):
+    "Compute accuracy with `targ` when `pred` is bs * n_classes"
+    pred = inp.argmax(dim=axis)
+    return (pred == targ).float().mean()
+```
+
+The class predicted was the one with the highest activation (this is what `argmax` does). Here it doesn't work because we could have more than one prediction on a single image. After applying the sigmoid to our activations (to make them between 0 and 1), we need to decide which ones are 0s and which ones are 1s by picking a *threshold*. Each value above the threshold will be considered as a 1, and each value lower than the threshold will be considered a 0:
+
+```python
+def accuracy_multi(inp, targ, thresh=0.5, sigmoid=True):
+    "Compute accuracy when `inp` and `targ` are the same size."
+    if sigmoid: inp = inp.sigmoid()
+    return ((inp>thresh)==targ.bool()).float().mean()
+```
+
+If we pass `accuracy_multi` directly as a metric, it will use the default value for `threshold`, which is 0.5. We might want to adjust that default and create a new version of `accuracy_multi` that has a different default. To help with this, there is a function in Python called `partial`. It allows us to *bind* a function with some arguments or keyword arguments, making a new version of that function that, whenever it is called, always includes those arguments. For instance, here is a simple function taking two arguments:
+
+In [28]:
+
+```
+def say_hello(name, say_what="Hello"): return f"{say_what} {name}."
+say_hello('Jeremy'),say_hello('Jeremy', 'Ahoy!')
+```
+
+Out[28]:
+
+```
+('Hello Jeremy.', 'Ahoy! Jeremy.')
+```
+
+We can switch to a French version of that function by using `partial`:
+
+In [29]:
+
+```
+f = partial(say_hello, say_what="Bonjour")
+f("Jeremy"),f("Sylvain")
+```
+
+Out[29]:
+
+```
+('Bonjour Jeremy.', 'Bonjour Sylvain.')
+```
+
+We can now train our model. Let's try setting the accuracy threshold to 0.2 for our metric:
+
+In [30]:
+
+```
+learn = cnn_learner(dls, resnet50, metrics=partial(accuracy_multi, thresh=0.2))
+learn.fine_tune(3, base_lr=3e-3, freeze_epochs=4)
+```
+
+| epoch | train_loss | valid_loss | accuracy_multi |  time |
+| ----: | ---------: | ---------: | -------------: | ----: |
+|     0 |   0.942663 |   0.703737 |       0.233307 | 00:08 |
+|     1 |   0.821548 |   0.550827 |       0.295319 | 00:08 |
+|     2 |   0.604189 |   0.202585 |       0.816474 | 00:08 |
+|     3 |   0.359258 |   0.123299 |       0.944283 | 00:08 |
+
+| epoch | train_loss | valid_loss | accuracy_multi |  time |
+| ----: | ---------: | ---------: | -------------: | ----: |
+|     0 |   0.135746 |   0.123404 |       0.944442 | 00:09 |
+|     1 |   0.118443 |   0.107534 |       0.951255 | 00:09 |
+|     2 |   0.098525 |   0.104778 |       0.951554 | 00:10 |
+
+Picking a threshold is important. If you pick a threshold that's too low, you'll often be failing to select correctly labeled objects. We can see this by changing our metric, and then calling `validate`, which returns the validation loss and metrics:
+
+In [31]:
+
+```
+learn.metrics = partial(accuracy_multi, thresh=0.1)
+learn.validate()
+```
+
+Out[31]:
+
+```
+(#2) [0.10477833449840546,0.9314740300178528]
+```
+
+If you pick a threshold that's too high, you'll only be selecting the objects for which your model is very confident:
+
+In [32]:
+
+```
+learn.metrics = partial(accuracy_multi, thresh=0.99)
+learn.validate()
+```
+
+Out[32]:
+
+```
+(#2) [0.10477833449840546,0.9429482221603394]
+```
+
+We can find the best threshold by trying a few levels and seeing what works best. This is much faster if we just grab the predictions once:
+
+In [33]:
+
+```
+preds,targs = learn.get_preds()
+```
+
+Then we can call the metric directly. Note that by default `get_preds` applies the output activation function (sigmoid, in this case) for us, so we'll need to tell `accuracy_multi` to not apply it:
+
+In [34]:
+
+```
+accuracy_multi(preds, targs, thresh=0.9, sigmoid=False)
+```
+
+Out[34]:
+
+```
+TensorImage(0.9567)
+```
+
+We can now use this approach to find the best threshold level:
+
+In [35]:
+
+```
+xs = torch.linspace(0.05,0.95,29)
+accs = [accuracy_multi(preds, targs, thresh=i, sigmoid=False) for i in xs]
+plt.plot(xs,accs);
+```
+
+Out: ![img](data:image/png;base64,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)
+
+In this case, we're using the validation set to pick a hyperparameter (the threshold), which is the purpose of the validation set. Sometimes students have expressed their concern that we might be *overfitting* to the validation set, since we're trying lots of values to see which is the best. However, as you see in the plot, changing the threshold in this case results in a smooth curve, so we're clearly not picking some inappropriate outlier. This is a good example of where you have to be careful of the difference between theory (don't try lots of hyperparameter values or you might overfit the validation set) versus practice (if the relationship is smooth, then it's fine to do this).
+
+This concludes the part of this chapter dedicated to multi-label classification. Next, we'll take a look at a regression problem.
