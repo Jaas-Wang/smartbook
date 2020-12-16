@@ -523,13 +523,15 @@ PyTorch已经为我们提供了这个函数。实际上，它提供了很多版�
 
 `F.binary_cross_entropy` and its module equivalent `nn.BCELoss` calculate cross-entropy on a one-hot-encoded target, but do not include the initial `sigmoid`. Normally for one-hot-encoded targets you'll want `F.binary_cross_entropy_with_logits` (or `nn.BCEWithLogitsLoss`), which do both sigmoid and binary cross-entropy in a single function, as in the preceding example.
 
-`F.binary_cross_entropy`和它的模块相当于`nn.BCELoss`在独热编码目标上计算交叉熵，但是没有包含初始的`sigmoid`。通常对于独热编码目标你会想到`F.binary_cross_entropy_with_logits`（或`nn.BCEWithLogitsLoss`），正如在之前的例子中那样，在这一个函数里它包含了sigmoid和二值交叉熵。
+`F.binary_cross_entropy`和它的模块相当于`nn.BCELoss`在独热编码目标上计算交叉熵，但是没有包含初始的`sigmoid`。通常对于独热编码目标你会想到`F.binary_cross_entropy_with_logits`（或`nn.BCEWithLogitsLoss`），正如之前的例子那样，在其单一函数里包含了sigmoid和二值交叉熵两者。
 
 The equivalent for single-label datasets (like MNIST or the Pet dataset), where the target is encoded as a single integer, is `F.nll_loss` or `nn.NLLLoss` for the version without the initial softmax, and `F.cross_entropy` or `nn.CrossEntropyLoss` for the version with the initial softmax.
 
+相同的，对于单标签数据集（如MNIST或宠物数据集），其目标做为一个单整形进行了编码，对于`F.nll_loss`或`nn.NLLLoss`的版本是没有包含初始的softmax，而`F.cross_entropy`或`nn.CrossEntropyLoss`的版本包含了softmax。
+
 Since we have a one-hot-encoded target, we will use `BCEWithLogitsLoss`:
 
-In [27]:
+因为我们有独热编码目标，我们会使用`BCEWithLogitsLoss`：
 
 ```
 loss_func = nn.BCEWithLogitsLoss()
@@ -537,15 +539,15 @@ loss = loss_func(activs, y)
 loss
 ```
 
-Out[27]:
-
-```
-TensorImage(1.0342, grad_fn=<AliasBackward>)
-```
+Out: TensorImage(1.0342, grad_fn=<AliasBackward>)
 
 We don't actually need to tell fastai to use this loss function (although we can if we want) since it will be automatically chosen for us. fastai knows that the `DataLoaders` has multiple category labels, so it will use `nn.BCEWithLogitsLoss` by default.
 
+我们实际上并不需要告诉fastai来使用这个损失函数（虽然如果我们想的话，我们可以这么做），因为它会自动为我们进行选择。fastai知道`DataLoaders`有多分类标签，所以它会默认的使用`nn.BCEWithLogitsLoss`。
+
 One change compared to the last chapter is the metric we use: because this is a multilabel problem, we can't use the accuracy function. Why is that? Well, accuracy was comparing our outputs to our targets like so:
+
+与上一章节相比有一个改变是我们用的指标，因为这是一个多标签问题，我们不能使用精度函数。这是为什么呢？好吧，精度是我们的输出与我们目标的对比，如下所求：
 
 ```python
 def accuracy(inp, targ, axis=-1):
@@ -555,6 +557,8 @@ def accuracy(inp, targ, axis=-1):
 ```
 
 The class predicted was the one with the highest activation (this is what `argmax` does). Here it doesn't work because we could have more than one prediction on a single image. After applying the sigmoid to our activations (to make them between 0 and 1), we need to decide which ones are 0s and which ones are 1s by picking a *threshold*. Each value above the threshold will be considered as a 1, and each value lower than the threshold will be considered a 0:
+
+
 
 ```python
 def accuracy_multi(inp, targ, thresh=0.5, sigmoid=True):
