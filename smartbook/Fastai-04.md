@@ -2793,7 +2793,7 @@ A neural network contains a number of layers. Each layer is either *linear* or *
 39. Why can't we use accuracy as a loss function?
 40. 为什么我们不能使用精度作为损失函数？
 41. Draw the sigmoid function. What is special about its shape?
-42. 画S型函数曲线。它的形状具体是什么样子？
+42. 画出sigmoid函数曲线。它的形状具体是什么样子？
 43. What is the difference between a loss function and a metric?
 44. 损失函数和指标之间的差异是什么？
 45. What is the function to calculate new weights using a learning rate?
