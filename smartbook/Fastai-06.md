@@ -558,7 +558,7 @@ def accuracy(inp, targ, axis=-1):
 
 The class predicted was the one with the highest activation (this is what `argmax` does). Here it doesn't work because we could have more than one prediction on a single image. After applying the sigmoid to our activations (to make them between 0 and 1), we need to decide which ones are 0s and which ones are 1s by picking a *threshold*. Each value above the threshold will be considered as a 1, and each value lower than the threshold will be considered a 0:
 
-
+分类预测的是最高激活的那个值（这就是`argmax`做的事情）。在这里它不奏效是因为在一张图像上我们有超过一个的预测。在我们的激活应用sigmoid后（使得激活在0到1之间），我需要通过选择一个*阈值*来决定哪些是0，哪些是1。每个大于阈值的值会被识做为1，每个小于阈值的会被识做为0：
 
 ```python
 def accuracy_multi(inp, targ, thresh=0.5, sigmoid=True):
@@ -569,37 +569,29 @@ def accuracy_multi(inp, targ, thresh=0.5, sigmoid=True):
 
 If we pass `accuracy_multi` directly as a metric, it will use the default value for `threshold`, which is 0.5. We might want to adjust that default and create a new version of `accuracy_multi` that has a different default. To help with this, there is a function in Python called `partial`. It allows us to *bind* a function with some arguments or keyword arguments, making a new version of that function that, whenever it is called, always includes those arguments. For instance, here is a simple function taking two arguments:
 
-In [28]:
+如果我们直接传递`accuracy_multi`做为一个指标，它会有默认为0.5的阈值。我们可能希望调整这个默认值，并创建一个与默认值不同的新的`accuracy_multi`版本。为了完成这个工作，在Python中有一个名为`partial`函数。它允许我们*绑定*一个有一些参数或关键值参数的函数，来对这个函数生成 一个新的版本，无论何时调用它，总会包含那些参数。这里有一个取两个参数的函数例子：
 
 ```
 def say_hello(name, say_what="Hello"): return f"{say_what} {name}."
 say_hello('Jeremy'),say_hello('Jeremy', 'Ahoy!')
 ```
 
-Out[28]:
-
-```
-('Hello Jeremy.', 'Ahoy! Jeremy.')
-```
+Out: ('Hello Jeremy.', 'Ahoy! Jeremy.')
 
 We can switch to a French version of that function by using `partial`:
 
-In [29]:
+通过使用`partial`我们能够转换为一个这个函数的法语版本：
 
 ```
 f = partial(say_hello, say_what="Bonjour")
 f("Jeremy"),f("Sylvain")
 ```
 
-Out[29]:
-
-```
-('Bonjour Jeremy.', 'Bonjour Sylvain.')
-```
+Out: ('Bonjour Jeremy.', 'Bonjour Sylvain.')
 
 We can now train our model. Let's try setting the accuracy threshold to 0.2 for our metric:
 
-In [30]:
+我们现在能够训练我们的模型了。对于我们的指标，让我们尝试设置精度阈值为0.2：
 
 ```
 learn = cnn_learner(dls, resnet50, metrics=partial(accuracy_multi, thresh=0.2))
@@ -621,37 +613,29 @@ learn.fine_tune(3, base_lr=3e-3, freeze_epochs=4)
 
 Picking a threshold is important. If you pick a threshold that's too low, you'll often be failing to select correctly labeled objects. We can see this by changing our metric, and then calling `validate`, which returns the validation loss and metrics:
 
-In [31]:
+选取一个阈值是非常重要的。如果你选取的阈值太低，你会经常无法选择正确的标签目标。我们能够通过改变我们的指标来观察，然后调用`validate`，返回验证的损失和指标：
 
 ```
 learn.metrics = partial(accuracy_multi, thresh=0.1)
 learn.validate()
 ```
 
-Out[31]:
-
-```
-(#2) [0.10477833449840546,0.9314740300178528]
-```
+Out: (#2) [0.10477833449840546,0.9314740300178528]
 
 If you pick a threshold that's too high, you'll only be selecting the objects for which your model is very confident:
 
-In [32]:
+如果你选择的阈值太高，你只会看到对你的模型非常确信的选择目标：
 
 ```
 learn.metrics = partial(accuracy_multi, thresh=0.99)
 learn.validate()
 ```
 
-Out[32]:
-
-```
-(#2) [0.10477833449840546,0.9429482221603394]
-```
+Out: (#2) [0.10477833449840546,0.9429482221603394]
 
 We can find the best threshold by trying a few levels and seeing what works best. This is much faster if we just grab the predictions once:
 
-In [33]:
+我们能够通过尝试一些等级和查看最佳实践查找最佳阈值。如果我们只抓取一次预测，这会更快些：
 
 ```
 preds,targs = learn.get_preds()
@@ -659,21 +643,17 @@ preds,targs = learn.get_preds()
 
 Then we can call the metric directly. Note that by default `get_preds` applies the output activation function (sigmoid, in this case) for us, so we'll need to tell `accuracy_multi` to not apply it:
 
-In [34]:
+然后我们能够直接调用指标。注意，通过默认的方式`get_preds`会为我们应用输出激活函数（在这个例子中是sigmoid），所以我们需要告诉`accuracy_multi`不用应用它：
 
 ```
 accuracy_multi(preds, targs, thresh=0.9, sigmoid=False)
 ```
 
-Out[34]:
-
-```
-TensorImage(0.9567)
-```
+Out: TensorImage(0.9567)
 
 We can now use this approach to find the best threshold level:
 
-In [35]:
+现在我们能使用这一方法来查找最优的阈值水平：
 
 ```
 xs = torch.linspace(0.05,0.95,29)
