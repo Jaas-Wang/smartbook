@@ -665,4 +665,8 @@ Out: ![img](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAX4AAAD7CAYAAABt0P8jAA
 
 In this case, we're using the validation set to pick a hyperparameter (the threshold), which is the purpose of the validation set. Sometimes students have expressed their concern that we might be *overfitting* to the validation set, since we're trying lots of values to see which is the best. However, as you see in the plot, changing the threshold in this case results in a smooth curve, so we're clearly not picking some inappropriate outlier. This is a good example of where you have to be careful of the difference between theory (don't try lots of hyperparameter values or you might overfit the validation set) versus practice (if the relationship is smooth, then it's fine to do this).
 
+在这个例子中，我们使用验证集来选择一个超参（阈值），这就是验证集的用途。有时学习们会表达他们的顾虑，我们在验证集上可能会*过拟*，因为我们尝试了太多的值来看那个是最好的。然而，正如你在图中看到的，在这个例子中阈值改变的结果是一个平滑的曲线，所以我们显然不会选择那些离群值。这是一个好的例子，我们必须关注理论（不要尝试太多超参值，否则你可能会过拟验证集）与实践（如果关联是平滑的，那么这样做就好了）间的差别。
+
 This concludes the part of this chapter dedicated to multi-label classification. Next, we'll take a look at a regression problem.
+
+本章节介绍多标签分类的部分结束了。下面，我们会看一下回归问题。
