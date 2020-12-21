@@ -782,13 +782,15 @@ Out: tensor([384.6370, 259.4787])
 
 We can pass this function to `DataBlock` as `get_y`, since it is responsible for labeling each item. We'll resize the images to half their input size, just to speed up training a bit.
 
-
+我们能够把这个函数作为`get_y`传递给`数据块（DataBlock）`，因为对于标记的每个数据项它是可靠的。我们会改变图像到它们输入尺寸一半的大小，只是为了稍微加快一点训练速度。
 
 One important point to note is that we should not just use a random splitter. The reason for this is that the same people appears in multiple images in this dataset, but we want to ensure that our model can generalize to people that it hasn't seen yet. Each folder in the dataset contains the images for one person. Therefore, we can create a splitter function that returns true for just one person, resulting in a validation set containing just that person's images.
 
-The only other difference tfrom the previous data block examples is that the second block is a `PointBlock`. This is necessary so that fastai knows that the labels represent coordinates; that way, it knows that when doing data augmentation, it should do the same augmentation to these coordinates as it does to the images:
+需要注意的一个重要的点是我们不应该只使用一个随机分拆器。原因是在这个数据集中同一个人会显示在多张图像中，但我们希望确保我们的模型能够泛化还没有看到的那些人。在这个数据集中每个文件夹包含一个人的图像。因此，我们能够创建一个分拆器函数，对于只是一个人的返回真，在验证集只包含那个人图像的结果。
 
-In [45]:
+The only other difference from the previous data block examples is that the second block is a `PointBlock`. This is necessary so that fastai knows that the labels represent coordinates; that way, it knows that when doing data augmentation, it should do the same augmentation to these coordinates as it does to the images:
+
+与之前的数据块例子的唯一其它区别是第二个块是一个`点块（PointBlock）`。这是有必要的，这样fastai就知道标签代表的是坐标。因此，它知道在做数据扩充时，它应该对这些坐标做像图像那样的同样扩充：
 
 ```
 biwi = DataBlock(
@@ -802,10 +804,12 @@ biwi = DataBlock(
 ```
 
 > important: Points and Data Augmentation: We're not aware of other libraries (except for fastai) that automatically and correctly apply data augmentation to coordinates. So, if you're working with another library, you may need to disable data augmentation for these kinds of problems.
+>
+> 重要：点和数据扩充：我们不知道其它库（除了fastai）可自动和正确的应用数据扩充到坐标上。所以，如果你正在使用其它库，你需要禁用这些类型问题的数据扩充。
 
 Before doing any modeling, we should look at our data to confirm it seems okay:
 
-In [46]:
+做任何建模前，我们应该查看我们的数据，确认它是正常的：
 
 ```
 dls = biwi.dataloaders(path)
@@ -816,7 +820,7 @@ Out: <img src="./_v_images/show_batch.png" alt="show_batch" style="zoom:100%;" /
 
 That's looking good! As well as looking at the batch visually, it's a good idea to also look at the underlying tensors (especially as a student; it will help clarify your understanding of what your model is really seeing):
 
-In [47]:
+看起来很好！除了批次查看，查看底层张量也是一个好注意（尤其是一名学生，它会帮助你清晰理解，你的模型真正看到的内容）
 
 ```
 xb,yb = dls.one_batch()
@@ -829,7 +833,9 @@ Make sure that you understand *why* these are the shapes for our mini-batches.
 
 Here's an example of one row from the dependent variable:
 
-In [48]:
+确保你理解*为什么*这些是我们最小指批次的形状。
+
+这有一个来自因变量一行的例子：
 
 ```
 yb[0]
@@ -839,4 +845,8 @@ Out: TensorPoint([[-0.3375,  0.2193]], device='cuda:6')
 
 As you can see, we haven't had to use a separate *image regression* application; all we've had to do is label the data, and tell fastai what kinds of data the independent and dependent variables represent.
 
+正如你可以看到的，我们不必使用一个单独的*图像回归*应用。我们必须要做的是标注数据，并告诉fastai自变量和因变量代表什么类型的数据。
+
 It's the same for creating our `Learner`. We will use the same function as before, with one new parameter, and we will be ready to train our model.
+
+它与我们创建学习器相同。我们会使用之前用过的，带有一个新参数的相同函数，同时我们准备训练我们的模型。
