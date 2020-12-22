@@ -33,6 +33,7 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 
 [第五章 基于宠物品种的图像分类](./smartbook/Fastai-05.md)   [（英文原本：05_pet_breeds.ipynb）](./englishbook/05_pet_breeds.ipynb)（未校对）
 
-[第六章 多标签分类](./smartbook/Fastai-06.md)   [（英文原本：06_multicat.ipynb）](./englishbook/06_multicat.ipynb)（翻译中）
+[第六章 多标签分类](./smartbook/Fastai-06.md)   [（英文原本：06_multicat.ipynb）](./englishbook/06_multicat.ipynb)（未校对）
 
+[第七章 尺寸和测试时间增加](./smartbook/Fastai-07.md)   [（英文原本：07_sizing_and_tta.ipynb）](./englishbook/07_sizing_and_tta.ipynb)（翻译中）
  
