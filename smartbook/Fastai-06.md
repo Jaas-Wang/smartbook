@@ -117,7 +117,7 @@ You can access rows and columns of a DataFrame with the `iloc` property, as if i
 df.iloc[:,0]
 ```
 
-Out: $\begin{array}{l,c}
+Out: ${\begin{array}{l,c}
 0 &      000005.jpg \\
 1&       000007.jpg  \\
 2&       000009.jpg \\
@@ -128,9 +128,9 @@ Out: $\begin{array}{l,c}
 5007&    009955.jpg \\
 5008&    009958.jpg  \\
 5009&    009959.jpg  \\
-5010&    009961.jpg  \end{array}$
-$\begin{array}{l}&&Name: fname, Length: 5011, dtype: object
- \end{array}$
+5010&    009961.jpg  \end{array}\\
+\begin{array}{l}Name: fname, Length: 5011, dtype: object
+ \end{array}}$
 
 ```
 df.iloc[0,:]
@@ -154,7 +154,7 @@ You can also grab a column by name by indexing into a DataFrame directly:
 df['fname']
 ```
 
-Out: $\begin{array}{l,c} 0  &     000005.jpg\\
+Out: ${\begin{array}{l,c} 0  &     000005.jpg\\
 1      & 000007.jpg\\
 2      & 000009.jpg\\
 3      & 000012.jpg\\
@@ -164,8 +164,9 @@ Out: $\begin{array}{l,c} 0  &     000005.jpg\\
 5007   & 009955.jpg\\
 5008   & 009958.jpg\\
 5009   & 009959.jpg\\
-5010   & 009961.jpg\end{array}$
-$\begin{array}{l,l}&&Name: fname,& Length: 5011,& dtype: object\end{array}$
+5010   & 009961.jpg\end{array}
+\\
+\begin{array}{l,l}Name: fname,& Length: 5011,& dtype: object\end{array}}$
 
 You can create new columns and do calculations using columns:
 
@@ -299,15 +300,26 @@ x,y = dsets.train[0]
 x,y
 ```
 
-Out: $\begin{array}{llr}
-(&fname  &     008663.jpg\\
-&labels         & car person\\
-&is\_valid     &           False\\\end{array}$
-$ \begin{array}{l}& &&        Name: 4346, &dtype: object,\end{array}$
-$ \begin{array}{llllr}&&&  fname       &008663.jpg\\
- &&& labels    &  car person\\
- &&& is\_valid &  False\end{array}$
-$ \begin{array}{llr}&&& Name: 4346,& dtype: object&)\end{array}$
+Out: ${\begin{array}{llr}
+			(fname  &     008663.jpg\\
+			\ \ labels & car person\\
+			\ \ is\_valid  & False
+	  \end{array}
+	  \\
+ 	  \begin{array}{llr}
+			\ \ Name: 4346, &dtype: object,
+	  \end{array}
+	  \\
+ 	  \begin{array}{llllr}
+			 \ \ fname &008663.jpg\\
+			 \ \ labels    &  car person\\
+ 			 \ \ is\_valid &  False
+	  \end{array}
+	  \\
+ 	  \begin{array}{llr}
+			\ \  Name: 4346,& dtype: object)
+	  \end{array}
+	}$
 
 As you can see, this simply returns a row of the DataFrame, twice. This is because by default, the data block assumes we have two things: input and target. We are going to need to grab the appropriate fields from the DataFrame, which we can do by passing `get_x` and `get_y` functions:
 
@@ -897,13 +909,15 @@ Out: FlattenedLoss of MSELoss()
 
 This makes sense, since when coordinates are used as the dependent variable, most of the time we're likely to be trying to predict something as close as possible; that's basically what `MSELoss` (mean squared error loss) does. If you want to use a different loss function, you can pass it to `cnn_learner` using the `loss_func` parameter.
 
-
+这很有意义，因为当坐标被用于因变量，大多情况下我们可能尝试尽可能预测某物，这是`MSELoss`（均方误差损失）的基础。如果我想使用不同的损失函数，你能够把=使用`loss_func`参数把它传递给`cnn_learner`。
 
 Note also that we didn't specify any metrics. That's because the MSE is already a useful metric for this task (although it's probably more interpretable after we take the square root).
 
 We can pick a good learning rate with the learning rate finder:
 
+同时要注意的，我们不会具体说明任何指标。这是因为MSE对于这个任务已经是一个有用的指标（虽然我们取平均根后，它可能更好解释的）。
 
+利用学习率查找器我们能够选取一个好的学习率：
 
 ```
 learn.lr_find()
@@ -915,7 +929,7 @@ Out: ![img](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZcAAAEQCAYAAAB80zltAA
 
 We'll try an LR of 1e-2:
 
-In [54]:
+我们会尝试一个值为1e-2（0.01）的学习率（LR）：
 
 ```
 lr = 1e-2
@@ -934,7 +948,7 @@ learn.fine_tune(3, lr)
 
 Generally when we run this we get a loss of around 0.0001, which corresponds to an average coordinate prediction error of:
 
-In [55]:
+
 
 ```
 math.sqrt(0.0001)
@@ -944,7 +958,7 @@ Out: 0.01
 
 This sounds very accurate! But it's important to take a look at our results with `Learner.show_results`. The left side are the actual (*ground truth*) coordinates and the right side are our model's predictions:
 
-In [56]:
+听起来非常精确！但重要的是用`Learner.show_results`看一下结果。左侧是实际的（真实数据组）坐标，右侧是我们模型的预测：
 
 ```
 learn.show_results(ds_idx=1, nrows=3, figsize=(6,8))
