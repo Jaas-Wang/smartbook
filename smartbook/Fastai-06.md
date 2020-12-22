@@ -387,7 +387,7 @@ As you can see, our list of categories is not encoded in the same way that it wa
 
 > jargon: One-hot encoding: Using a vector of zeros, with a one in each location that is represented in the data, to encode a list of integers.
 
-正如你看到的，我们的分类列表没有以`CategoryBlock`同样的规则方法编码。在那个例子中，基于在我们词汇中它的位置，我们有一个单整形代表现在分类。虽然在这个例子中，有一个很多0列表，列表中1所在的位置是当前的分类。例如，如果1在第二和第四的位置，这就表示在这个图像中，代表两个和四个词汇数据项。这被称为*独热编码*。我们不能轻易的只用一个分类列表索引，原因是出每一列会是不一样的长度，而PyTorch需要张量，张量里所有事物必须是相同的长度。
+正如你看到的，我们的分类列表没有用常规的`CategoryBlock`规则方法编码。在那个例子中，基于在我们词汇中它的位置，我们有一个单整形代表现在分类。虽然在这个例子中，有一个很多0列表，列表中1所在的位置是当前的分类。例如，如果1在第二和第四的位置，这就表示在这个图像中，代表两个和四个词汇数据项。这被称为*独热编码*。我们不能轻易的只用一个分类列表索引，原因是出每一列会是不一样的长度，而PyTorch需要张量，张量里所有事物必须是相同的长度。
 
 > 术语：独热编码：使用包含一个1的0失量（1所在的每个位置是数据中所代表的类型），来编码整型列表。
 
@@ -969,3 +969,71 @@ Out:<img src="./_v_images/learnshow_results.png" alt="learnshow_results" style="
 It's quite amazing that with just a few minutes of computation we've created such an accurate key points model, and without any special domain-specific application. This is the power of building on flexible APIs, and using transfer learning! It's particularly striking that we've been able to use transfer learning so effectively even between totally different tasks; our pretrained model was trained to do image classification, and we fine-tuned for image regression.
 
 这非常神奇，仅仅几分钟的计算我们就能创建如此精确的关键的点模型，且没有任何具体专业领域应用。我就是构建在灵活的API之上，并利用迁移学习的力量！这非常惊人，甚至在完全不间的任务之间，我们能够如此有效率的使用迁移学习。我们的预训练模型被训练用于图像分类，而我们的微调是用于图像回归。
+
+## Conclusion
+
+## 结尾
+
+In problems that are at first glance completely different (single-label classification, multi-label classification, and regression), we end up using the same model with just different numbers of outputs. The loss function is the one thing that changes, which is why it's important to double-check that you are using the right loss function for your problem.
+
+乍一看这些问题是完全不同的（单标签分类、多标签分类和回归），我们最终使用了只有不同数量的输出相同模型。损失函数是可改变的一项，这就是为什么对于你的问题使用正确的损失函数进行复核是非常重要的。
+
+fastai will automatically try to pick the right one from the data you built, but if you are using pure PyTorch to build your `DataLoader`s, make sure you think hard when you have to decide on your choice of loss function, and remember that you most probably want:
+
+- `nn.CrossEntropyLoss` for single-label classification
+- `nn.BCEWithLogitsLoss` for multi-label classification
+- `nn.MSELoss` for regression
+
+根据你构建的数据，fastai会尝试自动选择正确的损失函数，但如果你用纯PyTorch来构建你的`DataLodaer`，当你不得不决定做你的损失函数选择时，一定要认真思考：
+
+- `nn.CrossEntropyLoss`是单标签分类损失函数
+- `nn.BCEWithLogitsLoss`是多标签分类损失函数
+- `nn.MSELoss`是回归损失函数
+
+## Questionnaire
+
+## 练习题
+
+1. How could multi-label classification improve the usability of the bear classifier?
+2. 多标签分类如何能够改善熊分类器的可用性？
+3. How do we encode the dependent variable in a multi-label classification problem?
+4. 在多标签分类问题上我们如何编码因变量？
+5. How do you access the rows and columns of a DataFrame as if it was a matrix?
+6. 如果它是一个矩阵，你怎么取DataFrame的行和列值？
+7. How do you get a column by name from a DataFrame?
+8. 对于DataFrame你怎么通过名称取列值？
+9. What is the difference between a `Dataset` and `DataLoader`?
+10. `Dataset`和`DataLoader`之间的区别是什么？
+11. What does a `Datasets` object normally contain?
+12. `Datasets`对象通常包含什么内容？
+13. What does a `DataLoaders` object normally contain?
+14. `DataLoaders`对象通常包含什么内容？
+15. What does `lambda` do in Python?
+16. 在Python中`lambda`做了什么？
+17. What are the methods to customize how the independent and dependent variables are created with the data block API?
+18. 用数据块API创建自变量和因变量的方法是什么？
+19. Why is softmax not an appropriate output activation function when using a one hot encoded target?
+20. 当使用独热编码目标时，为什么softmax不是合适的输出激活？
+21. Why is `nll_loss` not an appropriate loss function when using a one-hot-encoded target?
+22. 当使用独热编码目标时，为什么`nll_loss`不是合适的损失函数？
+23. What is the difference between `nn.BCELoss` and `nn.BCEWithLogitsLoss`?
+24. `nn.BCELoss`和`nn.BCEWithLogitsLoss`之间的区别是什么？
+25. Why can't we use regular accuracy in a multi-label problem?
+26. 在多标签问题中我们为什么不能使用常规精度？
+27. When is it okay to tune a hyperparameter on the validation set?
+28. 在验证集上什么时候调超参是合适的？
+29. How is `y_range` implemented in fastai? (See if you can implement it yourself and test it without peeking!)
+30. 在fastai中`y_range`是如何实现的？（看看你是否能够在不偷看的情况下，自己实现并测试它）
+31. What is a regression problem? What loss function should you use for such a problem?
+32. 回归问题是什么？对于这类问题我应该使用什么损失函数？
+33. What do you need to do to make sure the fastai library applies the same data augmentation to your input images and your target point coordinates?
+34. 你需要做什么来确保fastai库在你的输入图像和目标点坐标上应用相同的数据扩充？
+
+### Further Research
+
+### 未来研究
+
+1. Read a tutorial about Pandas DataFrames and experiment with a few methods that look interesting to you. See the book's website for recommended tutorials.
+2. 阅读Pandas DataFrames的教程，并尝试一些方法对你感兴趣的方法。看本书的网站推荐教程。
+3. Retrain the bear classifier using multi-label classification. See if you can make it work effectively with images that don't contain any bears, including showing that information in the web application. Try an image with two different kinds of bears. Check whether the accuracy on the single-label dataset is impacted using multi-label classification.
+4. 利用多标签分类重训练熊分类器。看看你是否能够使它在不包含熊的图片上有效运行，同时在网页应用上显示相关信息。在有两个不同品类的熊图像上尝试一下，检查利用多标签分类在单标签数据集上的是否影响了精度。
