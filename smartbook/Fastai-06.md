@@ -968,3 +968,4 @@ Out:<img src="./_v_images/learnshow_results.png" alt="learnshow_results" style="
 
 It's quite amazing that with just a few minutes of computation we've created such an accurate key points model, and without any special domain-specific application. This is the power of building on flexible APIs, and using transfer learning! It's particularly striking that we've been able to use transfer learning so effectively even between totally different tasks; our pretrained model was trained to do image classification, and we fine-tuned for image regression.
 
+这非常神奇，仅仅几分钟的计算我们就能创建如此精确的关键的点模型，且没有任何具体专业领域应用。我就是构建在灵活的API之上，并利用迁移学习的力量！这非常惊人，甚至在完全不间的任务之间，我们能够如此有效率的使用迁移学习。我们的预训练模型被训练用于图像分类，而我们的微调是用于图像回归。
