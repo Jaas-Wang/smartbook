@@ -255,3 +255,51 @@ On the other hand, if the transfer learning task is going to use images that are
 Another thing we could try is applying data augmentation to the validation set. Up until now, we have only applied it on the training set; the validation set always gets the same images. But maybe we could try to make predictions for a few augmented versions of the validation set and average them. We'll consider this approach next.
 
 另外一件事情是，我们能够尝试的是对验证集应用数据扩充。直到现在，我们只在训练集上应用了这一技术。验证集总是会取到相同的图像。但也许我们能够尝试对于一个稍微扩充过的验证集版本上做一些预测并平均预测值。我们接下来会思考这个方法。
+
+## Test Time Augmentation
+
+## 测试时间扩充
+
+We have been using random cropping as a way to get some useful data augmentation, which leads to better generalization, and results in a need for less training data. When we use random cropping, fastai will automatically use center cropping for the validation set—that is, it will select the largest square area it can in the center of the image, without going past the image's edges.
+
+我们已经使用了随机裁剪作为获得一些有用的数据扩充方法，会产生更好的泛化，和其结果是需要更少的训练数据。当我们使用随机裁剪，fastai会自动对验证集使用中心裁剪。即，它会在图像的中央选择它能选择的最大正文形面积，而不用越过图像的边缘。
+
+This can often be problematic. For instance, in a multi-label dataset sometimes there are small objects toward the edges of an image; these could be entirely cropped out by center cropping. Even for problems such as our pet breed classification example, it's possible that some critical feature necessary for identifying the correct breed, such as the color of the nose, could be cropped out.
+
+这经常会产生问题。例如，在多标签数据集中，有时有些小目标在图像的边缘。通过中心裁剪这这些目标可能会被完全裁剪掉。对于这些问题，即使如我们宠物分类例子，对于识别正确宠物的一些关键必要的特征，如鼻子的颜色，也许可能会被裁剪掉。
+
+One solution to this problem is to avoid random cropping entirely. Instead, we could simply squish or stretch the rectangular images to fit into a square space. But then we miss out on a very useful data augmentation, and we also make the image recognition more difficult for our model, because it has to learn how to recognize squished and squeezed images, rather than just correctly proportioned images.
+
+对于这个问题的一个解决方案是避免随机完全裁剪。相替代的，我们能够简单的把长方形图像挤扁或拉长正好契合入一个正方形的空间。但那时我们错失了一个非常有用的数据扩充，我们也会使得我们的模型图像识别更加困难，因为他已经学会了如何来识别挤扁和挤压的图像，而不是正确比例的图像。
+
+Another solution is to not just center crop for validation, but instead to select a number of areas to crop from the original rectangular image, pass each of them through our model, and take the maximum or average of the predictions. In fact, we could do this not just for different crops, but for different values across all of our test time augmentation parameters. This is known as *test time augmentation* (TTA).
+
+> jargon: test time augmentation (TTA): During inference or validation, creating multiple versions of each image, using data augmentation, and then taking the average or maximum of the predictions for each augmented version of the image.
+
+别一个解决方案是不仅仅对验证集做中心裁剪，相替代的是对原始长方形图像选择一些区域来裁剪，传递每个裁剪的区域通过我们的模型取预测的最大或平均值。事实上，我们做的这个事情不仅仅是对不同的裁剪，而且对于所有我们测试时间扩充参数的不同值做这个操作。这被称为*测试时间扩充*（TTA）。
+
+> 术语：测试时间扩充（TTA）：推理或验证期间，利用数据扩充创建每张图像的多个版本，然后对每个图像扩充版本取预测的平均或最大值。
+
+Depending on the dataset, test time augmentation can result in dramatic improvements in accuracy. It does not change the time required to train at all, but will increase the amount of time required for validation or inference by the number of test-time-augmented images requested. By default, fastai will use the unaugmented center crop image plus four randomly augmented images.
+
+You can pass any `DataLoader` to fastai's `tta` method; by default, it will use your validation set:
+
+依靠数据集，测试时间扩充能够导致戏剧化的改善精度。它根本不改变训练所请求的时间，而是会通请求一定数量的测试时间扩充图像来增加验证或推理所需要的大量时间。fastai会通过默认方式使用非扩充的中心裁剪图像加上四个随机扩充图像。
+
+你能够传递任意`DataLoader`到fastai的`tta`方法，它会默认的使用你的验证集：
+
+```
+preds,targs = learn.tta()
+accuracy(preds, targs).item()
+```
+
+Out: 0.8737863898277283
+
+As we can see, using TTA gives us good a boost in performance, with no additional training required. However, it does make inference slower—if you're averaging five images for TTA, inference will be five times slower.
+
+如我们所看到的，在没有额外的训练请求下，使用TTA在表现方面给了我们一个好的提升。然而，它使用的推理更慢，如果我们为TTA正在平均五张图像，推理会慢五倍。
+
+We've seen examples of how data augmentation helps train better models. Let's now focus on a new data augmentation technique called *Mixup*.
+
+我们已经看到了数据扩充如何帮助训练更好的模型的例子。现在让我们聚焦在一个新的数据扩充技术，称为*Mixup*。
+
