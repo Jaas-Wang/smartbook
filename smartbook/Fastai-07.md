@@ -169,3 +169,89 @@ All our training up until now has been done at size 224. We could have begun tra
 
 截止现在我们所有的训练都在224这个尺寸上完成了。开始前，我们能够在一个更小的尺寸上开始训练。这被称为*渐进式调整大小*。
 
+## Progressive Resizing
+
+## 渐进式调整大小
+
+When fast.ai and its team of students [won the DAWNBench competition](https://www.theverge.com/2018/5/7/17316010/fast-ai-speed-test-stanford-dawnbench-google-intel) in 2018, one of the most important innovations was something very simple: start training using small images, and end training using large images. Spending most of the epochs training with small images, helps training complete much faster. Completing training using large images makes the final accuracy much higher. We call this approach *progressive resizing*.
+
+> jargon: progressive resizing: Gradually using larger and larger images as you train.
+
+当fast.ai和它的学习团队在2018年[赢得DAWNBence比赛](https://www.theverge.com/2018/5/7/17316010/fast-ai-speed-test-stanford-dawnbench-google-intel)时，一个最重要且简单的发明：使用小图像开始训练，利用大图像结束训练。花费大多数周期用小图像做训练，帮助训练更快的完成。使用大图像完成训练使得最终精度更高。我们称这种方法为*渐进式调整大小*。
+
+> 术语：渐进式调整大小：逐步使用越来越大的图像做训练。
+
+As we have seen, the kinds of features that are learned by convolutional neural networks are not in any way specific to the size of the image—early layers find things like edges and gradients, and later layers may find things like noses and sunsets. So, when we change image size in the middle of training, it doesn't mean that we have to find totally different parameters for our model.
+
+正如我们看到的，通过卷积神经网络来学习的这些特征类型不是任何特定形式上的图像尺寸，起初的那些层找到如边沿和斜坡这些事物，后面的那些层找到如鼻子和日落这些事物。所以，当我们在训练中途改变图像尺寸，这并不代表我们必须为我们的模型寻找完全不同的参数。
+
+But clearly there are some differences between small images and big ones, so we shouldn't expect our model to continue working exactly as well, with no changes at all. Does this remind you of something? When we developed this idea, it reminded us of transfer learning! We are trying to get our model to learn to do something a little bit different from what it has learned to do before. Therefore, we should be able to use the `fine_tune` method after we resize our images.
+
+然而很明显，图像在大和小的时候它们之间有一些区别，所以我们不应该期望我们的模型在完全不改变的情况下也完全一样的工作。这让你想起了什么？当我们开发这个想法的时候，它让我们想到了迁移学习！我们尝试让我们的模型学习一些东西，这些东西与模型之前已经学到的有一些差别。因而，我们改变图像大小后应该能够使用`fine_tune`方法。
+
+There is an additional benefit to progressive resizing: it is another form of data augmentation. Therefore, you should expect to see better generalization of your models that are trained with progressive resizing.
+
+对于渐式调整大小有一个额外收益：它是另一种形式的数据扩充。所以，在渐进式调整大小下你应该希望看到你训练的模型有更好的泛化。
+
+To implement progressive resizing it is most convenient if you first create a `get_dls` function which takes an image size and a batch size as we did in the section before, and returns your `DataLoaders`:
+
+就如我们在之前小节做的那样，如果你首先创建一个取图像大小和一个批次大小的`get_dls`函数，来实施渐进式调整大小是极其方便的，然后返回你的`DataLoaders`。
+
+Now you can create your `DataLoaders` with a small size and use `fit_one_cycle` in the usual way, training for a few less epochs than you might otherwise do:
+
+现在你可以创建一个小尺寸的`DataLoaders`，并使用常用的`fit_one_cycle`方法，相比你可能做的其它方式训练少一些周期：
+
+```
+dls = get_dls(128, 128)
+learn = Learner(dls, xresnet50(n_out=dls.c), loss_func=CrossEntropyLossFlat(), 
+                metrics=accuracy)
+learn.fit_one_cycle(4, 3e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   1.902943 |   2.447006 | 0.401419 | 00:30 |
+|     1 |   1.315203 |   1.572992 | 0.525765 | 00:30 |
+|     2 |   1.001199 |   0.767886 | 0.759149 | 00:30 |
+|     3 |   0.765864 |   0.665562 | 0.797984 | 00:30 |
+
+Then you can replace the `DataLoaders` inside the `Learner`, and fine-tune:
+
+然后你能够`Learner`内部的`DataLoaders`，并做微调:
+
+```
+learn.dls = get_dls(64, 224)
+learn.fine_tune(5, 1e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   0.985213 |   1.654063 | 0.565721 | 01:06 |
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   0.706869 |   0.689622 | 0.784541 | 01:07 |
+|     1 |   0.739217 |   0.928541 | 0.712472 | 01:07 |
+|     2 |   0.629462 |   0.788906 | 0.764003 | 01:07 |
+|     3 |   0.491912 |   0.502622 | 0.836445 | 01:06 |
+|     4 |   0.414880 |   0.431332 | 0.863331 | 01:06 |
+
+As you can see, we're getting much better performance, and the initial training on small images was much faster on each epoch.
+
+你能看到，我们获得更好的性能，在小图像上的初始训练每个周期速度更快。
+
+You can repeat the process of increasing size and training more epochs as many times as you like, for as big an image as you wish—but of course, you will not get any benefit by using an image size larger than the size of your images on disk.
+
+你能够重复增加尺寸这一过程，到你希望的图像大小，并训练更多你喜欢周期的次数。当然，使用一个比你磁盘上图像更大的尺寸你将不会获得任何收益。
+
+Note that for transfer learning, progressive resizing may actually hurt performance. This is most likely to happen if your pretrained model was quite similar to your transfer learning task and dataset and was trained on similar-sized images, so the weights don't need to be changed much. In that case, training on smaller images may damage the pretrained weights.
+
+注意，对于迁移学习渐进式调整大小实际会伤害表现。如果你的预训练模型与你迁移学习的任务和数据集完全相似，在更小尺寸的图像上训练这种情况就极有可能发生，因为权重不需要有太多变化。在那种情况下，在更小图像上训练会损害预训练权重。
+
+On the other hand, if the transfer learning task is going to use images that are of different sizes, shapes, or styles than those used in the pretraining task, progressive resizing will probably help. As always, the answer to "Will it help?" is "Try it!"
+
+从另一方面说，如果迁移学习任务使用的图像与在预训练任务中使用的那些图像在尺寸、形状和样式不同，渐进式调整大小可能会有用。正如一直说的那样，对于“它会有帮忙吗？”的答案是“尝试一下！”
+
+Another thing we could try is applying data augmentation to the validation set. Up until now, we have only applied it on the training set; the validation set always gets the same images. But maybe we could try to make predictions for a few augmented versions of the validation set and average them. We'll consider this approach next.
+
+另外一件事情是，我们能够尝试的是对验证集应用数据扩充。直到现在，我们只在训练集上应用了这一技术。验证集总是会取到相同的图像。但也许我们能够尝试对于一个稍微扩充过的验证集版本上做一些预测并平均预测值。我们接下来会思考这个方法。
