@@ -365,7 +365,7 @@ The bigger issue with papers is that they use math, instead of code, to explain 
 
 <mixup_example> shows what it looks like when we take a *linear combination* of images, as done in Mixup.
 
-
+下面<mixupg事例>显示，当我们取图像的*线性组合*时它看起来什么样子，就像在Mixup中做的那样。
 
 ```
 #hide_input
@@ -389,17 +389,23 @@ Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/mixup.p
 
 The third image is built by adding 0.3 times the first one and 0.7 times the second. In this example, should the model predict "church" or "gas station"? The right answer is 30% church and 70% gas station, since that's what we'll get if we take the linear combination of the one-hot-encoded targets. For instance, suppose we have 10 classes and "church" is represented by the index 2 and "gas station" is reprsented by the index 7, the one-hot-encoded representations are:
 
+第三张图像是通过第一张图像的0.3倍和第二张图像的0.7倍加起来构建的。在这个例子中，模型应该预测“教堂”还是“加油站”？正确的答案是30%是教堂，70%是加油站，因为如果我们取了独热编码目标的线性组合，这就是我们会得到的结果。例如，假设我们有10个分类，“教堂”通过索引2来代表，和“加油站”通过索引7来代表，独热编码描述的是：
+
 ```
 [0, 0, 1, 0, 0, 0, 0, 0, 0, 0] and [0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
 ```
 
 so our final target is:
 
+所以我们最终的目标是：
+
 ```
 [0, 0, 0.3, 0, 0, 0, 0, 0.7, 0, 0]
 ```
 
-This all done for us inside fastai by adding a *callback* to our `Learner`. `Callback`s are what is used inside fastai to inject custom behavior in the training loop (like a learning rate schedule, or training in mixed precision). We'll be learning all about callbacks, including how to make your own, in <>. For now, all you need to know is that you use the `cbs` parameter to `Learner` to pass callbacks.
+This all done for us inside fastai by adding a *callback* to our `Learner`. `Callback`s are what is used inside fastai to inject custom behavior in the training loop (like a learning rate schedule, or training in mixed precision). We'll be learning all about callbacks, including how to make your own, in <chapter_accel_sgd>. For now, all you need to know is that you use the `cbs` parameter to `Learner` to pass callbacks.
+
+
 
 Here is how we train a model with Mixup:
 
