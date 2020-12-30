@@ -441,3 +441,58 @@ With Mixup we no longer have that problem, because our labels will only be exact
 One issue with this, however, is that Mixup is "accidentally" making the labels bigger than 0, or smaller than 1. That is to say, we're not *explicitly* telling our model that we want to change the labels in this way. So, if we want to make the labels closer to, or further away from 0 and 1, we have to change the amount of Mixup—which also changes the amount of data augmentation, which might not be what we want. There is, however, a way to handle this more directly, which is to use *label smoothing*.
 
 然而，与此相关的一个问题是，Mixup会“偶然的”使的标签比0大或比1小。也就是说，用个方法我们无法*明确的*告诉模型我们希望改变的标签。所以，如果我们希望使用标签更接近0和1或距离0和1更远，我们必须改变Mixup的数量，这也改变了数据增强的数量，这可能不是我们希望的那样。然而，有一个方法能更直接的处理这个问题，这就是使用*标签平滑*。
+
+## Label Smoothing
+
+## 标签平滑
+
+In the theoretical expression of loss, in classification problems, our targets are one-hot encoded (in practice we tend to avoid doing this to save memory, but what we compute is the same loss as if we had used one-hot encoding). That means the model is trained to return 0 for all categories but one, for which it is trained to return 1. Even 0.999 is not "good enough", the model will get gradients and learn to predict activations with even higher confidence. This encourages overfitting and gives you at inference time a model that is not going to give meaningful probabilities: it will always say 1 for the predicted category even if it's not too sure, just because it was trained this way.
+
+在损失的理论表述中，在分类问题上我们的目标是被独热编码的（实际上我们倾向避免做这个来存储记忆，但是我们的计算是相同的损失，就好像我们已经独热编码了）。这表示模型模型被训练来返回除了一个其它所有分类为0，它被训练返回1。即使0.999也不是“足够的好”，模型会获取梯度并学习用甚至更高的可信度来预测激活。这鼓励过拟且在推理时给你模型将不会给出有意义的概率：对于预测分类，即使它不太确定，它也总会说是1，只是因为它就是以这种方法训练的。
+
+This can become very harmful if your data is not perfectly labeled. In the bear classifier we studied in <chapter_production>, we saw that some of the images were mislabeled, or contained two different kinds of bears. In general, your data will never be perfect. Even if the labels were manually produced by humans, they could make mistakes, or have differences of opinions on images that are harder to label.
+
+如果你的数据不是完美的标注，这会变的非常有害。在<章节：产品>中我们学习到的熊分类器，我们看到其中一些图像是被错误标注了，或包含了两个不同种类的熊。通常来说，你的数据永远不会是完美的。及时标签是通过人类手工标注的，他们能够犯错，或在图像上有不同的观点很难来标注。
+
+Instead, we could replace all our 1s with a number a bit less than 1, and our 0s by a number a bit more than 0, and then train. This is called *label smoothing*. By encouraging your model to be less confident, label smoothing will make your training more robust, even if there is mislabeled data. The result will be a model that generalizes better.
+
+作为替代，我们能够用稍微小于1的数据来替换所有我们的数据1，和通过一个稍微比0大的数字来替代我们的数据0，然后做训练。这就被称为*标签平滑*。通过鼓励你的模型可信度不能么高，即使存在错误的标注，标签平滑也会使得你的训练更加可靠，其结果会有一个更好泛化的模型。
+
+This is how label smoothing works in practice: we start with one-hot-encoded labels, then replace all 0s with $\frac{\epsilon}{N}$ (that's the Greek letter *epsilon*, which is what was used in the [paper that introduced label smoothing](https://arxiv.org/abs/1512.00567) and is used in the fastai code), where $N$ is the number of classes and ϵϵ is a parameter (usually 0.1, which would mean we are 10% unsure of our labels). Since we want the labels to add up to 1, replace the 1 by $1-\epsilon + \frac{\epsilon}{N}$. This way, we don't encourage the model to predict something overconfidently. In our Imagenette example where we have 10 classes, the targets become something like (here for a target that corresponds to the index 3):
+
+下面是实践中标签平滑如何工作的：我们从独热编码标签开始，然后用$\frac{\epsilon}{N}$替换所有的数字0（这是希腊字母*epsilon*，它被用于[介绍标签平滑的论文](https://arxiv.org/abs/1512.00567) 和fastai代码中），$N$是分类数，$\epsilon$是参数（通常为0.1，它表示我们标注的不确定性是10%）。因为我们希望标签加总为1，我们通过$1-\epsilon + \frac{\epsilon}{N}$来替换1。这样，我们不鼓励模型预测事物过度自信。在我们的Imagenette例子中，我们有10个分类，目标会变成下面的样子（在这里相符目标的是索引3）：
+
+```
+[0.01, 0.01, 0.01, 0.91, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
+```
+
+In practice, we don't want to one-hot encode the labels, and fortunately we won't need to (the one-hot encoding is just good to explain what label smoothing is and visualize it).
+
+在实践中，我们不希望独热编码标签，且幸运的是我们也不需要（独热编码只是很好的解释了标签平滑是什么及形象化它）。
+
+### Sidebar: Label Smoothing, the Paper
+
+Here is how the reasoning behind label smoothing was explained in the paper by Christian Szegedy et al.:
+
+> : This maximum is not achievable for finite zkzk but is approached if zy≫zkzy≫zk for all k≠yk≠y—that is, if the logit corresponding to the ground-truth label is much great than all other logits. This, however, can cause two problems. First, it may result in over-fitting: if the model learns to assign full probability to the ground-truth label for each training example, it is not guaranteed to generalize. Second, it encourages the differences between the largest logit and all others to become large, and this, combined with the bounded gradient ∂ℓ∂zk∂ℓ∂zk, reduces the ability of the model to adapt. Intuitively, this happens because the model becomes too confident about its predictions.
+
+Let's practice our paper-reading skills to try to interpret this. "This maximum" is refering to the previous part of the paragraph, which talked about the fact that 1 is the value of the label for the positive class. So it's not possible for any value (except infinity) to result in 1 after sigmoid or softmax. In a paper, you won't normally see "any value" written; instead it will get a symbol, which in this case is zkzk. This shorthand is helpful in a paper, because it can be referred to again later and the reader will know what value is being discussed.
+
+Then it says "if zy≫zkzy≫zk for all k≠yk≠y." In this case, the paper immediately follows the math with an English description, which is handy because you can just read that. In the math, the yy is refering to the target (yy is defined earlier in the paper; sometimes it's hard to find where symbols are defined, but nearly all papers will define all their symbols somewhere), and zyzy is the activation corresponding to the target. So to get close to 1, this activation needs to be much higher than all the others for that prediction.
+
+Next, consider the statement "if the model learns to assign full probability to the ground-truth label for each training example, it is not guaranteed to generalize." This is saying that making zyzy really big means we'll need large weights and large activations throughout our model. Large weights lead to "bumpy" functions, where a small change in input results in a big change to predictions. This is really bad for generalization, because it means just one pixel changing a bit could change our prediction entirely!
+
+Finally, we have "it encourages the differences between the largest logit and all others to become large, and this, combined with the bounded gradient ∂ℓ∂zk∂ℓ∂zk, reduces the ability of the model to adapt." The gradient of cross-entropy, remember, is basically `output - target`. Both `output` and `target` are between 0 and 1, so the difference is between `-1` and `1`, which is why the paper says the gradient is "bounded" (it can't be infinite). Therefore our SGD steps are bounded too. "Reduces the ability of the model to adapt" means that it is hard for it to be updated in a transfer learning setting. This follows because the difference in loss due to incorrect predictions is unbounded, but we can only take a limited step each time.
+
+### End sidebar
+
+To use this in practice, we just have to change the loss function in our call to `Learner`:
+
+```python
+model = xresnet50(n_out=dls.c)
+learn = Learner(dls, model, loss_func=LabelSmoothingCrossEntropy(), 
+                metrics=accuracy)
+learn.fit_one_cycle(5, 3e-3)
+```
+
+Like with Mixup, you won't generally see significant improvements from label smoothing until you train more epochs. Try it yourself and see: how many epochs do you have to train before label smoothing shows an improvement?
