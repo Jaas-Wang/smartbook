@@ -405,9 +405,11 @@ so our final target is:
 
 This all done for us inside fastai by adding a *callback* to our `Learner`. `Callback`s are what is used inside fastai to inject custom behavior in the training loop (like a learning rate schedule, or training in mixed precision). We'll be learning all about callbacks, including how to make your own, in <chapter_accel_sgd>. For now, all you need to know is that you use the `cbs` parameter to `Learner` to pass callbacks.
 
-
+fastai内部能够对我们的`Learner`增加一个*回调函数*为我们做了所有事情。回调函数用于fastai内部注入定义学习循环的行为（如学习率计划或混合精度训练）。在<章节：加速随机梯度下降>中我们会学习所有关于回调的内容，包活如何定义我们自己的回调函数。目前为止你所需要知道的是，你使用`cbs`参数传递回调函数给`Learner`。
 
 Here is how we train a model with Mixup:
+
+下面是我们如何用Mixup训练模型：
 
 ```python
 model = xresnet50(n_out=dls.c)
@@ -418,12 +420,24 @@ learn.fit_one_cycle(5, 3e-3)
 
 What happens when we train a model with data that's "mixed up" in this way? Clearly, it's going to be harder to train, because it's harder to see what's in each image. And the model has to predict two labels per image, rather than just one, as well as figuring out how much each one is weighted. Overfitting seems less likely to be a problem, however, because we're not showing the same image in each epoch, but are instead showing a random combination of two images.
 
+当我们以这种方式“混合起”数据来训练模型时会发生什么？很明显，会更难训练，因为在每张图像中更难看到有什么。并且模型必须对每张图像预测两个标签，而不是一个，也要计算出每一个标签的权重是多少。然而，过拟好像不太可能是一个问题，因为在每个周期我们没有展示相同的图像，相替代展示的是随机组合的两张图像。
+
 Mixup requires far more epochs to train to get better accuracy, compared to other augmentation approaches we've seen. You can try training Imagenette with and without Mixup by using the *examples/train_imagenette.py* script in the [fastai repo](https://github.com/fastai/fastai). At the time of writing, the leaderboard in the [Imagenette repo](https://github.com/fastai/imagenette/) is showing that Mixup is used for all leading results for trainings of >80 epochs, and for fewer epochs Mixup is not being used. This is in line with our experience of using Mixup too.
+
+相比我们看到的其它增强方法，Mixup需要更多的周期来训练以获得更好的精度。我们能够通过使用[fastai repo](https://github.com/fastai/fastai)中的*examples/train_imagenette.py*脚本分别使用和不使用Mixup方法训练Imagenette。在编写本书的时候，在[Imagenette repo](https://github.com/fastai/imagenette/)中的选手排行榜显示对于所有领先的结果使用了超过80个周期的训练，更少周期Mixup是没有被使用的。这也符合我们使用Mixup的经验。
 
 One of the reasons that Mixup is so exciting is that it can be applied to types of data other than photos. In fact, some people have even shown good results by using Mixup on activations *inside* their models, not just on inputs—this allows Mixup to be used for NLP and other data types too.
 
+Mixup如此令人激动的一个原因是它能够应用于照片之外的的数据类型。真实上，不仅仅在输入，很多人甚至已经通过在他们模型内部的激活使用了Mixup显示出了好的结果。这使得Mixup也被用于自然语言处理和其它的数据类型。
+
 There's another subtle issue that Mixup deals with for us, which is that it's not actually possible with the models we've seen before for our loss to ever be perfect. The problem is that our labels are 1s and 0s, but the outputs of softmax and sigmoid can never equal 1 or 0. This means training our model pushes our activations ever closer to those values, such that the more epochs we do, the more extreme our activations become.
+
+对我们来说这里有另一个Mixup所涉及的小问题，对于我们的模型损失可能实际上不可能有我们以前所见过的更完美。问题是我们的标签是1和0，但Softmax和sigmoid的输出永远不能够等于1或0。这表示训练我们的模型使用我们的激活更接近这些值，这样我们做更多的周期， 我们的激活就变的越极端。
 
 With Mixup we no longer have that problem, because our labels will only be exactly 1 or 0 if we happen to "mix" with another image of the same class. The rest of the time our labels will be a linear combination, such as the 0.7 and 0.3 we got in the church and gas station example earlier.
 
+对于Mixup我们不再有那样的问题，因为如果我们用相同类的其它图像发生“混合”，我们的标签只会是确切的1或0。我们标签的剩余时间会做一个线性组合，如在稍早的教堂和加油站图像例子中我们取得了0.7和0.3。
+
 One issue with this, however, is that Mixup is "accidentally" making the labels bigger than 0, or smaller than 1. That is to say, we're not *explicitly* telling our model that we want to change the labels in this way. So, if we want to make the labels closer to, or further away from 0 and 1, we have to change the amount of Mixup—which also changes the amount of data augmentation, which might not be what we want. There is, however, a way to handle this more directly, which is to use *label smoothing*.
+
+然而，与此相关的一个问题是，Mixup会“偶然的”使的标签比0大或比1小。也就是说，用个方法我们无法*明确的*告诉模型我们希望改变的标签。所以，如果我们希望使用标签更接近0和1或距离0和1更远，我们必须改变Mixup的数量，这也改变了数据增强的数量，这可能不是我们希望的那样。然而，有一个方法能更直接的处理这个问题，这就是使用*标签平滑*。
