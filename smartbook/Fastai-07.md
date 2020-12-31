@@ -468,25 +468,37 @@ This is how label smoothing works in practice: we start with one-hot-encoded lab
 
 In practice, we don't want to one-hot encode the labels, and fortunately we won't need to (the one-hot encoding is just good to explain what label smoothing is and visualize it).
 
-在实践中，我们不希望独热编码标签，且幸运的是我们也不需要（独热编码只是很好的解释了标签平滑是什么及形象化它）。
+在实践中，我们不希望独热编码标签，且幸运的是我们也不需要（独热编码只是很好的解释了标签平滑是什么且形象化它）。
 
 ### Sidebar: Label Smoothing, the Paper
 
+### 侧边栏：标签平滑论文
+
 Here is how the reasoning behind label smoothing was explained in the paper by Christian Szegedy et al.:
 
-> : This maximum is not achievable for finite zkzk but is approached if zy≫zkzy≫zk for all k≠yk≠y—that is, if the logit corresponding to the ground-truth label is much great than all other logits. This, however, can cause two problems. First, it may result in over-fitting: if the model learns to assign full probability to the ground-truth label for each training example, it is not guaranteed to generalize. Second, it encourages the differences between the largest logit and all others to become large, and this, combined with the bounded gradient ∂ℓ∂zk∂ℓ∂zk, reduces the ability of the model to adapt. Intuitively, this happens because the model becomes too confident about its predictions.
+> : This maximum is not achievable for finite $z_k$ but is approached if $z_y\gg z_k$ for all $k\neq y$—that is, if the logit corresponding to the ground-truth label is much great than all other logits. This, however, can cause two problems. First, it may result in over-fitting: if the model learns to assign full probability to the ground-truth label for each training example, it is not guaranteed to generalize. Second, it encourages the differences between the largest logit and all others to become large, and this, combined with the bounded gradient $\frac{\partial\ell}{\partial z_k}$, reduces the ability of the model to adapt. Intuitively, this happens because the model becomes too confident about its predictions.
 
-Let's practice our paper-reading skills to try to interpret this. "This maximum" is refering to the previous part of the paragraph, which talked about the fact that 1 is the value of the label for the positive class. So it's not possible for any value (except infinity) to result in 1 after sigmoid or softmax. In a paper, you won't normally see "any value" written; instead it will get a symbol, which in this case is zkzk. This shorthand is helpful in a paper, because it can be referred to again later and the reader will know what value is being discussed.
+这是由克里斯汀·塞格迪等人在论文中解释的标签平滑背后的原因：
 
-Then it says "if zy≫zkzy≫zk for all k≠yk≠y." In this case, the paper immediately follows the math with an English description, which is handy because you can just read that. In the math, the yy is refering to the target (yy is defined earlier in the paper; sometimes it's hard to find where symbols are defined, but nearly all papers will define all their symbols somewhere), and zyzy is the activation corresponding to the target. So to get close to 1, this activation needs to be much higher than all the others for that prediction.
+> ：如果对于所有$k\neq y$ 的$z_y\gg z_k$，对于有限$z_k$无法达到最大，但是会接近。也就是说，如果分对数符合真实标签组，则它会远大于其它分对数。然而，这会引发两个问题。首先，它可能会产生过拟：对于每个训练事例，如果模型学习会分配所有可能性到真实标签组，它不能保证泛化。第二，第鼓励最大的分对数和其它分对数的差异变的更大，和这个有边界梯度$\frac{\partial\ell}{\partial z_k}$组合，降低了模型的适应能力。直觉上来说，这个事实的发生是因为模型对于它的预测变的过于自信。
+
+Let's practice our paper-reading skills to try to interpret this. "This maximum" is refering to the previous part of the paragraph, which talked about the fact that 1 is the value of the label for the positive class. So it's not possible for any value (except infinity) to result in 1 after sigmoid or softmax. In a paper, you won't normally see "any value" written; instead it will get a symbol, which in this case is $z_k$. This shorthand is helpful in a paper, because it can be referred to again later and the reader will know what value is being discussed.
+
+
+
+Then it says "if $z_y\gg z_k$ for all $k\neq y$." In this case, the paper immediately follows the math with an English description, which is handy because you can just read that. In the math, the yy is refering to the target (yy is defined earlier in the paper; sometimes it's hard to find where symbols are defined, but nearly all papers will define all their symbols somewhere), and zyzy is the activation corresponding to the target. So to get close to 1, this activation needs to be much higher than all the others for that prediction.
 
 Next, consider the statement "if the model learns to assign full probability to the ground-truth label for each training example, it is not guaranteed to generalize." This is saying that making zyzy really big means we'll need large weights and large activations throughout our model. Large weights lead to "bumpy" functions, where a small change in input results in a big change to predictions. This is really bad for generalization, because it means just one pixel changing a bit could change our prediction entirely!
 
-Finally, we have "it encourages the differences between the largest logit and all others to become large, and this, combined with the bounded gradient ∂ℓ∂zk∂ℓ∂zk, reduces the ability of the model to adapt." The gradient of cross-entropy, remember, is basically `output - target`. Both `output` and `target` are between 0 and 1, so the difference is between `-1` and `1`, which is why the paper says the gradient is "bounded" (it can't be infinite). Therefore our SGD steps are bounded too. "Reduces the ability of the model to adapt" means that it is hard for it to be updated in a transfer learning setting. This follows because the difference in loss due to incorrect predictions is unbounded, but we can only take a limited step each time.
+Finally, we have "it encourages the differences between the largest logit and all others to become large, and this, combined with the bounded gradient $\frac{\partial\ell}{\partial z_k}$, reduces the ability of the model to adapt." The gradient of cross-entropy, remember, is basically `output - target`. Both `output` and `target` are between 0 and 1, so the difference is between `-1` and `1`, which is why the paper says the gradient is "bounded" (it can't be infinite). Therefore our SGD steps are bounded too. "Reduces the ability of the model to adapt" means that it is hard for it to be updated in a transfer learning setting. This follows because the difference in loss due to incorrect predictions is unbounded, but we can only take a limited step each time.
 
 ### End sidebar
 
+### 侧边栏结束
+
 To use this in practice, we just have to change the loss function in our call to `Learner`:
+
+在实践中来使用这个方法，我们只需要改变对`Learner`我们所调用的损失函数：
 
 ```python
 model = xresnet50(n_out=dls.c)
@@ -496,3 +508,5 @@ learn.fit_one_cycle(5, 3e-3)
 ```
 
 Like with Mixup, you won't generally see significant improvements from label smoothing until you train more epochs. Try it yourself and see: how many epochs do you have to train before label smoothing shows an improvement?
+
+像Mixup一样，直到你训练更多的周期前，你通常不会看到来自标签平滑的重要改善。你自己实验一下并观察：在标签平滑显示出重大改善前，你必须做多少周期的训练？
