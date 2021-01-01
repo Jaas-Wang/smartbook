@@ -35,6 +35,6 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 
 [第六章 多标签分类](./smartbook/Fastai-06.md)   [（英文原本：06_multicat.ipynb）](./englishbook/06_multicat.ipynb)（未校对）
 
-[第七章 尺寸和测试时数据增强](./smartbook/Fastai-07.md)   [（英文原本：07_sizing_and_tta.ipynb）](./englishbook/07_sizing_and_tta.ipynb)（未校对）
+[第七章 数据尺寸和测试数据增强](./smartbook/Fastai-07.md)   [（英文原本：07_sizing_and_tta.ipynb）](./englishbook/07_sizing_and_tta.ipynb)（未校对）
 
 [第八章 协同过滤](./smartbook/Fastai-08.md)   [（英文原本：08_collab.ipynb）](./englishbook/08_collab.ipynb)（翻译中）
