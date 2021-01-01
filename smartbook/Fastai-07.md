@@ -523,26 +523,35 @@ Like with Mixup, you won't generally see significant improvements from label smo
 
 You have now seen everything you need to train a state-of-the-art model in computer vision, whether from scratch or using transfer learning. Now all you have to do is experiment on your own problems! See if training longer with Mixup and/or label smoothing avoids overfitting and gives you better results. Try progressive resizing, and test time augmentation.
 
+不管是从零开始或使用迁移学习，现在我们已经看了在计算机视觉中我们训练一个先进模型所需要的所有内容。现在我们所需要做的是基于我们自己的问题实验！观察用Mixup是否训练时间更长和/或标签平滑避免了过拟和给了我们更好的结果。尝试渐进式调整大小和测试时数据增加。
+
 Most importantly, remember that if your dataset is big, there is no point prototyping on the whole thing. Find a small subset that is representative of the whole, like we did with Imagenette, and experiment on it.
+
+最重要的是，记住是否你的数据集是大的，在整个数据集上做原型是无意义的。找一个代表整个数据集的小的子数据集。
 
 In the next three chapters, we will look at the other applications directly supported by fastai: collaborative filtering, tabular modeling and working with text. We will go back to computer vision in the next section of the book, with a deep dive into convolutional neural networks in <chapter_convolutions>.
 
+在接下来的三个章节，我们会看一些fastai直接支持的其它应用：协作过滤，表格建模和文本处理。在本书的后续部分我们会返回到计算机视觉，在<章节：卷积>中深入研究卷积神经网络。
+
 ## Questionnaire
 
+## 练习题
+
 1. What is the difference between ImageNet and Imagenette? When is it better to experiment on one versus the other?
-2. What is normalization?
-3. Why didn't we have to care about normalization when using a pretrained model?
-4. What is progressive resizing?
-5. Implement progressive resizing in your own project. Did it help?
-6. What is test time augmentation? How do you use it in fastai?
-7. Is using TTA at inference slower or faster than regular inference? Why?
-8. What is Mixup? How do you use it in fastai?
-9. Why does Mixup prevent the model from being too confident?
-10. Why does training with Mixup for five epochs end up worse than training without Mixup?
-11. What is the idea behind label smoothing?
-12. What problems in your data can label smoothing help with?
-13. When using label smoothing with five categories, what is the target associated with the index 1?
-14. What is the first step to take when you want to prototype quick experiments on a new dataset?
+2. 
+3. What is normalization?
+4. Why didn't we have to care about normalization when using a pretrained model?
+5. What is progressive resizing?
+6. Implement progressive resizing in your own project. Did it help?
+7. What is test time augmentation? How do you use it in fastai?
+8. Is using TTA at inference slower or faster than regular inference? Why?
+9. What is Mixup? How do you use it in fastai?
+10. Why does Mixup prevent the model from being too confident?
+11. Why does training with Mixup for five epochs end up worse than training without Mixup?
+12. What is the idea behind label smoothing?
+13. What problems in your data can label smoothing help with?
+14. When using label smoothing with five categories, what is the target associated with the index 1?
+15. What is the first step to take when you want to prototype quick experiments on a new dataset?
 
 ### Further Research
 
