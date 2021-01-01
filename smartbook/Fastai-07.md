@@ -531,7 +531,7 @@ Most importantly, remember that if your dataset is big, there is no point protot
 
 In the next three chapters, we will look at the other applications directly supported by fastai: collaborative filtering, tabular modeling and working with text. We will go back to computer vision in the next section of the book, with a deep dive into convolutional neural networks in <chapter_convolutions>.
 
-在接下来的三个章节，我们会看一些fastai直接支持的其它应用：协作过滤，表格建模和文本处理。在本书的后续部分我们会返回到计算机视觉，在<章节：卷积>中深入研究卷积神经网络。
+在接下来的三个章节，我们会看一些fastai直接支持的其它应用：协同过滤，表格建模和文本处理。在本书的后续部分我们会返回到计算机视觉，在<章节：卷积>中深入研究卷积神经网络。
 
 ## Questionnaire
 
