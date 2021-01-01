@@ -480,17 +480,23 @@ Here is how the reasoning behind label smoothing was explained in the paper by C
 
 这是由克里斯汀·塞格迪等人在论文中解释的标签平滑背后的原因：
 
-> ：如果对于所有$k\neq y$ 的$z_y\gg z_k$，对于有限$z_k$无法达到最大，但是会接近。也就是说，如果分对数符合真实标签组，则它会远大于其它分对数。然而，这会引发两个问题。首先，它可能会产生过拟：对于每个训练事例，如果模型学习会分配所有可能性到真实标签组，它不能保证泛化。第二，第鼓励最大的分对数和其它分对数的差异变的更大，和这个有边界梯度$\frac{\partial\ell}{\partial z_k}$组合，降低了模型的适应能力。直觉上来说，这个事实的发生是因为模型对于它的预测变的过于自信。
+> ：如果对于所有$k\neq y$ 的$z_y\gg z_k$，对于有限$z_k$无法达到最大，但是会接近。也就是说，如果分对数符合真实标签组，则它会远大于其它分对数。然而，这会引发两个问题。首先，它可能会产生过拟：如果模型学习为每个训练事例分配所有可能性给真实标签组，就不能保证泛化。第二，它鼓励最大的分对数和其它分对数的差异变的更大，和这个有边界梯度$\frac{\partial\ell}{\partial z_k}$组合，降低了模型的适应能力。直觉上来说，这个事实的发生是因为模型对于它的预测变的过于自信。
 
 Let's practice our paper-reading skills to try to interpret this. "This maximum" is refering to the previous part of the paragraph, which talked about the fact that 1 is the value of the label for the positive class. So it's not possible for any value (except infinity) to result in 1 after sigmoid or softmax. In a paper, you won't normally see "any value" written; instead it will get a symbol, which in this case is $z_k$. This shorthand is helpful in a paper, because it can be referred to again later and the reader will know what value is being discussed.
 
+让我们实践读到的论文技巧尝试理解它。“这个最大”指的是段落的前一部分，讲述了关于对于确定的分类标签的值为1的事实。sigmoid或softmax后任何值（除了无穷大）都不可能为1.在论文中，我们通常不会看到“任何值”的写法，作为替代它会取一个符号，在这个情况下是$z_k$。在论文中这个简写是有帮助的，因为它能够后面再次引用，读者会知道被讨论的值是什么。
 
+Then it says "if $z_y\gg z_k$ for all $k\neq y$." In this case, the paper immediately follows the math with an English description, which is handy because you can just read that. In the math, the $y$ is refering to the target ($y$ is defined earlier in the paper; sometimes it's hard to find where symbols are defined, but nearly all papers will define all their symbols somewhere), and $z_y$ is the activation corresponding to the target. So to get close to 1, this activation needs to be much higher than all the others for that prediction.
 
-Then it says "if $z_y\gg z_k$ for all $k\neq y$." In this case, the paper immediately follows the math with an English description, which is handy because you can just read that. In the math, the yy is refering to the target (yy is defined earlier in the paper; sometimes it's hard to find where symbols are defined, but nearly all papers will define all their symbols somewhere), and zyzy is the activation corresponding to the target. So to get close to 1, this activation needs to be much higher than all the others for that prediction.
+然后它说到了"如果对于所有的for all $k\neq y$都$z_y\gg z_k$ " ，在这种情况下，论文立刻随后有数学公式的英文描述，这是很方便的因为你能够正好读到它。在数学公式中，$y$指的是目标（($y$ 在论文中是最早被定义的，有时候很难发现符号已经被定义了，但几乎所有的论文会在某处定义它们所有的符号），$z_y$ 是对应于目标的激活。所以使用接近于1，这个激活需要对于那个预测相比所有其它的值要足够的高。
 
-Next, consider the statement "if the model learns to assign full probability to the ground-truth label for each training example, it is not guaranteed to generalize." This is saying that making zyzy really big means we'll need large weights and large activations throughout our model. Large weights lead to "bumpy" functions, where a small change in input results in a big change to predictions. This is really bad for generalization, because it means just one pixel changing a bit could change our prediction entirely!
+Next, consider the statement "if the model learns to assign full probability to the ground-truth label for each training example, it is not guaranteed to generalize." This is saying that making $z_y$ really big means we'll need large weights and large activations throughout our model. Large weights lead to "bumpy" functions, where a small change in input results in a big change to predictions. This is really bad for generalization, because it means just one pixel changing a bit could change our prediction entirely!
+
+接下来，思考概念“如果模型学会对于每个训练实例分配所有的可能性给真实标签组，就不能保证泛化。”这说的是使得$z_y$确实足够的大，表示我们模型至始至终会需要大权重和大激活。大权重导致“凹凸不平”的作用，这里一个很小的输入变化结果会是很大的预测变化。这对于泛化真的是非常糟糕，因为它意味着只是一个像素的小小变化就能够完全改变我们的预测！
 
 Finally, we have "it encourages the differences between the largest logit and all others to become large, and this, combined with the bounded gradient $\frac{\partial\ell}{\partial z_k}$, reduces the ability of the model to adapt." The gradient of cross-entropy, remember, is basically `output - target`. Both `output` and `target` are between 0 and 1, so the difference is between `-1` and `1`, which is why the paper says the gradient is "bounded" (it can't be infinite). Therefore our SGD steps are bounded too. "Reduces the ability of the model to adapt" means that it is hard for it to be updated in a transfer learning setting. This follows because the difference in loss due to incorrect predictions is unbounded, but we can only take a limited step each time.
+
+最后，我们看“它鼓励最大的分对数和其它分对数的差异变的更大，和这个有边界梯度$\frac{\partial\ell}{\partial z_k}$组合，降低了模型的适应能力。” 记住，交叉熵的梯度根本上来说是`输出 -目标`。`输出`和`目标`两者是在0和1之间，所以区别是在`-1`和`1`之间，这就是为什么论文说梯度是“有边界”（它不能是无穷大的）。因而我们的随机梯度下降的步进也是有边界的。“降低了模型的适应能力”表示的是它很难在迁移学习环境中被更新。这是因为在损失中的差异由于不正确的预测是无边边界的，但我们每次只能取有限的步进。
 
 ### End sidebar
 
@@ -510,3 +516,37 @@ learn.fit_one_cycle(5, 3e-3)
 Like with Mixup, you won't generally see significant improvements from label smoothing until you train more epochs. Try it yourself and see: how many epochs do you have to train before label smoothing shows an improvement?
 
 像Mixup一样，直到你训练更多的周期前，你通常不会看到来自标签平滑的重要改善。你自己实验一下并观察：在标签平滑显示出重大改善前，你必须做多少周期的训练？
+
+## Conclusion
+
+## 结尾
+
+You have now seen everything you need to train a state-of-the-art model in computer vision, whether from scratch or using transfer learning. Now all you have to do is experiment on your own problems! See if training longer with Mixup and/or label smoothing avoids overfitting and gives you better results. Try progressive resizing, and test time augmentation.
+
+Most importantly, remember that if your dataset is big, there is no point prototyping on the whole thing. Find a small subset that is representative of the whole, like we did with Imagenette, and experiment on it.
+
+In the next three chapters, we will look at the other applications directly supported by fastai: collaborative filtering, tabular modeling and working with text. We will go back to computer vision in the next section of the book, with a deep dive into convolutional neural networks in <chapter_convolutions>.
+
+## Questionnaire
+
+1. What is the difference between ImageNet and Imagenette? When is it better to experiment on one versus the other?
+2. What is normalization?
+3. Why didn't we have to care about normalization when using a pretrained model?
+4. What is progressive resizing?
+5. Implement progressive resizing in your own project. Did it help?
+6. What is test time augmentation? How do you use it in fastai?
+7. Is using TTA at inference slower or faster than regular inference? Why?
+8. What is Mixup? How do you use it in fastai?
+9. Why does Mixup prevent the model from being too confident?
+10. Why does training with Mixup for five epochs end up worse than training without Mixup?
+11. What is the idea behind label smoothing?
+12. What problems in your data can label smoothing help with?
+13. When using label smoothing with five categories, what is the target associated with the index 1?
+14. What is the first step to take when you want to prototype quick experiments on a new dataset?
+
+### Further Research
+
+1. Use the fastai documentation to build a function that crops an image to a square in each of the four corners, then implement a TTA method that averages the predictions on a center crop and those four crops. Did it help? Is it better than the TTA method of fastai?
+2. Find the Mixup paper on arXiv and read it. Pick one or two more recent articles introducing variants of Mixup and read them, then try to implement them on your problem.
+3. Find the script training Imagenette using Mixup and use it as an example to build a script for a long training on your own project. Execute it and see if it helps.
+4. Read the sidebar "Label Smoothing, the Paper", look at the relevant section of the original paper and see if you can follow it. Don't be afraid to ask for help!
