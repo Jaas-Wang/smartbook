@@ -538,24 +538,44 @@ In the next three chapters, we will look at the other applications directly supp
 ## 练习题
 
 1. What is the difference between ImageNet and Imagenette? When is it better to experiment on one versus the other?
-2. 
+2. ImageNet和imagenette之间的区别是什么？什么时候在一个数据集上做实验相比在别一个数据集上做是更好的？
 3. What is normalization?
-4. Why didn't we have to care about normalization when using a pretrained model?
-5. What is progressive resizing?
-6. Implement progressive resizing in your own project. Did it help?
-7. What is test time augmentation? How do you use it in fastai?
-8. Is using TTA at inference slower or faster than regular inference? Why?
-9. What is Mixup? How do you use it in fastai?
-10. Why does Mixup prevent the model from being too confident?
-11. Why does training with Mixup for five epochs end up worse than training without Mixup?
-12. What is the idea behind label smoothing?
-13. What problems in your data can label smoothing help with?
-14. When using label smoothing with five categories, what is the target associated with the index 1?
-15. What is the first step to take when you want to prototype quick experiments on a new dataset?
+4. 归一化是什么？
+5. Why didn't we have to care about normalization when using a pretrained model?
+6. 当使用一个预训练模型时，为什么我们不必关注归一化？
+7. What is progressive resizing?
+8. 什么是渐进式调整大小？
+9. Implement progressive resizing in your own project. Did it help?
+10. 在你自己的项目中实施渐进式调整大小。它是有帮助吗？
+11. What is test time augmentation? How do you use it in fastai?
+12. 什么是测试时数据增强？在fastai中你如何使用？
+13. Is using TTA at inference slower or faster than regular inference? Why?
+14. 使用TTA相比常规推断是更慢了还是更快了？为什么？
+15. What is Mixup? How do you use it in fastai?
+16. 什么是Mixup? 在fastai中你如何使用它？
+17. Why does Mixup prevent the model from being too confident?
+18. 为什么做Mixup会阻止模型过度自信？
+19. Why does training with Mixup for five epochs end up worse than training without Mixup?
+20. 为什么用Mixup做五个周期的训练比不用Mixup训练更糟？
+21. What is the idea behind label smoothing?
+22. 标签平滑背后的想法是什么？
+23. What problems in your data can label smoothing help with?
+24. 在你的数据中标签平滑对什么问题有帮助？
+25. When using label smoothing with five categories, what is the target associated with the index 1?
+26. 对五个分类使用标签平滑时，和索引1相关联的目标是什么？
+27. What is the first step to take when you want to prototype quick experiments on a new dataset?
+28. 当你在一个新的数据集上希望快速实验原型时，采取的第一步是什么？
 
 ### Further Research
 
+### 未来研究
+
 1. Use the fastai documentation to build a function that crops an image to a square in each of the four corners, then implement a TTA method that averages the predictions on a center crop and those four crops. Did it help? Is it better than the TTA method of fastai?
-2. Find the Mixup paper on arXiv and read it. Pick one or two more recent articles introducing variants of Mixup and read them, then try to implement them on your problem.
-3. Find the script training Imagenette using Mixup and use it as an example to build a script for a long training on your own project. Execute it and see if it helps.
-4. Read the sidebar "Label Smoothing, the Paper", look at the relevant section of the original paper and see if you can follow it. Don't be afraid to ask for help!
+2. 使用fastai指引创建一个函数，这个函数在图像的四个角上裁剪图像为一个正方形，然后在一个中心裁剪和那四个裁剪实施TTA方法平均预测。它有帮助吗？相比fastai的TTA方法更好吗？
+3. Find the Mixup paper on arXiv and read it. Pick one or two more recent articles introducing variants of Mixup and read them, then try to implement them on your problem.
+4. 在arXiv上查找Mixup论文并阅读。选取一或二个最新的介绍Mixup变体的文章并阅读。然后在你的问题上尝试的实施这些方法。
+5. Find the script training Imagenette using Mixup and use it as an example to build a script for a long training on your own project. Execute it and see if it helps.
+6. 查找使用Mixup训练Imagenette脚本，并且用它作为一个例子来创建一个你自己项目上的长期训练脚本。执行它并观察它是否有帮助。
+7. Read the sidebar "Label Smoothing, the Paper", look at the relevant section of the original paper and see if you can follow it. Don't be afraid to ask for help!
+8. 阅读侧边栏“标签平滑论文”，查看原始论文的相关部分，并看你是否能够理解它。不要害怕寻求帮助！
+
