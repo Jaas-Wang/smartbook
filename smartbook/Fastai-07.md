@@ -523,7 +523,7 @@ Like with Mixup, you won't generally see significant improvements from label smo
 
 You have now seen everything you need to train a state-of-the-art model in computer vision, whether from scratch or using transfer learning. Now all you have to do is experiment on your own problems! See if training longer with Mixup and/or label smoothing avoids overfitting and gives you better results. Try progressive resizing, and test time augmentation.
 
-不管是从零开始或使用迁移学习，现在我们已经看了在计算机视觉中我们训练一个先进模型所需要的所有内容。现在我们所需要做的是基于我们自己的问题实验！观察用Mixup是否训练时间更长和/或标签平滑避免了过拟和给了我们更好的结果。尝试渐进式调整大小和测试时数据增加。
+不管是从零开始或使用迁移学习，现在我们已经看了在计算机视觉中我们训练一个最先进模型所需要的所有内容。现在我们所需要做的是基于我们自己的问题实验！观察用Mixup是否训练时间更长和/或标签平滑避免了过拟和给了我们更好的结果。尝试渐进式调整大小和测试时数据增加。
 
 Most importantly, remember that if your dataset is big, there is no point prototyping on the whole thing. Find a small subset that is representative of the whole, like we did with Imagenette, and experiment on it.
 
