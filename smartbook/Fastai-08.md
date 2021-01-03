@@ -50,13 +50,13 @@ ratings = pd.read_csv(path/'u.data', delimiter='\t', header=None,
 ratings.head()
 ```
 
-|      | user | movie | rating | timestamp |
-| ---: | ---: | ----: | -----: | --------: |
-|    0 |  196 |   242 |      3 | 881250949 |
-|    1 |  186 |   302 |      3 | 891717742 |
-|    2 |   22 |   377 |      1 | 878887116 |
-|    3 |  244 |    51 |      2 | 880606923 |
-|    4 |  166 |   346 |      1 | 886397596 |
+|      | user用户 | movie电影 | rating等级 | timestamp时间戳 |
+| ---: | -------: | --------: | ---------: | --------------: |
+|    0 |      196 |       242 |          3 |       881250949 |
+|    1 |      186 |       302 |          3 |       891717742 |
+|    2 |       22 |       377 |          1 |       878887116 |
+|    3 |      244 |        51 |          2 |       880606923 |
+|    4 |      166 |       346 |          1 |       886397596 |
 
 Although this has all the information we need, it is not a particularly helpful way for humans to look at this data. <movie_xtab> shows the same data cross-tabulated into a human-friendly table.
 
@@ -75,7 +75,7 @@ We have selected just a few of the most popular movies, and users who watch the 
 
 If we knew for each user to what degree they liked each important category that a movie might fall into, such as genre, age, preferred directors and actors, and so forth, and we knew the same information about each movie, then a simple way to fill in this table would be to multiply this information together for each movie and use a combination. For instance, assuming these factors range between -1 and +1, with positive numbers indicating stronger matches and negative numbers weaker ones, and the categories are science-fiction, action, and old movies, then we could represent the movie *The Last Skywalker* as:
 
-如果我们知道每一名用户他们喜欢电影可能属于每个重要分类的程度，如类型、年代、偏好的导演和演员，等等，我们知道关于每部电影同样的信息，然后一个简单的填写这个表的方法也许是对于每部电影把这个信息乘起来并组合使用。例如，假设这些因素的范围在-1到+1之间，正数指标更强烈匹配，负数指标更弱的匹配，这些分类是科幻、动作和老电影，然后我们能够描述*最后的天行者*这部电影为：
+如果我们知道每一名用户他们喜欢电影可能属于每个重要分类的程度，如流派、年代、偏好的导演和演员，等等，我们知道关于每部电影同样的信息，然后一个简单的填写这个表的方法也许是对于每部电影把这个信息乘起来并组合使用。例如，假设这些因素的范围在-1到+1之间，正数指标更强烈匹配，负数指标更弱的匹配，这些分类是科幻、动作和老电影，然后我们能够描述*最后的天行者*这部电影为：
 
 ```
 last_skywalker = np.array([0.98,0.9,-0.9])
@@ -162,3 +162,143 @@ To use the usual `Learner.fit` function we will need to get our data into a `Dat
 
 使用普通的`Learner.fit`函数，我们需要把我们的数据放入一个`DataLoaders`，所以现在让我们聚焦在这个事情上。
 
+## Creating the DataLoaders
+
+## 创建DataLoaders
+
+When showing the data, we would rather see movie titles than their IDs. The table `u.item` contains the correspondence of IDs to titles:
+
+当展示数据时，我们宁愿看到电影标题而不是他们的ID。表`u.item`包含ID与电影标题的对应关系：
+
+```
+movies = pd.read_csv(path/'u.item',  delimiter='|', encoding='latin-1',
+                     usecols=(0,1), names=('movie','title'), header=None)
+movies.head()
+```
+
+|      | movie电影 |     title电影标题 |
+| ---: | --------: | ----------------: |
+|    0 |         1 |  Toy Story (1995) |
+|    1 |         2 |  GoldenEye (1995) |
+|    2 |         3 | Four Rooms (1995) |
+|    3 |         4 | Get Shorty (1995) |
+|    4 |         5 |    Copycat (1995) |
+
+We can merge this with our `ratings` table to get the user ratings by title:
+
+我们能够把这个表与我们的`等级`表合并，通过电影标题来获取用户等级：
+
+```
+ratings = ratings.merge(movies)
+ratings.head()
+```
+
+|      | user用户 | movie电影 | rating等级 | timestamp时间戳 | title电影标题 |
+| ---: | -------: | --------: | ---------: | --------------: | ------------: |
+|    0 |      196 |       242 |          3 |       881250949 |  Kolya (1996) |
+|    1 |       63 |       242 |          3 |       875747190 |  Kolya (1996) |
+|    2 |      226 |       242 |          5 |       883888671 |  Kolya (1996) |
+|    3 |      154 |       242 |          3 |       879138235 |  Kolya (1996) |
+|    4 |      306 |       242 |          5 |       876503793 |  Kolya (1996) |
+
+We can then build a `DataLoaders` object from this table. By default, it takes the first column for the user, the second column for the item (here our movies), and the third column for the ratings. We need to change the value of `item_name` in our case to use the titles instead of the IDs:
+
+然后我们能够利用这个表创建一个`DataLoaders`对象。它默认取第一列为用户，第二列为项目（在这里是我们的电影），及第三列为电影等级。在我们的例子中我们需要改变`item_name`的值，用电影标题替代电影的ID：
+
+```
+dls = CollabDataLoaders.from_df(ratings, item_name='title', bs=64)
+dls.show_batch()
+```
+
+|      | user用户 |                     title电影标题 | rating等级 |
+| ---: | -------: | --------------------------------: | ---------: |
+|    0 |      542 |               My Left Foot (1989) |          4 |
+|    1 |      422 |              Event Horizon (1997) |          3 |
+|    2 |      311 |         African Queen, The (1951) |          4 |
+|    3 |      595 |                   Face/Off (1997) |          4 |
+|    4 |      617 |               Evil Dead II (1987) |          1 |
+|    5 |      158 |              Jurassic Park (1993) |          5 |
+|    6 |      836 |                Chasing Amy (1997) |          3 |
+|    7 |      474 |                       Emma (1996) |          3 |
+|    8 |      466 | Jackie Chan's First Strike (1996) |          3 |
+|    9 |      554 |                     Scream (1996) |          3 |
+
+To represent collaborative filtering in PyTorch we can't just use the crosstab representation directly, especially if we want it to fit into our deep learning framework. We can represent our movie and user latent factor tables as simple matrices:
+
+在PyTorch中表示协同过滤，我们不能只是使用交叉表直接的代表，尤其如果我们想让它适合我们的深度学习框架的时候。我们能够描述电影和用户潜在因素表为简单的矩阵：
+
+```
+dls.classes
+```
+
+Out: {'user': (#944) ['#na#',1,2,3,4,5,6,7,8,9...],
+ 'title': (#1635) ['#na#',"'Til There Was You (1997)",'1-900 (1994)','101 Dalmatians (1996)','12 Angry Men (1957)','187 (1997)','2 Days in the Valley (1996)','20,000 Leagues Under the Sea (1954)','2001: A Space Odyssey (1968)','3 Ninjas: High Noon At Mega Mountain (1998)'...]}
+
+```
+n_users  = len(dls.classes['user'])
+n_movies = len(dls.classes['title'])
+n_factors = 5
+
+user_factors = torch.randn(n_users, n_factors)
+movie_factors = torch.randn(n_movies, n_factors)
+```
+
+To calculate the result for a particular movie and user combination, we have to look up the index of the movie in our movie latent factor matrix and the index of the user in our user latent factor matrix; then we can do our dot product between the two latent factor vectors. But *look up in an index* is not an operation our deep learning models know how to do. They know how to do matrix products, and activation functions.
+
+对特定电影和用户组合来计算结果，我们必须在我们的电影潜在因素矩阵中查找电影的索引和在我们的用户潜在因素矩阵中找用户的索引。然后，我们能够做两个潜在因素向量的点积。但是*在一个索引中查找* 不是我们深度学习模型知道如何去做的一个操作。它们知道如果做矩阵乘积和激活函数。
+
+Fortunately, it turns out that we can represent *look up in an index* as a matrix product. The trick is to replace our indices with one-hot-encoded vectors. Here is an example of what happens if we multiply a vector by a one-hot-encoded vector representing the index 3:
+
+幸运的是，事实证明*在一个索引中的查找* 我们能够等同于为一个矩阵乘积。技巧是用独热编码替换我们的索引。这是一个例子，如果我们把一个向量乘以等同于索引3的一个独热编码向量，看会发生什么：
+
+```
+one_hot_3 = one_hot(3, n_users).float()
+```
+
+```
+user_factors.t() @ one_hot_3
+```
+
+Out: tensor([-0.4586, -0.9915, -0.4052, -0.3621, -0.5908])
+
+It gives us the same vector as the one at index 3 in the matrix:
+
+它提供给了我们在矩阵中索引3处同样的向量值：
+
+```
+user_factors[3]
+```
+
+Out: tensor([-0.4586, -0.9915, -0.4052, -0.3621, -0.5908])
+
+If we do that for a few indices at once, we will have a matrix of one-hot-encoded vectors, and that operation will be a matrix multiplication! This would be a perfectly acceptable way to build models using this kind of architecture, except that it would use a lot more memory and time than necessary. We know that there is no real underlying reason to store the one-hot-encoded vector, or to search through it to find the occurrence of the number one—we should just be able to index into an array directly with an integer. Therefore, most deep learning libraries, including PyTorch, include a special layer that does just this; it indexes into a vector using an integer, but has its derivative calculated in such a way that it is identical to what it would have been if it had done a matrix multiplication with a one-hot-encoded vector. This is called an *embedding*.
+
+如果我们对几个索引一次性做这个操作，我们要有一个独热编码向量矩阵，这个操作会是一个矩阵乘法！使用这个类型架构，这也会是一个构建模型的可接收的完美方法，除了它会使用比必要条件下更多的内存和时间。我们知道没有真正的根本原因来存储独热编码，或通过它搜寻到存在的那个数字。我们应该只是用一个整数就能够直接的索引到一个数组中。因而，绝大多数深度学习库（包括PyTorch），包含只做这个事情的一个特定层。它用一个整数索引到向量中，但有它的导数计算，用这种方法是与如果本来用一个独热编码乘以一个矩阵是相同的。这被称为*嵌入*。
+
+> jargon: Embedding: Multiplying by a one-hot-encoded matrix, using the computational shortcut that it can be implemented by simply indexing directly. This is quite a fancy word for a very simple concept. The thing that you multiply the one-hot-encoded matrix by (or, using the computational shortcut, index into directly) is called the *embedding matrix*.
+
+> 术语：嵌入：乘以一个独热编码矩阵，使用简单的直接索引它能够实现计算的捷径。对于非常简单的概念这是一个十分奇幻的词。你将独热编码矩阵所乘以的矩阵（或使用计算捷径直接索引到）被称为*嵌入矩阵*。
+
+In computer vision, we have a very easy way to get all the information of a pixel through its RGB values: each pixel in a colored image is represented by three numbers. Those three numbers give us the redness, the greenness and the blueness, which is enough to get our model to work afterward.
+
+在计算机视觉中我们有一个非常容易的方法，通过它的RGB值来获取一个像素的所有信息：在一个彩色图像中每个像素是通过三个数值代表的。那三个数值给了我们红、绿和蓝，它足以让我们的模型做后续的工作。
+
+For the problem at hand, we don't have the same easy way to characterize a user or a movie. There are probably relations with genres: if a given user likes romance, they are likely to give higher scores to romance movies. Other factors might be whether the movie is more action-oriented versus heavy on dialogue, or the presence of a specific actor that a user might particularly like.
+
+对于手边的这个问题，我们没有相同的方法来描述一名用户或一部电影。有可能与流派有关：如果一个给定的用户喜欢罗曼蒂克，他们可能给了罗曼蒂克电影更高的分数。其它因素是否可能电影相对于对话更强调运作，或一名用户可能特别喜欢一个特定演员的仪态。
+
+How do we determine numbers to characterize those? The answer is, we don't. We will let our model *learn* them. By analyzing the existing relations between users and movies, our model can figure out itself the features that seem important or not.
+
+我们如何确定那些特征的数值？答案是，我们不做。我们会让我们的模型*学习* 它们。通过分析用户和电影之产已经存在的关系，我们的模型能够自己计算出那些特征似乎重要或不重要。
+
+This is what embeddings are. We will attribute to each of our users and each of our movies a random vector of a certain length (here, `n_factors=5`), and we will make those learnable parameters. That means that at each step, when we compute the loss by comparing our predictions to our targets, we will compute the gradients of the loss with respect to those embedding vectors and update them with the rules of SGD (or another optimizer).
+
+这就是嵌入。我们将分配给给每名用户和每部电影一个确定长度的随机张量（在这里n_factors = 5），且我们会使用那些参数可学习。这表示在每一步，当我们通过比对预测和目标来计算损失的时候，我们会用针对那些嵌入向量计算损失的梯度，并用随机梯度下降（或其它优化器）的规则更新它们。
+
+At the beginning, those numbers don't mean anything since we have chosen them randomly, but by the end of training, they will. By learning on existing data about the relations between users and movies, without having any other information, we will see that they still get some important features, and can isolate blockbusters from independent cinema, action movies from romance, and so on.
+
+在一开始，那些数字没有任何含义，因为我们随机选择的它们，但是在训练的结尾，它们就会有含义了。通过在已存在的数据上学习关于用户和电影之间的关系，不包含任何其它信息，我们会看到它们依然取得了一些重要特征，并能够从独立的影院把大片，罗曼蒂克把动作电影隔离开，等等。
+
+We are now in a position that we can create our whole model from scratch.
+
+现在我们处于能够从零开始创建我们整个模型的位置了。
