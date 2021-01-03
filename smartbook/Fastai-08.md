@@ -126,3 +126,39 @@ Out: -1.611
 Since we don't know what the latent factors actually are, and we don't know how to score them for each user and movie, we should learn them.
 
 因为我们不知道实际的潜在因素是什么，且我们不知道对每名用户和电影如何来打分，我们应该学习他们。
+
+## Learning the Latent Factors
+
+## 学习潜在因素
+
+There is surprisingly little difference between specifying the structure of a model, as we did in the last section, and learning one, since we can just use our general gradient descent approach.
+
+正如我们在上一节做的那样，指定模型结构和学习模型之间只有惊人的细微差别，因此我们正好能够使用常用的梯度下降方法。
+
+Step 1 of this approach is to randomly initialize some parameters. These parameters will be a set of latent factors for each user and movie. We will have to decide how many to use. We will discuss how to select this shortly, but for illustrative purposes let's use 5 for now. Because each user will have a set of these factors and each movie will have a set of these factors, we can show these randomly initialized values right next to the users and movies in our crosstab, and we can then fill in the dot products for each of these combinations in the middle. For example, <xtab_latent> shows what it looks like in Microsoft Excel, with the top-left cell formula displayed as an example.
+
+这一方法的第一步，随机初始化一些参数。这些参数会作为每一用户和电影的一系列潜在因素。我们必须要决定使用多少个潜在因素。我们将会简短的讨论如何去选择，但是为了说明性的目标，让我们现在使用5个潜在因素。因为每个用户和每部电影都会有一系列的这些因素，在我们的交叉表中，我们能够在用户和电影旁边展示这些随机的初始化值，并且然后我们在交叉表中央能够对这些组合的每一个单元格填写点积值。例如，在图<交叉表的潜在因素>中展示了在微软电子表格中这个交叉表的样子，作为事例展示了左上单元格公式。
+
+<div style="text-align:center">
+  <p align="center">
+    <img alt="Latent factors with crosstab" width="900" caption="Latent factors with crosstab" id="xtab_latent" src="./_v_images/att_00041.png"/>
+  </p>
+  <p align="center">图：交叉表的潜在因素</p>
+</div>
+
+Step 2 of this approach is to calculate our predictions. As we've discussed, we can do this by simply taking the dot product of each movie with each user. If, for instance, the first latent user factor represents how much the user likes action movies and the first latent movie factor represents if the movie has a lot of action or not, the product of those will be particularly high if either the user likes action movies and the movie has a lot of action in it or the user doesn't like action movies and the movie doesn't have any action in it. On the other hand, if we have a mismatch (a user loves action movies but the movie isn't an action film, or the user doesn't like action movies and it is one), the product will be very low.
+
+本方法的第二步，来计算我们的预测。正如我们讨论过的，我们能够通过简单的求每个用户和每部电影的点积来实现。例如，如果第一个潜在用户因素代表多少用户喜欢运作电影，及第一个潜在电影因素代表这部电影是否有很多运作或没有，如果用户要么喜欢运作电影和电影中有很多动作，要么用户不喜欢运作电影及电影中没有任何运作情节，那些乘积会特别高。换句话说，如果我们有了错误的匹配（一名用户喜爱运作电影，但是这部电影不是一部运作片，或用户不喜欢运作电影及这部电影确是一部运作片），乘积会非常的低。
+
+Step 3 is to calculate our loss. We can use any loss function that we wish; let's pick mean squared error for now, since that is one reasonable way to represent the accuracy of a prediction.
+
+第三步是计算我们的损失。我们能够使用任意我们所希望的损失函数。现在让我们选择均方差，因为这是代表预测精度的一个合理方法。
+
+That's all we need. With this in place, we can optimize our parameters (that is, the latent factors) using stochastic gradient descent, such as to minimize the loss. At each step, the stochastic gradient descent optimizer will calculate the match between each movie and each user using the dot product, and will compare it to the actual rating that each user gave to each movie. It will then calculate the derivative of this value and will step the weights by multiplying this by the learning rate. After doing this lots of times, the loss will get better and better, and the recommendations will also get better and better.
+
+上述所有内容是我们所需要的。有了这些，使用随机梯度下降我们就能够优化我们的参数了（即，潜在因素），例如最小化损失。在每一步，随机梯度下降优化器会使用点积计算每部电影和每名用户的匹配度，且其会与每名用户给出的每部电影的真实等级做比对。它然后会计算这个值的导数和通过乘以学习率来步进权重。经过做这个工作很多次后，损失会变的越来越好，推荐也将会变的越来越好。
+
+To use the usual `Learner.fit` function we will need to get our data into a `DataLoaders`, so let's focus on that now.
+
+使用普通的`Learner.fit`函数，我们需要把我们的数据放入一个`DataLoaders`，所以现在让我们聚焦在这个事情上。
+
