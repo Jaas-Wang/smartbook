@@ -940,17 +940,17 @@ Another critical insight comes from considering how a model interacts with its e
 - A *predictive policing* model is created based on where arrests have been made in the past. In practice, this is not actually predicting crime, but rather predicting arrests, and is therefore partially simply reflecting biases in existing policing processes.
 - Law enforcement officers then might use that model to decide where to focus their police activity, resulting in increased arrests in those areas.
 - Data on these additional arrests would then be fed back in to retrain future versions of the model.
-- 一个*治安预测* 模型是基于在过去某地已经发生的拘捕情况来创建的。事实上，这不是实际的犯罪预测，而是拘捕预测，因此一定程序上会简单的思考方面在已经存在的治安传票上。
+- 一个*治安预测* 模型是基于在过去某地已经发生的拘捕情况来创建的。事实上，这不是实际的犯罪预测，而是拘捕预测，因此在存在的治安程序上一定程度上简单的反映了偏见。
 - 法律执行官员可能会使用模型去决策他们的警察活动聚焦的区域，结果是在增加拘捕的那些区域。
 - 增加拘捕的数据将会被反馈给再训练的未来模型版本。
 
 This is a *positive feedback loop*, where the more the model is used, the more biased the data becomes, making the model even more biased, and so forth.
 
-这是一个*正向的反馈循环*，更多的模型被使用，更多偏好数据产生，使得模型更加倾向偏好，等等。
+这是一个*正向的反馈循环*，更多的模型被使用，更多偏向数据产生，使得模型更加偏见，等等。
 
 Feedback loops can also create problems in commercial settings. For instance, a video recommendation system might be biased toward recommending content consumed by the biggest watchers of video (e.g., conspiracy theorists and extremists tend to watch more online video content than the average), resulting in those users increasing their video consumption, resulting in more of those kinds of videos being recommended. We'll consider this topic more in detail in <chapter_ethics>.
 
-在商业环境中反馈循环也能产生一些问题。例如，一个视频推荐系统可能偏好推荐观看量最大的内容（例如，阴谋论和极端分子相比普通人倾向观看更多的在线视频），导致那些用户增加他们的视频观看量，进而导致更多那种类型的视频被推荐。我们会在<伦理章节>思考这个话题的更多细节。
+在商业环境中反馈循环也能产生一些问题。例如，一个视频推荐系统可能偏向推荐观看量最大的内容（例如，阴谋论和极端分子相比普通人倾向观看更多的在线视频），导致那些用户增加他们的视频观看量，进而导致更多那种类型的视频被推荐。我们会在<伦理章节>思考这个话题的更多细节。
 
 Now that you have seen the base of the theory, let's go back to our code example and see in detail how the code corresponds to the process we just described.
 
