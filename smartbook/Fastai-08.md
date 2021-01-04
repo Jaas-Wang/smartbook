@@ -277,7 +277,7 @@ If we do that for a few indices at once, we will have a matrix of one-hot-encode
 
 > jargon: Embedding: Multiplying by a one-hot-encoded matrix, using the computational shortcut that it can be implemented by simply indexing directly. This is quite a fancy word for a very simple concept. The thing that you multiply the one-hot-encoded matrix by (or, using the computational shortcut, index into directly) is called the *embedding matrix*.
 
-> 术语：嵌入：乘以一个独热编码矩阵，使用简单的直接索引它能够实现计算的捷径。对于非常简单的概念这是一个十分奇幻的词。你将独热编码矩阵所乘以的矩阵（或使用计算捷径直接索引到）被称为*嵌入矩阵*。
+> 术语：嵌入（Embedding）：乘以一个独热编码矩阵，使用简单的直接索引它能够实现计算的捷径。对于一个非常简单的概念这是一个十分奇幻的词。你将独热编码矩阵所乘以的矩阵（或使用计算捷径直接索引到）被称为*嵌入矩阵*。
 
 In computer vision, we have a very easy way to get all the information of a pixel through its RGB values: each pixel in a colored image is represented by three numbers. Those three numbers give us the redness, the greenness and the blueness, which is enough to get our model to work afterward.
 
@@ -301,4 +301,171 @@ At the beginning, those numbers don't mean anything since we have chosen them ra
 
 We are now in a position that we can create our whole model from scratch.
 
-现在我们处于能够从零开始创建我们整个模型的位置了。
+现在我们处于能够从零开始创建我们整个模型的程度了。
+
+## Collaborative Filtering from Scratch
+
+## 从零开始创建协同过滤
+
+Before we can write a model in PyTorch, we first need to learn the basics of object-oriented programming and Python. If you haven't done any object-oriented programming before, we will give you a quick introduction here, but we would recommend looking up a tutorial and getting some practice before moving on.
+
+The key idea in object-oriented programming is the *class*. We have been using classes throughout this book, such as `DataLoader`, `string`, and `Learner`. Python also makes it easy for us to create new classes. Here is an example of a simple class:
+
+我们在PyTorch中能够编写一个模型之间，我们首先需要学习面向对象编程和Python的基础知识。如果你之间没有做过任何面向对象编程，在这里我们会给你一个简短的介绍，但是我们推荐在继续之前找到一个教程并做一些练习。
+
+在面向对象编程中一个关键思想是*类*。我们已经在整本书都使用了类，如`DataLoader`、`string`、和`Learner`。Python也使得我们很容易来创建一个新的类，这是一个简单的类事例：
+
+```
+class Example:
+    def __init__(self, a): self.a = a
+    def say(self,x): return f'Hello {self.a}, {x}.'
+```
+
+The most important piece of this is the special method called `__init__` (pronounced *dunder init*). In Python, any method surrounded in double underscores like this is considered special. It indicates that there is some extra behavior associated with this method name. In the case of `__init__`, this is the method Python will call when your new object is created. So, this is where you can set up any state that needs to be initialized upon object creation. Any parameters included when the user constructs an instance of your class will be passed to the `__init__` method as parameters. Note that the first parameter to any method defined inside a class is `self`, so you can use this to set and get any attributes that you will need:
+
+这个事例最重要的部分是一个特定方法称为`__init__`（发音为*dunder init*）。在Python中，任何像现在这个方法一样被双下划线包围的方法被认为是特殊的。它表明有一个扩展行为与这个方法名有关联。如果是`__init__`，当你新的对象被创建时，Python会调用这个方法。所以在这个地方你能设置对象创建时需要初始化的任何声明。任何参数，包括当用户构建你的类的实例时，都会作为参数传递给`__init__`方法。注意，在类内部定义的任何方法的第一个参数是`self`，所以你能够使用它来设置和获取任何你将需要的属性：
+
+```
+ex = Example('Sylvain')
+ex.say('nice to meet you')
+```
+
+Out: 'Hello Sylvain, nice to meet you.'
+
+Also note that creating a new PyTorch module requires inheriting from `Module`. *Inheritance* is an important object-oriented concept that we will not discuss in detail here—in short, it means that we can add additional behavior to an existing class. PyTorch already provides a `Module` class, which provides some basic foundations that we want to build on. So, we add the name of this *superclass* after the name of the class that we are defining, as shown in the following example.
+
+也要注意，创建一个新的PyTorch模型需要从`Module`上继承。`继承`（inheritance）是一个重要的面向对象概念，我们不会在这里讨论这个概念的细节。简短来说，意思是我们能够添加附加行为给一个存在的类。PyTorch已经提供了一个`Module`类，它提供了一些我们希望建立的基础。所以正如下面的例子中所展示的，我们在定义的类名后添加了这个*超类* 名。
+
+The final thing that you need to know to create a new PyTorch module is that when your module is called, PyTorch will call a method in your class called `forward`, and will pass along to that any parameters that are included in the call. Here is the class defining our dot product model:
+
+创建一个新的PyTorch模型你需要知道的最后事情，是你的模型被调用的时候，PyTorch会调用一个在你的类中称为`forward`的方法，且会传递调用中包含的任何参数。下面是我们定义的点积模型类：
+
+```
+class DotProduct(Module):
+    def __init__(self, n_users, n_movies, n_factors):
+        self.user_factors = Embedding(n_users, n_factors)
+        self.movie_factors = Embedding(n_movies, n_factors)
+        
+    def forward(self, x):
+        users = self.user_factors(x[:,0])
+        movies = self.movie_factors(x[:,1])
+        return (users * movies).sum(dim=1)
+```
+
+If you haven't seen object-oriented programming before, then don't worry, you won't need to use it much in this book. We are just mentioning this approach here, because most online tutorials and documentation will use the object-oriented syntax.
+
+Note that the input of the model is a tensor of shape `batch_size x 2`, where the first column (`x[:, 0]`) contains the user IDs and the second column (`x[:, 1]`) contains the movie IDs. As explained before, we use the *embedding* layers to represent our matrices of user and movie latent factors:
+
+如果你之前没有看过面向对象编程，不要着急，在本书中你不需要太多的使用它。我们只是在这里提到这一方法，因为大多在线教程和文档会使用面向对象语法。
+
+注意，模型的输入是一个形状`batch_size x 2`的张量，第一列（`x[:, 0]`）包含用户的ID，第二列（`x[:, 1]`）包含电影ID，正如之前所解释的那样，我们使用*嵌入*层来表示我们的用户和电影潜在因素矩阵：
+
+```
+x,y = dls.one_batch()
+x.shape
+```
+
+Out: torch.Size([64, 2])
+
+Now that we have defined our architecture, and created our parameter matrices, we need to create a `Learner` to optimize our model. In the past we have used special functions, such as `cnn_learner`, which set up everything for us for a particular application. Since we are doing things from scratch here, we will use the plain `Learner` class:
+
+由于我们已经定义了我们的架构，且创建了我们的参数矩阵，我们需要创建一个`Learner`来优化我们的模型。在过去我们使用了专门的函数，如`cnn_learner`，对一个特定应用它为我们设置了所有内容。因为现在我们正在从零开始做，我们会使用简朴的`Learner`类：
+
+```
+model = DotProduct(n_users, n_movies, 50)
+learn = Learner(dls, model, loss_func=MSELossFlat())
+```
+
+We are now ready to fit our model:
+
+现在我们准备来拟合我们的模型：
+
+```
+learn.fit_one_cycle(5, 5e-3)
+```
+
+| epoch | train_loss | valid_loss |  time |
+| ----: | ---------: | ---------: | ----: |
+|     0 |   0.993168 |   0.990168 | 00:12 |
+|     1 |   0.884821 |   0.911269 | 00:12 |
+|     2 |   0.671865 |   0.875679 | 00:12 |
+|     3 |   0.471727 |   0.878200 | 00:11 |
+|     4 |   0.361314 |   0.884209 | 00:12 |
+
+The first thing we can do to make this model a little bit better is to force those predictions to be between 0 and 5. For this, we just need to use `sigmoid_range`, like in <chapter_multicat>. One thing we discovered empirically is that it's better to have the range go a little bit over 5, so we use `(0, 5.5)`:
+
+我们能够做的使模型更好一点的事情是强制那些预测在0和5之间。为此，我们只需要使用如<章节：多分类>中的`sigmoid_range`。一件我们根据经验发现的事情是最好范围稍微超过5，所以我们使用`（0，5.5）`：
+
+```
+class DotProduct(Module):
+    def __init__(self, n_users, n_movies, n_factors, y_range=(0,5.5)):
+        self.user_factors = Embedding(n_users, n_factors)
+        self.movie_factors = Embedding(n_movies, n_factors)
+        self.y_range = y_range
+        
+    def forward(self, x):
+        users = self.user_factors(x[:,0])
+        movies = self.movie_factors(x[:,1])
+        return sigmoid_range((users * movies).sum(dim=1), *self.y_range)
+```
+
+```
+model = DotProduct(n_users, n_movies, 50)
+learn = Learner(dls, model, loss_func=MSELossFlat())
+learn.fit_one_cycle(5, 5e-3)
+```
+
+| epoch | train_loss | valid_loss |  time |
+| ----: | ---------: | ---------: | ----: |
+|     0 |   0.973745 |   0.993206 | 00:12 |
+|     1 |   0.869132 |   0.914323 | 00:12 |
+|     2 |   0.676553 |   0.870192 | 00:12 |
+|     3 |   0.485377 |   0.873865 | 00:12 |
+|     4 |   0.377866 |   0.877610 | 00:11 |
+
+This is a reasonable start, but we can do better. One obvious missing piece is that some users are just more positive or negative in their recommendations than others, and some movies are just plain better or worse than others. But in our dot product representation we do not have any way to encode either of these things. If all you can say about a movie is, for instance, that it is very sci-fi, very action-oriented, and very not old, then you don't really have any way to say whether most people like it.
+
+That's because at this point we only have weights; we do not have biases. If we have a single number for each user that we can add to our scores, and ditto for each movie, that will handle this missing piece very nicely. So first of all, let's adjust our model architecture:
+
+这是一个尚的开始，但是我们能够做的更好。一个明显缺失的部分是一些用户在推荐中只是比其它人更正面或负面，一些电影只是单纯比其它电影更好或更糟。但是在我们的点积中描述的，我们没有任何方法来对这些内容的任何一个编码。例如，如果我们所能够描述只是它非常科幻，非常注重动作和不是非常的老，然后我们真的没有任何办法来说大多数人是否喜欢它。
+
+那是因为在这一点上我们只有权重，没有偏差。如果我们对每名用户有一个单一数值，我们能够添加我们的分数，并为每部添加同样的分数。这会很好的处理这个缺失部分。所以首先，让我们调整我们的模型架构：
+
+```
+class DotProductBias(Module):
+    def __init__(self, n_users, n_movies, n_factors, y_range=(0,5.5)):
+        self.user_factors = Embedding(n_users, n_factors)
+        self.user_bias = Embedding(n_users, 1)
+        self.movie_factors = Embedding(n_movies, n_factors)
+        self.movie_bias = Embedding(n_movies, 1)
+        self.y_range = y_range
+        
+    def forward(self, x):
+        users = self.user_factors(x[:,0])
+        movies = self.movie_factors(x[:,1])
+        res = (users * movies).sum(dim=1, keepdim=True)
+        res += self.user_bias(x[:,0]) + self.movie_bias(x[:,1])
+        return sigmoid_range(res, *self.y_range)
+```
+
+Let's try training this and see how it goes:
+
+让我们尝试训练并查看它的效果怎么样：
+
+```
+model = DotProductBias(n_users, n_movies, 50)
+learn = Learner(dls, model, loss_func=MSELossFlat())
+learn.fit_one_cycle(5, 5e-3)
+```
+
+| epoch | train_loss | valid_loss |  time |
+| ----: | ---------: | ---------: | ----: |
+|     0 |   0.929161 |   0.936303 | 00:13 |
+|     1 |   0.820444 |   0.861306 | 00:13 |
+|     2 |   0.621612 |   0.865306 | 00:14 |
+|     3 |   0.404648 |   0.886448 | 00:13 |
+|     4 |   0.292948 |   0.892580 | 00:13 |
+
+Instead of being better, it ends up being worse (at least at the end of training). Why is that? If we look at both trainings carefully, we can see the validation loss stopped improving in the middle and started to get worse. As we've seen, this is a clear indication of overfitting. In this case, there is no way to use data augmentation, so we will have to use another regularization technique. One approach that can be helpful is *weight decay*.
+
+最终变的更糟，而不是更好（在训练的结尾至少是这样的）。这是为什么？如果我们自己的查看两者的训练，我们能够看到在中间验证损失停止改善并开始变糟。正如我们见过的，这很清晰的表明过拟了。在这种情况下，没有办法使用数据增强，所以我们必须使用另一个正则化技术。一个能够有帮助的方法是*权重衰减*
