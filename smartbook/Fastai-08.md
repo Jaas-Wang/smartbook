@@ -537,3 +537,105 @@ learn.fit_one_cycle(5, 5e-3, wd=0.1)
 Much better!
 
 好多了！
+
+### Creating Our Own Embedding Module
+
+### 创建我们自己的嵌入模块
+
+So far, we've used `Embedding` without thinking about how it really works. Let's re-create `DotProductBias` *without* using this class. We'll need a randomly initialized weight matrix for each of the embeddings. We have to be careful, however. Recall from <chapter_mnist_basics> that optimizers require that they can get all the parameters of a module from the module's `parameters` method. However, this does not happen fully automatically. If we just add a tensor as an attribute to a `Module`, it will not be included in `parameters`:
+
+到现在为止，我们没能思考嵌入实际如何运作的情况下，我们已经使用了`嵌入`。让我们不使用这个类来创建`DotProductBias`。我们需要对嵌入的每一项随机初始化权重矩阵。然而，我们必须要小心些。回想<章节：mnist基础>中优化器要求它们能够从模块的`parameters`方法获取模块的所有参数。然而，这不会全自己发生的。如果我们只是添加一个张量作为属性给`模块`，它在`parameters`中不会被包含：
+
+```
+class T(Module):
+    def __init__(self): self.a = torch.ones(3)
+
+L(T().parameters())
+```
+
+Out: (#0) [ ]
+
+To tell `Module` that we want to treat a tensor as a parameter, we have to wrap it in the `nn.Parameter` class. This class doesn't actually add any functionality (other than automatically calling `requires_grad_` for us). It's only used as a "marker" to show what to include in `parameters`:
+
+告诉`模块`我们希望作为一个参数处理张量，我们必须在`nn.Parameer`中处理它。这个类实际上没有添加任何函数（除了为我们自动调用`requires_grad_`）。它只是用于作为一个“标示物”来展示在`parameters`中包含什么内容：
+
+```
+class T(Module):
+    def __init__(self): self.a = nn.Parameter(torch.ones(3))
+
+L(T().parameters())
+```
+
+Out: (#1) [Parameter containing: tensor([1., 1., 1.], requires_grad=True)]
+
+All PyTorch modules use `nn.Parameter` for any trainable parameters, which is why we haven't needed to explicitly use this wrapper up until now:
+
+对于任意可训练的参数，所有的PyTorch模块都可用`nn.Parameter`，这就是为什么直到现在我们才明确的使用这个封装器：
+
+```
+class T(Module):
+    def __init__(self): self.a = nn.Linear(1, 3, bias=False)
+
+t = T()
+L(t.parameters())
+```
+
+Out: (#1) [Parameter containing: tensor([[-0.9595],  [-0.8490],  [ 0.8159]], requires_grad=True)]
+
+```
+type(t.a.weight)
+```
+
+Out: torch.nn.parameter.Parameter
+
+We can create a tensor as a parameter, with random initialization, like so:
+
+我们能够作为一个参数创建一个随机初始化的张量，像下面这样：
+
+```
+def create_params(size):
+    return nn.Parameter(torch.zeros(*size).normal_(0, 0.01))
+```
+
+Let's use this to create `DotProductBias` again, but without `Embedding`:
+
+让我们使用这一方法来从新创建`DotProdutBias`，但是没有`嵌入`：
+
+```
+class DotProductBias(Module):
+    def __init__(self, n_users, n_movies, n_factors, y_range=(0,5.5)):
+        self.user_factors = create_params([n_users, n_factors])
+        self.user_bias = create_params([n_users])
+        self.movie_factors = create_params([n_movies, n_factors])
+        self.movie_bias = create_params([n_movies])
+        self.y_range = y_range
+        
+    def forward(self, x):
+        users = self.user_factors[x[:,0]]
+        movies = self.movie_factors[x[:,1]]
+        res = (users*movies).sum(dim=1)
+        res += self.user_bias[x[:,0]] + self.movie_bias[x[:,1]]
+        return sigmoid_range(res, *self.y_range)
+```
+
+Then let's train it again to check we get around the same results we saw in the previous section:
+
+然后让我们再次训练它，来检查我们取得了在之前部分中我们看到的几乎相同的结果：
+
+```
+model = DotProductBias(n_users, n_movies, 50)
+learn = Learner(dls, model, loss_func=MSELossFlat())
+learn.fit_one_cycle(5, 5e-3, wd=0.1)
+```
+
+| epoch | train_loss | valid_loss |  time |
+| ----: | ---------: | ---------: | ----: |
+|     0 |   0.962146 |   0.936952 | 00:14 |
+|     1 |   0.858084 |   0.884951 | 00:14 |
+|     2 |   0.740883 |   0.838549 | 00:14 |
+|     3 |   0.592497 |   0.823599 | 00:14 |
+|     4 |   0.473570 |   0.824263 | 00:14 |
+
+Now, let's take a look at what our model has learned.
+
+现在，让我们看一下我们的模型学到了什么。
