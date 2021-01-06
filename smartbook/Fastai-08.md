@@ -639,3 +639,85 @@ learn.fit_one_cycle(5, 5e-3, wd=0.1)
 Now, let's take a look at what our model has learned.
 
 现在，让我们看一下我们的模型学到了什么。
+
+## Interpreting Embeddings and Biases
+
+## 解释嵌入和偏差
+
+Our model is already useful, in that it can provide us with movie recommendations for our users—but it is also interesting to see what parameters it has discovered. The easiest to interpret are the biases. Here are the movies with the lowest values in the bias vector:
+
+我们的模型已经是有用的了，因为它能够为我们的用户提供电影推荐，但是查看它发现的参数内容也是令人感兴趣的。最容易解释的是偏差。下面是在偏差向量中最小值的电影：
+
+```
+movie_bias = learn.model.movie_bias.squeeze()
+idxs = movie_bias.argsort()[:5]
+[dls.classes['title'][i] for i in idxs]
+```
+
+Out: $\begin{array}{ll}
+[&'Children of the Corn: The Gathering (1996)',\\
+ &'Lawnmower Man 2: Beyond Cyberspace (1996)',\\
+ &'Beautician and the Beast, The (1997)',\\
+ &'Crow: City of Angels, The (1996)',\\
+ &'Home Alone 3 (1997)']\\
+ \end{array}$
+
+Think about what this means. What it's saying is that for each of these movies, even when a user is very well matched to its latent factors (which, as we will see in a moment, tend to represent things like level of action, age of movie, and so forth), they still generally don't like it. We could have simply sorted the movies directly by their average rating, but looking at the learned bias tells us something much more interesting. It tells us not just whether a movie is of a kind that people tend not to enjoy watching, but that people tend not to like watching it even if it is of a kind that they would otherwise enjoy! By the same token, here are the movies with the highest bias:
+
+想一下这表示了什么意思。它说的是对于这些每一部电影，即使当一名用户非常好的匹配了潜在因素（我们会马上看到，这些因素倾向代表一些像动作等级，电影年代，等等），他们通常一直并不喜欢它。通过他们的平均等级我们能够直接简单的排序电影，但看到已经学习到的偏差告诉我们一些更有趣的事情。它告诉我们不只是一部电影是否是一种人们倾向不喜欢看的类型，而且告诉我们即使它是一种人们在某些方面喜欢的类型，那些人也倾向不喜欢看它！同时的，下面是有高偏差值的电影：
+
+```
+idxs = movie_bias.argsort(descending=True)[:5]
+[dls.classes['title'][i] for i in idxs]
+```
+
+Out: $\begin{array}{l}
+[&'L.A. Confidential (1997)',\\\
+ &'Titanic (1997)',\\
+ &'Silence of the Lambs, The (1991)',\\
+ &'Shawshank Redemption, The (1994)',\\
+ &'Star Wars (1977)']
+\end{array}$
+
+So, for instance, even if you don't normally enjoy detective movies, you might enjoy *LA Confidential*!
+
+It is not quite so easy to directly interpret the embedding matrices. There are just too many factors for a human to look at. But there is a technique that can pull out the most important underlying *directions* in such a matrix, called *principal component analysis* (PCA). We will not be going into this in detail in this book, because it is not particularly important for you to understand to be a deep learning practitioner, but if you are interested then we suggest you check out the fast.ai course [Computational Linear Algebra for Coders](https://github.com/fastai/numerical-linear-algebra). <img_pca_movie> shows what our movies look like based on two of the strongest PCA components.
+
+例如，因此即使你通常并不喜欢侦探电影，你可能会喜欢 *LA Confidential* 这部电影！
+
+不是十分那么容易来直接解释嵌入矩阵。只是对于人类有太多的因素来查看。但有一项技术能够在这样的矩阵中拉出最重要的基础*方向*，它被称为*主成分分析*（PCA）。在本书我们不会进入这个技术的细节，因为作为一名深度学习从业人员对你来说它不是特别重要的，但是如果你有兴趣了解，稍后我们建议你查看fast.ai教程[编码器的计算线性代数](https://github.com/fastai/numerical-linear-algebra)。下面<主成分分析电影>图中，展示了我们电影基于最强的PCA成分的两部电影是什么。
+
+```
+#hide_input
+#id img_pca_movie
+#caption Representation of movies based on two strongest PCA components
+#alt Representation of movies based on two strongest PCA components
+g = ratings.groupby('title')['rating'].count()
+top_movies = g.sort_values(ascending=False).index.values[:1000]
+top_idxs = tensor([learn.dls.classes['title'].o2i[m] for m in top_movies])
+movie_w = learn.model.movie_factors[top_idxs].cpu().detach()
+movie_pca = movie_w.pca(3)
+fac0,fac1,fac2 = movie_pca.t()
+idxs = list(range(50))
+X = fac0[idxs]
+Y = fac2[idxs]
+plt.figure(figsize=(12,12))
+plt.scatter(X, Y)
+for i, x, y in zip(top_movies[idxs], X, Y):
+    plt.text(x,y,i, color=np.random.rand(3)*0.7, fontsize=11)
+plt.show()
+```
+
+Out: <img src="./_v_images/img_pca_movie.png" alt="img_pca_movie" style="zoom:100%;" />
+
+We can see here that the model seems to have discovered a concept of *classic* versus *pop culture* movies, or perhaps it is *critically acclaimed* that is represented here.
+
+我们在这里能够看到，模型好像已经发现了*经典* 与*流行文化*电影的概念，或者也许在这里它代表的是*广受好评*。
+
+> j: No matter how many models I train, I never stop getting moved and surprised by how these randomly initialized bunches of numbers, trained with such simple mechanics, manage to discover things about my data all by themselves. It almost seems like cheating, that I can create code that does useful things without ever actually telling it how to do those things!
+
+> 杰：不管我训练了多少模型，我从来没有停止过感动和惊讶于这些随机初始化的数字串，用如此简单的机制训练后，通过它们自己设法发现关于我的数据的一些与。这几乎好像是在最弊，我能够创建代码做一些有用的事情，甚至不用实际告诉它如何去做那些事情！
+
+We defined our model from scratch to teach you what is inside, but you can directly use the fastai library to build it. We'll look at how to do that next.
+
+我们从零开始定义了模型，来教给你它的内部内容，但是你能够直接使用fastai库来创建它。下面我们会学习怎么来做。
