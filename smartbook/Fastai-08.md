@@ -829,3 +829,116 @@ In a self-reinforcing system like this, we should probably expect these kinds of
 Our dot product model works quite well, and it is the basis of many successful real-world recommendation systems. This approach to collaborative filtering is known as *probabilistic matrix factorization* (PMF). Another approach, which generally works similarly well given the same data, is deep learning.
 
 我们的点积模型运行的非常好，这是很多成功的真实世界推荐系统的基础。这一协同过滤的方法被称为*概率矩阵分解*（PMF）。另外一个方法，在给定的相同数据上通常会同样运行的很好，这就是深度学习。
+
+## Deep Learning for Collaborative Filtering
+
+## 协同过滤深度学习
+
+To turn our architecture into a deep learning model, the first step is to take the results of the embedding lookup and concatenate those activations together. This gives us a matrix which we can then pass through linear layers and nonlinearities in the usual way.
+
+把我们的架构转为一个深度学习模型，第一步是取得嵌入查询的结果且把那些激活联系在一起。这提供给我们一个矩阵，我们能够使用常用的方法通过线性层和非线性层做传递。
+
+Since we'll be concatenating the embedding matrices, rather than taking their dot product, the two embedding matrices can have different sizes (i.e., different numbers of latent factors). fastai has a function `get_emb_sz` that returns recommended sizes for embedding matrices for your data, based on a heuristic that fast.ai has found tends to work well in practice:
+
+因为我们会把这些嵌入矩阵联系起来，而不是取他们的点积，两个嵌入矩阵会有不同的尺寸（即，不同时数目的潜在因素）。fastai有一个`get_emb_sz`函数，基于一个fast.ai在实践中发现会运行效果良好的启发法，为你的数据返回推荐的嵌入矩阵尺寸：
+
+```
+embs = get_emb_sz(dls)
+embs
+```
+
+Out: [(944, 74), (1635, 101)]
+
+Let's implement this class:
+
+让我们来实现这个类：
+
+```
+class CollabNN(Module):
+    def __init__(self, user_sz, item_sz, y_range=(0,5.5), n_act=100):
+        self.user_factors = Embedding(*user_sz)
+        self.item_factors = Embedding(*item_sz)
+        self.layers = nn.Sequential(
+            nn.Linear(user_sz[1]+item_sz[1], n_act),
+            nn.ReLU(),
+            nn.Linear(n_act, 1))
+        self.y_range = y_range
+        
+    def forward(self, x):
+        embs = self.user_factors(x[:,0]),self.item_factors(x[:,1])
+        x = self.layers(torch.cat(embs, dim=1))
+        return sigmoid_range(x, *self.y_range)
+```
+
+And use it to create a model:
+
+用它来创建一个模型：
+
+```
+model = CollabNN(*embs)
+```
+
+`CollabNN` creates our `Embedding` layers in the same way as previous classes in this chapter, except that we now use the `embs` sizes. `self.layers` is identical to the mini-neural net we created in <chapter_mnist_basics> for MNIST. Then, in `forward`, we apply the embeddings, concatenate the results, and pass this through the mini-neural net. Finally, we apply `sigmoid_range` as we have in previous models.
+
+Let's see if it trains:
+
+`collabNN`用本章节里之前那些类相同的方法创建了我们的`嵌入`层，除了我们现在使用了`embs`尺寸。`self.layers`与我们在<章节：mnist基础>中为MNIST创建的最小神经网络是相同的。然后，在`forward`中，我们应用了嵌入，把结果联系起来，并通过最小神经网络进行传递。最后 ，我们应用了`sigmoid_range`，这在之前的模型中我们应用过。
+
+让我们看一下它是否训练：
+
+```
+learn = Learner(dls, model, loss_func=MSELossFlat())
+learn.fit_one_cycle(5, 5e-3, wd=0.01)
+```
+
+| epoch | train_loss | valid_loss |  time |
+| ----: | ---------: | ---------: | ----: |
+|     0 |   0.940104 |   0.959786 | 00:15 |
+|     1 |   0.893943 |   0.905222 | 00:14 |
+|     2 |   0.865591 |   0.875238 | 00:14 |
+|     3 |   0.800177 |   0.867468 | 00:14 |
+|     4 |   0.760255 |   0.867455 | 00:14 |
+
+fastai provides this model in `fastai.collab` if you pass `use_nn=True` in your call to `collab_learner` (including calling `get_emb_sz` for you), and it lets you easily create more layers. For instance, here we're creating two hidden layers, of size 100 and 50, respectively:
+
+fastai在`fastai.collab`中提供这个模型，如果在你的调用中传递`use_nn=Trun`给`collab_learner`（包活为你调用`get_emb_sz`），它会让你容易的创建很多层。例如，这里我们正在创建两个隐含层，分别是100和50的尺寸：
+
+```
+learn = collab_learner(dls, use_nn=True, y_range=(0, 5.5), layers=[100,50])
+learn.fit_one_cycle(5, 5e-3, wd=0.1)
+```
+
+| epoch | train_loss | valid_loss |  time |
+| ----: | ---------: | ---------: | ----: |
+|     0 |   1.002747 |   0.972392 | 00:16 |
+|     1 |   0.926903 |   0.922348 | 00:16 |
+|     2 |   0.877160 |   0.893401 | 00:16 |
+|     3 |   0.838334 |   0.865040 | 00:16 |
+|     4 |   0.781666 |   0.864936 | 00:16 |
+
+`learn.model` is an object of type `EmbeddingNN`. Let's take a look at fastai's code for this class:
+
+`learn.model`是一个`EmbeddingNN`类的对象。让我们看一下对于这个类的fastai代码：
+
+```
+@delegates(TabularModel)
+class EmbeddingNN(TabularModel):
+    def __init__(self, emb_szs, layers, **kwargs):
+        super().__init__(emb_szs, layers=layers, n_cont=0, out_sz=1, **kwargs)
+```
+
+Wow, that's not a lot of code! This class *inherits* from `TabularModel`, which is where it gets all its functionality from. In `__init__` it calls the same method in `TabularModel`, passing `n_cont=0` and `out_sz=1`; other than that, it only passes along whatever arguments it received.
+
+哇！噢！这没有太多的代码！这个类从`TabularModel`*继承*来的，其从父类获取了它的所有功能。在`__init__`中它调用了`TabularModel`中同样的方法，传递了`n_cont=0` 和`out_sz=1`。除了这些，它只传递了接收的那些任何参数。
+
+### Sidebar: kwargs and Delegates
+
+`EmbeddingNN` includes `**kwargs` as a parameter to `__init__`. In Python `**kwargs` in a parameter list means "put any additional keyword arguments into a dict called `kwargs`. And `**kwargs` in an argument list means "insert all key/value pairs in the `kwargs` dict as named arguments here". This approach is used in many popular libraries, such as `matplotlib`, in which the main `plot` function simply has the signature `plot(*args, **kwargs)`. The [`plot` documentation](https://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot) says "The `kwargs` are `Line2D` properties" and then lists those properties.
+
+We're using `**kwargs` in `EmbeddingNN` to avoid having to write all the arguments to `TabularModel` a second time, and keep them in sync. However, this makes our API quite difficult to work with, because now Jupyter Notebook doesn't know what parameters are available. Consequently things like tab completion of parameter names and pop-up lists of signatures won't work.
+
+fastai resolves this by providing a special `@delegates` decorator, which automatically changes the signature of the class or function (`EmbeddingNN` in this case) to insert all of its keyword arguments into the signature.
+
+### End sidebar
+
+Although the results of `EmbeddingNN` are a bit worse than the dot product approach (which shows the power of carefully constructing an architecture for a domain), it does allow us to do something very important: we can now directly incorporate other user and movie information, date and time information, or any other information that may be relevant to the recommendation. That's exactly what `TabularModel` does. In fact, we've now seen that `EmbeddingNN` is just a `TabularModel`, with `n_cont=0` and `out_sz=1`. So, we'd better spend some time learning about `TabularModel`, and how to use it to get great results! We'll do that in the next chapter.
