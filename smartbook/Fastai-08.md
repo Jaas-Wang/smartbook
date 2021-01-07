@@ -721,3 +721,79 @@ We can see here that the model seems to have discovered a concept of *classic* v
 We defined our model from scratch to teach you what is inside, but you can directly use the fastai library to build it. We'll look at how to do that next.
 
 我们从零开始定义了模型，来教给你它的内部内容，但是你能够直接使用fastai库来创建它。下面我们会学习怎么来做。
+
+### Using fastai.collab
+
+### 使用 fastai.collab
+
+We can create and train a collaborative filtering model using the exact structure shown earlier by using fastai's `collab_learner`:
+
+通过使用fastai的`collab_learner`方法，我们能够使用这一确切的结构创建和训练协同过滤模型，这一方法在之前的章节出现过：
+
+```
+learn = collab_learner(dls, n_factors=50, y_range=(0, 5.5))
+```
+
+```
+learn.fit_one_cycle(5, 5e-3, wd=0.1)
+```
+
+| epoch | train_loss | valid_loss |  time |
+| ----: | ---------: | ---------: | ----: |
+|     0 |   0.931751 |   0.953806 | 00:13 |
+|     1 |   0.851826 |   0.878119 | 00:13 |
+|     2 |   0.715254 |   0.834711 | 00:13 |
+|     3 |   0.583173 |   0.821470 | 00:13 |
+|     4 |   0.496625 |   0.821688 | 00:13 |
+
+The names of the layers can be seen by printing the model:
+
+层的命名通过输出模型的方式能够进行查看：
+
+```
+learn.model
+```
+
+Out: EmbeddingDotBias( (u_weight): Embedding(944, 50)  (i_weight): Embedding(1635, 50)  (u_bias): Embedding(944, 1)  (i_bias): Embedding(1635, 1) )
+
+We can use these to replicate any of the analyses we did in the previous section—for instance:
+
+我们能够用这一方法复制上一部分做的任何分析，例如：
+
+```
+movie_bias = learn.model.i_bias.weight.squeeze()
+idxs = movie_bias.argsort(descending=True)[:5]
+[dls.classes['title'][i] for i in idxs]
+```
+
+Out[ ]: ['Titanic (1997)', "Schindler's List (1993)", 'Shawshank Redemption, The (1994)', 'L.A. Confidential (1997)', 'Silence of the Lambs, The (1991)']
+
+Another interesting thing we can do with these learned embeddings is to look at *distance*.
+
+利用这些学习到的嵌入我们能做的另一个有趣的事情是查看*距离*。
+
+### Embedding Distance
+
+### 嵌入距离
+
+On a two-dimensional map we can calculate the distance between two coordinates using the formula of Pythagoras: $\sqrt{x^{2}+y^{2}}$(assuming that  *x* and *y* are the distances between the coordinates on each axis). For a 50-dimensional embedding we can do exactly the same thing, except that we add up the squares of all 50 of the coordinate distances.
+
+在一个两维地图上，我们能够使用毕达哥拉斯的公式计算两个坐标间的距离：$\sqrt{x^{2}+y^{2}}$（假设  *x* 和 *y* 是每一轴上的两个坐标间的距离）。对于一个50维的嵌入，我们能够确切的做同样的事情，除了我们加起来所有50个坐标距离的平方。
+
+If there were two movies that were nearly identical, then their embedding vectors would also have to be nearly identical, because the users that would like them would be nearly exactly the same. There is a more general idea here: movie similarity can be defined by the similarity of users that like those movies. And that directly means that the distance between two movies' embedding vectors can define that similarity. We can use this to find the most similar movie to *Silence of the Lambs*:
+
+如果有两部电影几乎是相同的，他们嵌入向量也一定几乎相同，因为喜欢这些电影的用户也几乎确定是相同的。这里有一个更加普遍的想法：相似的电影能够通过喜欢哪些电影的相似用户来定义。对于这个直接表达的意思是两部电影的嵌入向量距离能够定义其相似性。我们能够使用这一方法来寻找与*Silence of the Lambs* 最相似的电影：
+
+```
+movie_factors = learn.model.i_weight.weight
+idx = dls.classes['title'].o2i['Silence of the Lambs, The (1991)']
+distances = nn.CosineSimilarity(dim=1)(movie_factors, movie_factors[idx][None])
+idx = distances.argsort(descending=True)[1]
+dls.classes['title'][idx]
+```
+
+Out: 'Dial M for Murder (1954)'
+
+Now that we have succesfully trained a model, let's see how to deal with the situation where we have no data for a user. How can we make recommendations to new users?
+
+现在我们已经成功训练了一个模型，让我们看一下如何来处理对于一名用户我们没有数据的情况。我们能够怎样对新用户做出推荐？
