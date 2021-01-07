@@ -797,3 +797,35 @@ Out: 'Dial M for Murder (1954)'
 Now that we have succesfully trained a model, let's see how to deal with the situation where we have no data for a user. How can we make recommendations to new users?
 
 现在我们已经成功训练了一个模型，让我们看一下如何来处理对于一名用户我们没有数据的情况。我们能够怎样对新用户做出推荐？
+
+## Bootstrapping a Collaborative Filtering Model
+
+## 引导一个协同过滤模型
+
+The biggest challenge with using collaborative filtering models in practice is the *bootstrapping problem*. The most extreme version of this problem is when you have no users, and therefore no history to learn from. What products do you recommend to your very first user?
+
+对于在实践中使用协同过滤最大的挑战是*引导问题*。这个问题最极端的版本是当你没有用户的时候，因而没有历史记录从中学习。你推荐什么产品给你的最早的第一名用户？
+
+But even if you are a well-established company with a long history of user transactions, you still have the question: what do you do when a new user signs up? And indeed, what do you do when you add a new product to your portfolio? There is no magic solution to this problem, and really the solutions that we suggest are just variations of *use your common sense*. You could assign new users the mean of all of the embedding vectors of your other users, but this has the problem that that particular combination of latent factors may be not at all common (for instance, the average for the science-fiction factor may be high, and the average for the action factor may be low, but it is not that common to find people who like science-fiction without action). Better would probably be to pick some particular user to represent *average taste*.
+
+但是即使如果你是一家成熟的公司，有很长的用户交易历史，你依然有这个问题：如一名新用户注册时你做什么？进而，哪你增加一个新产品到你的投资组合时，你会做什么？对于这个问题没有神奇的解决方案，实际的解决方案中我们建议只是*使用你的常识* 变化。你可以 分配新用户你的其它用户的嵌入向量的平均值，在这会有个问题，一些潜在因素的特定组合可能并不常见（例如，科幻的平均值可能是高的，对于动作因素的平均值可能是低的，但对于查找喜欢没有动作的科幻电影用户这是不常见见的）。更好的办法可能是取出一些特定用户来代表*平均口味*。
+
+Better still is to use a tabular model based on user meta data to construct your initial embedding vector. When a user signs up, think about what questions you could ask them that could help you to understand their tastes. Then you can create a model where the dependent variable is a user's embedding vector, and the independent variables are the results of the questions that you ask them, along with their signup metadata. We will see in the next section how to create these kinds of tabular models. (You may have noticed that when you sign up for services such as Pandora and Netflix, they tend to ask you a few questions about what genres of movie or music you like; this is how they come up with your initial collaborative filtering recommendations.)
+
+更好的是基于用户的元数据使用表格式模型来构建你的初始嵌入向量。当一名用户注册时，思考你能够问他们什么问题以帮助你来了解他们的口味。然后你能创建一个模型因变量是用户的嵌入向量，自变量是你所问他们问题的结果，以及他们注册的元数据。在下一节我们会看到如果创建这些类型的表格式模型。（你可能要注意的是，当你注册一些服务，如潘朵拉和网飞，他们倾向问你一些关于你喜欢的电影或音乐的流派的问题，这就是他们提出你的初始协同过滤推荐的方式。）
+
+One thing to be careful of is that a small number of extremely enthusiastic users may end up effectively setting the recommendations for your whole user base. This is a very common problem, for instance, in movie recommendation systems. People that watch anime tend to watch a whole lot of it, and don't watch very much else, and spend a lot of time putting their ratings on websites. As a result, anime tends to be heavily overrepresented in a lot of *best ever movies* lists. In this particular case, it can be fairly obvious that you have a problem of representation bias, but if the bias is occurring in the latent factors then it may not be obvious at all.
+
+一个要小心的事情是一小群极端热情的用户可能对你的整个用户群最终有效的设置推荐。例如在电影推荐系统中这是一个非常常见的问题。观看动画片的人倾向看许许多多动画，且不会看很多其它类型的电影，并花费很多时间在网站上放上他们评分。这就导致，动画倾向大量的在一些*最佳电影*列表中占有过多的比例。在这个特殊的例子中，它能够被明显的观察到你有一个代表偏差问题，但是如果偏差发生在潜在因素中，那么它可能根本不会被发现。
+
+Such a problem can change the entire makeup of your user base, and the behavior of your system. This is particularly true because of positive feedback loops. If a small number of your users tend to set the direction of your recommendation system, then they are naturally going to end up attracting more people like them to your system. And that will, of course, amplify the original representation bias. This type of bias has a natural tendency to be amplified exponentially. You may have seen examples of company executives expressing surprise at how their online platforms rapidly deteriorated in such a way that they expressed values at odds with the values of the founders. In the presence of these kinds of feedback loops, it is easy to see how such a divergence can happen both quickly and in a way that is hidden until it is too late.
+
+这样一个问题能够改变你用户群的整个构成，和你的系统的行为。因为正向反馈回路尤为如此。如果一小部分你的用户倾向设置你的推荐系统的方向，那么他们很自然的会吸引更多像他们这样的人到你的系统。当然，这会放大原始的代表偏见。这种偏差有一个成几何倍数放大的自然倾向。你可能已经看过一些例子，公司的在线平台在这样的方式下快速恶化，而公司经营者表示惊讶，他们表现的价值观与创始人的价值观不相符。在这些类型的反馈循环面前，轻易的看到这样的分歧如何快速及在程度上隐蔽发生的，直到为时已晚。
+
+In a self-reinforcing system like this, we should probably expect these kinds of feedback loops to be the norm, not the exception. Therefore, you should assume that you will see them, plan for that, and identify up front how you will deal with these issues. Try to think about all of the ways in which feedback loops may be represented in your system, and how you might be able to identify them in your data. In the end, this is coming back to our original advice about how to avoid disaster when rolling out any kind of machine learning system. It's all about ensuring that there are humans in the loop; that there is careful monitoring, and a gradual and thoughtful rollout.
+
+在一个像这样的自强化系统，我们应该可能希望这些类型的反馈循环成为常态，而不是例外。因此，我们应该假设你会看到它们，为它做出规划，并预先确定你要如何处理这些问题。尝试去想在你的系统中，反馈循环可以被代表的所有方式，并在你的数据中你也许能够如何来辨认它们。最后，返回到我们的最初建议，当推出任何类型的机器学习系统的时候如何来规避灾难。这就是确保有人类在循环中，认真小心检测，逐步并缜密的思考推出。
+
+Our dot product model works quite well, and it is the basis of many successful real-world recommendation systems. This approach to collaborative filtering is known as *probabilistic matrix factorization* (PMF). Another approach, which generally works similarly well given the same data, is deep learning.
+
+我们的点积模型运行的非常好，这是很多成功的真实世界推荐系统的基础。这一协同过滤的方法被称为*概率矩阵分解*（PMF）。另外一个方法，在给定的相同数据上通常会同样运行的很好，这就是深度学习。
