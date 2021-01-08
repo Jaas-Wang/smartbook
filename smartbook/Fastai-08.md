@@ -933,12 +933,24 @@ Wow, that's not a lot of code! This class *inherits* from `TabularModel`, which 
 
 ### Sidebar: kwargs and Delegates
 
+### 侧边栏：kwargs 和 Delegates
+
 `EmbeddingNN` includes `**kwargs` as a parameter to `__init__`. In Python `**kwargs` in a parameter list means "put any additional keyword arguments into a dict called `kwargs`. And `**kwargs` in an argument list means "insert all key/value pairs in the `kwargs` dict as named arguments here". This approach is used in many popular libraries, such as `matplotlib`, in which the main `plot` function simply has the signature `plot(*args, **kwargs)`. The [`plot` documentation](https://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot) says "The `kwargs` are `Line2D` properties" and then lists those properties.
+
+`EmbeddingNN`对于`__init__` 包含了`**kwargs`作为一个参数。在Python参数列表中的`**kwargs`表示“放置任何附加的关键字参数到一个称为`kwargs`的字典”。在一个参数列表中的`**kwargs` 表示“在`kwargs`中插入所有键值对作为这里命名的参数”。这个方法被用在很多流行的库，如`matplotlib`，在其中的主要`plot`函数仅仅有签名的`plot(*args, **kwargs)`。[plot文档](https://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot) 说明了“`kwargs`是`Line2D`的特性”并列示了那些特性。
 
 We're using `**kwargs` in `EmbeddingNN` to avoid having to write all the arguments to `TabularModel` a second time, and keep them in sync. However, this makes our API quite difficult to work with, because now Jupyter Notebook doesn't know what parameters are available. Consequently things like tab completion of parameter names and pop-up lists of signatures won't work.
 
+我们在`EmbeddingNN`中使用`**kwargs`来避免必须对`TabularModel`第二次写入所有的参数，且保持他们同步。然而，这使得我们的API非常困难来工作，因为现在的Jupyter Notebook不知道这些参数获取了什么。因此像参数名的制表符补全和弹出列的签名将无法工作。
+
 fastai resolves this by providing a special `@delegates` decorator, which automatically changes the signature of the class or function (`EmbeddingNN` in this case) to insert all of its keyword arguments into the signature.
+
+fastai通过提供一个特定的装饰器`@delegates`解决了这个问题，它自己的改变类或函数（在这个例子中`EmbeddingNN`）的签名，把全部的关键字阐述插入到签名中。
 
 ### End sidebar
 
+### 侧边栏结束
+
 Although the results of `EmbeddingNN` are a bit worse than the dot product approach (which shows the power of carefully constructing an architecture for a domain), it does allow us to do something very important: we can now directly incorporate other user and movie information, date and time information, or any other information that may be relevant to the recommendation. That's exactly what `TabularModel` does. In fact, we've now seen that `EmbeddingNN` is just a `TabularModel`, with `n_cont=0` and `out_sz=1`. So, we'd better spend some time learning about `TabularModel`, and how to use it to get great results! We'll do that in the next chapter.
+
+虽然`EmbeddingNN`的结果相比点积方法有点糟（其展示了为一个领域仔细构建一个架构的力量），它允许我们做了非常重要的事情：我们现在能够直接纳入其它用户和电影信息，日期和时间信息，或任何其它可能与推荐相关的信息。这就是`TabularModel`确切做的内容。实际上，我们现在看到的`EmbeddingNN`只是一个 `n_cont=0` 和 `out_sz=1`的`TabularModel`。所以，我们最好花一些时间学习`TabularModel`，用如果用它来获取显著的成果！我们在下一章节会做一下这个工作。
