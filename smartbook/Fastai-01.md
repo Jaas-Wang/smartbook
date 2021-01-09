@@ -1879,7 +1879,7 @@ It can be hard to know in pages and pages of prose what the key things are that 
 
 ### Further Research
 
-### 未来研究
+### 深入研究
 
 Each chapter also has a "Further Research" section that poses questions that aren't fully answered in the text, or gives more advanced assignments. Answers to these questions aren't on the book's website; you'll need to do your own research!
 

@@ -2829,7 +2829,7 @@ A neural network contains a number of layers. Each layer is either *linear* or *
 
 ### Further Research
 
-### 未来研究
+### 深入研究
 
 1. Create your own implementation of `Learner` from scratch, based on the training loop shown in this chapter.
 2. 基于本章节所展示的训练循环，从零开始创建你自己的`Learner`的实践。

@@ -954,7 +954,7 @@ One of our reviewers for this book, Fred Monroe, used to work in hedge fund trad
 
 ### Further Research:
 
-### 未来研究：
+### 深入研究：
 
 1. Read the article "What Happens When an Algorithm Cuts Your Healthcare". How could problems like this be avoided in the future?
 2. Research to find out more about YouTube's recommendation system and its societal impacts. Do you think recommendation systems must always have feedback loops with negative results? What approaches could Google take to avoid them? What about the government?

@@ -568,7 +568,7 @@ In the next three chapters, we will look at the other applications directly supp
 
 ### Further Research
 
-### 未来研究
+### 深入研究
 
 1. Use the fastai documentation to build a function that crops an image to a square in each of the four corners, then implement a TTA method that averages the predictions on a center crop and those four crops. Did it help? Is it better than the TTA method of fastai?
 2. 使用fastai指引创建一个函数，这个函数在图像的四个角上裁剪图像为一个正方形，然后在一个中心裁剪和那四个裁剪实施TTA方法平均预测。它有帮助吗？相比fastai的TTA方法更好吗？

@@ -1031,7 +1031,7 @@ fastai will automatically try to pick the right one from the data you built, but
 
 ### Further Research
 
-### 未来研究
+### 深入研究
 
 1. Read a tutorial about Pandas DataFrames and experiment with a few methods that look interesting to you. See the book's website for recommended tutorials.
 2. 阅读Pandas DataFrames的教程，并尝试一些方法对你感兴趣的方法。看本书的网站推荐教程。

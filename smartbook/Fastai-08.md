@@ -954,3 +954,95 @@ fastai通过提供一个特定的装饰器`@delegates`解决了这个问题，�
 Although the results of `EmbeddingNN` are a bit worse than the dot product approach (which shows the power of carefully constructing an architecture for a domain), it does allow us to do something very important: we can now directly incorporate other user and movie information, date and time information, or any other information that may be relevant to the recommendation. That's exactly what `TabularModel` does. In fact, we've now seen that `EmbeddingNN` is just a `TabularModel`, with `n_cont=0` and `out_sz=1`. So, we'd better spend some time learning about `TabularModel`, and how to use it to get great results! We'll do that in the next chapter.
 
 虽然`EmbeddingNN`的结果相比点积方法有点糟（其展示了为一个领域仔细构建一个架构的力量），它允许我们做了非常重要的事情：我们现在能够直接纳入其它用户和电影信息，日期和时间信息，或任何其它可能与推荐相关的信息。这就是`TabularModel`确切做的内容。实际上，我们现在看到的`EmbeddingNN`只是一个 `n_cont=0` 和 `out_sz=1`的`TabularModel`。所以，我们最好花一些时间学习`TabularModel`，用如果用它来获取显著的成果！我们在下一章节会做一下这个工作。
+
+## Conclusion
+
+## 结尾
+
+For our first non-computer vision application, we looked at recommendation systems and saw how gradient descent can learn intrinsic factors or biases about items from a history of ratings. Those can then give us information about the data.
+
+对于我们的第一个非计算机视觉应用，我们学习了推荐系统，并查看了梯度下降如果能够学习有关于历史评分数据的本质因素或偏差。然后给我们提供了数据信息。
+
+We also built our first model in PyTorch. We will do a lot more of this in the next section of the book, but first, let's finish our dive into the other general applications of deep learning, continuing with tabular data.
+
+我们也在PyTorch中创建了第一个模型。在本书的后续部分我们会做更多这方面的工作，但首先，让我们继续用表格数据完成我们深度学习的其它常用应用的研究。
+
+## Questionnaire
+
+## 练习题
+
+1. What problem does collaborative filtering solve?
+2. 协同过滤解决了什么问题？
+3. How does it solve it?
+4. 它如何解决的？
+5. Why might a collaborative filtering predictive model fail to be a very useful recommendation system?
+6. 一个协同过滤预测模型为什么可能会无法成为一个非常有用的推荐系统？
+7. What does a crosstab representation of collaborative filtering data look like?
+8. 一个协同过滤数据的交叉表描述是什么样子？
+9. Write the code to create a crosstab representation of the MovieLens data (you might need to do some web searching!).
+10. 编写创建MovieLens数据的交叉表描述代码（你可能需要做一些网页搜索工作！）
+11. What is a latent factor? Why is it "latent"?
+12. 什么是潜在因素？为什么它是“潜在”的？
+13. What is a dot product? Calculate a dot product manually using pure Python with lists.
+14. 什么是点积？使用纯Python列表手动计算一个点积。
+15. What does `pandas.DataFrame.merge` do?
+16. `pandas.DataFrame.merge`做了什么？
+17. What is an embedding matrix?
+18. 什么是嵌入矩阵？
+19. What is the relationship between an embedding and a matrix of one-hot-encoded vectors?
+20. 一个嵌入和一个独热编码向量矩阵间的关系是什么？
+21. Why do we need `Embedding` if we could use one-hot-encoded vectors for the same thing?
+22. 如果我们对相同的内容能够使用独热编码向量，为什么我们需要`Embedding`？
+23. What does an embedding contain before we start training (assuming we're not using a pretained model)?
+24. 在我们开始训练前，一个嵌入包含了什么内容？（假设我们没用使用预训练模型）
+25. Create a class (without peeking, if possible!) and use it.
+26. 创建一个类（如果可能的话，不要偷看！）并使用它。
+27. What does `x[:,0]` return?
+28. `x[:,0]`返回了什么内容？
+29. Rewrite the `DotProduct` class (without peeking, if possible!) and train a model with it.
+30. 重写`DotProduct`类（如果可能话，不要偷看！）并用它训练一个模型。
+31. What is a good loss function to use for MovieLens? Why?
+32. 用于MovieLens的一个好的损失函数是什么？为什么？
+33. What would happen if we used cross-entropy loss with MovieLens? How would we need to change the model?
+34. 如果我们对MoieLens使用交叉熵损失会发生什么？我们需要如何改变模型？
+35. What is the use of bias in a dot product model?
+36. 在一个点积模型中偏差的用途是什么？
+37. What is another name for weight decay?
+38. 权重衰减的另外一个名字是什么？
+39. Write the equation for weight decay (without peeking!).
+40. 对权重衰减编写方程（不要偷看！）。
+41. Write the equation for the gradient of weight decay. Why does it help reduce weights?
+42. 对权重衰减的梯度编写方程。为什么它有帮于减少权重？
+43. Why does reducing weights lead to better generalization?
+44. 为什么减少权重会更好的泛化？
+45. What does `argsort` do in PyTorch?
+46. 在PyTorch中`argsort`做了什么？
+47. Does sorting the movie biases give the same result as averaging overall movie ratings by movie? Why/why not?
+48. 电影偏差排序与电影的平均整体收视率相同吗？为什么相同或为什么不相同？
+49. How do you print the names and details of the layers in a model?
+50. 在一个模型中，你如果输出层的名称和细节？
+51. What is the "bootstrapping problem" in collaborative filtering?
+52. 在协同过滤中“引导问题”是什么？
+53. How could you deal with the bootstrapping problem for new users? For new movies?
+54. 你如何处理对新用户的引导问题？对新电影呢？
+55. How can feedback loops impact collaborative filtering systems?
+56. 反馈循环能够如何影响协同系统？
+57. When using a neural network in collaborative filtering, why can we have different numbers of factors for movies and users?
+58. 在协同过滤中使用网络神经时，为什么对于电影和用户我们能够有不同数量的因素？
+59. Why is there an `nn.Sequential` in the `CollabNN` model?
+60. 在`CollabNN`模型中为什么有一个`nn.Sequential`？
+61. What kind of model should we use if we want to add metadata about users and items, or information such as date and time, to a collaborative filtering model?
+62. 对一个协同过滤模型如果我们想添加关于用户和项目的元数据，或如日期和时间信息，我们应该使用什么类型的模型？
+
+### Further Research
+
+### 深入研究
+
+1. Take a look at all the differences between the `Embedding` version of `DotProductBias` and the `create_params` version, and try to understand why each of those changes is required. If you're not sure, try reverting each change to see what happens. (NB: even the type of brackets used in `forward` has changed!)
+2. 看一下`Embedding`的`DotProductBias`版本和`create_params`版本间的全部差别，并尝试理解为什么那些每一个改变是必要的。如果你不确定，尝试还原每个改变来看发生了什么。（注意：在`forward`中甚至所使用的括号类型也更改了！）
+3. Find three other areas where collaborative filtering is being used, and find out what the pros and cons of this approach are in those areas.
+4. 寻找使用协同过滤的三个其它领域，并找出在那些领域中这个方法的利弊是什么。
+5. Complete this notebook using the full MovieLens dataset, and compare your results to online benchmarks. See if you can improve your accuracy. Look on the book's website and the fast.ai forum for ideas. Note that there are more columns in the full dataset—see if you can use those too (the next chapter might give you ideas).
+6. 完成本书中使用的MovieLens数据全集，并把你的结果与在线基准结果做对比。看是否你能够改善精度。查看本书的网站和fast.ai论坛上的想法。注意在数据全集中有很多列，看你是否也能够使用那些列（下一章节可能会给你一些思路）。
+7. Create a model for MovieLens that works with cross-entropy loss, and compare it to the model in this chapter.
+8. 配合交叉熵损失对MovieLens创建一个模型，并用它与本章节的模型做对比。

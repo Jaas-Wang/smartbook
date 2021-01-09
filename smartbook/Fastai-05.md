@@ -1257,7 +1257,7 @@ Remember: the choices made in the implementation of cross-entropy loss are not t
 
 ### Further Research
 
-### 未来研究
+### 深入研究
 
 1. Find the paper by Leslie Smith that introduced the learning rate finder, and read it.
 2. 找到介绍学习率查找器的莱斯利·史密斯论文，并阅读。
