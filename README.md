@@ -37,4 +37,6 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 
 [第七章 数据尺寸和测试数据增强](./smartbook/Fastai-07.md)   [（英文原本：07_sizing_and_tta.ipynb）](./englishbook/07_sizing_and_tta.ipynb)（未校对）
 
-[第八章 协同过滤](./smartbook/Fastai-08.md)   [（英文原本：08_collab.ipynb）](./englishbook/08_collab.ipynb)（翻译中）
+[第八章 协同过滤](./smartbook/Fastai-08.md)   [（英文原本：08_collab.ipynb）](./englishbook/08_collab.ipynb)（未校对）
+
+[第九章 表格模型](./smartbook/Fastai-09.md)   [（英文原本：09_tabular.ipynb）](./englishbook/09_tabular.ipynb)（翻译中）
