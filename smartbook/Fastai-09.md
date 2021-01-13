@@ -188,3 +188,196 @@ We don't have time to do a deep dive into all these libraries in this book, so w
 First, let's gather the data we will use.
 
 首先，让我们收集将要使用的数据。
+
+## The Dataset
+
+## 数据集
+
+The dataset we use in this chapter is from the Blue Book for Bulldozers Kaggle competition, which has the following description: "The goal of the contest is to predict the sale price of a particular piece of heavy equipment at auction based on its usage, equipment type, and configuration. The data is sourced from auction result postings and includes information on usage and equipment configurations."
+
+在本章我们使用的数据集来自Kaggle比赛推土机蓝皮书，其有如下描述：“比赛的目的是基于用途、设备类型和配置来预测在拍卖市场上一种特殊重装备的销售价格。数据来源来自拍卖结果发布，包括使用和设备配置信息。”
+
+This is a very common type of dataset and prediction problem, similar to what you may see in your project or workplace. The dataset is available for download on Kaggle, a website that hosts data science competitions.
+
+这是一个非常普通的数据集类型和预测问题，与你可能在你的项目和工作场所看到的问题类似。这个数据集能够在Kaggle上有效下载，这是一个主办数据科学比赛的网站。
+
+### Kaggle Competitions
+
+### Kaggle 比赛
+
+Kaggle is an awesome resource for aspiring data scientists or anyone looking to improve their machine learning skills. There is nothing like getting hands-on practice and receiving real-time feedback to help you improve your skills.
+
+Kaggle对于渴望寻找改善他们机器学习技能的数据科学家或相关人是一个极佳的资源地。没有什么比获取手动实践和接收时时反馈更能帮助你改善你的技巧的了。
+
+Kaggle provides:
+
+- Interesting datasets
+- Feedback on how you're doing
+- A leaderboard to see what's good, what's possible, and what's state-of-the-art
+- Blog posts by winning contestants sharing useful tips and techniques
+
+Kaggle提供：
+
+- 有趣的数据
+- 反馈你做的怎么样
+- 一个选手积分榜来看什么是好的，什么是可能的和什么是最先进的
+- 微博发布获胜选手共享有用的技巧和技术
+
+Until now all our datasets have been available to download through fastai's integrated dataset system. However, the dataset we will be using in this chapter is only available from Kaggle. Therefore, you will need to register on the site, then go to the [page for the competition](https://www.kaggle.com/c/bluebook-for-bulldozers). On that page click "Rules," then "I Understand and Accept." (Although the competition has finished, and you will not be entering it, you still have to agree to the rules to be allowed to download the data.)
+
+截至目前，我们所有的数据集通过fastai的集成数据集系统有效下载获得。然而，本章使用的数据集只能从Kaggle上获取。因此，你将需要去这个网站注册，然后到[这个比赛的页面](https://www.kaggle.com/c/bluebook-for-bulldozers)。在那个页面上点击“规则”，然后“我理解并接受。”（虽然比赛已经结束，你将不能进入这个比赛，但你仍必须同意规则以被允许下载数据。）
+
+The easiest way to download Kaggle datasets is to use the Kaggle API. You can install this using `pip` by running this in a notebook cell:
+
+一个最容易下载Kaggle数据集的方法是使用Kaggle的API。你能够使用`pip`安装，通过notebook单元格来运行这个命令：
+
+```
+!pip install kaggle
+```
+
+You need an API key to use the Kaggle API; to get one, click on your profile picture on the Kaggle website, and choose My Account, then click Create New API Token. This will save a file called *kaggle.json* to your PC. You need to copy this key on your GPU server. To do so, open the file you downloaded, copy the contents, and paste them in the following cell in the notebook associated with this chapter (e.g., `creds = '{"username":"xxx","key":"xxx"}'`):
+
+我需要一个API密钥来使用Kaggle API，点击Kaggle网站上你的形象头像，选择你的账户，然后点击创建新的API令牌，获取密钥。这会保存一个名为*kaggle.json*文件到你的计算机。在你的GPU服务器上你需要拷贝这个密钥。做了这个工作后，打开你下载的文件，拷贝内容并粘贴到与本章相关的notebook中的下述单元格上（例如，``creds = '{"username":"xxx","key":"xxx"}'``）:
+
+```
+creds = ''
+```
+
+Then execute this cell (this only needs to be run once):
+
+执行这个单元格（这只需运行一次）：
+
+```
+cred_path = Path('~/.kaggle/kaggle.json').expanduser()
+if not cred_path.exists():
+    cred_path.parent.mkdir(exist_ok=True)
+    cred_path.write_text(creds)
+    cred_path.chmod(0o600)
+```
+
+Now you can download datasets from Kaggle! Pick a path to download the dataset to:
+
+现在你能够从Kaggle上下载数据集了！选一个数据集下载到本地的路径：
+
+```
+path = URLs.path('bluebook')
+path
+```
+
+Out: Path('/home/jhoward/.fastai/archive/bluebook')
+
+```
+#hide
+Path.BASE_PATH = path
+```
+
+And use the Kaggle API to download the dataset to that path, and extract it:
+
+使用Kaggle API下载数据集到这个路径，并抽取数据：
+
+```
+if not path.exists():
+    path.mkdir(parents=true)
+    api.competition_download_cli('bluebook-for-bulldozers', path=path)
+    file_extract(path/'bluebook-for-bulldozers.zip')
+
+path.ls(file_type='text')
+```
+
+Out: (#7) [Path('TrainAndValid.csv'),Path('Machine_Appendix.csv'),Path('random_forest_benchmark_test.csv'),Path('Test.csv'),Path('median_benchmark.csv'),Path('ValidSolution.csv'),Path('Valid.csv')]
+
+Now that we have downloaded our dataset, let's take a look at it!
+
+现在我们已经下载了我们的数据集，让我们查看一下它！
+
+### Look at the Data
+
+### 查看数据
+
+Kaggle provides information about some of the fields of our dataset. The [Data](https://www.kaggle.com/c/bluebook-for-bulldozers/data) explains that the key fields in *train.csv* are:
+
+- `SalesID`:: The unique identifier of the sale.
+- `MachineID`:: The unique identifier of a machine. A machine can be sold multiple times.
+- `saleprice`:: What the machine sold for at auction (only provided in *train.csv*).
+- `saledate`:: The date of the sale.
+
+Kaggle提供了一些我们数据集的字段信息。在*train.csv*中关键字段的[数据](https://www.kaggle.com/c/bluebook-for-bulldozers/data)解释是：
+
+- `SalesID`：销售的唯一标示。
+- `MachineID`：机械的唯一标示。一个机械能卖多次。
+- `saleprice`：在拍卖上的机械销售情况（只在*train.csv*中提供了）。
+- `saledate`：销售日期。
+
+In any sort of data science work, it's important to *look at your data directly* to make sure you understand the format, how it's stored, what types of values it holds, etc. Even if you've read a description of the data, the actual data may not be what you expect. We'll start by reading the training set into a Pandas DataFrame. Generally it's a good idea to specify `low_memory=False` unless Pandas actually runs out of memory and returns an error. The `low_memory` parameter, which is `True` by default, tells Pandas to only look at a few rows of data at a time to figure out what type of data is in each column. This means that Pandas can actually end up using different data type for different rows, which generally leads to data processing errors or model training problems later.
+
+Let's load our data and have a look at the columns:
+
+任何形式的数据科学工作，*直接查看你的数据* 以确保你理解格式是很重要的，它是如何存贮的，它有什么类型的值，等等。即使你已经阅读了数据的描述，真实数据可能也不是你所期望的内容。我们会从通过阅读训练集到一个Pandas DataFrame中开始。通常具体说明`low_memory=False`是一个好主意，除非Pandas实际耗尽了内存并返回错误。`low_memory`参数默认为`真`，告诉Pandas一次只查看很少的几行数据，弄明白在每一列数据的类型是什么。意思是Pandas能够最终使用不同行的不同数据类型，其通常会导致数据处理错误或其后的模型训练问题。
+
+```
+df = pd.read_csv(path/'TrainAndValid.csv', low_memory=False)
+```
+
+```
+df.columns
+```
+
+Out: Index(['SalesID', 'SalePrice', 'MachineID', 'ModelID', 'datasource',
+       'auctioneerID', 'YearMade', 'MachineHoursCurrentMeter', 'UsageBand',
+       'saledate', 'fiModelDesc', 'fiBaseModel', 'fiSecondaryDesc',
+       'fiModelSeries', 'fiModelDescriptor', 'ProductSize',
+       'fiProductClassDesc', 'state', 'ProductGroup', 'ProductGroupDesc',
+       'Drive_System', 'Enclosure', 'Forks', 'Pad_Type', 'Ride_Control',
+       'Stick', 'Transmission', 'Turbocharged', 'Blade_Extension',
+       'Blade_Width', 'Enclosure_Type', 'Engine_Horsepower', 'Hydraulics',
+       'Pushblock', 'Ripper', 'Scarifier', 'Tip_Control', 'Tire_Size',
+       'Coupler', 'Coupler_System', 'Grouser_Tracks', 'Hydraulics_Flow',
+       'Track_Type', 'Undercarriage_Pad_Width', 'Stick_Length', 'Thumb',
+       'Pattern_Changer', 'Grouser_Type', 'Backhoe_Mounting', 'Blade_Type',
+       'Travel_Controls', 'Differential_Type', 'Steering_Controls'],
+      dtype='object')
+
+That's a lot of columns for us to look at! Try looking through the dataset to get a sense of what kind of information is in each one. We'll shortly see how to "zero in" on the most interesting bits.
+
+At this point, a good next step is to handle *ordinal columns*. This refers to columns containing strings or similar, but where those strings have a natural ordering. For instance, here are the levels of `ProductSize`:
+
+这对我们来说要查看很多列！尝试通看数据集来感受每一个列的信息是什么类型。我们会简短了解一下在最感兴趣的点上如何“锁定”。
+
+```
+df['ProductSize'].unique()
+```
+
+Out: array([nan, 'Medium', 'Small', 'Large / Medium', 'Mini', 'Large', 'Compact'], dtype=object)
+
+We can tell Pandas about a suitable ordering of these levels like so:
+
+我能够告诉Pandas合适的排序这些级别，像这样：
+
+```
+sizes = 'Large','Large / Medium','Medium','Small','Mini','Compact'
+```
+
+```
+df['ProductSize'] = df['ProductSize'].astype('category')
+df['ProductSize'].cat.set_categories(sizes, ordered=True, inplace=True)
+```
+
+The most important data column is the dependent variable—that is, the one we want to predict. Recall that a model's metric is a function that reflects how good the predictions are. It's important to note what metric is being used for a project. Generally, selecting the metric is an important part of the project setup. In many cases, choosing a good metric will require more than just selecting a variable that already exists. It is more like a design process. You should think carefully about which metric, or set of metrics, actually measures the notion of model quality that matters to you. If no variable represents that metric, you should see if you can build the metric from the variables that are available.
+
+最重要的数据列是因变量，即我们希望去预测的那个。回想一个模型的指标是一个函数，反映预测是如何的好。注意一个项目使用了什么指标是很重要的。通常，选择指标是项目设置的一个重要部分。在很多案例中，选择一个好的指标会需要不仅仅是只选择一个已经存在的变量。它更象是一个设计过程。你应该仔细的想那些指标，或指标集，实际测量对你来说很重要的那些模型质量概念。如果没有变量代表指标，你应该看是否你能够从那些有效的变量中创建指标。
+
+However, in this case Kaggle tells us what metric to use: root mean squared log error (RMSLE) between the actual and predicted auction prices. We need do only a small amount of processing to use this: we take the log of the prices, so that `rmse` of that value will give us what we ultimately need:
+
+然而，在本例中Kaggle告诉了我们所使用的指标：实际和预测拍卖价格间的均方根对数误差（RMSLE）。使用这个指标我们只需要做少量的处理：我们求价格的对数，所以值的`rmse`会提供给我们最终所需要的：
+
+```
+dep_var = 'SalePrice'
+```
+
+```
+df[dep_var] = np.log(df[dep_var])
+```
+
+We are now ready to explore our first machine learning algorithm for tabular data: decision trees.
+
+现在我们准备来探索我们第一个表格数据机器学习算法：决策树。
