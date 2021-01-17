@@ -643,3 +643,177 @@ Now that all this preprocessing is done, we are ready to create a decision tree.
 
 现在这个预处理的所有工作做完了，我们准备创建一棵决策树。
 
+### Creating the Decision Tree
+
+### 创建决策树
+
+To begin, we define our independent and dependent variables:
+
+我们从定义自变量和因变量开始：
+
+```
+#hide
+to = load_pickle(path/'to.pkl')
+```
+
+```
+xs,y = to.train.xs,to.train.y
+valid_xs,valid_y = to.valid.xs,to.valid.y
+```
+
+Now that our data is all numeric, and there are no missing values, we can create a decision tree:
+
+因为我们的数据都是数值型，且没有丢失的数据，我们能够创建一棵决策树了：
+
+```
+m = DecisionTreeRegressor(max_leaf_nodes=4)
+m.fit(xs, y);
+```
+
+To keep it simple, we've told sklearn to just create four *leaf nodes*. To see what it's learned, we can display the tree:
+
+为保持简单操作，我们告诉sklearn只创建四*叶节点*。来看一下它学到了什么，我们展示这棵树：
+
+```
+draw_tree(m, xs, size=10, leaves_parallel=True, precision=2)
+```
+
+Out: <img src="./_v_images/decision_tree.jpg" alt="decision_tree" style="zoom:40%;" />
+
+Understanding this picture is one of the best ways to understand decision trees, so we will start at the top and explain each part step by step.
+
+理解这个图像是理解决策树的最好的方法之一，我们会从顶端开始并一步步的解释每一部分。
+
+The top node represents the *initial model* before any splits have been done, when all the data is in one group. This is the simplest possible model. It is the result of asking zero questions and will always predict the value to be the average value of the whole dataset. In this case, we can see it predicts a value of 10.10 for the logarithm of the sales price. It gives a mean squared error of 0.48. The square root of this is 0.69. (Remember that unless you see `m_rmse`, or a *root mean squared error*, then the value you are looking at is before taking the square root, so it is just the average of the square of the differences.) We can also see that there are 404,710 auction records in this group—that is the total size of our training set. The final piece of information shown here is the decision criterion for the best split that was found, which is to split based on the `coupler_system` column.
+
+当所有数据在一个组时，顶部节点代表任何分割完成前的*初始模型*。这是最简单的可能模型。它是问零个问题的结果并会一直预测整个数据集的平均值。在这种情况下，我们能看到它预测了销售价格的对数为 10.10 的值。它给出均方误差为 0.48。平方根是 0.69。（记住，除非你看到 `m_rmse` 或一个*均方根误差*，然后你看到的是求平均根前的值，所以这只是差值平均的平均值。）我们也能够看到在这个组有 404710 条销售记录，这是我们训练集的全部大小。信息的最后部分展示的是所发现的最佳分割的决策标准，它是基于`coupler_system`列做的分割。
+
+Moving down and to the left, this node shows us that there were 360,847 auction records for equipment where `coupler_system` was less than 0.5. The average value of our dependent variable in this group is 10.21. Moving down and to the right from the initial model takes us to the records where `coupler_system` was greater than 0.5.
+
+向左下移动，这个节点给我们展示了有 360,847 条设备拍卖记录，这里`coupler_system`小于0.5。在这一组我们因变量的平均值为10.21。从初始模型向右下移动，带我们到了`coupler_system`比 0.5 大的记录。
+
+The bottom row contains our *leaf nodes*: the nodes with no answers coming out of them, because there are no more questions to be answered. At the far right of this row is the node containing records where `coupler_system` was greater than 0.5. The average value here is 9.21, so we can see the decision tree algorithm did find a single binary decision that separated high-value from low-value auction results. Asking only about `coupler_system` predicts an average value of 9.21 versus 10.1.
+
+底部行是我们的*叶节点*：这些节点不用回答问题就能得出，因为没有更多的问题来回答。这一行的最右侧包含 `coupler_system`比 0.5 大的记录。这里的平均值是 9.21 ，所以我们能看到决策树算法找到了一个单二分决策，其把低位值售价与高位值售价分开。只用问关于 `coupler_system` 一个平均值 9.21 对比 10.1 的预测。
+
+Returning back to the top node after the first decision point, we can see that a second binary decision split has been made, based on asking whether `YearMade` is less than or equal to 1991.5. For the group where this is true (remember, this is now following two binary decisions, based on `coupler_system` and `YearMade`) the average value is 9.97, and there are 155,724 auction records in this group. For the group of auctions where this decision is false, the average value is 10.4, and there are 205,123 records. So again, we can see that the decision tree algorithm has successfully split our more expensive auction records into two more groups which differ in value significantly.
+
+第一个决策点后找回到顶部节点，我们能够看到基于问 `YearMade` 是否是小于或等于 1991.5 ，第二个二分决策分割已经完成。对于为真（记住，现在遵循的二分决策是基于 `coupler_system` 和 `YearMade`）的这一组平均值是 9.97 ，在这一组有 155,724 条销售记录。对决策为夹这一组的销售，平均值为 10.4 ，这一组有 205,123 条记录。所以再一次，我们能够看到决策算法已经成功的分割更多昂贵的销售记录进入另外两个组，这些组值的区分是显著的。
+
+We can show the same information using Terence Parr's powerful [dtreeviz](https://explained.ai/decision-tree-viz/) library:
+
+我们可以使用特伦斯·帕尔强大的 [dtreeviz](https://explained.ai/decision-tree-viz/) 库来展示相同的信息：
+
+```
+samp_idx = np.random.permutation(len(y))[:500]
+dtreeviz(m, xs.iloc[samp_idx], y.iloc[samp_idx], xs.columns, dep_var,
+        fontname='DejaVu Sans', scale=1.6, label_fontsize=10,
+        orientation='LR')
+```
+
+Out: <img src="./_v_images/decision_tree_dtreeviz.jpg" alt="decision_tree" style="zoom:40%;" />
+
+This shows a chart of the distribution of the data for each split point. We can clearly see that there's a problem with our `YearMade` data: there are bulldozers made in the year 1000, apparently! Presumably this is actually just a missing value code (a value that doesn't otherwise appear in the data and that is used as a placeholder in cases where a value is missing). For modeling purposes, 1000 is fine, but as you can see this outlier makes visualization of the values we are interested in more difficult. So, let's replace it with 1950:
+
+这展示了对每一个分割点的数据分配图。我们能够清晰的看到我们的 `YearMade` 数据有一个问题：有制造年份为1000年的推土机，很明显！大概实际上只是丢失了值代码（在数据中不会以其它方式显示，在案例中值是丢失的其作为一个占位符被使用）。对于建模的目的 1000 是没问题的，但正如我们看到的这个离群值使得我们感兴趣的数值的可视化更困难了。所以我们用 1950 来替换它：
+
+```
+xs.loc[xs['YearMade']<1900, 'YearMade'] = 1950
+valid_xs.loc[valid_xs['YearMade']<1900, 'YearMade'] = 1950
+```
+
+That change makes the split much clearer in the tree visualization, even although it doesn't actually change the result of the model in any significant way. This is a great example of how resilient decision trees are to data issues!
+
+这个改变使用的树可视化的分割更清晰了，虽然甚至它没有用任何显著的方法实际改变模型的结果。这是一个非常好的例子，来说明决策树对数据问题的适应情况如何！
+
+```
+m = DecisionTreeRegressor(max_leaf_nodes=4).fit(xs, y)
+
+dtreeviz(m, xs.iloc[samp_idx], y.iloc[samp_idx], xs.columns, dep_var,
+        fontname='DejaVu Sans', scale=1.6, label_fontsize=10,
+        orientation='LR')
+```
+
+Out: <img src="./_v_images/decision_tree_dtreeviz_2.jpeg" alt="decision_tree" style="zoom:40%;" />
+
+Let's now have the decision tree algorithm build a bigger tree. Here, we are not passing in any stopping criteria such as `max_leaf_nodes`:
+
+现在让决策树算法构建一棵更大的树。这里我们不会传递任何停止标准，如 `max_leaf_modes` ：
+
+```
+m = DecisionTreeRegressor()
+m.fit(xs, y);
+```
+
+We'll create a little function to check the root mean squared error of our model (`m_rmse`), since that's how the competition was judged:
+
+我们会创建一个小函数来检查我们模型的均方根误差（ `m_rmse` ），因为这是如何评判比赛的：
+
+```
+def r_mse(pred,y): return round(math.sqrt(((pred-y)**2).mean()), 6)
+def m_rmse(m, xs, y): return r_mse(m.predict(xs), y)
+```
+
+```
+m_rmse(m, xs, y)
+```
+
+Out: 0.0
+
+So, our model is perfect, right? Not so fast... remember we really need to check the validation set, to ensure we're not overfitting:
+
+所以我们的模型是完美的，对吗？ 不要高兴的太早... 记住我们需要实际的检查验证集，以确保我们不会过拟合：
+
+```
+m_rmse(m, valid_xs, valid_y)
+```
+
+Out: 0.331466
+
+Oops—it looks like we might be overfitting pretty badly. Here's why:
+
+哎哟，它好像很严重的过拟了。原因如下：
+
+```
+m.get_n_leaves(), len(xs)
+```
+
+Out: (324544, 404710)
+
+We've got nearly as many leaf nodes as data points! That seems a little over-enthusiastic. Indeed, sklearn's default settings allow it to continue splitting nodes until there is only one item in each leaf node. Let's change the stopping rule to tell sklearn to ensure every leaf node contains at least 25 auction records:
+
+我们获取了太多的叶节点做为数据点！这好像是有点过于乐观了。实际上，sklearn的默认设置允许连续的分割节点，直到每个叶节点中只有一个数据项。让我们改变停止规则，告诉sklearn确保每个叶节点至少包含 25 条销售记录：
+
+```
+m = DecisionTreeRegressor(min_samples_leaf=25)
+m.fit(to.train.xs, to.train.y)
+m_rmse(m, xs, y), m_rmse(m, valid_xs, valid_y)
+```
+
+Out: (0.248562, 0.323396)
+
+That looks much better. Let's check the number of leaves again:
+
+这看起来好多了。 我们再次检查一下叶子的数目：
+
+```
+m.get_n_leaves()
+```
+
+Out: 12397
+
+Much more reasonable!
+
+更合理了！
+
+> A: Here's my intuition for an overfitting decision tree with more leaf nodes than data items. Consider the game Twenty Questions. In that game, the chooser secretly imagines an object (like, "our television set"), and the guesser gets to pose 20 yes or no questions to try to guess what the object is (like "Is it bigger than a breadbox?"). The guesser is not trying to predict a numerical value, but just to identify a particular object out of the set of all imaginable objects. When your decision tree has more leaves than there are possible objects in your domain, then it is essentially a well-trained guesser. It has learned the sequence of questions needed to identify a particular data item in the training set, and it is "predicting" only by describing that item's value. This is a way of memorizing the training set—i.e., of overfitting.
+
+> 亚：这是我对叶节点比数据项多的过拟决策树的直觉。思虑20个问题游戏。在这个游戏中，选择者秘密的想像一个物体（如，“我们的电视机集”），猜测者摆出20个是的或没有问题尝试猜测物体是什么（如“它比面包箱更大吗？”）。猜测者不是尝试预测一个数字值，只是在所有可想像的物体的集中来辨认出一个特定的物体。当你的决策树的叶子比你想到的可能物体更多时，那么它必须是一个训练有素的猜测者。在训练集中它已经学习了一系列需要识别一个特定数据项的问题，且它只是通过描述数据项的值来“预测”。这是一种记忆训练集的方法，即过拟合。
+
+Building a decision tree is a good way to create a model of our data. It is very flexible, since it can clearly handle nonlinear relationships and interactions between variables. But we can see there is a fundamental compromise between how well it generalizes (which we can achieve by creating small trees) and how accurate it is on the training set (which we can achieve by using large trees).
+
+创建一棵决策树是一个创建我们数据模型的好方法。它是非常灵活的，因为它能够清晰的处理非线性关系和变量间的交互。但是我们能够看到，在它如何好的泛化和在训练集上的精度如何之间有一个基本的妥协（我们能够通过使用大型树来完成）。
+
+So how do we get the best of both worlds? We'll show you right after we handle an important missing detail: how to handle categorical variables.
+
+那么我们怎么做到两全其美呢？在我们处理完一个关键缺失细节后，我们会立刻给你展示：如何处理分类变量。
