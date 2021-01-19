@@ -189,7 +189,7 @@ Step one for our simple model is to get the average of pixel values for each of 
 
 Let's create a tensor containing all of our 3s stacked together. We already know how to create a tensor containing a single image. To create a tensor containing all the images in a directory, we will first use a Python list comprehension to create a plain list of the single image tensors.
 
-让我们创建一个张量包含我们所有堆叠在一起的３图像。我们已经知道怎样创建一个包含单张图像的张量。创建一个包含所有在同一目录的图像张量，我们会第一次使用一个Python列表生成器创建一个单张图像张量的纯列表。
+让我们创建一个张量包含我们所有堆叠在一起的３图像。我们已经知道怎样创建一个包含单张图像的张量。创建一个包含所有在同一目录的图像张量，我们会第一次使用一个Python列表推导式创建一个单图像张量的纯列表。
 
 We will use Jupyter to do some little checks of our work along the way—in this case, making sure that the number of returned items seems reasonable:
 
@@ -205,7 +205,7 @@ Out: (6131, 6265)
 
 > note: List Comprehensions: List and dictionary comprehensions are a wonderful feature of Python. Many Python programmers use them every day, including the authors of this book—they are part of "idiomatic Python." But programmers coming from other languages may have never seen them before. There are a lot of great tutorials just a web search away, so we won't spend a long time discussing them now. Here is a quick explanation and example to get you started. A list comprehension looks like this: `new_list = [f(o) for o in a_list if o>0]`. This will return every element of `a_list` that is greater than 0, after passing it to the function `f`. There are three parts here: the collection you are iterating over (`a_list`), an optional filter (`if o>0`), and something to do to each element (`f(o)`). It's not only shorter to write but way faster than the alternative ways of creating the same list with a loop.
 >
-> 注解：列表生成器：列表和目录生成器是Python一个非常好的功能。许多Python程序员每天都会用它们，也包括本书的作者，他们是“Python惯用语”的一部分。但是来自其它语言的程序员之前可能多来没有看过他们。这里有很多只用网页所搜的极好的指引，所以现在我们不会花费太长时间讨论他们。这有一个快速解释和让我们开始的例子。一个列表生成器看起来像这样：`new_list = [f(o) for o in a_list if o>0]`。这会返回每一个`a_list`大于0的元素，之后把它传递给函数`f`。这里有三部分：收集你在（`a_list`）之上的迭代，一个操作过滤器（`if o>0`），和对每个元素进行处理的（`f(o)`）。它不仅仅编写短小，而且此方法相比使用循环创建相同列表的替代方法要更快。
+> 注解：列表推导：列表和目录推导是Python一个非常好的功能。许多Python程序员每天都会用它们，也包括本书的作者，他们是“Python惯用语”的一部分。但是来自其它语言的程序员之前可能多来没有看过他们。这里有很多只用网页所搜的极好的指引，所以现在我们不会花费太长时间讨论他们。这有一个快速解释和让我们开始的例子。一个列表推导看起来像这样：`new_list = [f(o) for o in a_list if o>0]`。这会返回每一个`a_list`大于0的元素，之后把它传递给函数`f`。这里有三部分：收集你在（`a_list`）之上的迭代，一个操作过滤器（`if o>0`），和对每个元素进行处理的（`f(o)`）。它不仅仅编写短小，而且此方法相比使用循环创建相同列表的替代方法要更快。
 
 We'll also check that one of the images looks okay. Since we now have tensors (which Jupyter by default will print as values), rather than PIL images (which Jupyter by default will display as images), we need to use fastai's `show_image` function to display it:
 
@@ -1579,7 +1579,7 @@ def mnist_loss(predictions, targets):
 
 We're using a new function, `torch.where(a,b,c)`. This is the same as running the list comprehension `[b[i] if a[i] else c[i] for i in range(len(a))]`, except it works on tensors, at C/CUDA speed. In plain English, this function will measure how distant each prediction is from 1 if it should be 1, and how distant it is from 0 if it should be 0, and then it will take the mean of all those distances.
 
-我们正在使用一个新的函数：`torch.where(a,b,c)`。这与运行的列表生成器 `[b[i] if a[i] else c[i] for i in range(len(a))]`类似，只是这个新的函数是以C/CUDA的速度运行在张量上。简单的来说，这个函数会测量每个预测与1的差距（如果它应该是1的话），或它与0的差距是多少（如果它应该是0的话），然后它会取所有这些差距的平均值。
+我们正在使用一个新的函数：`torch.where(a,b,c)`。这与运行的列表推导 `[b[i] if a[i] else c[i] for i in range(len(a))]`类似，只是这个新的函数是以C/CUDA的速度运行在张量上。简单的来说，这个函数会测量每个预测与1的差距（如果它应该是1的话），或它与0的差距是多少（如果它应该是0的话），然后它会取所有这些差距的平均值。
 
 > note: Read the Docs: It's important to learn about PyTorch functions like this, because looping over tensors in Python performs at Python speed, not C/CUDA speed! Try running `help(torch.where)` now to read the docs for this function, or, better still, look it up on the PyTorch documentation site.
 >
@@ -2759,7 +2759,7 @@ A neural network contains a number of layers. Each layer is either *linear* or *
 5. Explain how the "pixel similarity" approach to classifying digits works.
 6. 解释“像素相似性”方法来分类数字是怎样工作的。
 7. What is a list comprehension? Create one now that selects odd numbers from a list and doubles them.
-8. 列表生成器是什么？现在创建一个，从列表中选择奇数并对它们加倍。
+8. 列表推导是什么？现在创建一个，从列表中选择奇数并对它们加倍。
 9. What is a "rank-3 tensor"?
 10. 什么是一个“三阶张向”？
 11. What is the difference between tensor rank and shape? How do you get the rank from the shape?
