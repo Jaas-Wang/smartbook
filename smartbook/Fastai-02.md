@@ -159,8 +159,6 @@ Another concern is that context-appropriate, highly compelling responses on soci
 
 另一个让人担忧的场景是社会媒体中那些有针对性的，极具说服力的回复会被空前的大量使用来散播不实言论，制造不安，引起冲突。根据经验，文本生成模型在技术上总是会比自动识别已生成文档的模型先进一点点。比如那些能够识别文本是否为人工生成的模型或许可以用来不断改进文档生成器直到识别模型再也无法识别出文本来源。
 
- 
-
 Despite these issues, deep learning has many applications in NLP: it can be used to translate text from one language to another, summarize long documents into something that can be digested more quickly, find all mentions of a concept of interest, and more. Unfortunately, the translation or summary could well include completely incorrect information! However, the performance is already good enough that many people are using these systems—for instance, Google's online translation system (and every other online service we are aware of) is based on deep learning.
 
 除了这些问题，深度学习还大量应用于NLP：它能将文本翻译成另一种语言，将很长的文件总结成更易理解的片段，找到所有令人感兴趣的部分在文中被提及的地方，等等。不幸的是，这种翻译或是总结也可能包含了完全错误的信息！不过深度学习在这方面的应用已经足够好到被许多人实际使用了——比如谷歌的线上翻译系统（以及其他所有我们所知的线上服务）就是基于深度学习的应用。
