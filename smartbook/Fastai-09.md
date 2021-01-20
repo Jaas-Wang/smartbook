@@ -1072,3 +1072,121 @@ As you can see, the confidence in the predictions varies widely. For some auctio
 
 你能够看到，对于预测的可信性差异很大。对于一些拍卖，由于树的一致性有低的标准偏差。对于其它那些树不一致的时候标准差是高的。这些信息在生产环境中很有用。如何，如果你正使用这个模型来决策拍卖中出价的是什么物品，一个低可信预测可能导致你在出价前更加仔细的看该物品。
 
+### Feature Importance
+
+### 特征重要性
+
+It's not normally enough just to know that a model can make accurate predictions—we also want to know *how* it's making predictions. *feature importance* gives us insight into this. We can get these directly from sklearn's random forest by looking in the `feature_importances_` attribute. Here's a simple function we can use to pop them into a DataFrame and sort them:
+
+通常这不足以马上知道模型能够做出精确预测，我们也要希望知道它是*如何* 做出预测的。提供给我们洞察这一点的是*特征重要程度* 。我们能够从sklearn随机森林通过查看`fearture_importances_`属性直接获取获取这一信息。下面是样例函数，我们能够用于把这些特征放到一个DataFrame中并对它们进行排序：
+
+```
+def rf_feat_importance(m, df):
+    return pd.DataFrame({'cols':df.columns, 'imp':m.feature_importances_}
+                       ).sort_values('imp', ascending=False)
+```
+
+The feature importances for our model show that the first few most important columns have much higher importance scores than the rest, with (not surprisingly) `YearMade` and `ProductSize` being at the top of the list:
+
+对我们模型的重要特征展示了头几个最重要的列，这些列比其它列有更高的重要要求，（不要惊讶）`YearMade`和`ProductSize`在列表的最顶端：
+
+```
+fi = rf_feat_importance(m, xs)
+fi[:10]
+```
+
+|      |               cols |      imp |
+| ---: | -----------------: | -------: |
+|   59 |           YearMade | 0.180070 |
+|    7 |        ProductSize | 0.113915 |
+|   31 |     Coupler_System | 0.104699 |
+|    8 | fiProductClassDesc | 0.064118 |
+|   33 |    Hydraulics_Flow | 0.059110 |
+|   56 |            ModelID | 0.059087 |
+|   51 |        saleElapsed | 0.051231 |
+|    4 |    fiSecondaryDesc | 0.041778 |
+|   32 |     Grouser_Tracks | 0.037560 |
+|    2 |        fiModelDesc | 0.030933 |
+
+A plot of the feature importances shows the relative importances more clearly:
+
+重要特征性图像显示了更清晰的相关重要性：
+
+```
+def plot_fi(fi):
+    return fi.plot('cols', 'imp', 'barh', figsize=(12,7), legend=False)
+
+plot_fi(fi[:30]);
+```
+
+Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/plot_fit.png" alt="plot_fit" style="zoom:90%;" />
+
+The way these importances are calculated is quite simple yet elegant. The feature importance algorithm loops through each tree, and then recursively explores each branch. At each branch, it looks to see what feature was used for that split, and how much the model improves as a result of that split. The improvement (weighted by the number of rows in that group) is added to the importance score for that feature. This is summed across all branches of all trees, and finally the scores are normalized such that they add to 1.
+
+计算这些重要性特征的方法还是非常简单优雅的。特征重要性算法循环遍历了每棵树，然后递归探索了每个分支。对于每个分支，它查看了那些特征被用于那个分割，且模型基于那个分割结果改善了多少。这个改善（用那个组中的行数加权）被添加到那个特征的重要性分数上。这是遍及所有树的所有分支的总和，最终这些分数被标准化，这样它们合计为1。
+
+### Removing Low-Importance Variables
+
+### 移除低重要性变量
+
+It seems likely that we could use just a subset of the columns by removing the variables of low importance and still get good results. Let's try just keeping those with a feature importance greater than 0.005:
+
+这好像是可行的，我们能够使用移除低重要性变量的列子集，且还会获得好的结果。让我们尝试只保留那些分数大于0.005的重要特性：
+
+```
+to_keep = fi[fi.imp>0.005].cols
+len(to_keep)
+```
+
+Out: 21
+
+We can retrain our model using just this subset of the columns:
+
+我们能够只用这个列子集重训练我们的模型：
+
+```
+xs_imp = xs[to_keep]
+valid_xs_imp = valid_xs[to_keep]
+```
+
+```
+m = rf(xs_imp, y)
+```
+
+And here's the result:
+
+下面是训练后的结果：
+
+```
+m_rmse(m, xs_imp, y), m_rmse(m, valid_xs_imp, valid_y)
+```
+
+Out: (0.181204, 0.230329)
+
+Our accuracy is about the same, but we have far fewer columns to study:
+
+我们的精度是相同的，但是我们用了更少的列来学习：
+
+```
+len(xs.columns), len(xs_imp.columns)
+```
+
+Out: (66, 21)
+
+We've found that generally the first step to improving a model is simplifying it—78 columns was too many for us to study them all in depth! Furthermore, in practice often a simpler, more interpretable model is easier to roll out and maintain.
+
+This also makes our feature importance plot easier to interpret. Let's look at it again:
+
+我们发现常用的第一步优化模型是简化它，78列对于我们深入的研究太多了！并且在实践中是往往是更简洁的，更加可解释的模型是更容易推出并维护的。
+
+这也使得我们特征重要性图形更容易解释。让我们再看一下它：
+
+```
+plot_fi(rf_feat_importance(m, xs_imp));
+```
+
+Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/plot_fi_1.png" alt="plot_fi_1" style="zoom:90%;" />
+
+One thing that makes this harder to interpret is that there seem to be some variables with very similar meanings: for example, `ProductGroup` and `ProductGroupDesc`. Let's try to remove any redundant features.
+
+有一个事情使得更难来解释，好像有一些变量有非常相似的意思：如，`ProductGroup`和`ProductGroupDesc`。让我们尝试移除任何冗余的特性。
