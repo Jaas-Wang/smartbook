@@ -1383,3 +1383,71 @@ The `ProductSize` partial plot is a bit concerning. It shows that the final grou
 
 `ProductSize`部分图内容有点让人担心。它显示的最后一组有最低的价格，我们看这是缺失值。在实践中利用这一洞察，我们会希望找出*为什么*它是经常缺失的，且那*意味*这什么。有时候缺失值能够被用于预测因子，它完全依赖于什么原因导致它们缺失。然而，有时候它能够表明数据泄漏*。
 
+### Data Leakage
+
+### 数据泄漏
+
+In the paper ["Leakage in Data Mining: Formulation, Detection, and Avoidance"](https://dl.acm.org/doi/10.1145/2020408.2020496), Shachar Kaufman, Saharon Rosset, and Claudia Perlich describe leakage as:
+
+在沙查尔·考夫曼、萨哈龙·罗塞特和克劳迪娅·佩利希的论文[数据挖掘中的泄漏：规划、监测和规避](https://dl.acm.org/doi/10.1145/2020408.2020496)中对泄漏的描述是：
+
+> : The introduction of information about the target of a data mining problem, which should not be legitimately available to mine from. A trivial example of leakage would be a model that uses the target itself as an input, thus concluding for example that 'it rains on rainy days'. In practice, the introduction of this illegitimate information is unintentional, and facilitated by the data collection, aggregation and preparation process.
+
+> ：关于目标数据挖掘问题信息的引入，不应该被合理的从中挖掘获得。一个泄漏小例子，一个模型使用目标自己作为输入，因此得出“在下雨天下雨”例子。在实践中，这种不合理信息的引入是无心的，并由数据收集、增强和准备过程所加强。
+
+They give as an example:
+
+他们给了一个例子：
+
+> : A real-life business intelligence project at IBM where potential customers for certain products were identified, among other things, based on keywords found on their websites. This turned out to be leakage since the website content used for training had been sampled at the point in time where the potential customer has already become a customer, and where the website contained traces of the IBM products purchased, such as the word 'Websphere' (e.g., in a press release about the purchase or a specific product feature the client uses).
+
+> ：一个现实的商业智能项目，在IBM除了其它事项外，基于他们网站上发现的关键词对某些产品的潜在客户做识别。事实证明这是泄漏，因为用于训练的网站内容在那个时间点被采样的内容，潜在客户已经变为真正的客户，并且网站包含IBM产品购买跟踪，如字母“Websphere”（例如，关于购买或客户使用的具体产品特性的新闻发布中）。
+
+Data leakage is subtle and can take many forms. In particular, missing values often represent data leakage.
+
+数据泄漏是微妙的且有很多形式。尤其是缺失数据通常表示数据泄漏。
+
+For instance, Jeremy competed in a Kaggle competition designed to predict which researchers would end up receiving research grants. The information was provided by a university and included thousands of examples of research projects, along with information about the researchers involved and data on whether or not each grant was eventually accepted. The university hoped to be able to use the models developed in this competition to rank which grant applications were most likely to succeed, so it could prioritize its processing.
+
+例如，杰里米在一个Kaggle比较设计中，完成了研究人员最终收到研究资助的预测。这个资料是由大学提供，包含数千个研究项目例子与关于研究人员参与和每个资助是否被最终同意的数据。大学希望能够使用本次比赛中的模型开发，以分级最有可能成功的资助申请，所以它能够被优先处理。
+
+Jeremy used a random forest to model the data, and then used feature importance to find out which features were most predictive. He noticed three surprising things:
+
+杰里米使用了随机森林来建模数据，然后用了特点重要性来找出哪些特征最具预测性，他注意到三个意想不到的事情：
+
+- The model was able to correctly predict who would receive grants over 95% of the time.
+- Apparently meaningless identifier columns were the most important predictors.
+- The day of week and day of year columns were also highly predictive; for instance, the vast majority of grant applications dated on a Sunday were accepted, and many accepted grant applications were dated on January 1.
+
+- 模型能够正确预测谁会收到超过95%的资助。
+- 显示无意义标识的列是最重要的预测因子。
+- 星期和年日期列也有最高预测性。例如，绝大多数资助申请日期在星期天被接受，且很多被接受的资助申请是在1月1日。
+
+For the identifier columns, one partial dependence plot per column showed that when the information was missing the application was almost always rejected. It turned out that in practice, the university only filled out much of this information *after* a grant application was accepted. Often, for applications that were not accepted, it was just left blank. Therefore, this information was not something that was actually available at the time that the application was received, and it would not be available for a predictive model—it was data leakage.
+
+对于标识列，每列部分依赖图显示了当这一信息缺失的时候，申请几乎总是被拒绝。事实证明也是这样的，大家只有在一个资助申请会被接受*后*，填写的大部分这些信息。通常，那不是申请不会被接受，只是留空。因此，这个信息实际上申请被接受那时不是可用的，且它对预测模型也不可用——这就是数据泄漏。
+
+In the same way, the final processing of successful applications was often done automatically as a batch at the end of the week, or the end of the year. It was this final processing date which ended up in the data, so again, this information, while predictive, was not actually available at the time that the application was received.
+
+同样的，成功申请的最终处理通常是在周末或年末批次自动处理的。最终在数据上它是最后的处理日期，所以，这一信息在预测期间，对于申请被接受的那个日期实际上是不可用的。
+
+This example showcases the most practical and simple approaches to identifying data leakage, which are to build a model and then:
+
+- Check whether the accuracy of the model is *too good to be true*.
+- Look for important predictors that don't make sense in practice.
+- Look for partial dependence plot results that don't make sense in practice.
+
+这个例子展示了最实用和简单的方法来分辨数据泄漏，用它来构建模型，然后：
+
+- 检查模型的精度是否*好的不真实*。
+- 查找在实践中没有意义的重要预测因子。
+- 查找在实践中没有意义的部分依赖图结果。
+
+Thinking back to our bear detector, this mirrors the advice that we provided in <chapter_production>—it is often a good idea to build a model first and then do your data cleaning, rather than vice versa. The model can help you identify potentially problematic data issues.
+
+返回到我们的熊预测器并思考，这反映了我们在<章节：产品>中提供的建议：首先构建一个模型，然后清洗你的数据，这通常是个好主意，反过来确不行。并行能够帮助我们识别潜在的造成困难的数据问题。
+
+It can also help you identify which factors influence specific predictions, with tree interpreters.
+
+使用树解释器，它也能够帮助你识别那些影响具体预测的因素。
+
