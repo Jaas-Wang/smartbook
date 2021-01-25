@@ -1728,3 +1728,212 @@ Let's see if using a neural network helps.
 
 让我们看一下，使用神经网络是否有帮助。
 
+### Using a Neural Network
+
+### 使用神经网络
+
+We can use the same approach to build a neural network model. Let's first replicate the steps we took to set up the `TabularPandas` object:
+
+我们能够使用相同的方法来创建一个神经网络模型。让我们首先复制这些步骤，开始建立`TabularPandas`对象：
+
+```
+df_nn = pd.read_csv(path/'TrainAndValid.csv', low_memory=False)
+df_nn['ProductSize'] = df_nn['ProductSize'].astype('category')
+df_nn['ProductSize'].cat.set_categories(sizes, ordered=True, inplace=True)
+df_nn[dep_var] = np.log(df_nn[dep_var])
+df_nn = add_datepart(df_nn, 'saledate')
+```
+
+We can leverage the work we did to trim unwanted columns in the random forest by using the same set of columns for our neural network:
+
+利用上述工作，我们对神经网络通过wgeet相同的行设置在随机森林中除去不想要的那些列：
+
+```
+df_nn_final = df_nn[list(xs_final_time.columns) + [dep_var]]
+```
+
+Categorical columns are handled very differently in neural networks, compared to decision tree approaches. As we saw in <chapter_collab>, in a neural net a great way to handle categorical variables is by using embeddings. To create embeddings, fastai needs to determine which columns should be treated as categorical variables. It does this by comparing the number of distinct levels in the variable to the value of the `max_card` parameter. If it's lower, fastai will treat the variable as categorical. Embedding sizes larger than 10,000 should generally only be used after you've tested whether there are better ways to group the variable, so we'll use 9,000 as our `max_card`:
+
+相对于决策树方法，在神经网络中分类列的处理是非常不同的。正如我们在<章节：协同过滤>中看到的，在神经网络中处理分类变量的一个非常好的方法是使用嵌入。创建嵌入，fastai需要决定哪些列应该被作为分类变量处理。它通过比对变量中不同差距的数量和`max_card`参数值来做这个操作。如果它太低，fastai会作为分类处理这个变量。通常应该只有你已经测试对于分组变量是否有更好的方法后才会设置嵌入尺寸大于10,000，所以我会设置 9,000 作为我们的`max_card`：
+
+```
+cont_nn,cat_nn = cont_cat_split(df_nn_final, max_card=9000, dep_var=dep_var)
+```
+
+In this case, however, there's one variable that we absolutely do not want to treat as categorical: the `saleElapsed` variable. A categorical variable cannot, by definition, extrapolate outside the range of values that it has seen, but we want to be able to predict auction sale prices in the future. Therefore, we need to make this a continuous variable:
+
+然而，在这个例子中有一个变量我们绝对不希望作为分类进行处理：`saleElaspsed`变量。一个分类变量不能够推断范围外的变量，这已经是被定义过了，但我们希望能够预测在未来的拍卖销售价格。因此，我们需要使得这是一个连续变量：
+
+```
+cont_nn.append('saleElapsed')
+cat_nn.remove('saleElapsed')
+```
+
+Also, to use this as a continuous variable, we have to ensure it's of a numeric type:
+
+同样，使用它作为一个连续变量，我们必须确保它是数值类型：
+
+```
+df_nn['saleElapsed'] = df_nn['saleElapsed'].astype(int)
+```
+
+Let's take a look at the cardinality of each of the categorical variables that we have chosen so far:
+
+我们看一下每个分类变量的基数，截至目前这些变量是我们已经选择的：
+
+```
+df_nn_final[cat_nn].nunique()
+```
+
+Out: $\begin{array}{lr}
+YearMade                &73\\
+ProductSize             & 6\\
+Coupler_System          & 2\\
+fiProductClassDesc      &74\\
+Hydraulics_Flow         & 3\\
+ModelID              & 5281\\
+fiSecondaryDesc      &  177\\
+fiModelDesc          & 5059\\
+Enclosure            &    6\\
+Hydraulics           &   12\\
+ProductGroup         &    6\\
+Drive_System         &    4\\
+Tire_Size            &   17\\
+dtype: int64\end{array}$
+
+The fact that there are two variables pertaining to the "model" of the equipment, both with similar very high cardinalities, suggests that they may contain similar, redundant information. Note that we would not necessarily see this when analyzing redundant features, since that relies on similar variables being sorted in the same order (that is, they need to have similarly named levels). Having a column with 5,000 levels means needing 5,000 columns in our embedding matrix, which would be nice to avoid if possible. Let's see what the impact of removing one of these model columns has on the random forest:
+
+事实上，有两个变量与设备的“型号”相关，两者有非常高的相似基数，认为它们可能包含相似冗余的信息。注意，当分析冗余特征时我们也许不须看这个，因为那依赖于相似的变量在相同的顺序中被排序了（即，它们有相似的命名级别）。一个列有 5,000 个级别意味着在我们的嵌入矩阵中需要 5,000 个列，如果可能的话可能会很好的避免。让我们看一下在随机森林上移除这些模型列的一个会有什么影响：
+
+```
+xs_filt2 = xs_filt.drop('fiModelDescriptor', axis=1)
+valid_xs_time2 = valid_xs_time.drop('fiModelDescriptor', axis=1)
+m2 = rf(xs_filt2, y_filt)
+m_rmse(m2, xs_filt2, y_filt), m_rmse(m2, valid_xs_time2, valid_y)
+```
+
+Out: (0.176713, 0.230195)
+
+There's minimal impact, so we will remove it as a predictor for our neural network:
+
+有很小的影响，所以对于我们的神经网络我们会移除它作为一个预测因子：
+
+```
+cat_nn.remove('fiModelDescriptor')
+```
+
+We can create our `TabularPandas` object in the same way as when we created our random forest, with one very important addition: normalization. A random forest does not need any normalization—the tree building procedure cares only about the order of values in a variable, not at all about how they are scaled. But as we have seen, a neural network definitely does care about this. Therefore, we add the `Normalize` processor when we build our `TabularPandas` object:
+
+我们能够以创建随机森林时同样的方法创建我们的`TabularPandas`对象，并有一个非常重要的增加：标准化。随机森林不需要任何标准化，树创建程序只关心变量中值的顺序，一点也不关心它们是如何缩放的。但是正如我们看到过的，定义的神经网络关心这个问题。因此，当我们创建`TabularPandas`对象时，我们增加了`Normalize`处理器：
+
+```
+procs_nn = [Categorify, FillMissing, Normalize]
+to_nn = TabularPandas(df_nn_final, procs_nn, cat_nn, cont_nn,
+                      splits=splits, y_names=dep_var)
+```
+
+Tabular models and data don't generally require much GPU RAM, so we can use larger batch sizes:
+
+表格模型和数据通常不需要太多GPU内存，所以我们能够使用更大的批次尺寸：
+
+```
+dls = to_nn.dataloaders(1024)
+```
+
+As we've discussed, it's a good idea to set `y_range` for regression models, so let's find the min and max of our dependent variable:
+
+正如我们讨论过的，对回归模型设置`y_range`是一个好的想法，所以让我们查看因变量的最小和最大值：
+
+```
+y = to_nn.train.y
+y.min(),y.max()
+```
+
+Out: (8.465899467468262, 11.863582611083984)
+
+We can now create the `Learner` to create this tabular model. As usual, we use the application-specific learner function, to take advantage of its application-customized defaults. We set the loss function to MSE, since that's what this competition uses.
+
+现在我们能够创建`学习器`来创建这个表格模型。像往常一样，我们使用特定学习器函数应用，使用应用自定义的默认设置。我们设置损失函数为MSE，因为这就本次比赛使用的内容。
+
+By default, for tabular data fastai creates a neural network with two hidden layers, with 200 and 100 activations, respectively. This works quite well for small datasets, but here we've got quite a large dataset, so we increase the layer sizes to 500 and 250:
+
+fastai默认为表格模型数据创建了两个隐藏层，分别为200和100个激活。这个设置对于小型数据集很好，但这里我们会采用一个大型数据集，所以我们曾加层的尺寸到500和250：
+
+```
+learn = tabular_learner(dls, y_range=(8,12), layers=[500,250],
+                        n_out=1, loss_func=F.mse_loss)
+```
+
+```
+learn.lr_find()
+```
+
+Out: SuggestedLRs(lr_min=0.002754228748381138, lr_steep=0.00015848931798245758)
+
+Out: ![img](data:image/png;base64,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)
+
+There's no need to use `fine_tune`, so we'll train with `fit_one_cycle` for a few epochs and see how it looks:
+
+这里不需要使用`fine_tune`，所以我们对于少量批次使用`fit_one_cycle`来训练，并看它的训练结果怎么样：
+
+```
+learn.fit_one_cycle(5, 1e-2)
+```
+
+| epoch | train_loss | valid_loss |  time |
+| ----: | ---------: | ---------: | ----: |
+|     0 |   0.068459 |   0.061185 | 00:09 |
+|     1 |   0.056469 |   0.058471 | 00:09 |
+|     2 |   0.048689 |   0.052404 | 00:09 |
+|     3 |   0.044529 |   0.052138 | 00:09 |
+|     4 |   0.040860 |   0.051236 | 00:09 |
+
+We can use our `r_mse` function to compare the result to the random forest result we got earlier:
+
+我们能够使用`r_mse`函数来将结果与之前我们得到的随机森林结果做对比：
+
+```
+preds,targs = learn.get_preds()
+r_mse(preds,targs)
+```
+
+Out: 0.226353
+
+It's quite a bit better than the random forest (although it took longer to train, and it's fussier about hyperparameter tuning).
+
+相比随机森林，这个结果好多好（不过它花费了更长的时间来训练，且它对超参调整更挑剔）。
+
+Before we move on, let's save our model in case we want to come back to it again later:
+
+在我们继续下步前，让我们保存模型，以防万一我们稍后想再次返回到这个点：
+
+```
+learn.save('nn')
+```
+
+Out: Path('models/nn.pth')
+
+### Sidebar: fastai's Tabular Classes
+
+### 侧边栏：fastai的表格类
+
+In fastai, a tabular model is simply a model that takes columns of continuous or categorical data, and predicts a category (a classification model) or a continuous value (a regression model). Categorical independent variables are passed through an embedding, and concatenated, as we saw in the neural net we used for collaborative filtering, and then continuous variables are concatenated as well.
+
+在fastai中，表格模型是一个采纳了连续或分类数据的列的一个简单模型，预测一个分类（一个分类模型）或一个连续值（一个回归模型）。分类的自变量是通过一个嵌入传递的，并串联起来，正如我们在用于协同过滤的神经网络中看到的，然后连续变量也被串联起来。
+
+The model created in `tabular_learner` is an object of class `TabularModel`. Take a look at the source for `tabular_learner` now (remember, that's `tabular_learner??` in Jupyter). You'll see that like `collab_learner`, it first calls `get_emb_sz` to calculate appropriate embedding sizes (you can override these by using the `emb_szs` parameter, which is a dictionary containing any column names you want to set sizes for manually), and it sets a few other defaults. Other than that, it just creates the `TabularModel`, and passes that to `TabularLearner` (note that `TabularLearner` is identical to `Learner`, except for a customized `predict` method).
+
+在`tabular_learner`中的模型创建是一个类`TabularModel`的对象。现在看一下`tabular_learner`的源代码（记住，在Jupyter中用`tabular_learner??`）。你们会发现很像`collab_learner`，它首先调用了`get_emb_sz`来计算合适嵌入尺寸（你能够通过使用`emb_szs`参数来手动控制，它是一个包含任何你想手动设置心动列名的字典），且它设置了一些其它默认值。除此之外，它只创建了`TabularModel`并传递它给`TabularLearner`（注意`TabularLearner`与`Learner`是相同的，除非自定义了`predict`方法）。
+
+That means that really all the work is happening in `TabularModel`, so take a look at the source for that now. With the exception of the `BatchNorm1d` and `Dropout` layers (which we'll be learning about shortly), you now have the knowledge required to understand this whole class. Take a look at the discussion of `EmbeddingNN` at the end of the last chapter. Recall that it passed `n_cont=0` to `TabularModel`. We now can see why that was: because there are zero continuous variables (in fastai the `n_` prefix means "number of," and `cont` is an abbreviation for "continuous").
+
+这意味着所有真正的工作都在`TabularModel`中发生的，所以现在看一下它的源代码。除了`BatchNorm1d`和`Dropout`层（我们稍后会学），我现在已经有理解这整个类的必备知识。在上一章节的末尾看一下`EmbeddingNN`的讨论。回忆它传递`n_cont=0`给`TabularModel`。现在我们能够明白为什么这样：因为有零个连续变量（在fastai中`n_`前缀表示“数量”，而`cont`是“连续”的缩写）。
+
+### End sidebar
+
+### 侧边栏结束
+
+Another thing that can help with generalization is to use several models and average their predictions—a technique, as mentioned earlier, known as *ensembling*.
+
+有助于泛化的别一个事情是来使用若干个模型且平均它们的预测：一项早先提过的技术，被称为*集成*。
+
