@@ -1937,3 +1937,86 @@ Another thing that can help with generalization is to use several models and ave
 
 有助于泛化的别一个事情是来使用若干个模型且平均它们的预测：一项早先提过的技术，被称为*集成*。
 
+## Ensembling
+
+## 集成
+
+Think back to the original reasoning behind why random forests work so well: each tree has errors, but those errors are not correlated with each other, so the average of those errors should tend towards zero once there are enough trees. Similar reasoning could be used to consider averaging the predictions of models trained using different algorithms.
+
+返回思考一下为什么随机森林工作如此好的背后原始原因：每棵树都有错误，但是那些错误彼此是不关联的，所以一旦有足够的树平均那些错误应该趋向零。同样的原因能够被用于思考用不同算法训练的模型的预测平均值。
+
+In our case, we have two very different models, trained using very different algorithms: a random forest, and a neural network. It would be reasonable to expect that the kinds of errors that each one makes would be quite different. Therefore, we might expect that the average of their predictions would be better than either one's individual predictions.
+
+在我们的例子中，我们有两个完全不同的用非常不同的算法训练的模型：随机森林和神经网络。它是明智的预期这些种类错误的每一个将会完全不同。因此，我们可以预料它们预测的平均将会比任何一个独立的预测要更好。
+
+As we saw earlier, a random forest is itself an ensemble. But we can then include a random forest in *another* ensemble—an ensemble of the random forest and the neural network! While ensembling won't make the difference between a successful and an unsuccessful modeling process, it can certainly add a nice little boost to any models that you have built.
+
+正如我们早先看到的，一个随机森林是它自己的集合。但其后我们能够在*另外的集合* 中包含随机森林：随机森林和神经网络的集合！ 虽然集合不也许不会在成功和不成功建模处理之间有什么影响，但它确定的是能够对任何你已经构建的模型带来一个不错的小提升。
+
+One minor issue we have to be aware of is that our PyTorch model and our sklearn model create data of different types: PyTorch gives us a rank-2 tensor (i.e, a column matrix), whereas NumPy gives us a rank-1 array (a vector). `squeeze` removes any unit axes from a tensor, and `to_np` converts it into a NumPy array:
+
+一个小问题我们必须提醒，我们的PyTorch模型和sklearn模型创建不同类型的数据：PyTorch提供给我们2阶张量（即，一列矩阵），NumPy提供给我们1阶数组（一个矢量）。`squeeze`从一个张量中移除任意单元坐标轴，`to_np`转换它为一个NumPy数组：
+
+```
+rf_preds = m.predict(valid_xs_time)
+ens_preds = (to_np(preds.squeeze()) + rf_preds) /2
+```
+
+This gives us a better result than either model achieved on its own:
+
+这提供给我们比任意一个模型自己完成的结果都要更好：
+
+```
+r_mse(ens_preds,valid_y)
+```
+
+Out: 0.222134
+
+In fact, this result is better than any score shown on the Kaggle leaderboard. It's not directly comparable, however, because the Kaggle leaderboard uses a separate dataset that we do not have access to. Kaggle does not allow us to submit to this old competition to find out how we would have done, but our results certainly look very encouraging!
+
+事实上，这个结果比在Kaggle排行榜上显示的所有分数都要好。然而，它不是直接可比较的，因为Kaggle排行榜用了一个我们不能使用的独立的数据集。Kaggle不允许我们提交到这个旧的比赛以查找我们怎样完成的，但我们的结果看起来确实令人鼓舞！
+
+### Boosting
+
+### 提升
+
+So far our approach to ensembling has been to use *bagging*, which involves combining many models (each trained on a different data subset) together by averaging them. As we saw, when this is applied to decision trees, this is called a *random forest*.
+
+到目前为止，我们的集成方法使用了*装袋*，其涉及把很多模型（每个模型的训练是在不同的数据子集上）组合在一起并平均它们。正如我们看到过的，当这应用到决策树，这被称为*随机森林*。
+
+There is another important approach to ensembling, called *boosting*, where we add models instead of averaging them. Here is how boosting works:
+
+还有另外一个重要的集成方法，称为*提升*。在这个方法上我们用添加模型来替代平均它们。
+
+- Train a small model that underfits your dataset.
+- Calculate the predictions in the training set for this model.
+- Subtract the predictions from the targets; these are called the "residuals" and represent the error for each point in the training set.
+- Go back to step 1, but instead of using the original targets, use the residuals as the targets for the training.
+- Continue doing this until you reach some stopping criterion, such as a maximum number of trees, or you observe your validation set error getting worse.
+
+- 训练一个小模型，欠拟你的数据集。
+- 对这个模型计算在训练集的预测。
+- 从目标中减去预测，这被称为“残差”，代表在训练集上每个点的错误。
+- 返回到第 1 步，但不是使用原始目标，使用残差作为训练目标。
+- 持续做这个操作，知道你找到了停止标准，如最大数据的树，或你观察你的验证集错误变糟了。
+
+Using this approach, each new tree will be attempting to fit the error of all of the previous trees combined. Because we are continually creating new residuals, by subtracting the predictions of each new tree from the residuals from the previous tree, the residuals will get smaller and smaller.
+
+使用这一方法，每个新树会尝试拟合所有之前树的错误组合。因为我们从之前的树的残差通过减去每树新的预测，持续创建新的残差，残差会变的越来越小。
+
+To make predictions with an ensemble of boosted trees, we calculate the predictions from each tree, and then add them all together. There are many models following this basic approach, and many names for the same models. *Gradient boosting machines* (GBMs) and *gradient boosted decision trees* (GBDTs) are the terms you're most likely to come across, or you may see the names of specific libraries implementing these; at the time of writing, *XGBoost* is the most popular.
+
+利用集成加速树来做出预测，我们计算了每棵树的预测，然后把它们全都加起来。以这个方法为基础有很多相似名字模型方法。*梯度提升机*（GBMs）和*梯度提升决策树*（GBDTs）是你最有可能遇到的术语，或你可能看到实施这些方法的特定库的命名。在编写本书的时候*XGBoost*是最流行的算法。
+
+Note that, unlike with random forests, with this approach there is nothing to stop us from overfitting. Using more trees in a random forest does not lead to overfitting, because each tree is independent of the others. But in a boosted ensemble, the more trees you have, the better the training error becomes, and eventually you will see overfitting on the validation set.
+
+需要注意的是，不像随机森林，用这一方法不会出现过拟而导致停止。在随机森林中使用更多的树不会导致过拟，因为每棵树独立于其它的树。但在一个加速集成，你有更多的树，更好的训练错误出现，最终你会看到在验证集上会出现过拟。
+
+We are not going to go into detail on how to train a gradient boosted tree ensemble here, because the field is moving rapidly, and any guidance we give will almost certainly be outdated by the time you read this. As we write this, sklearn has just added a `HistGradientBoostingRegressor` class that provides excellent performance. There are many hyperparameters to tweak for this class, and for all gradient boosted tree methods we have seen. Unlike random forests, gradient boosted trees are extremely sensitive to the choices of these hyperparameters; in practice, most people use a loop that tries a range of different hyperparameters to find the ones that work best.
+
+在这里我们不会进入到如何训练一个梯度加速树集成的细节，因为这一领域发展非常快，在你阅读到这个内容的时候，我们给出的任何指引可以确信的说差不多已经过时了。在我们编写本部分的时候，sklearn刚刚添加完成了`HistGradientBosstingRegressor`类，这个类提供极佳的性能。对于这个类有很多超参来调整和我们有我们已经看过的所有梯度提升树方法。不像随机森林，梯度提升树对于这些超参的选择是极其敏感的。在实践中，很多人使用循环尝试一些列不同的超参来寻找工作最好的那些。
+
+One more technique that has gotten great results is to use embeddings learned by a neural net in a machine learning model.
+
+还有已经取得了很好结果的一个技术是，在机器学习模型中通过神经网络使用嵌入学习。
+
