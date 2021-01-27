@@ -2020,3 +2020,29 @@ One more technique that has gotten great results is to use embeddings learned by
 
 还有已经取得了很好结果的一个技术是，在机器学习模型中通过神经网络使用嵌入学习。
 
+### Combining Embeddings with Other Methods
+
+### 其它方法与嵌入组合的方法
+
+The abstract of the entity embedding paper we mentioned at the start of this chapter states: "the embeddings obtained from the trained neural network boost the performance of all tested machine learning methods considerably when used as the input features instead". It includes the very interesting table in <embedding_mixed>.
+
+完整嵌入论文的摘要，我们注意到在这个章节的开始陈述道：“当使用输入作为特征，从训练过的神经网络获取的嵌入可大大提升所有被测试过的机器学习方法的性能。”。它有一个非常有意思的表格，如下图<嵌入混合>。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00054.png" alt="Embeddings combined with other methods" width="500" id="embedding_mixed" caption="Effects of using neural network embeddings as input to other machine learning methods (courtesy of Cheng Guo and Felix Berkhahn)"  />
+  </p>
+  <p align="center">图：嵌入混合</p>
+</div>
+
+This is showing the mean average percent error (MAPE) compared among four different modeling techniques, three of which we have already seen, along with *k*-nearest neighbors (KNN), which is a very simple baseline method. The first numeric column contains the results of using the methods on the data provided in the competition; the second column shows what happens if you first train a neural network with categorical embeddings, and then use those categorical embeddings instead of the raw categorical columns in the model. As you see, in every case, the models are dramatically improved by using the embeddings instead of the raw categories.
+
+这展示的是比较四个不同建模技术的平均绝对百分比误差，其中三个我们已经看过了，*k*近邻数法（KNN）是非常简单的基线方法。第一个数据列包含的是在比赛中提供的数据上使用的方法结果。第二列展示的是如果你使用分数嵌入第一次训练神经网络，然后使用分类嵌入替代方法中的原始分类行所发生的结果。正如你看到的，在每个例子中，通过使用嵌入替代原始分类这些模型得到戏剧性的改善。
+
+This is a really important result, because it shows that you can get much of the performance improvement of a neural network without actually having to use a neural network at inference time. You could just use an embedding, which is literally just an array lookup, along with a small decision tree ensemble.
+
+这是一个非常重要的结果，因此它展示了在推理的时候不必实际使用神经网络你能够获得神经网络的大幅度性能改善。你只用使用嵌入，它实际上只是一个数组查找与一个小的决策树集合。
+
+These embeddings need not even be necessarily learned separately for each model or task in an organization. Instead, once a set of embeddings are learned for some column for some task, they could be stored in a central place, and reused across multiple models. In fact, we know from private communication with other practitioners at large companies that this is already happening in many places.
+
+对于组织中的每个模型或任务这些嵌入甚至不必需要独立学习。相反，一旦一套嵌入对一些任务一些列学习了，它们能够在中心位置被存储，然后通过多个模型被重用。事实上，我们通过与其它从业人员私人沟通获知，在一些大公司在很多场景下已经这样做了。
