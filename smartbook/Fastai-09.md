@@ -625,7 +625,7 @@ Out: ['#na#', 'Large', 'Large / Medium', 'Medium', 'Small', 'Mini', 'Compact']
 
 Since it takes a minute or so to process the data to get to this point, we should save it—that way in the future we can continue our work from here without rerunning the previous steps. fastai provides a `save` method that uses Python's *pickle* system to save nearly any Python object:
 
-因为做这个事情花费了一些时间或处理数据到了这个阶段，我们应该保存下它。在这种情况下在未来我们能够从这里继续我们的工作，而不用重复运行之前的步骤。
+因为做这个事情花费了一些时间或处理数据到了这个阶段，我们应该保存下它。在这种情况下在未来我们能够从这里继续我们的工作，而不用重复运行之前的步骤。fastai提供了一个`保存` 方法，使用Python的 *pickle* 系统来保存几乎所有的Python对象：
 
 ```
 save_pickle(path/'to.pkl',to)
@@ -2046,3 +2046,113 @@ This is a really important result, because it shows that you can get much of the
 These embeddings need not even be necessarily learned separately for each model or task in an organization. Instead, once a set of embeddings are learned for some column for some task, they could be stored in a central place, and reused across multiple models. In fact, we know from private communication with other practitioners at large companies that this is already happening in many places.
 
 对于组织中的每个模型或任务这些嵌入甚至不必需要独立学习。相反，一旦一套嵌入对一些任务一些列学习了，它们能够在中心位置被存储，然后通过多个模型被重用。事实上，我们通过与其它从业人员私人沟通获知，在一些大公司在很多场景下已经这样做了。
+
+## Conclusion: Our Advice for Tabular Modeling
+
+## 结尾：我们对表格建模的建议
+
+We have dicussed two approaches to tabular modeling: decision tree ensembles and neural networks. We've also mentioned two different decision tree ensembles: random forests, and gradient boosting machines. Each is very effective, but each also has compromises:
+
+我们已经讨论了两种表格建模的方法：决策树集合和神经网络。我们也提到了两种不同的决策树集合：随机森林和梯度提升机。每个都是非常有效的，但每个也有妥协：
+
+- *Random forests* are the easiest to train, because they are extremely resilient to hyperparameter choices and require very little preprocessing. They are very fast to train, and should not overfit if you have enough trees. But they can be a little less accurate, especially if extrapolation is required, such as predicting future time periods.
+- *Gradient boosting machines* in theory are just as fast to train as random forests, but in practice you will have to try lots of different hyperparameters. They can overfit, but they are often a little more accurate than random forests.
+- *Neural networks* take the longest time to train, and require extra preprocessing, such as normalization; this normalization needs to be used at inference time as well. They can provide great results and extrapolate well, but only if you are careful with your hyperparameters and take care to avoid overfitting.
+
+- *随机森林* 是最容易训练的，因为它们对超参的选择有极强的知识能力且需要很少的预处理。它们训练非常快，并且如果你有足够的树应该不会过拟。但是它们精度稍微差了一点，尤其如果推断是必须的话，如预测未来一段时间。
+- *梯度提升机* 在理论上与随机森林训练速度一样快，但在实践中你不得不尝试很多不同的超参。他们能够过拟，但它们相对随机森林通常有更好的精度。
+- *神经网络* 花费最长的时候来训练，且需要额外的预处理，如归一；这个归一也需要用于推理。它们能够提供很好的结果和好的推断，但也只有你注意超参和小心规避过拟的情况。
+
+We suggest starting your analysis with a random forest. This will give you a strong baseline, and you can be confident that it's a reasonable starting point. You can then use that model for feature selection and partial dependence analysis, to get a better understanding of your data.
+
+我们建议从随机森林开始你的分析。这会给你一个件事基础，且你能够相信它是一个合理的开始点。然后对于特征选择和部分依赖分析你能够使用这个模型，来获得对你数据的更好理解。
+
+From that foundation, you can try neural nets and GBMs, and if they give you significantly better results on your validation set in a reasonable amount of time, you can use them. If decision tree ensembles are working well for you, try adding the embeddings for the categorical variables to the data, and see if that helps your decision trees learn better.
+
+以这个为基础，你能够尝试神经网络和GBM，且如果在一个合理的时间量上在你的验证集上它们能够提供给你明显更好的结果，你能够使用它们。如果决策树集合为你处理的很好，尝试添加分类变量的嵌入到数据中，并查看这是否能够帮你的决策树更好的学习。
+
+## Questionnaire
+
+## 练习题
+
+1. What is a continuous variable?
+2. 什么是连续变量？
+3. What is a categorical variable?
+4. 什么是分类变量？
+5. Provide two of the words that are used for the possible values of a categorical variable.
+6. 提供两个用于分类变量可能值的词。
+7. What is a "dense layer"?
+8. 什么是“全连接层”？
+9. How do entity embeddings reduce memory usage and speed up neural networks?
+10. 实体嵌入如何缩减内存使用并加速神经网络？
+11. What kinds of datasets are entity embeddings especially useful for?
+12. 实体嵌入对什么类型的数据集尤其有用？
+13. What are the two main families of machine learning algorithms?
+14. 机器学习算法的两大家族系列是什么？
+15. Why do some categorical columns need a special ordering in their classes? How do you do this in Pandas?
+16. 很多分类列国什么需要在它们的类型中做特定排序？在Pandas你如何做这个操作？
+17. Summarize what a decision tree algorithm does.
+18. 总结决策树算法的功能？
+19. Why is a date different from a regular categorical or continuous variable, and how can you preprocess it to allow it to be used in a model?
+20. 有常规分类变量或连续变量与日期的差异是什么，你能够如何预处理它，以使得它被用于模型中？
+21. Should you pick a random validation set in the bulldozer competition? If no, what kind of validation set should you pick?
+22. 在推土机比赛中你应该选择一个随机验证集吗？如果不，你应该选择什么类型的验证集？
+23. What is pickle and what is it useful for?
+24. 什么是pickle 且它对什么是有用的？
+25. How are `mse`, `samples`, and `values` calculated in the decision tree drawn in this chapter?
+26. 在本章描述决策树中`mse`、`samples` 和`values`是如何计算的？
+27. How do we deal with outliers, before building a decision tree?
+28. 创建一棵决策树前，你如何处理离群值？
+29. How do we handle categorical variables in a decision tree?
+30. 在一棵决策树中我们如何处理分类变量？
+31. What is bagging?
+32. 什么是装袋？
+33. What is the difference between `max_samples` and `max_features` when creating a random forest?
+34. 在创建一棵随机森林时`max_samples`和`max_features`间的区别是什么？
+35. If you increase `n_estimators` to a very high value, can that lead to overfitting? Why or why not?
+36. 如果你增加`n_estimators`到一个很高的值，那会导致过拟吗？为什么或为什么不会？
+37. In the section "Creating a Random Forest", just after <max_features>, why did `preds.mean(0)` give the same result as our random forest?
+38. 只是<max_features>后“创建一棵随机森林”部分中，为什么`preds.mean()`给出了与我们随机森林相同的结果？
+39. What is "out-of-bag-error"?
+40. 什么是“袋外误差”？
+41. Make a list of reasons why a model's validation set error might be worse than the OOB error. How could you test your hypotheses?
+42. 做一个为什么模型的验证集误差可能比OOB误差更糟糕的原因列表。你如果测试你的猜想？
+43. Explain why random forests are well suited to answering each of the following question:
+44. 解释一下为什么随机森林很适合回答下述问题：
+    - How confident are we in our predictions using a particular row of data?
+    - For predicting with a particular row of data, what were the most important factors, and how did they influence that prediction?
+    - Which columns are the strongest predictors?
+    - How do predictions vary as we vary these columns?
+    - 在我们的预测中使用特定的数据行，我们有多自信？
+    - 对于使用特定数据行做预测，最重要的因素是什么，它们如何影响这个预测？
+    - 哪些列是最强的预测因子？
+    - 我们变化这些 这些列时，预测如何变化？
+45. What's the purpose of removing unimportant variables?
+46. 移除不重要变量的目的是什么？
+47. What's a good type of plot for showing tree interpreter results?
+48. 什么类型图很好展示树推理结果？
+49. What is the "extrapolation problem"?
+50. 什么是“推断问题”？
+51. How can you tell if your test or validation set is distributed in a different way than your training set?
+52. 你应该如何判断，你的测试或验证是以与训练集不同的方式进行分配？
+53. Why do we make `saleElapsed` a continuous variable, even although it has less than 9,000 distinct values?
+54. 为什么我们把`saleElapsed`作为一个连续变量，不过它甚至有近9,000个不同值？
+55. What is "boosting"?
+56. 什么是“提升”？
+57. How could we use embeddings with a random forest? Would we expect this to help?
+58. 我们如何使用嵌入和随机森林？我们希望这会有帮助吗？
+59. Why might we not always use a neural net for tabular modeling?
+60. 对于表格建模为什么我们不能总是使用神经网络？
+
+### Further Research
+
+### 深入研究
+
+1. Pick a competition on Kaggle with tabular data (current or past) and try to adapt the techniques seen in this chapter to get the best possible results. Compare your results to the private leaderboard.
+2. 选择一个Kaggle上的表格数据比赛（当前或过去的），尝试采用在本章节学到的技术来获得尽可能好的结果。把你的结果和私人排行榜做对比。
+3. Implement the decision tree algorithm in this chapter from scratch yourself, and try it on the dataset you used in the first exercise.
+4. 从零自己实现本章节中的决策树算法，且试用在你第一次尝试使用的数据集上。
+5. Use the embeddings from the neural net in this chapter in a random forest, and see if you can improve on the random forest results we saw.
+6. 使用在随机森林本章节中来自神经网络的嵌入，并看你是否能够改善你看到的随机森林结果。
+7. Explain what each line of the source of `TabularModel` does (with the exception of the `BatchNorm1d` and `Dropout` layers).
+8. 解释`TabularModel`原码中每一行都做了什么操作（`BatchNorm1d`和`Dropout`层除外）。
