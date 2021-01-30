@@ -69,7 +69,7 @@ We've already seen how categorical variables can be used as independent variable
 
 We can do nearly the same thing with text! What is new is the idea of a sequence. First we concatenate all of the documents in our dataset into one big long string and split it into words, giving us a very long list of words (or "tokens"). Our independent variable will be the sequence of words starting with the first word in our very long list and ending with the second to last, and our dependent variable will be the sequence of words starting with the second word and ending with the last word.
 
-我们能够对文本做几乎相同的事情！新的内容是序列的想法。首先我们串联我们的数据集中所有文档为一个很长的字符串，并分割为词，这提供给我们一个很长的词列表（或“tokens”）。我们的自变量是从我们长列表第一个词开始的序列词，且末尾是长列表倒数第二个词，我们的因变量是从列表第二个词开始，且结尾是列表的最后一个词。
+我们能够对文本做几乎相同的事情！新的内容是序列的想法。首先我们串联我们的数据集中所有文档为一个很长的字符串，并分割为词，这提供给我们一个很长的词列表（或“标记”）。我们的自变量是从我们长列表第一个词开始的序列词，且末尾是长列表倒数第二个词，我们的因变量是从列表第二个词开始，且结尾是列表的最后一个词。
 
 Our vocab will consist of a mix of common words that are already in the vocabulary of our pretrained model and new words specific to our corpus (cinematographic terms or actors names, for instance). Our embedding matrix will be built accordingly: for words that are in the vocabulary of our pretrained model, we will take the corresponding row in the embedding matrix of the pretrained model; but for new words we won't have anything, so we will just initialize the corresponding row with a random vector.
 
@@ -83,12 +83,201 @@ Each of the steps necessary to create a language model has jargon associated wit
 - Numericalization:: Make a list of all of the unique words that appear (the vocab), and convert each word into a number, by looking up its index in the vocab
 - Language model data loader creation:: fastai provides an `LMDataLoader` class which automatically handles creating a dependent variable that is offset from the independent variable by one token. It also handles some important details, such as how to shuffle the training data in such a way that the dependent and independent variables maintain their structure as required
 - Language model creation:: We need a special kind of model that does something we haven't seen before: handles input lists which could be arbitrarily big or small. There are a number of ways to do this; in this chapter we will be using a *recurrent neural network* (RNN). We will get to the details of these RNNs in the <chapter_nlp_dive>, but for now, you can think of it as just another deep neural network.
-- 分词：把文本转换为一个词列表（依据你的模型粒度，或字符，或子串）
+- 标记化：把文本转换为一个词列表（依据你的模型粒度，或字符，或子串）
 - 数值化：生成出现（vocab）的所有唯一词的列表，并转换每个词为一个数值，在vocab中通过它的索引进行查找
-- 语言模型数据加载器创建：fastai提供了一个`LMDataLoader`类，其自动的处理创建一个因变量，这个变量是自变量一个token的偏置量。这也处理一个重要细节，如以因变量和自变量按需维护它们的结构方式来混洗训练数据
+- 语言模型数据加载器创建：fastai提供了一个`LMDataLoader`类，其自动的处理创建一个因变量，这个变量是自变量一个标记的偏置量。这也处理一个重要细节，如以因变量和自变量按需维护它们的结构方式来混洗训练数据
 - 语言模型创建：我们需要一个特定的模型，它能够处理我们之前没有见的内容：处理任意大小的输入列表。有很多方法可以做这个操作。在本章节我们会使用*递归神经网络*（RNN）。我们会在<章节：自然语言处理深潜>中接触到这些递归神经网络的细节，但现在，你只需要把它视为另一种深度神经网络。
 
 Let's take a look at how each step works in detail.
 
 现在让我们看一下每个步骤在细节上是怎样处理的。
 
+### Tokenization
+
+### 标记化
+
+When we said "convert the text into a list of words," we left out a lot of details. For instance, what do we do with punctuation? How do we deal with a word like "don't"? Is it one word, or two? What about long medical or chemical words? Should they be split into their separate pieces of meaning? How about hyphenated words? What about languages like German and Polish where we can create really long words from many, many pieces? What about languages like Japanese and Chinese that don't use bases at all, and don't really have a well-defined idea of *word*?
+
+当我们说“转换文本为一个词列表”时，我们忽略了很多细节。例如，我们对标点符号做了什么？我们如何处想“不做”（don't）这样的缩写词？它是一个词，还是两个？那么长的医学和化学词呢？它们应该分割它们分开的含义吗？有连字符的词呢？像德语和波兰语我们能够用很多很多词创建很长的词呢？像日语和中文完全不使用基础语言，实际上没有明确定义的*词义* 呢？
+
+Because there is no one correct answer to these questions, there is no one approach to tokenization. There are three main approaches:
+
+因为对于这些问题没有一个正确的答案，没有一个方法来标记化。这里有三个主要的方法：
+
+- Word-based:: Split a sentence on spaces, as well as applying language-specific rules to try to separate parts of meaning even when there are no spaces (such as turning "don't" into "do n't"). Generally, punctuation marks are also split into separate tokens.
+- Subword based:: Split words into smaller parts, based on the most commonly occurring substrings. For instance, "occasion" might be tokenized as "o c ca sion."
+- Character-based:: Split a sentence into its individual characters.
+- 基于词：通过句子的空格分割，应用特定语言规则，即使没有空格的时候，也尝试分割有意思的部分（例如转换“don't”为“do n't”）。通常，标点符号也分割为单独的标记。
+- 基于子词：基于常见的子字符串，把词分割为更小的部分。例如，“occasion”可能被标记化为“o c ca sion。”
+- 基于字符：把句子分割为单个字符。
+
+We'll be looking at word and subword tokenization here, and we'll leave character-based tokenization for you to implement in the questionnaire at the end of this chapter.
+
+> jargon: token: One element of a list created by the tokenization process. It could be a word, part of a word (a *subword*), or a single character.
+
+在这里我将会学习词和子词的标记化，在本章节的末尾练习题部分，我们会为你留下基于字符的实现。
+
+> 术语：标记：通过标记化过程创建的一个列表元素。它可以是一个词，一个词的部分（一个子词），或一个单个字符。
+
+### Word Tokenization with fastai
+
+### 用fastai做单词标记化
+
+Rather than providing its own tokenizers, fastai instead provides a consistent interface to a range of tokenizers in external libraries. Tokenization is an active field of research, and new and improved tokenizers are coming out all the time, so the defaults that fastai uses change too. However, the API and options shouldn't change too much, since fastai tries to maintain a consistent API even as the underlying technology changes.
+
+fastai不是提供它自己的标记器，相反在外部库它提供了针对一系列标记器的一致的接口。标记化是一个很活跃的研究领域，新的和改善的标记器总是在出现，所以fastai默认下也要有使用变化。然而，API和操作不应该变化太多，因此即使底层技术变化，fastai也尝试维护一个一致的API。
+
+Let's try it out with the IMDb dataset that we used in <chapter_intro>:
+
+让我们用在<章节：概述>中我们所使用的IMDb数据做实验：
+
+```
+from fastai.text.all import *
+path = untar_data(URLs.IMDB)
+```
+
+We'll need to grab the text files in order to try out a tokenizer. Just like `get_image_files`, which we've used many times already, gets all the image files in a path, `get_text_files` gets all the text files in a path. We can also optionally pass `folders` to restrict the search to a particular list of subfolders:
+
+我们需要抓取文本文件，以便实验一个标记器。就像我们已经用了它很多次的`get_image_files`一样，它能够获取路径下的所有图像文件，`get_text_files`能够获取路径下的所有文本。我们也能够操作传递`文件夹`来限制搜索一个特定的子文件夹列表：
+
+```
+files = get_text_files(path, folders = ['train', 'test', 'unsup'])
+```
+
+Here's a review that we'll tokenize (we'll just print the start of it here to save space):
+
+这是一个评论，我们会做标记化（为了节省空间我们只会输出开头部分）：
+
+```
+txt = files[0].open().read(); txt[:75]
+```
+
+Out: 'This movie, which I just discovered at the video store, has apparently sit '
+
+As we write this book, the default English word tokenizer for fastai uses a library called *spaCy*. It has a sophisticated rules engine with special rules for URLs, individual special English words, and much more. Rather than directly using `SpacyTokenizer`, however, we'll use `WordTokenizer`, since that will always point to fastai's current default word tokenizer (which may not necessarily be spaCy, depending when you're reading this).
+
+在我们写这本书的时候，fastai默认英文标记器使用的是称为*spaCy*库。它有一个对URL、单个特定英文单词及更多方面的特定规则的成熟规则引擎。然而，我们会使用`wordTokenizer`而不是`SpacyTokenizer`，由于它会一直指向fastai当前默认单词标记器（它可能不一定是spaCy，这依赖你正在阅读这本书的时间）。
+
+Let's try it out. We'll use fastai's `coll_repr(collection, n)` function to display the results. This displays the first *`n`* items of *`collection`*, along with the full size—it's what `L` uses by default. Note that fastai's tokenizers take a collection of documents to tokenize, so we have to wrap `txt` in a list:
+
+让我们实验一下。我们会使用fastai的`coll_repr(collection, n)`函数来显示结果。这个显示了全尺寸（这是默认使用的`L`）的*`collection`* 头 *`n`* 个数据项。注意，fastai的标记器收集文档来做标记化，所以我们必须在列表中打包`txt`：
+
+```
+spacy = WordTokenizer()
+toks = first(spacy([txt]))
+print(coll_repr(toks, 30))
+```
+
+Out: (#201) ['This' , 'movie' , ' , ' , 'which' , 'I' , 'just' , 'discovered' , 'at' , 'the' , 'video' , 'store' , ' , ' , 'has' , 'apparently' , 'sit' , 'around' , 'for' , 'a' , 'couple' , 'of' , 'years' , 'without' , 'a' , 'distributor' , ' . ' , 'It' , "'s" , 'easy' , 'to' , 'see' ... ]
+
+As you see, spaCy has mainly just separated out the words and punctuation. But it does something else here too: it has split "it's" into "it" and "'s". That makes intuitive sense; these are separate words, really. Tokenization is a surprisingly subtle task, when you think about all the little details that have to be handled. Fortunately, spaCy handles these pretty well for us—for instance, here we see that "." is separated when it terminates a sentence, but not in an acronym or number:
+
+ 正如你看到的，spaCy主要分割了单词和标点符号。但它也做了一些其它事情：它把“it's”分割为“it”和“'s”。这很直观，有不同的词，真的是这样。当你思考所有必须处理的细小任务时，标记化是惊人的精妙任务。幸运的是，spaCy为我们处理这些内容处理的相当的好。例如，上面我们看到了当“.” 结束一个句子时，它被分割了，但是在首字母缩略词或数字中，就不会被分割：
+
+```
+first(spacy(['The U.S. dollar $1 is $1.00.']))
+```
+
+Out: (#9) ['The' , 'U.S.' , 'dollar' , ' $ ' , ' 1 ' , 'is' , '  \$ ' , '1.00' , ' . ']
+
+fastai then adds some additional functionality to the tokenization process with the `Tokenizer` class:
+
+fastai然后增加了一些附属功能，用`Tokenizer`类来做标记化处理：
+
+```
+tkn = Tokenizer(spacy)
+print(coll_repr(tkn(txt), 31))
+```
+
+Out: (#228) ['xxbos' , 'xxmaj' , 'this' , 'movie' , ',' , 'which' , 'i' , 'just' , 'discovered' , 'at' , 'the' , 'video' , 'store' , ',' , 'has' , 'apparently' , 'sit' , 'around' , 'for' , 'a' , 'couple' , 'of' , 'years' , 'without' , 'a' , 'distributor' , '.' , 'xxmaj' , 'it',"'s",'easy' ...]
+
+Notice that there are now some tokens that start with the characters "xx", which is not a common word prefix in English. These are *special tokens*.
+
+注意有一些以“xx”为开始的标记，在英文中这不是常见的词前缀。有一些*专用标记*。
+
+For example, the first item in the list, `xxbos`, is a special token that indicates the start of a new text ("BOS" is a standard NLP acronym that means "beginning of stream"). By recognizing this start token, the model will be able to learn it needs to "forget" what was said previously and focus on upcoming words.
+
+例如，在列表中的第一个数据项，是一个专用标记，表明一个新文本的开始（“BOS”是一个标准的自然语言首字母缩略词，意思是“beginning of stream”）。通过识别这个开始的标记，模型将能够理解“忘记”之前说的内容并关注将要到来的词。
+
+These special tokens don't come from spaCy directly. They are there because fastai adds them by default, by applying a number of rules when processing text. These rules are designed to make it easier for a model to recognize the important parts of a sentence. In a sense, we are translating the original English language sequence into a simplified tokenized language—a language that is designed to be easy for a model to learn.
+
+这些专用标记不是直接来自spaCy。它们的存在是因为fastai在处理文本时通过应用一些规则默认添加了它们。这些规则设计使得模型更容易识别句子的重要部分。某种意义上，我们翻译原始英文序列进入一个简单的标记语言（设计了一个模型容易学习的语言）。
+
+For instance, the rules will replace a sequence of four exclamation points with a special *repeated character* token, followed by the number four, and then a single exclamation point. In this way, the model's embedding matrix can encode information about general concepts such as repeated punctuation rather than requiring a separate token for every number of repetitions of every punctuation mark. Similarly, a capitalized word will be replaced with a special capitalization token, followed by the lowercase version of the word. This way, the embedding matrix only needs the lowercase versions of the words, saving compute and memory resources, but can still learn the concept of capitalization.
+
+例如：这个规则会有专有*重复字符* 标记替换四个感叹号序列，然后是数据四，然后一个感叹号。用这个方法模型的嵌入矩阵能够编码常用概念信息（如重复的标点符号），而不需要对每个标点标记的重复做单独的标记。同样的，一个大写的单词会用一个专用大写标记来替换，然后是该单词的小写。这样嵌入矩阵只需要该单词的小写版，节省的计算和内存资源，但还能一直学习大写的概念。
+
+Here are some of the main special tokens you'll see:
+
+- `xxbos`:: Indicates the beginning of a text (here, a review)
+- `xxmaj`:: Indicates the next word begins with a capital (since we lowercased everything)
+- `xxunk`:: Indicates the next word is unknown
+
+下面你会看到有一些主要的专用标记：
+
+- `xxbos`：表明一个文本的开始（这里是一条评论）
+- `xxmaj`：表明下个单词是大写字母开始的（因为我小写了所有单词）
+- `xxunk`：表明下个单词是未知的
+
+To see the rules that were used, you can check the default rules:
+
+来查看一下使用的规则，你能够查看默认规则：
+
+```
+defaults.text_proc_rules
+```
+
+Out: $\begin{array}{ll} 
+[&<function fastai.text.core.fix\_html(x)>,\\
+ &<function fastai.text.core.replace\_rep(t)>,\\
+ &<function fastai.text.core.replace\_wrep(t)>,\\
+ &<function fastai.text.core.spec\_add\_spaces(t)>,\\
+ &<function fastai.text.core.rm\_useless\_spaces(t)>,\\
+ &<function fastai.text.core.replace\_all\_caps(t)>,\\
+ &<function fastai.text.core.replace\_maj(t)>,\\
+ &<function fastai.text.core.lowercase(t, add\_bos=True, add\_eos=False)>&]
+\end{array}$
+
+As always, you can look at the source code of each of them in a notebook by typing:
+
+像之前讲的，在notebook中通过输入下述命令，我们能够查看它们每个规则的源代码：
+
+```
+??replace_rep
+```
+
+Here is a brief summary of what each does:
+
+- `fix_html`:: Replaces special HTML characters with a readable version (IMDb reviews have quite a few of these)
+- `replace_rep`:: Replaces any character repeated three times or more with a special token for repetition (`xxrep`), the number of times it's repeated, then the character
+- `replace_wrep`:: Replaces any word repeated three times or more with a special token for word repetition (`xxwrep`), the number of times it's repeated, then the word
+- `spec_add_spaces`:: Adds spaces around / and #
+- `rm_useless_spaces`:: Removes all repetitions of the space character
+- `replace_all_caps`:: Lowercases a word written in all caps and adds a special token for all caps (`xxup`) in front of it
+- `replace_maj`:: Lowercases a capitalized word and adds a special token for capitalized (`xxmaj`) in front of it
+- `lowercase`:: Lowercases all text and adds a special token at the beginning (`xxbos`) and/or the end (`xxeos`)
+
+下面是每个规则所做事情的简短总结：
+
+- `fix_html`：用一个可阅读的版本来替换专用HTML字符（IMDb评论有相当多这样的内容）
+- `replace_rep`：用一个专用重复标记（`xxrep`）替换任意重复三次或以上的字符，然后重复的次数，然后是字符
+- `replace_wrep`：用一个专用单词重复标记（`xxwrep`）替换任意重复三次或以上的单词，然后重复的次数，然后是单词
+- `spec_add_spaces`： / 和 # 周围增加空格
+- `rm_useless_spaces`：移除所有重复的空格字符
+- `replace_all_caps`：对于所有大写字符都小写化单词，然后在单词前面添加一个所有大写化专用（`xxup`）标记
+- `replace_maj`：小写一个大写单词，并在单词前面添加一个大写化专用标记（`xxmaj`）
+- `lowercase`：小写所有文本，并在开始添加专用标记（`xxbos`）和（/或）结尾添加专用标记（`xxeos`）
+
+Let's take a look at a few of them in action:
+
+让我们看一下他们中一些规则的操作：
+
+```
+coll_repr(tkn('&copy;   Fast.ai www.fast.ai/INDEX'), 31)
+```
+
+Out: "(#11) ['xxbos' , '©' , 'xxmaj' , 'fast.ai' , 'xxrep' , '3' , 'w' , '.fast.ai' , ' / ' , 'xxup' , 'index'...]"
+
+Now let's take a look at how subword tokenization would work.
+
+现在让我们看一下子词标记化如何处理。
