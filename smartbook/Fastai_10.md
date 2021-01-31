@@ -62,10 +62,10 @@ We've already seen how categorical variables can be used as independent variable
 3. Create an embedding matrix for this containing a row for each level (i.e., for each item of the vocab).
 4. Use this embedding matrix as the first layer of a neural network. (A dedicated embedding matrix can take as inputs the raw vocab indexes created in step 2; this is equivalent to but faster and more efficient than a matrix that takes as input one-hot-encoded vectors representing the indexes.)
 
-1. 生成一个分类变量所有可能等级的列表（我们称这个列表为*vocab*）。
-2. 在vocab中用它的索引替换每个等级。
-3. 为其创建一个嵌入矩阵，每个等级包含一行（即，对vocab的每个项目）。
-4. 使用这个嵌入矩阵作为神经网络的第一层。（一个专用嵌入矩阵能够把在第二步所创建的原始vocab索引当作输入。这是等价的，但它比把独热编码矢量代表的索引当做输入的矩阵更快且更有效率。）
+1. 生成一个分类变量所有可能等级的列表（我们称这个列表为*词汇表*）。
+2. 在词汇表中用它的索引替换每个等级。
+3. 为其创建一个嵌入矩阵，每个等级包含一行（即，对词汇表的每个项目）。
+4. 使用这个嵌入矩阵作为神经网络的第一层。（一个专用嵌入矩阵能够把在第二步所创建的原始词汇表索引当作输入。这是等价的，但它比把独热编码矢量代表的索引当做输入的矩阵更快且更有效率。）
 
 We can do nearly the same thing with text! What is new is the idea of a sequence. First we concatenate all of the documents in our dataset into one big long string and split it into words, giving us a very long list of words (or "tokens"). Our independent variable will be the sequence of words starting with the first word in our very long list and ending with the second to last, and our dependent variable will be the sequence of words starting with the second word and ending with the last word.
 
@@ -73,7 +73,7 @@ We can do nearly the same thing with text! What is new is the idea of a sequence
 
 Our vocab will consist of a mix of common words that are already in the vocabulary of our pretrained model and new words specific to our corpus (cinematographic terms or actors names, for instance). Our embedding matrix will be built accordingly: for words that are in the vocabulary of our pretrained model, we will take the corresponding row in the embedding matrix of the pretrained model; but for new words we won't have anything, so we will just initialize the corresponding row with a random vector.
 
-我们的vocab会是普通词的混合的组合，这些普通词已经在我们预训练模型的词汇中，且新词具体对我们的预料库（例如，电影拍摄名词或演员姓名）。我们的嵌入矩阵会相应的创建：对于我们预训练模型的词汇中的词，我们会在预训练模型的嵌入矩阵中包含相应的行，但是对于新词我们不会做任何事情，所以我们只是用随机向量初始化相应的行。
+我们的词汇表会是普通词的混合的组合，这些普通词已经在我们预训练模型的词汇中，且新词具体对我们的预料库（例如，电影拍摄名词或演员姓名）。我们的嵌入矩阵会相应的创建：对于我们预训练模型的词汇中的词，我们会在预训练模型的嵌入矩阵中包含相应的行，但是对于新词我们不会做任何事情，所以我们只是用随机向量初始化相应的行。
 
 Each of the steps necessary to create a language model has jargon associated with it from the world of natural language processing, and fastai and PyTorch classes available to help. The steps are:
 
@@ -84,7 +84,7 @@ Each of the steps necessary to create a language model has jargon associated wit
 - Language model data loader creation:: fastai provides an `LMDataLoader` class which automatically handles creating a dependent variable that is offset from the independent variable by one token. It also handles some important details, such as how to shuffle the training data in such a way that the dependent and independent variables maintain their structure as required
 - Language model creation:: We need a special kind of model that does something we haven't seen before: handles input lists which could be arbitrarily big or small. There are a number of ways to do this; in this chapter we will be using a *recurrent neural network* (RNN). We will get to the details of these RNNs in the <chapter_nlp_dive>, but for now, you can think of it as just another deep neural network.
 - 标记化：把文本转换为一个词列表（依据你的模型粒度，或字符，或子串）
-- 数值化：生成出现（vocab）的所有唯一词的列表，并转换每个词为一个数值，在vocab中通过它的索引进行查找
+- 数值化：生成出现（词汇表）的所有唯一词的列表，并转换每个词为一个数值，在词汇表中通过它的索引进行查找
 - 语言模型数据加载器创建：fastai提供了一个`LMDataLoader`类，其自动的处理创建一个因变量，这个变量是自变量一个标记的偏置量。这也处理一个重要细节，如以因变量和自变量按需维护它们的结构方式来混洗训练数据
 - 语言模型创建：我们需要一个特定的模型，它能够处理我们之前没有见的内容：处理任意大小的输入列表。有很多方法可以做这个操作。在本章节我们会使用*递归神经网络*（RNN）。我们会在<章节：自然语言处理深潜>中接触到这些递归神经网络的细节，但现在，你只需要把它视为另一种深度神经网络。
 
@@ -281,3 +281,166 @@ Out: "(#11) ['xxbos' , '©' , 'xxmaj' , 'fast.ai' , 'xxrep' , '3' , 'w' , '.fast
 Now let's take a look at how subword tokenization would work.
 
 现在让我们看一下子词标记化如何处理。
+
+### Subword Tokenization
+
+### 子词标记化
+
+In addition to the *word tokenization* approach seen in the last section, another popular tokenization method is *subword tokenization*. Word tokenization relies on an assumption that spaces provide a useful separation of components of meaning in a sentence. However, this assumption is not always appropriate. For instance, consider this sentence: 我的名字是郝杰瑞 ("My name is Jeremy Howard" in Chinese). That's not going to work very well with a word tokenizer, because there are no spaces in it! Languages like Chinese and Japanese don't use spaces, and in fact they don't even have a well-defined concept of a "word." There are also languages, like Turkish and Hungarian, that can add many subwords together without spaces, creating very long words that include a lot of separate pieces of information.
+
+除了在上节中看到的*词标记化*方法，另一个流行的标记化方法是*子词标记化*。词标记化依赖一个假设，在句子中空格提供了含义要素的一个有效分割。然而，这个假设不总是适合的。例如，思考一下这个句子：我的名字是郝杰瑞（“My name is Jeremy Howard” in English）。用词标记器将不会处理的很好，因为在句子中没有空格！像中文和日文不使用空格，事实上他们甚至没有很好的定义一个“词”的概念。也有很多语言，像土耳其语和匈牙利语，能够添加很好子词在一起而没有空格，创建了包含很多独立信息的很长的词。
+
+To handle these cases, it's generally best to use subword tokenization. This proceeds in two steps:
+
+1. Analyze a corpus of documents to find the most commonly occurring groups of letters. These become the vocab.
+2. Tokenize the corpus using this vocab of *subword units*.
+
+处理这些案例，通常最好使用子词标记化。这个过程有两步：
+
+1. 分析文档的语料库找出最发生的字母组。这会变为 词汇表。
+2. 使用这个*子词单元* 的词汇表来标记化语料库。
+
+Let's look at an example. For our corpus, we'll use the first 2,000 movie reviews:
+
+我们看一个例子。我们会使用头 2,000 条电影评论为我们的语料库：
+
+```
+txts = L(o.open().read() for o in files[:2000])
+```
+
+We instantiate our tokenizer, passing in the size of the vocab we want to create, and then we need to "train" it. That is, we need to have it read our documents and find the common sequences of characters to create the vocab. This is done with `setup`. As we'll see shortly, `setup` is a special fastai method that is called automatically in our usual data processing pipelines. Since we're doing everything manually at the moment, however, we have to call it ourselves. Here's a function that does these steps for a given vocab size, and shows an example output:
+
+我们实例化我们的标记器，传递我们希望创建的词汇表尺寸，然后我们需要“训练”它。即，我们需要让它阅读我们的文档和查找常用字符序列来创建词汇表。这是用`setup`来完成。我们很快就会看到，`setup`是一个特定fastai方法，在我们通用数据处理管道中它会自动调用。然而，由于我们在手动做任何事情的时候，我们必须自己来调用它。下面是对于给定的词汇表尺寸执行这些步骤的函数，且展示了一个输出事例：
+
+```
+def subword(sz):
+    sp = SubwordTokenizer(vocab_sz=sz)
+    sp.setup(txts)
+    return ' '.join(first(sp([txt]))[:40])
+```
+
+Let's try it out:
+
+让我们做一下实验：
+
+```
+subword(1000)
+```
+
+Out: '▁This ▁movie , ▁which ▁I ▁just ▁dis c over ed ▁at ▁the ▁video ▁st or e , ▁has ▁a p par ent ly ▁s it ▁around ▁for ▁a ▁couple ▁of ▁years ▁without ▁a ▁dis t ri but or . ▁It'
+
+When using fastai's subword tokenizer, the special character `▁` represents a space character in the original text.
+
+If we use a smaller vocab, then each token will represent fewer characters, and it will take more tokens to represent a sentence:
+
+当使用fastai的子词标记器时，特殊字符`▁`代表了原始文本中的一个空格字符。
+
+如果我们使用了一个更小尺寸的词汇表，其后每个标记交付代表更少的字符，且它将要花费更多的标记来代表一个句子：
+
+```
+subword(200)
+```
+
+Out: '▁ T h i s ▁movie , ▁w h i ch ▁I ▁ j us t ▁ d i s c o ver ed ▁a t ▁the ▁ v id e o ▁ st or e , ▁h a s'
+
+On the other hand, if we use a larger vocab, then most common English words will end up in the vocab themselves, and we will not need as many to represent a sentence:
+
+换句话说，如果我们使用了一个更大尺寸的词汇表，绝大数常用英文单词将最终在它自己的词汇表中，我们将不需要太多的标记来代表一个句子：
+
+```
+subword(10000)
+```
+
+Out: "▁This ▁movie , ▁which ▁I ▁just ▁discover ed ▁at ▁the ▁video ▁store , ▁has ▁apparently ▁sit ▁around ▁for ▁a ▁couple ▁of ▁years ▁without ▁a ▁distributor . ▁It ' s ▁easy ▁to ▁see ▁why . ▁The ▁story ▁of ▁two ▁friends ▁living"
+
+Picking a subword vocab size represents a compromise: a larger vocab means fewer tokens per sentence, which means faster training, less memory, and less state for the model to remember; but on the downside, it means larger embedding matrices, which require more data to learn.
+
+选择一个子词词汇表的尺寸代表着一个妥协：一个大尺寸词汇表意味着每个句子更少的标记，这表示更快的训练、更少的存在使用和对于模型更少的状态来记忆。但不利的一面是，这意味着更大的嵌入矩阵，需要更多的数据来训练。
+
+Overall, subword tokenization provides a way to easily scale between character tokenization (i.e., using a small subword vocab) and word tokenization (i.e., using a large subword vocab), and handles every human language without needing language-specific algorithms to be developed. It can even handle other "languages" such as genomic sequences or MIDI music notation! For this reason, in the last year its popularity has soared, and it seems likely to become the most common tokenization approach (it may well already be, by the time you read this!).
+
+总体来说，子词标记化提供了一个方法，很容易在字符标记化（即，使用一个小的子词词汇表）和单词标记化（即，使用一个大的子词词汇表）之间轻松的缩放，不需要开发特定语言算法来处理每一个人类语言。它甚至能够处理其它“语言”，例如基因序列或MIDI音乐符号！基于这个原因，在过去的一年里它的受欢迎程度猛增，且它好像可能成为最常用的标记化方法（在你阅读这部分内容时，它很可能已经是这样了！）。
+
+Once our texts have been split into tokens, we need to convert them to numbers. We'll look at that next.
+
+一旦我们的文本已经被分割为标记，我们需要把它们转化为数值。接下来我们看一下这方面的内容。
+
+### Numericalization with fastai
+
+### 用fastai数值化
+
+*Numericalization* is the process of mapping tokens to integers. The steps are basically identical to those necessary to create a `Category` variable, such as the dependent variable of digits in MNIST:
+
+1. Make a list of all possible levels of that categorical variable (the vocab).
+2. Replace each level with its index in the vocab.
+
+Let's take a look at this in action on the word-tokenized text we saw earlier:
+
+*数值化* 是映射标记到整型数值的过程。这些步骤基本上与那些必须创建一个`分类`变量是相同的，例如MINIST中的数字因变量：
+
+1. 生成一个所有可能级别的分类列表（词汇表）。
+2. 用词汇表中的索引替换每个级别。
+
+让我们在之前看到的词标记文本上做一下操作来看一下：
+
+```
+toks = tkn(txt)
+print(coll_repr(tkn(txt), 31))
+```
+
+Out: (#228) ['xxbos' , 'xxmaj' , 'this' , 'movie' , ',' , 'which' , 'i' , 'just' , 'discovered' , 'at' , 'the' , 'video' , 'store' , ',' , 'has' , 'apparently' , 'sit' , 'around' , 'for' , 'a' , 'couple' , 'of' , 'years' , 'without' , 'a' , 'distributor' , '.' , 'xxmaj' , 'it',"'s",'easy'...]
+
+Just like with `SubwordTokenizer`, we need to call `setup` on `Numericalize`; this is how we create the vocab. That means we'll need our tokenized corpus first. Since tokenization takes a while, it's done in parallel by fastai; but for this manual walkthrough, we'll use a small subset:
+
+就像`SubwordTokenizer`一样，我们需要在`Numericalize`上调用`setup`，这是我们如何创建词汇表。这表示我们首先需要标记语料库。因为标记化需要一段时间 ，它通过fastai平行完成。但对于这个手工演练，我们将使用一个小子集：
+
+```
+toks200 = txts[:200].map(tkn)
+toks200[0]
+```
+
+Out[ ]: (#228) ['xxbos' , 'xxmaj' , 'this' , 'movie' , ',' , 'which' , 'i' , 'just' , 'discovered' , 'at' ...]
+
+We can pass this to `setup` to create our vocab:
+
+我们能够传递这个信息给`setup`来创建我们词汇表：
+
+```
+num = Numericalize()
+num.setup(toks200)
+coll_repr(num.vocab,20)
+```
+
+Out: "(#2000) ['xxunk' , 'xxpad' , 'xxbos' , 'xxeos' , 'xxfld' , 'xxrep' , 'xxwrep' , 'xxup' , 'xxmaj' , 'the' , '.' , ',' , 'a' , 'and' , 'of' , 'to' , 'is' , 'in' , 'i' , 'it' ...]"
+
+Our special rules tokens appear first, and then every word appears once, in frequency order. The defaults to `Numericalize` are `min_freq=3,max_vocab=60000`. `max_vocab=60000` results in fastai replacing all words other than the most common 60,000 with a special *unknown word* token, `xxunk`. This is useful to avoid having an overly large embedding matrix, since that can slow down training and use up too much memory, and can also mean that there isn't enough data to train useful representations for rare words. However, this last issue is better handled by setting `min_freq`; the default `min_freq=3` means that any word appearing less than three times is replaced with `xxunk`.
+
+首先显示的是我们特定的标记规则，随后按照频率顺序显示的每个词。对于`Numericalize`的默认设置是`min_freq=3,max_vocab=60000`。在fastai中`max_vocab=60000`的结果是替换所有除了常用的60,000个词外其它词为*未知词标记*（`xxunk`）。这是用来避免有一个过大的嵌入矩阵，因为这能够减慢训练和使用太多的内存，且也表示不会有足够的数据来用于表示罕见词的训练。因此，这是最后的问题，通过设置`min_freq`来更好的处理。`min_freq=3`是默认的，表示任何词出现小于三次会被`xxunk`所替换。
+
+fastai can also numericalize your dataset using a vocab that you provide, by passing a list of words as the `vocab` parameter.
+
+通过传递单词列表作为`词汇表`的参数，fastai也能够使用你提供的词汇表来数值化你的数据集。
+
+Once we've created our `Numericalize` object, we can use it as if it were a function:
+
+一旦我们创建`Numericalize`对象，我们就能够像是一个函数那样使用它：
+
+```
+nums = num(toks)[:20]; nums
+```
+
+Out: tensor([  2,   8,  21,  28,  11,  90,  18,  59,   0,  45,   9, 351, 499,  11,  72, 533, 584, 146,  29,  12  ])
+
+This time, our tokens have been converted to a tensor of integers that our model can receive. We can check that they map back to the original text:
+
+这次，我们的标记已经转换为一个我们醋能够接收的整形张量。我们能够通过它们映射回原始文本来检查这个张量：
+
+```
+' '.join(num.vocab[o] for o in nums)
+```
+
+Out: 'xxbos xxmaj this movie , which i just xxunk at the video store , has apparently sit around for a'
+
+Now that we have numbers, we need to put them in batches for our model.
+
+现在我们已经有了数值，我们需要分批次把他们放入模型。
