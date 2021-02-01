@@ -443,4 +443,181 @@ Out: 'xxbos xxmaj this movie , which i just xxunk at the video store , has appar
 
 Now that we have numbers, we need to put them in batches for our model.
 
-现在我们已经有了数值，我们需要分批次把他们放入模型。
+现在我们已经有了数值，我们需要分批把他们放入模型。
+
+### Putting Our Texts into Batches for a Language Model
+
+### 我们的文本分批给语言模型
+
+When dealing with images, we needed to resize them all to the same height and width before grouping them together in a mini-batch so they could stack together efficiently in a single tensor. Here it's going to be a little different, because one cannot simply resize text to a desired length. Also, we want our language model to read text in order, so that it can efficiently predict what the next word is. This means that each new batch should begin precisely where the previous one left off.
+
+当处理图片时，在一个最小批次中组合所有图片前，我们需要重新调整所有图片到相同的高度和宽度，这样他们能够在单长量中有效率的堆在一起。现在对于文本会有一点不同，因为它不能简单的调整文本大小到一个期望的长度。同样，我们也希望我们的语言模型井然有序的阅读文本，那么它就能够有效的预测下一个词是什么了。这表示每一新的批次都应该准确的从上一个批次恰好停止的地方开始。
+
+Suppose we have the following text:
+
+假设我们有如下文本：
+
+> : In this chapter, we will go back over the example of classifying movie reviews we studied in chapter 1 and dig deeper under the surface. First we will look at the processing steps necessary to convert text into numbers and how to customize it. By doing this, we'll have another example of the PreProcessor used in the data block API.\nThen we will study how we build a language model and train it for a while.
+
+The tokenization process will add special tokens and deal with punctuation to return this text:
+
+标记化过程交付添加专用标记和处理标点符号，并返回这个文本：
+
+> : xxbos xxmaj in this chapter , we will go back over the example of classifying movie reviews we studied in chapter 1 and dig deeper under the surface . xxmaj first we will look at the processing steps necessary to convert text into numbers and how to customize it . xxmaj by doing this , we 'll have another example of the preprocessor used in the data block xxup api . \n xxmaj then we will study how we build a language model and train it for a while .
+
+We now have 90 tokens, separated by spaces. Let's say we want a batch size of 6. We need to break this text into 6 contiguous parts of length 15:
+
+现在我们有了90个标记，通过空格分割。比方说我们希望一个批次尺寸为 6 。我需要把这个文本分为 6 个长度 15 的连续部分：
+
+```
+#hide_input
+stream = "In this chapter, we will go back over the example of classifying movie reviews we studied in chapter 1 and dig deeper under the surface. First we will look at the processing steps necessary to convert text into numbers and how to customize it. By doing this, we'll have another example of the PreProcessor used in the data block API.\nThen we will study how we build a language model and train it for a while."
+tokens = tkn(stream)
+bs,seq_len = 6,15
+d_tokens = np.array([tokens[i*seq_len:(i+1)*seq_len] for i in range(bs)])
+df = pd.DataFrame(d_tokens)
+display(HTML(df.to_html(index=False,header=None)))
+```
+
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+| ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| xxbos | xxmaj   | in           | this    | chapter | ,       | we         | will  | go        | back   | over    | the  | example | of      | classifying |
+| movie | reviews | we           | studied | in      | chapter | 1          | and   | dig       | deeper | under   | the  | surface | .       | xxmaj       |
+| first | we      | will         | look    | at      | the     | processing | steps | necessary | to     | convert | text | into    | numbers | and         |
+| how   | to      | customize    | it      | .       | xxmaj   | by         | doing | this      | ,      | we      | 'll  | have    | another | example     |
+| of    | the     | preprocessor | used    | in      | the     | data       | block | xxup      | api    | .       | \n   | xxmaj   | then    | we          |
+| will  | study   | how          | we      | build   | a       | language   | model | and       | train  | it      | for  | a       | while   | .           |
+
+In a perfect world, we could then give this one batch to our model. But that approach doesn't scale, because outside of this toy example it's unlikely that a single batch containing all the texts would fit in our GPU memory (here we have 90 tokens, but all the IMDb reviews together give several million).
+
+在理想世界，那么我们能够我们模型一个批次。但是这个方法不能收放，因为在这个小例子之外，不可能单个批次所包含的文本能够正好适合我们的GPU内存（现在我们有90个标记，但是所有的IMDb评论合起来有好几百万）。
+
+So, we need to divide this array more finely into subarrays of a fixed sequence length. It is important to maintain order within and across these subarrays, because we will use a model that maintains a state so that it remembers what it read previously when predicting what comes next.
+
+所以我们需要更加精细的把这个数组分为固定序列长度的子数组。这对于维护子数组内部和数组之间的顺序是很重要的，因为我们将需要使用一个维护状态的模型，以便预测下个词的时候，它记住了之前读到的内容。
+
+Going back to our previous example with 6 batches of length 15, if we chose a sequence length of 5, that would mean we first feed the following array:
+
+返回先前长度为15的6个批次例子中，如果我们了长度为5的序列，表示我们首先需要喂给下述数组：
+
+```
+#hide_input
+bs,seq_len = 6,5
+d_tokens = np.array([tokens[i*15:i*15+seq_len] for i in range(bs)])
+df = pd.DataFrame(d_tokens)
+display(HTML(df.to_html(index=False,header=None)))
+```
+
+| 1 | 2 | 3 | 4 | 5 |
+| ----- | ------- | ------------ | ------- | ------- |
+| xxbos | xxmaj   | in           | this    | chapter |
+| movie | reviews | we           | studied | in      |
+| first | we      | will         | look    | at      |
+| how   | to      | customize    | it      | .       |
+| of    | the     | preprocessor | used    | in      |
+| will  | study   | how          | we      | build   |
+
+Then this one:
+
+然后是这个：
+
+```
+#hide_input
+bs,seq_len = 6,5
+d_tokens = np.array([tokens[i*15+seq_len:i*15+2*seq_len] for i in range(bs)])
+df = pd.DataFrame(d_tokens)
+display(HTML(df.to_html(index=False,header=None)))
+```
+
+| 1 | 2 | 3 | 4 | 5 |
+| ------- | ---------- | ----- | --------- | ------ |
+| ,       | we         | will  | go        | back   |
+| chapter | 1          | and   | dig       | deeper |
+| the     | processing | steps | necessary | to     |
+| xxmaj   | by         | doing | this      | ,      |
+| the     | data       | block | xxup      | api    |
+| a       | language   | model | and       | train  |
+
+And finally:
+
+这是最后的部分：
+
+```
+#hide_input
+bs,seq_len = 6,5
+d_tokens = np.array([tokens[i*15+10:i*15+15] for i in range(bs)])
+df = pd.DataFrame(d_tokens)
+display(HTML(df.to_html(index=False,header=None)))
+```
+
+| 1 | 2 | 3 | 4 | 5 |
+| ------- | ---- | ------- | ------- | ----------- |
+| over    | the  | example | of      | classifying |
+| under   | the  | surface | .       | xxmaj       |
+| convert | text | into    | numbers | and         |
+| we      | 'll  | have    | another | example     |
+| .       | \n   | xxmaj   | then    | we          |
+| it      | for  | a       | while   | .           |
+
+Going back to our movie reviews dataset, the first step is to transform the individual texts into a stream by concatenating them together. As with images, it's best to randomize the order of the inputs, so at the beginning of each epoch we will shuffle the entries to make a new stream (we shuffle the order of the documents, not the order of the words inside them, or the texts would not make sense anymore!).
+
+返回到我们的电影评论数据集，第一步是通过把联系在一起的孤立的文本换为流。像图片一样，它最好是随机输入顺序，所以在每个周期的开始，我们会重新整理记录来生成一个新的流（我们整理文档的顺序，不是它们内部单词的顺序，或使得的文本不再有任何意义！）。
+
+We then cut this stream into a certain number of batches (which is our *batch size*). For instance, if the stream has 50,000 tokens and we set a batch size of 10, this will give us 10 mini-streams of 5,000 tokens. What is important is that we preserve the order of the tokens (so from 1 to 5,000 for the first mini-stream, then from 5,001 to 10,000...), because we want the model to read continuous rows of text (as in the preceding example). An `xxbos` token is added at the start of each during preprocessing, so that the model knows when it reads the stream when a new entry is beginning.
+
+然后我们剪切这个流为一个确定数目的批次（它是我们的*批次尺寸*）。例如，如果流有 50,000 个标记，且我们设置批次尺寸为 10 ，这会给我们提供包含 5,000个标记的 10 个最小流。重要的是我们保护了标记顺序（因此第一个最小流从 1 到 5,000 ，然后从 5,001 到 10,000...），因为我们想让模型连续的读取文本行（正如先前的例子）。一个`xxbos`标记在每次预处理期间的一开始添加的，所以当是一个新的条目一开始的时候，模型知道读取知道何时读取数据流。
+
+So to recap, at every epoch we shuffle our collection of documents and concatenate them into a stream of tokens. We then cut that stream into a batch of fixed-size consecutive mini-streams. Our model will then read the mini-streams in order, and thanks to an inner state, it will produce the same activation whatever sequence length we picked.
+
+回顾一下，在每个周期上我们整理了我们收集的文档，并串联它们为一个标记流。然后我们把流剪切为固定尺寸的连续最小流批次。因此我们的模型会按照顺序读取最小批次，这要归功于一个内部状态，无论我们选取什么序列长度，它都会产生相同的激活。
+
+This is all done behind the scenes by the fastai library when we create an `LMDataLoader`. We do this by first applying our `Numericalize` object to the tokenized texts:
+
+当我们通过fastai库创建一个`LMDataLoader`时，这就是所有的幕后的操作。我们首先通过应用我们的`Numericalize`对象做这个操作来标记文本：
+
+```
+nums200 = toks200.map(num)
+```
+
+and then passing that to `LMDataLoader`:
+
+然后传递这个对象给`LMDataLoader`：
+
+```
+dl = LMDataLoader(nums200)
+```
+
+Let's confirm that this gives the expected results, by grabbing the first batch:
+
+通过抓取第一个批次，让我们确认一下是否它提供了所期望的结果：
+
+```
+x,y = first(dl)
+x.shape,y.shape
+```
+
+Out: (torch.Size([64, 72]), torch.Size([64, 72]))
+
+and then looking at the first row of the independent variable, which should be the start of the first text:
+
+然后查看自变量的第一行，它应该是第一个文本的开始：
+
+```
+' '.join(num.vocab[o] for o in x[0][:20])
+```
+
+Out: 'xxbos xxmaj this movie , which i just xxunk at the video store , has apparently sit around for a'
+
+The dependent variable is the same thing offset by one token:
+
+因变量是通过一个标记偏移的相同的内容：
+
+```
+' '.join(num.vocab[o] for o in y[0][:20])
+```
+
+Out: 'xxmaj this movie , which i just xxunk at the video store , has apparently sit around for a couple'
+
+This concludes all the preprocessing steps we need to apply to our data. We are now ready to train our text classifier.
+
+这完成了我们需要应用到我们数据上的所有预操作步骤。现在我们准备训练我们的文本分类器了。
