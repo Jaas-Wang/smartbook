@@ -621,3 +621,111 @@ Out: 'xxmaj this movie , which i just xxunk at the video store , has apparently 
 This concludes all the preprocessing steps we need to apply to our data. We are now ready to train our text classifier.
 
 这完成了我们需要应用到我们数据上的所有预操作步骤。现在我们准备训练我们的文本分类器了。
+
+## Training a Text Classifier
+
+## 训练一个文本分类器
+
+As we saw at the beginning of this chapter, there are two steps to training a state-of-the-art text classifier using transfer learning: first we need to fine-tune our language model pretrained on Wikipedia to the corpus of IMDb reviews, and then we can use that model to train a classifier.
+
+正如我们在本章一开始，有两步使用迁移学习来训练一个先进的文本分类器：首先，我们需要我们微调在Wikipedia上预训练的语言模型为IMDb评论语料库，其后我们能够用这个模型训练一个分类器。
+
+As usual, let's start with assembling our data.
+
+照例，让我们从集成我们的数据开始。
+
+### Language Model Using DataBlock
+
+### 使用DataBlock语言模型
+
+fastai handles tokenization and numericalization automatically when `TextBlock` is passed to `DataBlock`. All of the arguments that can be passed to `Tokenize` and `Numericalize` can also be passed to `TextBlock`. In the next chapter we'll discuss the easiest ways to run each of these steps separately, to ease debugging—but you can always just debug by running them manually on a subset of your data as shown in the previous sections. And don't forget about `DataBlock`'s handy `summary` method, which is very useful for debugging data issues.
+
+当`TextBlock`被传递给`DataBlock`时，fastai自动的处理标记化和数值化。所有参数能够被传递给`Tokenize`和`Numericalize`也能够被传递给`TextBlock`。在下一章我们会讨论更容易的方法来分别运行这些步骤的每一个，与简单的调试。但是你能够像上一部分所说明的那样，在你数据的子集上通过手动的运行它们来进行调试。且不要忘记`DataBlock`的处理`总结`方法，它对于调试数据问题很有用处。
+
+Here's how we use `TextBlock` to create a language model, using fastai's defaults:
+
+下面是我们使用fastai的默认设置，使用`TextBlock`来创建一个语言模型：
+
+```
+get_imdb = partial(get_text_files, folders=['train', 'test', 'unsup'])
+
+dls_lm = DataBlock(
+    blocks=TextBlock.from_folder(path, is_lm=True),
+    get_items=get_imdb, splitter=RandomSplitter(0.1)
+).dataloaders(path, path=path, bs=128, seq_len=80)
+```
+
+One thing that's different to previous types we've used in `DataBlock` is that we're not just using the class directly (i.e., `TextBlock(...)`, but instead are calling a *class method*. A class method is a Python method that, as the name suggests, belongs to a *class* rather than an *object*. (Be sure to search online for more information about class methods if you're not familiar with them, since they're commonly used in many Python libraries and applications; we've used them a few times previously in the book, but haven't called attention to them.) The reason that `TextBlock` is special is that setting up the numericalizer's vocab can take a long time (we have to read and tokenize every document to get the vocab). To be as efficient as possible it performs a few optimizations:
+
+有一个事情与我们之前在`DataBlock`中使用的类型不同，那是我们不只是直接使用类（即，`TextBlock（...）`），相反调用了一个*类方法*。一个类方法是一个Python方法，作为命名建议其术语一个*类*而不是*对象*。（如果你不熟悉这些内容，一定在线搜索一些关于类方法的信息，因为它们在很多Python库和应用中是常用的。在本书前面的部分我们已经使用了很多次了，但对他们没有引起主意。）`TextBlock`是特殊的原因是建立数值化器的词汇表需要花费很长时间（我们不得不读取和标记每个文档来获取词汇表）。为尽可能的高效它做一些优化：
+
+- It saves the tokenized documents in a temporary folder, so it doesn't have to tokenize them more than once
+- It runs multiple tokenization processes in parallel, to take advantage of your computer's CPUs
+- 它在临时文件夹保存标记文档，因此它就不需要标记它们多次
+- 并行运行多个标记化过程，来利用你计算机的多颗CPU
+
+We need to tell `TextBlock` how to access the texts, so that it can do this initial preprocessing—that's what `from_folder` does.
+
+我们需要告知`Textblock`如何获取文本，因此它能够做这个初始预处理，即`from_folder`做的内容。
+
+`show_batch` then works in the usual way:
+
+然后`show_batch`以通常的方法运行：
+
+```
+dls_lm.show_batch(max_n=2)
+```
+
+|      |                                                         text |                                                        text_ |
+| ---: | -----------------------------------------------------------: | -----------------------------------------------------------: |
+|    0 | xxbos xxmaj it 's awesome ! xxmaj in xxmaj story xxmaj mode , your going from punk to pro . xxmaj you have to complete goals that involve skating , driving , and walking . xxmaj you create your own skater and give it a name , and you can make it look stupid or realistic . xxmaj you are with your friend xxmaj eric throughout the game until he betrays you and gets you kicked off of the skateboard | xxmaj it 's awesome ! xxmaj in xxmaj story xxmaj mode , your going from punk to pro . xxmaj you have to complete goals that involve skating , driving , and walking . xxmaj you create your own skater and give it a name , and you can make it look stupid or realistic . xxmaj you are with your friend xxmaj eric throughout the game until he betrays you and gets you kicked off of the skateboard xxunk |
+|    1 | what xxmaj i 've read , xxmaj death xxmaj bed is based on an actual dream , xxmaj george xxmaj barry , the director , successfully transferred dream to film , only a genius could accomplish such a task . \n\n xxmaj old mansions make for good quality horror , as do portraits , not sure what to make of the killer bed with its killer yellow liquid , quite a bizarre dream , indeed . xxmaj also , this | xxmaj i 've read , xxmaj death xxmaj bed is based on an actual dream , xxmaj george xxmaj barry , the director , successfully transferred dream to film , only a genius could accomplish such a task . \n\n xxmaj old mansions make for good quality horror , as do portraits , not sure what to make of the killer bed with its killer yellow liquid , quite a bizarre dream , indeed . xxmaj also , this is |
+
+Now that our data is ready, we can fine-tune the pretrained language model.
+
+现在我们的数据准备好了，我们能够微调预训练语言模型了。
+
+### Fine-Tuning the Language Model
+
+### 微调语言模型
+
+To convert the integer word indices into activations that we can use for our neural network, we will use embeddings, just like we did for collaborative filtering and tabular modeling. Then we'll feed those embeddings into a *recurrent neural network* (RNN), using an architecture called *AWD-LSTM* (we will show you how to write such a model from scratch in <chapter_nlp_dive>). As we discussed earlier, the embeddings in the pretrained model are merged with random embeddings added for words that weren't in the pretraining vocabulary. This is handled automatically inside `language_model_learner`:
+
+转换整形词索引为激活，我们就能够用于我们的神经网络，我们会使用嵌入，就像我们在协同过滤和表格建模上做的那样。然后我们会使用一个称为*AWD-LSTM* 的架构（我们会在<章节：自然语言深潜>中说明从零开始编写这样一个模型）把那些嵌入喂给*卷积神经网络*（RNN）。正如我们早先讨论的，在预训练模型中的嵌入是与不是预训练词汇表中的那些词添加的随机嵌入是合并的。这个是在`language_model_learner`内部自动处理的：
+
+```
+learn = language_model_learner(
+    dls_lm, AWD_LSTM, drop_mult=0.3, 
+    metrics=[accuracy, Perplexity()]).to_fp16()
+```
+
+The loss function used by default is cross-entropy loss, since we essentially have a classification problem (the different categories being the words in our vocab). The *perplexity* metric used here is often used in NLP for language models: it is the exponential of the loss (i.e., `torch.exp(cross_entropy)`). We also include the accuracy metric, to see how many times our model is right when trying to predict the next word, since cross-entropy (as we've seen) is both hard to interpret, and tells us more about the model's confidence than its accuracy.
+
+默认使用的损失函数是交叉熵损失，因为本质上来说我们有一个分类问题（在我们词汇表中不同的分类是词）。这里使用的*困惑*度通常被用于自然语言处理的语言模型：它是损失的指数（即`torch.exp(cross_entropy)`）。我们也包含精度招标，来查看尝试预测一个词的时候我们模型的正确次数，因为交差熵（我们已经学过了）有两个特点：难以解释和告诉我们更多关于模型置信度而不是精度。
+
+Let's go back to the process diagram from the beginning of this chapter. The first arrow has been completed for us and made available as a pretrained model in fastai, and we've just built the `DataLoaders` and `Learner` for the second stage. Now we're ready to fine-tune our language model!
+
+让我们返回到本章节一开始的流程图。我们已经完成了第一个箭头部分且在fastai中作为一个可用的预训练模型，第二阶段我们只是创建了`DataLoaders`和`Learner`。现在我们准备来微调我们的语言模型了！
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00027.png" alt="Diagram of the ULMFiT process" width="700" caption="The ULMFiT process" id="ulmfit_process" />
+  </p>
+  <p align="center">图：通用语言模型微调过程</p>
+</div>
+
+It takes quite a while to train each epoch, so we'll be saving the intermediate model results during the training process. Since `fine_tune` doesn't do that for us, we'll use `fit_one_cycle`. Just like `cnn_learner`, `language_model_learner` automatically calls `freeze` when using a pretrained model (which is the default), so this will only train the embeddings (the only part of the model that contains randomly initialized weights—i.e., embeddings for words that are in our IMDb vocab, but aren't in the pretrained model vocab):
+
+它需要花费一些时间来训练每个周期，所以我们会保存训练过程期间的中间模型结果。因为`fine_tune`不能为我们做这个事情，所以我们会用`fit_one_cycle`。就像`cnn_learner`一样，当使用一个预训练模型时`language_model_learner`自动调用`freeze`（它是默认的），所以它只会训练嵌入层（模型唯一包含随机初始权重的部分。即，是我们IMDb词汇表中的词嵌入）：
+
+```
+learn.fit_one_cycle(1, 2e-2)
+```
+
+| epoch | train_loss | valid_loss | accuracy | perplexity |  time |
+| ----: | ---------: | ---------: | -------: | ---------: | ----: |
+|     0 |   4.120048 |   3.912788 | 0.299565 |  50.038246 | 11:39 |
+
+This model takes a while to train, so it's a good opportunity to talk about saving intermediary results.
+
+这个模型需要一段时间来训练，所以这是一个讨论保存中间结果的好时机。
