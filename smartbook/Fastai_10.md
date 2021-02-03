@@ -569,7 +569,7 @@ We then cut this stream into a certain number of batches (which is our *batch si
 
 So to recap, at every epoch we shuffle our collection of documents and concatenate them into a stream of tokens. We then cut that stream into a batch of fixed-size consecutive mini-streams. Our model will then read the mini-streams in order, and thanks to an inner state, it will produce the same activation whatever sequence length we picked.
 
-回顾一下，在每个周期上我们整理了我们收集的文档，并串联它们为一个标记流。然后我们把流剪切为固定尺寸的连续最小流批次。因此我们的模型会按照顺序读取最小批次，这要归功于一个内部状态，无论我们选取什么序列长度，它都会产生相同的激活。
+所以总的来说，在每个周期上我们整理了我们收集的文档，并串联它们为一个标记流。然后我们把流剪切为固定尺寸的连续最小流批次。因此我们的模型会按照顺序读取最小批次，这要归功于一个内部状态，无论我们选取什么序列长度，它都会产生相同的激活。
 
 This is all done behind the scenes by the fastai library when we create an `LMDataLoader`. We do this by first applying our `Numericalize` object to the tokenized texts:
 
@@ -728,4 +728,189 @@ learn.fit_one_cycle(1, 2e-2)
 
 This model takes a while to train, so it's a good opportunity to talk about saving intermediary results.
 
-这个模型需要一段时间来训练，所以这是一个讨论保存中间结果的好时机。
+这个模型需要一段时间来训练，所以这是讨论保存中间结果的好时机。
+
+### Saving and Loading Models
+
+### 保存和加载模型
+
+You can easily save the state of your model like so:
+
+你能够像下面这样保存你的模型状态：
+
+```
+learn.save('1epoch')
+```
+
+This will create a file in `learn.path/models/` named *1epoch.pth*. If you want to load your model in another machine after creating your `Learner` the same way, or resume training later, you can load the content of this file with:
+
+这会在`learn.path/models/`路径下创建一个名为*1epoch.pth*的文件。如果在另外的机器上以同样的方法创建了你的`学习器`你希望加载你的模型，或恢复先前的训练，你能够使用一下操作加载这个文件的内容：
+
+```
+learn = learn.load('1epoch')
+```
+
+Once the initial training has completed, we can continue fine-tuning the model after unfreezing:
+
+一旦初始的训练完成，我们就能够持续的微调解冻后的模型：
+
+```
+learn.unfreeze()
+learn.fit_one_cycle(10, 2e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy | perplexity |  time |
+| ----: | ---------: | ---------: | -------: | ---------: | ----: |
+|     0 |   3.893486 |   3.772820 | 0.317104 |  43.502548 | 12:37 |
+|     1 |   3.820479 |   3.717197 | 0.323790 |  41.148880 | 12:30 |
+|     2 |   3.735622 |   3.659760 | 0.330321 |  38.851997 | 12:09 |
+|     3 |   3.677086 |   3.624794 | 0.333960 |  37.516987 | 12:12 |
+|     4 |   3.636646 |   3.601300 | 0.337017 |  36.645859 | 12:05 |
+|     5 |   3.553636 |   3.584241 | 0.339355 |  36.026001 | 12:04 |
+|     6 |   3.507634 |   3.571892 | 0.341353 |  35.583862 | 12:08 |
+|     7 |   3.444101 |   3.565988 | 0.342194 |  35.374371 | 12:08 |
+|     8 |   3.398597 |   3.566283 | 0.342647 |  35.384815 | 12:11 |
+|     9 |   3.375563 |   3.568166 | 0.342528 |  35.451500 | 12:05 |
+
+Once this is done, we save all of our model except the final layer that converts activations to probabilities of picking each token in our vocabulary. The model not including the final layer is called the *encoder*. We can save it with `save_encoder`:
+
+一旦这个工作做完，我保存除了最后一层之外的所有模型，最后一层是转化激活为我们词汇表中每个选中标记的概率。不包含最后一层的模型被称为*编码器*。我们能够用`save_encoder`来保存它：
+
+```
+learn.save_encoder('finetuned')
+```
+
+> jargon: Encoder: The model not including the task-specific final layer(s). This term means much the same thing as *body* when applied to vision CNNs, but "encoder" tends to be more used for NLP and generative models.
+
+> 术语：编码器：不包含特定任务最后层的模型。当应用到视觉卷积神经网络时，这个术语表示的意义与*身体*差不多，但“编码器”倾向更多用于自然语言处理和生成模型。
+
+This completes the second stage of the text classification process: fine-tuning the language model. We can now use it to fine-tune a classifier using the IMDb sentiment labels.
+
+现在完成了文本分割过程的第二阶段：微调语言模型。我们现在能够使用IMDb情绪标签和这个模型来微调一个分类器。
+
+### Text Generation
+
+### 文本生成
+
+Before we move on to fine-tuning the classifier, let's quickly try something different: using our model to generate random reviews. Since it's trained to guess what the next word of the sentence is, we can use the model to write new reviews:
+
+在我们继续微调分类器之彰，让我们快速尝试一些不一样的事情：使用我们的模型来生成随机评论。因为它被训练来猜测句子的一个词是什么，我们能够使用模型来写新的评论：
+
+```
+TEXT = "I liked this movie because"
+N_WORDS = 40
+N_SENTENCES = 2
+preds = [learn.predict(TEXT, N_WORDS, temperature=0.75) 
+         for _ in range(N_SENTENCES)]
+```
+
+```
+print("\n".join(preds))
+```
+
+Out: [i liked this movie because of its story and characters . The story line was very strong , very good for a sci - fi film . The main character , Alucard , was very well developed and brought the whole story
+i liked this movie because i like the idea of the premise of the movie , the ( very ) convenient virus ( which , when you have to kill a few people , the " evil " machine has to be used to protect]()
+
+As you can see, we add some randomness (we pick a random word based on the probabilities returned by the model) so we don't get exactly the same review twice. Our model doesn't have any programmed knowledge of the structure of a sentence or grammar rules, yet it has clearly learned a lot about English sentences: we can see it capitalizes properly (*I\* is just transformed to \*i* because our rules require two characters or more to consider a word as capitalized, so it's normal to see it lowercased) and is using consistent tense. The general review makes sense at first glance, and it's only if you read carefully that you can notice something is a bit off. Not bad for a model trained in a couple of hours!
+
+正如你看到的，我们添加了一些随意性（基于模型返回的概率我们选取了随机词），所以我们不能够获得两个完全相同的评论。我们的模型没有任何设定的句子结构的知识和语法规则，然而它已经清晰的学会了一些英文：我们能够看到它合理的大写（只是*I\**转换为*i\**，因为我们的规则需要两个或以上的特征才会认为一个词需要大写，所以看到它是小写，这是正常的）和使用了一致的时态。乍一看生成的评论还算合理，但是当你认真阅读后你会注意到它有点不合理。对于几个小时的模型训练结果不算太糟糕！
+
+But our end goal wasn't to train a model to generate reviews, but to classify them... so let's use this model to do just that.
+
+但是我们的最终目标不是训练一个生成评论的模型，而是来分类评论...  那么，让我们用这个模型做这个工作吧。
+
+### Creating the Classifier DataLoaders
+
+### 创建分类器DataLoader
+
+We're now moving from language model fine-tuning to classifier fine-tuning. To recap, a language model predicts the next word of a document, so it doesn't need any external labels. A classifier, however, predicts some external label—in the case of IMDb, it's the sentiment of a document.
+
+现在我们从语言模型微调移到分类器微调。总的来说，语言模型预测文档的下个词，所以它不需要任何外部标签。然而，一个分类器预测一些外部标签，在IMDb案例中，它是文档的情绪。
+
+This means that the structure of our `DataBlock` for NLP classification will look very familiar. It's actually nearly the same as we've seen for the many image classification datasets we've worked with:
+
+这意味着我们自然语言处理分类`DataBlock`结构看起来会非常熟悉。它实际上与我们见过的很多所处理的图像分类数据集几乎相同：
+
+```
+dls_clas = DataBlock(
+    blocks=(TextBlock.from_folder(path, vocab=dls_lm.vocab),CategoryBlock),
+    get_y = parent_label,
+    get_items=partial(get_text_files, folders=['train', 'test']),
+    splitter=GrandparentSplitter(valid_name='test')
+).dataloaders(path, path=path, bs=128, seq_len=72)
+```
+
+Just like with image classification, `show_batch` shows the dependent variable (sentiment, in this case) with each independent variable (movie review text):
+
+与图像分类一样，`show_batch`显示了自变量（电影评论文本）的因变量（在这个例子中，情绪）：
+
+```
+dls_clas.show_batch(max_n=3)
+```
+
+|      |                                                         text | category |
+| ---: | -----------------------------------------------------------: | -------: |
+|    0 | xxbos i rate this movie with 3 skulls , only coz the girls knew how to scream , this could 've been a better movie , if actors were better , the twins were xxup ok , i believed they were evil , but the eldest and youngest brother , they sucked really bad , it seemed like they were reading the scripts instead of acting them … . spoiler : if they 're vampire 's why do they freeze the blood ? vampires ca n't drink frozen blood , the sister in the movie says let 's drink her while she is alive … .but then when they 're moving to another house , they take on a cooler they 're frozen blood . end of spoiler \n\n it was a huge waste of time , and that made me mad coz i read all the reviews of how |      neg |
+|    1 | xxbos i have read all of the xxmaj love xxmaj come xxmaj softly books . xxmaj knowing full well that movies can not use all aspects of the book , but generally they at least have the main point of the book . i was highly disappointed in this movie . xxmaj the only thing that they have in this movie that is in the book is that xxmaj missy 's father comes to xxunk in the book both parents come ) . xxmaj that is all . xxmaj the story line was so twisted and far fetch and yes , sad , from the book , that i just could n't enjoy it . xxmaj even if i did n't read the book it was too sad . i do know that xxmaj pioneer life was rough , but the whole movie was a downer . xxmaj the rating |      neg |
+|    2 | xxbos xxmaj this , for lack of a better term , movie is lousy . xxmaj where do i start … … \n\n xxmaj cinemaphotography - xxmaj this was , perhaps , the worst xxmaj i 've seen this year . xxmaj it looked like the camera was being tossed from camera man to camera man . xxmaj maybe they only had one camera . xxmaj it gives you the sensation of being a volleyball . \n\n xxmaj there are a bunch of scenes , haphazardly , thrown in with no continuity at all . xxmaj when they did the ' split screen ' , it was absurd . xxmaj everything was squished flat , it looked ridiculous . \n\n xxmaj the color tones were way off . xxmaj these people need to learn how to balance a camera . xxmaj this ' movie ' is poorly made , and |      neg |
+
+Looking at the `DataBlock` definition, every piece is familiar from previous data blocks we've built, with two important exceptions:
+
+- `TextBlock.from_folder` no longer has the `is_lm=True` parameter.
+- We pass the `vocab` we created for the language model fine-tuning.
+
+看一下`DataBlock`的定义，每一部分与之前我们创建的数据块是相同的，除了两个重要例外：
+
+- `TextBlock.from_folder`不再有`is_lm=True`的参数。
+- 我们为语言模型微调传递我们所创建的`词汇表`。
+
+The reason that we pass the `vocab` of the language model is to make sure we use the same correspondence of token to index. Otherwise the embeddings we learned in our fine-tuned language model won't make any sense to this model, and the fine-tuning step won't be of any use.
+
+我们传递预测模型的`词汇表`的原因是确保我们使用相相符的标记来索引。否则在我们微调语言模型中学到的嵌入对这个模型没有任何意义，且微调步骤不会有任何用处。
+
+By passing `is_lm=False` (or not passing `is_lm` at all, since it defaults to `False`) we tell `TextBlock` that we have regular labeled data, rather than using the next tokens as labels. There is one challenge we have to deal with, however, which is to do with collating multiple documents into a mini-batch. Let's see with an example, by trying to create a mini-batch containing the first 10 documents. First we'll numericalize them:
+
+传递`is_lm=False`（或压根不传递`is_lm`，因为它默认为`False`）我们告诉`TextBlock`我们有规则的标记后的数据，而不是使用下一个标记作为标签。然而，有一个我们必须处理的挑战是依次把多个文本整理到一个小批次。让我们看一个例子，创建一个包含头10个文档的小批次。首先我们会数值化他们：
+
+```
+nums_samp = toks200[:10].map(num)
+```
+
+Let's now look at how many tokens each of these 10 movie reviews have:
+
+现在我们看一下这10个电影评论每个有多个标记：
+
+```
+nums_samp.map(len)
+```
+
+Out: (#10) [228,238,121,290,196,194,533,124,581,155]
+
+Remember, PyTorch `DataLoader`s need to collate all the items in a batch into a single tensor, and a single tensor has a fixed shape (i.e., it has some particular length on every axis, and all items must be consistent). This should sound familiar: we had the same issue with images. In that case, we used cropping, padding, and/or squishing to make all the inputs the same size. Cropping might not be a good idea for documents, because it seems likely we'd remove some key information (having said that, the same issue is true for images, and we use cropping there; data augmentation hasn't been well explored for NLP yet, so perhaps there are actually opportunities to use cropping in NLP too!). You can't really "squish" a document. So that leaves padding!
+
+记住，PyTorch`DataLoader`需要整理一个批次中的所有数据项为一个单张量，且这个单张量有一个固定的形态（即，它在每个坐标上有一些特定的长度，且所有数据项必须是一致的）。这听起来很熟悉：对于图片我们有相同的问题。在那种情况下，我们使用裁剪、填充，和/或挤压来使得所有的输入是相同的尺寸。对于文档裁剪可能不是一个好的想法，因为可能我们会移除一些关键信息（话说回来，我们在图像上使用裁剪，也存在相同的问题；数据增强对于自然语言处理还没有很好的探索，所以也许真的的机会在自然语言处理中也使用裁剪呢！）。我们不能真的“挤压”一个文档。所以就剩下填充了！
+
+We will expand the shortest texts to make them all the same size. To do this, we use a special padding token that will be ignored by our model. Additionally, to avoid memory issues and improve performance, we will batch together texts that are roughly the same lengths (with some shuffling for the training set). We do this by (approximately, for the training set) sorting the documents by length prior to each epoch. The result of this is that the documents collated into a single batch will tend of be of similar lengths. We won't pad every batch to the same size, but will instead use the size of the largest document in each batch as the target size. (It is possible to do something similar with images, which is especially useful for irregularly sized rectangular images, but at the time of writing no library provides good support for this yet, and there aren't any papers covering it. It's something we're planning to add to fastai soon, however, so keep an eye on the book's website; we'll add information about this as soon as we have it working well.)
+
+我们会扩大最短文本使得它们都一样的尺寸。我们使用一个模型会忽略的特殊的填充标记来做这个事情。另外，为避免内存问题和改善性能，我们会批处理文本到大致相同的长度（对训练集做一些整理）。在每个周期前我们通过（大约对训练集进行）通过长度对文档进行排序做到这一点。这样的结果是文档整理为一个倾向相似长度的单一批次。我们不会填充每个批次为相同的尺寸，但相替代的会使用每个批次中最大尺寸文档作为目标尺寸。（它与图像做的事情是相似的，其对于规则长方形图像尺寸尤为有用，但是在编写本书的时候还没有库为此提供良好的支持，且还没有任何论文覆盖这个问题。因此我们计划尽快添加这个功能到fastai，所以随时留意本书的网站。一旦这个功能运行良好我们就会添加相关信息。）
+
+The sorting and padding are automatically done by the data block API for us when using a `TextBlock`, with `is_lm=False`. (We don't have this same issue for language model data, since we concatenate all the documents together first, and then split them into equally sized sections.)
+
+We can now create a model to classify our texts:
+
+当使用`TextBlock`时利用`is_lm=False`参数，排序和填充通过数据块API为我们自己处理了。（对于语言模型数据我们没有相同的问题，因此我们首先串联所有文档在一起，然后把它们分割为相同尺寸的切片。）
+
+现在我们能够创建一个模型来分类我们的文本了：
+
+```
+learn = text_classifier_learner(dls_clas, AWD_LSTM, drop_mult=0.5, 
+                                metrics=accuracy).to_fp16()
+```
+
+The final step prior to training the classifier is to load the encoder from our fine-tuned language model. We use `load_encoder` instead of `load` because we only have pretrained weights available for the encoder; `load` by default raises an exception if an incomplete model is loaded:
+
+完成训练分类器的最后一步是从我们的微调语言模型中加载编码器。我们使用`load_encoder`来替代`load`，因为对于编码器我们只有可获取的预训练权重。如果加载一个未完成的模型，`load`会产生异常：
+
+```
+learn = learn.load_encoder('finetuned')
+```
