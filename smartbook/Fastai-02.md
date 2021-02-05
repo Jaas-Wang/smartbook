@@ -1,25 +1,8 @@
-In [ ]:
-
-```
-#hide
-!pip install -Uqq fastbook
-import fastbook
-fastbook.setup_book()
-```
-
-In [ ]:
-
-```
-#hide
-from fastbook import *
-from fastai.vision.widgets import *
-```
-
 ## From Model to Production
 
 ## **从模型到产品化**
 
-The six lines of code we saw in <> are just one small part of the process of using deep learning in practice. In this chapter, we're going to use a computer vision example to look at the end-to-end process of creating a deep learning application. More specifically, we're going to build a bear classifier! In the process, we'll discuss the capabilities and constraints of deep learning, explore how to create datasets, look at possible gotchas when using deep learning in practice, and more. Many of the key points will apply equally well to other deep learning problems, such as those in <>. If you work through a problem similar in key respects to our example problems, we expect you to get excellent results with little code, quickly.
+Th·e six lines of code we saw in <> are just one small part of the process of using deep learning in practice. In this chapter, we're going to use a computer vision example to look at the end-to-end process of creating a deep learning application. More specifically, we're going to build a bear classifier! In the process, we'll discuss the capabilities and constraints of deep learning, explore how to create datasets, look at possible gotchas when using deep learning in practice, and more. Many of the key points will apply equally well to other deep learning problems, such as those in <>. If you work through a problem similar in key respects to our example problems, we expect you to get excellent results with little code, quickly.
 
 Let's start with how you should frame your problem.
 
