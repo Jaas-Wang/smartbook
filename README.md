@@ -41,4 +41,6 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 
 [第九章 表格模型](./smartbook/Fastai-09.md)   [（英文原本：09_tabular.ipynb）](./englishbook/09_tabular.ipynb)（未校对）
 
-[第十章 自然语言处理](./smartbook/Fastai-10.md)   [（英文原本：10_nlp.ipynb）](./englishbook/10_nlp.ipynb)（翻译中）
+[第十章 自然语言处理](./smartbook/Fastai-10.md)   [（英文原本：10_nlp.ipynb）](./englishbook/10_nlp.ipynb)（未校对）
+
+[第十一章 数据处理中级API](./smartbook/Fastai-11.md)   [（英文原本：11_midlevel_data.ipynb）](./englishbook/11_midlevel_data.ipynb)（翻译中）
