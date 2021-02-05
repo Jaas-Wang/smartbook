@@ -1,10 +1,6 @@
-# 01_intro.ipynb
+# Your Deep Learning Journey
 
-# 第一章 深度学习概论
-
-## Your Deep Learning Journey
-
-## 深度学习之旅
+# 深度学习之旅
 
 Hello, and thank you for letting us join you on your deep learning journey, however far along that you may be! In this chapter, we will tell you a little bit more about what to expect in this book, introduce the key concepts behind deep learning, and train our first models on different tasks. It doesn't matter if you don't come from a technical or a mathematical background (though it's okay if you do too!); we wrote this book to make deep learning accessible to as many people as possible.
 
