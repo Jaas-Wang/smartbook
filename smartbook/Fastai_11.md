@@ -233,3 +233,223 @@ The only part that doesn't work the same way as in `Transform` is the setup. To 
 
 只有唯一的一部分不会以`Transform`中相同的方式运行，这就是设置。在数据上合理的设置`Transform`的`Pipeline`你需要使用`TfmdLists`。
 
+## TfmdLists and Datasets: Transformed Collections
+
+## TfmdLists和Datasets：变换集合
+
+Your data is usually a set of raw items (like filenames, or rows in a DataFrame) to which you want to apply a succession of transformations. We just saw that a succession of transformations is represented by a `Pipeline` in fastai. The class that groups together this `Pipeline` with your raw items is called `TfmdLists`.
+
+你的数据通常是一组你希望应用一系列变换的数据项（如文件名，或DataFrame中的行）。我们刚刚看了在fastai中由`Pipline`描述的一系列的变换。这个类与你的原生数据项和`Pipeline`组合在一起被称为`TfmdLists`。
+
+### TfmdLists
+
+### TfmdLists
+
+Here is the short way of doing the transformation we saw in the previous section:
+
+这是我们在上一部分所学内容的快捷操作：
+
+```
+tls = TfmdLists(files, [Tokenizer.from_folder(path), Numericalize])
+```
+
+At initialization, the `TfmdLists` will automatically call the `setup` method of each `Transform` in order, providing them not with the raw items but the items transformed by all the previous `Transform`s in order. We can get the result of our `Pipeline` on any raw element just by indexing into the `TfmdLists`:
+
+在初始化时，`TfmdLists`会按照顺序自动调用每个`Transform`的`setup`方法，给他们提供的不是原生数据项，而是按照顺序通过之前的`Transform`转换的数据项。我们只通过索引到`TfmdLists`就能够获取任何原生元素的`Pipline`结果：
+
+```
+t = tls[0]; t[:20]
+```
+
+Out: tensor([    2,     8,    91,    11,    22,  5793,    22,    37,  4910,    34,    11,     8, 13042,    23,   107,    30,    11,    25,    44,    14])
+
+And the `TfmdLists` knows how to decode for show purposes:
+
+`TfmdLists`知道如何以显示为目的解码：
+
+```
+tls.decode(t)[:100]
+```
+
+Out: 'xxbos xxmaj well , " cube " ( 1997 ) , xxmaj vincenzo \'s first movie , was one of the most interesti'
+
+In fact, it even has a `show` method:
+
+实际上，它甚至有一个`show`方法：
+
+```
+tls.show(t)
+```
+
+Out: xxbos xxmaj well , " cube " ( 1997 ) , xxmaj vincenzo 's first movie , was one of the most interesting and tricky ideas that xxmaj i 've ever seen when talking about movies . xxmaj they had just one scenery , a bunch of actors and a plot . xxmaj so , what made it so special were all the effective direction , great dialogs and a bizarre condition that characters had to deal like rats in a labyrinth . xxmaj his second movie , " cypher " ( 2002 ) , was all about its story , but it was n't so good as " cube " but here are the characters being tested like rats again . 
+
+ " nothing " is something very interesting and gets xxmaj vincenzo coming back to his ' cube days ' , locking the characters once again in a very different space with no time once more playing with the characters like playing with rats in an experience room . xxmaj but instead of a thriller sci - fi ( even some of the promotional teasers and trailers erroneous seemed like that ) , " nothing " is a loose and light comedy that for sure can be called a modern satire about our society and also about the intolerant world we 're living . xxmaj once again xxmaj xxunk amaze us with a great idea into a so small kind of thing . 2 actors and a blinding white scenario , that 's all you got most part of time and you do n't need more than that . xxmaj while " cube " is a claustrophobic experience and " cypher " confusing , " nothing " is completely the opposite but at the same time also desperate . 
+
+ xxmaj this movie proves once again that a smart idea means much more than just a millionaire budget . xxmaj of course that the movie fails sometimes , but its prime idea means a lot and offsets any flaws . xxmaj there 's nothing more to be said about this movie because everything is a brilliant surprise and a totally different experience that i had in movies since " cube " .
+
+The `TfmdLists` is named with an "s" because it can handle a training and a validation set with a `splits` argument. You just need to pass the indices of which elements are in the training set, and which are in the validation set:
+
+`TfmdLists`用一个`s`来命名，因为它能够用`splists`参数来处理训练和验证集。你只需要传递在训练集和验证集中的元素索引：
+
+```
+cut = int(len(files)*0.8)
+splits = [list(range(cut)), list(range(cut,len(files)))]
+tls = TfmdLists(files, [Tokenizer.from_folder(path), Numericalize], 
+                splits=splits)
+```
+
+You can then access them through the `train` and `valid` attributes:
+
+然后你能够通过`train`和`valid`特性获取它们：
+
+```
+tls.valid[0][:20]
+```
+
+Out: tensor([    2,     8,    20,    30,    87,   510,  1570,    12,   408,   379,  4196,    10,     8,    20,    30,    16,    13, 12216,   202,   509])
+
+If you have manually written a `Transform` that performs all of your preprocessing at once, turning raw items into a tuple with inputs and targets, then `TfmdLists` is the class you need. You can directly convert it to a `DataLoaders` object with the `dataloaders` method. This is what we will do in our Siamese example later in this chapter.
+
+如果你已经手动编写了一次性执行所有你的预处理的`Transform`，转换原生数据项为有输入和目标的元组，那么`TfmdLists`只是你需要的类。你能够直接转换它为一个带有`dataloaders`方法的`DataLoaders`对象。这就是我们稍后在本章节中我们的Siamese事例中要做的。
+
+In general, though, you will have two (or more) parallel pipelines of transforms: one for processing your raw items into inputs and one to process your raw items into targets. For instance, here, the pipeline we defined only processes the raw text into inputs. If we want to do text classification, we also have to process the labels into targets.
+
+然而，通常你们有两个（或更多）并行变换管线：一个处理你的原生数据项为输入，一个处理你的原生数据项为目标。例如，在这里我们定义的管线只处理原生文本为输入。如果你想做文本分类，你也必须处理标签为目标。
+
+For this we need to do two things. First we take the label name from the parent folder. There is a function, `parent_label`, for this:
+
+为此我们需要做两件事。第一我们取父文件夹的标签名。有一个`parent_label`函数来做这个事情：
+
+```
+lbls = files.map(parent_label)
+lbls
+```
+
+Out: (#50000) ['pos' , 'pos' , 'pos' , 'pos' , 'pos' , 'pos' , 'pos' , 'pos' , 'pos' , 'pos'...]
+
+Then we need a `Transform` that will grab the unique items and build a vocab with them during setup, then transform the string labels into integers when called. fastai provides this for us; it's called `Categorize`:
+
+然后我们需要一个`Transform`，它会抓取唯一数据项并在设置期间用它们创建一个词汇表，然后当调用词汇时转换字符串标签为整型。fastai为我们提供了这一方法，它称为`Categorize`：
+
+```
+cat = Categorize()
+cat.setup(lbls)
+cat.vocab, cat(lbls[0])
+```
+
+Out: ((#2) ['neg' , 'pos'], TensorCategory(1))
+
+To do the whole setup automatically on our list of files, we can create a `TfmdLists` as before:
+
+如以前一样，我们可以创建一个`TfmdLists`，在我们文件列表上自动化做整个设置：
+
+```
+tls_y = TfmdLists(files, [parent_label, Categorize()])
+tls_y[0]
+```
+
+Out: TensorCategory(1)
+
+But then we end up with two separate objects for our inputs and targets, which is not what we want. This is where `Datasets` comes to the rescue.
+
+但是，我们最终有两个独立的输入和目标对象，这不是我们想要的内容。这就是`Datasets`前来营救的地方。
+
+### Datasets
+
+### Datasets
+
+`Datasets` will apply two (or more) pipelines in parallel to the same raw object and build a tuple with the result. Like `TfmdLists`, it will automatically do the setup for us, and when we index into a `Datasets`, it will return us a tuple with the results of each pipeline:
+
+`Datasets`会对相同的原生对象应用两个（或多个）并行的管线，并用这个结果创建一个元组。如`TfmdLists`它会为我们自动做设置，且当我们索引到一个`Datasets`中时，它会用每个管线的结果反给我们一个元组：
+
+```
+x_tms = [Tokenizer.from_folder(path), Numericalize]
+y_tfms = [parent_label, Categorize()]
+dsets = Datasets(files, [x_tfms, y_tfms])
+x,y = dsets[0]
+x[:20],y
+```
+
+Like a `TfmdLists`, we can pass along `splits` to a `Datasets` to split our data between training and validation sets:
+
+像`TfmdLists`，我们能够传递`splits`给一个`Datasets`来把我们的数据在训练集和验证集之间分割：
+
+```
+x_tfms = [Tokenizer.from_folder(path), Numericalize]
+y_tfms = [parent_label, Categorize()]
+dsets = Datasets(files, [x_tfms, y_tfms], splits=splits)
+x,y = dsets.valid[0]
+x[:20],y
+```
+
+Out: (tensor([    2,     8,    20,    30,    87,   510,  1570,    12,   408,   379,  4196,    10,     8,    20,    30,    16,    13, 12216,   202,   509]),  TensorCategory(0))
+
+It can also decode any processed tuple or show it directly:
+
+它也能够解码任何处理过的元组或直接显示它：
+
+```
+t = dsets.valid[0]
+dsets.decode(t)
+```
+
+Out: ('xxbos xxmaj this movie had horrible lighting and terrible camera movements . xxmaj this movie is a jumpy horror flick with no meaning at all . xxmaj the slashes are totally fake looking . xxmaj it looks like some 17 year - old idiot wrote this movie and a 10 year old kid shot it . xxmaj with the worst acting you can ever find . xxmaj people are tired of knives . xxmaj at least move on to guns or fire . xxmaj it has almost exact lines from " when a xxmaj stranger xxmaj calls " . xxmaj with gruesome killings , only crazy people would enjoy this movie . xxmaj it is obvious the writer does n\'t have kids or even care for them . i mean at show some mercy . xxmaj just to sum it up , this movie is a " b " movie and it sucked . xxmaj just for your own sake , do n\'t even think about wasting your time watching this crappy movie .',
+ 'neg')
+
+The last step is to convert our `Datasets` object to a `DataLoaders`, which can be done with the `dataloaders` method. Here we need to pass along a special argument to take care of the padding problem (as we saw in the last chapter). This needs to happen just before we batch the elements, so we pass it to `before_batch`:
+
+最后一步是来转换我们的`Datasets`对象为一个`DataLoaders`，它能够用`dataloaders`方法来完成。在这里我们需要传递一个特定参数来负责填充问题（在上一章节我们见过的）。这需要发生在我们批量处理元素之前，所以我们传递这个参数给`before_batch`：
+
+```
+dls = dsets.dataloaders(bs=64, before_batch=pad_input)
+```
+
+`dataloaders` directly calls `DataLoader` on each subset of our `Datasets`. fastai's `DataLoader` expands the PyTorch class of the same name and is responsible for collating the items from our datasets into batches. It has a lot of points of customization, but the most important ones that you should know are:
+
+`dataloaders`在我们`Datasets`的每个子集上直接调用`DataLoader`。fastai的`DataLoader`扩展了PyTorch相同名字的类且整体我们数据集的数据项为批。它有很多定制化的点，但最重要的几点你应该知道：
+
+- `after_item`:: Applied on each item after grabbing it inside the dataset. This is the equivalent of `item_tfms` in `DataBlock`.
+- `before_batch`:: Applied on the list of items before they are collated. This is the ideal place to pad items to the same size.
+- `after_batch`:: Applied on the batch as a whole after its construction. This is the equivalent of `batch_tfms` in `DataBlock`.
+
+- `after_item`：应用在从数据集内部所抓取的每个数据项上。它等同于`DataBlock`中的`item_tfms`。
+- `before_batch`：应用在数据项整理之前。这是一个填充数据项为相同尺寸的理想位置。
+- `after_batch`：应用在构建后作为一个整体的批次上。这等同于`DataBlock`中的`batch_tfms`。
+
+As a conclusion, here is the full code necessary to prepare the data for text classification:
+
+这里是对于文本分类准备数据所必须的全部代码，作为总结：
+
+```
+tfms = [[Tokenizer.from_folder(path), Numericalize], [parent_label, Categorize]]
+files = get_text_files(path, folders = ['train', 'test'])
+splits = GrandparentSplitter(valid_name='test')(files)
+dsets = Datasets(files, tfms, splits=splits)
+dls = dsets.dataloaders(dl_type=SortedDL, before_batch=pad_input)
+```
+
+The two differences from the previous code are the use of `GrandparentSplitter` to split our training and validation data, and the `dl_type` argument. This is to tell `dataloaders` to use the `SortedDL` class of `DataLoader`, and not the usual one. `SortedDL` constructs batches by putting samples of roughly the same lengths into batches.
+
+This does the exact same thing as our previous `DataBlock`:
+
+之前代码的有两个差异是使用`GrandparentSplitter`来分割我们的训练和验证数据和`dl_type`参数。这是告诉`dataloaders`使用`DataLoader`的`SortedDL`类，而不是平常的那一个。`SortedDL`通过放置大致相同长度的样本在批次中来构建批次。
+
+这个操作与我们之前的`DataBlock`是完全相同的：
+
+```
+path = untar_data(URLs.IMDB)
+dls = DataBlock(
+    blocks=(TextBlock.from_folder(path),CategoryBlock),
+    get_y = parent_label,
+    get_items=partial(get_text_files, folders=['train', 'test']),
+    splitter=GrandparentSplitter(valid_name='test')
+).dataloaders(path)
+```
+
+But now, you know how to customize every single piece of it!
+
+Let's practice what we just learned about this mid-level API for data preprocessing, using a computer vision example now.
+
+刚刚，我们知道如何定做它的第一部分了！
+
+让我们实践一下我们刚刚学习的关于中级API的内容来做数据的预处理，现在使用一个计算机视觉的例子。
