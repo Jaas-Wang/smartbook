@@ -1,6 +1,6 @@
 # NLP Deep Dive: RNNs
 
-# 自然语言处理深潜：RNNs
+# 自然语言处理研究：递归神经网络
 
 In <chapter_intro> we saw that deep learning can be used to get great results with natural language datasets. Our example relied on using a pretrained language model and fine-tuning it to classify reviews. That example highlighted a difference between transfer learning in NLP and computer vision: in general in NLP the pretrained model is trained on a different task.
 
