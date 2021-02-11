@@ -603,3 +603,71 @@ We can now train a model using this `DataLoaders`. It will need a bit more custo
 
 我们现在能够使用这个`DataLoaders`训练一个模型了。相比由`cnn_learner`提供的常规模型它会需要更多的定制，因为它必须取两张图像而不是一张，但是我们会学习如何创建一个这样的模型并在<章节：架构细节>中训练它。
 
+## Conclusion
+
+## 结尾
+
+fastai provides a layered API. It takes one line of code to grab the data when it's in one of the usual settings, making it easy for beginners to focus on training a model without spending too much time assembling the data. Then, the high-level data block API gives you more flexibility by allowing you to mix and match some building blocks. Underneath it, the mid-level API gives you greater flexibility to apply any transformations on your items. In your real-world problems, this is probably what you will need to use, and we hope it makes the step of data-munging as easy as possible.
+
+fastai提供了一个分层的API。在常规设置中它需要一行代码来抓取数据，对于初学者它很容易上手可以聚焦在训练模型上，而不需要浪费太多的时间装配数据。而且，高级数据块API给我们更多的灵活行，允许我们来混合和匹配一些创建块。在它之下的中级API给了我们更大的灵活性在我们数据项上应用任何变换。在你的世界问题中，这是你极有可能需要的，且我们希望它使得的数据处理步骤尽可能的简单。
+
+## Questionnaire
+
+## 练习题
+
+1. Why do we say that fastai has a "layered" API? What does it mean?
+2. 为什么我们话fastai有一个“分层”的API？它意味着什么？
+3. Why does a `Transform` have a `decode` method? What does it do?
+4. 为什么一个`Transform`有一个`decode`方法？它做了什么？
+5. Why does a `Transform` have a `setup` method? What does it do?
+6. 为什么一个`Transform`有一个`setup`方法？它做了什么？
+7. How does a `Transform` work when called on a tuple?
+8. 当在元组上调用时，`Transform`如何工作？
+9. Which methods do you need to implement when writing your own `Transform`?
+10. 当编写我们自己的`Transform`时哪个方法我们需要实现？
+11. Write a `Normalize` transform that fully normalizes items (subtract the mean and divide by the standard deviation of the dataset), and that can decode that behavior. Try not to peek!
+12. 编写一个`Normalize`变换全部的归一化数据项（减去平均值，并除以数据集的标准差），且能够解码该操作。不要偷看！
+13. Write a `Transform` that does the numericalization of tokenized texts (it should set its vocab automatically from the dataset seen and have a `decode` method). Look at the source code of fastai if you need help.
+14. 编写一个`Transform`做标记文本的数值化（它应该从数据集中看到的内容自动设置它的词汇表，且有一个`decode`方法）。如果你需要版主可以看一下fastai的源码。
+15. What is a `Pipeline`?
+16. 什么是`Pipeline`？
+17. What is a `TfmdLists`?
+18. 什么是`TfmdLists`？
+19. What is a `Datasets`? How is it different from a `TfmdLists`?
+20. 什么是`Datasets`？它与`TfmdLists`是如何区分的？
+21. Why are `TfmdLists` and `Datasets` named with an "s"?
+22. 为什么`TfmdLists`和`Datasets`带有一个“s”命名？
+23. How can you build a `DataLoaders` from a `TfmdLists` or a `Datasets`?
+24. 我们如何从一个`TfmdLists`或一个`Datasets`中创建一个`DataLoaders`？
+25. How do you pass `item_tfms` and `batch_tfms` when building a `DataLoaders` from a `TfmdLists` or a `Datasets`?
+26. 当从一个`TfmdLists`或一个`Datasets`中创建一个`DataLoaders`时，我们如何传递`item_ftms`和`batch_tfms`？
+27. What do you need to do when you want to have your custom items work with methods like `show_batch` or `show_results`?
+28. 当我们希望自定义数据项和如`show_batch`或`show_results`这样的方法一起工作时，我们需要做什么？
+29. Why can we easily apply fastai data augmentation transforms to the `SiamesePair` we built?
+30. 我们为什么能够轻松的应用fastai数据增加变换给我们创建的`SiamesePair`？
+
+### Further Research
+
+### 深入研究
+
+1. Use the mid-level API to prepare the data in `DataLoaders` on your own datasets. Try this with the Pet dataset and the Adult dataset from Chapter 1.
+2. Look at the Siamese tutorial in the fastai documentation to learn how to customize the behavior of `show_batch` and `show_results` for new type of items. Implement it in your own project.
+
+1. 在你自己的数据集上使用中级API在`DataLoaders`中准备数据。用宠物数据集和第一章的成人数据集尝试这个试验。
+2. 查看fastai文档中的Siamese教程，学习如何为新的类型数据项定义`show_batch`和`show_results`的行为。在你自己的项目中实现它。
+
+## Understanding fastai's Applications: Wrap Up
+
+## 理解fastai的应用：完成
+
+Congratulations—you've completed all of the chapters in this book that cover the key practical parts of training models and using deep learning! You know how to use all of fastai's built-in applications, and how to customize them using the data block API and loss functions. You even know how to create a neural network from scratch, and train it! (And hopefully you now know some of the questions to ask to make sure your creations help improve society too.)
+
+恭喜，你已经完成了本书中覆盖训练模型和使用深度学习关键实用部分的所有章节！你知道了如何使用所有fastai的嵌入应用，和如何使用数据块API和损失函数定义它们。你甚至知道如何从零开始创建一个神经网络并训练它！（且你现在有希望知道去问一样问题以确保你的创建也能够帮助改善社会。）
+
+The knowledge you already have is enough to create full working prototypes of many types of neural network applications. More importantly, it will help you understand the capabilities and limitations of deep learning models, and how to design a system that's well adapted to them.
+
+你已经有了足够创建完整工作模型的很多类型神经网络应用的知识。更加重要的是，它会帮助你理解深度学习模型的能力和局限，和如何设计一个很好适应它们的系统。
+
+In the rest of this book we will be pulling apart those applications, piece by piece, to understand the foundations they are built on. This is important knowledge for a deep learning practitioner, because it is what allows you to inspect and debug models that you build and create new applications that are customized for your particular projects.
+
+在本书的剩余部分，我们将会逐一学习那些应用，理解他们依赖的基础。对于深度学习行业人员这是很重要的知识，因为这能够让你检查和调试你所创建的模型和为你特定项目所定制的新应用。
