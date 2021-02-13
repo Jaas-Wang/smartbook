@@ -159,3 +159,119 @@ Since layer weights do not change, you might think of the sequential layers as "
 
 因为层权重不会发生改变，你可能会认为这些序列层是作为“相同的层”的重复。实际上，PyTorch做了这个考虑。我们能够只创建一个层，且使用这个层多次。
 
+### Our Language Model in PyTorch
+
+### 用PyTorch创建我们的语言模型
+
+We can now create the language model module that we described earlier:
+
+现在我们能够创建我们先前描述的语言模型了：
+
+```
+class LMModel1(Module):
+    def __init__(self, vocab_sz, n_hidden):
+        self.i_h = nn.Embedding(vocab_sz, n_hidden)  
+        self.h_h = nn.Linear(n_hidden, n_hidden)     
+        self.h_o = nn.Linear(n_hidden,vocab_sz)
+        
+    def forward(self, x):
+        h = F.relu(self.h_h(self.i_h(x[:,0])))
+        h = h + self.i_h(x[:,1])
+        h = F.relu(self.h_h(h))
+        h = h + self.i_h(x[:,2])
+        h = F.relu(self.h_h(h))
+        return self.h_o(h)
+```
+
+As you see, we have created three layers:
+
+- The embedding layer (`i_h`, for *input* to *hidden*)
+- The linear layer to create the activations for the next word (`h_h`, for *hidden* to *hidden*)
+- A final linear layer to predict the fourth word (`h_o`, for *hidden* to *output*)
+
+正如你看到的，我们已经创建了三个层：
+
+- 嵌入层（`i_h`，*输入到隐藏*）
+- 线性层为下个词创建激活（`h_h`，*隐藏到隐藏*）
+- 最后的线性层来预测第四个单词（`h_o`，*隐藏到输出*）
+
+This might be easier to represent in pictorial form, so let's define a simple pictorial representation of basic neural networks. <img_simple_nn> shows how we're going to represent a neural net with one hidden layer.
+
+这可能以示意图方式更容易表达，所以让我们定义一个简单的基础神经网络示意图表示。<简单的神经网络示意图表示>显示了我们打算表达的一个带有单隐含层的神经网络。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00020.png" alt="Pictorial representation of simple neural network" width="400" caption="Pictorial representation of a simple neural network" id="img_simple_nn">
+  </p>
+  <p align="center">图：简单的神经网络示意图表示</p>
+</div>
+
+Each shape represents activations: rectangle for input, circle for hidden (inner) layer activations, and triangle for output activations. We will use those shapes (summarized in <img_shapes>) in all the diagrams in this chapter.
+
+每个形状所代表的激活：矩形为输入，原型为隐含（内部的）层激活，三角形为输出激活。在本章节的所有示意图中我们会使用这些形状（<示意图中所使用的图形>做了总结）。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00021.png" alt="Shapes used in our pictorial representations" width="200" id="img_shapes" caption="Shapes used in our pictorial representations">
+  </p>
+  <p align="center">图：示意图中所使用的图形</p>
+</div>
+
+An arrow represents the actual layer computation—i.e., the linear layer followed by the activation function. Using this notation, <lm_rep> shows what our simple language model looks like.
+
+箭头线表示实际的层计算。即，线性层后面跟随着激活函数。使用这一标记，<基础语言模型表示>图中展示了我们的简单的语言模型看起来是什么样子。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00022.png" alt="Representation of our basic language model" width="500" caption="Representation of our basic language model" id="lm_rep" >
+  </p>
+  <p align="center">图：基础语言模型表示</p>
+</div>
+
+To simplify things, we've removed the details of the layer computation from each arrow. We've also color-coded the arrows, such that all arrows with the same color have the same weight matrix. For instance, all the input layers use the same embedding matrix, so they all have the same color (green).
+
+Let's try training this model and see how it goes:
+
+简化了的事情是我们已经移除了每个箭头的层计算细节。我们也彩色编码了箭头线，这样有相同颜色的箭头线有着相同的权重矩阵。例如，所有的输入层使用了相同的嵌入矩阵，所以它们都有着相同的颜色（绿色）。
+
+让我们尝试训练这个模型并查看效果如何：
+
+```
+learn = Learner(dls, LMModel1(len(vocab), 64), loss_func=F.cross_entropy, 
+                metrics=accuracy)
+learn.fit_one_cycle(4, 1e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   1.824297 |   1.970941 | 0.467554 | 00:02 |
+|     1 |   1.386973 |   1.823242 | 0.467554 | 00:02 |
+|     2 |   1.417556 |   1.654497 | 0.494414 | 00:02 |
+|     3 |   1.376440 |   1.650849 | 0.494414 | 00:02 |
+
+To see if this is any good, let's check what a very simple model would give us. In this case we could always predict the most common token, so let's find out which token is most often the target in our validation set:
+
+看看这是否有用，让我们检查一下一个非常简单的模型会提供给我们什么。在本例子中我们总会预测最常见的标记，所以让我们找出在我们的验证集中哪个标记是最常见的目标：
+
+```
+n,counts = 0,torch.zeros(len(vocab))
+for x,y in dls.valid:
+    n += y.shape[0]
+    for i in range_of(vocab): counts[i] += (y==i).long().sum()
+idx = torch.argmax(counts)
+idx, vocab[idx.item()], counts[idx].item()/n
+```
+
+Out: (tensor(29), 'thousand', 0.15165200855716662)
+
+The most common token has the index 29, which corresponds to the token `thousand`. Always predicting this token would give us an accuracy of roughly 15%, so we are faring way better!
+
+最常见的标记索引是29，其与标记`thousand`相关联。总是预测这个标高会给我们大约15%的准确度，所以我们将会好的好！
+
+> A: My first guess was that the separator would be the most common token, since there is one for every number. But looking at `tokens` reminded me that large numbers are written with many words, so on the way to 10,000 you write "thousand" a lot: five thousand, five thousand and one, five thousand and two, etc. Oops! Looking at your data is great for noticing subtle features and also embarrassingly obvious ones.
+
+> 亚：我的第一个猜想是分割器也许是最常见的标记，因为每个数字都有一个。但是查看`标记`让我想起大的数字用很多单词写出来的，所以以这样的方式对于10,000这个数值，你要写很多个`thousand`： five thousand, five thousand and one, five thousand and two，等等。哎呦！查看你的数据对于注意细微特征很有益处的，同样尴尬也是显而易见的。
+
+This is a nice first baseline. Let's see how we can refactor it with a loop.
+
+这是非常好的第一个基线。让我们看一下如何用循环重构它。
