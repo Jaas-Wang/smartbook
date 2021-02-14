@@ -275,3 +275,90 @@ The most common token has the index 29, which corresponds to the token `thousand
 This is a nice first baseline. Let's see how we can refactor it with a loop.
 
 这是非常好的第一个基线。让我们看一下如何用循环重构它。
+
+### Our First Recurrent Neural Network
+
+### 我们首个递归神经网络
+
+Looking at the code for our module, we could simplify it by replacing the duplicated code that calls the layers with a `for` loop. As well as making our code simpler, this will also have the benefit that we will be able to apply our module equally well to token sequences of different lengths—we won't be restricted to token lists of length three:
+
+看我们模型的代码，我们能够使用一个`for`循环替换调用层的重复代码来简化它。同样这使得我们的代码更加简单，这也会有一个收益，就是我们能够应该我们的模型同样很好的标记不同长度的序列。我们不会被限制在标记长度为三的列表：
+
+```
+class LMModel2(Module):
+    def __init__(self, vocab_sz, n_hidden):
+        self.i_h = nn.Embedding(vocab_sz, n_hidden)  
+        self.h_h = nn.Linear(n_hidden, n_hidden)     
+        self.h_o = nn.Linear(n_hidden,vocab_sz)
+        
+    def forward(self, x):
+        h = 0
+        for i in range(3):
+            h = h + self.i_h(x[:,i])
+            h = F.relu(self.h_h(h))
+        return self.h_o(h)
+```
+
+Let's check that we get the same results using this refactoring:
+
+让我们检查一下，使用这个重构的代码我们获得相同的结果：
+
+```
+learn = Learner(dls, LMModel2(len(vocab), 64), loss_func=F.cross_entropy, 
+                metrics=accuracy)
+learn.fit_one_cycle(4, 1e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   1.816274 |   1.964143 | 0.460185 | 00:02 |
+|     1 |   1.423805 |   1.739964 | 0.473259 | 00:02 |
+|     2 |   1.430327 |   1.685172 | 0.485382 | 00:02 |
+|     3 |   1.388390 |   1.657033 | 0.470406 | 00:02 |
+
+We can also refactor our pictorial representation in exactly the same way, as shown in <basic_rnn> (we're also removing the details of activation sizes here, and using the same arrow colors as in <lm_rep>).
+
+我们也能够以完全相同的方式重构在我们的示意图表示，如图<基础递归神经网络>所示（在这里我们同样移除了激活尺寸的细节，并用不用 了与图<基础语言模型表示>相同的箭头线颜色）。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00070.png" alt="Basic recurrent neural network" width="400" caption="Basic recurrent neural network" id="basic_rnn"  >
+  </p>
+  <p align="center">图：基础递归神经网络</p>
+</div>
+
+You will see that there is a set of activations that are being updated each time through the loop, stored in the variable `h`—this is called the *hidden state*.
+
+> Jargon: hidden state: The activations that are updated at each step of a recurrent neural network.
+
+我们会看到，有一系统的激活每次通过循环被更新，存储在变量`h`中，这被称为*隐含状态*。
+
+> 术语：隐含状态：激活在每一步的递归神经网络中被更新。
+
+A neural network that is defined using a loop like this is called a *recurrent neural network* (RNN). It is important to realize that an RNN is not a complicated new architecture, but simply a refactoring of a multilayer neural network using a `for` loop.
+
+> A: My true opinion: if they were called "looping neural networks," or LNNs, they would seem 50% less daunting!
+
+神经网络使用一个循环来定义，就橡这个被称为的*递归神经网络*（RNN）。意识到RNN不是一个复杂的新架构，而是使用 一个`for`循环的多层神经网络的简单重构，这是很重要的。
+
+> 亚：我的真实观点：如果它们被称为“循环神经网络”，或LNN，它们似乎减少了50%的畏惧！
+
+Now that we know what an RNN is, let's try to make it a little bit better.
+
+现在我们知道了RNN是什么，让我们尝试让他更好一些。
+
+## Improving the RNN
+
+## 改善递归神经网络
+
+Looking at the code for our RNN, one thing that seems problematic is that we are initializing our hidden state to zero for every new input sequence. Why is that a problem? We made our sample sequences short so they would fit easily into batches. But if we order the samples correctly, those sample sequences will be read in order by the model, exposing the model to long stretches of the original sequence.
+
+查看我们的RNN代码，有一个事情好像有问题那就是对每个新输入序列我们初始化隐含状态为零。为什么那是一个问题呢？我们缩短了我们的样本序列，它们会很容易的融合到批次中。但是如果我们正确的排序了样本，那些样本序列会被模型按照顺序读取，从而暴露模型在原始序列长度片段下。
+
+Another thing we can look at is having more signal: why only predict the fourth word when we could use the intermediate predictions to also predict the second and third words?
+
+我们能够看到的另外事情是有更多的信号：当我们使用中间预测结果来同样预测第二和第三个词的时候，为什么只预测第四个词？
+
+Let's see how we can implement those changes, starting with adding some state.
+
+让我们学习，我们能够如何实现这些变化，从添加一些状态开始。
