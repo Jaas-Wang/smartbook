@@ -40,7 +40,7 @@ But it's sometimes not flexible enough. For debugging purposes, for instance, we
 
 > note: Mid-Level API: The mid-level API does not only contain functionality for creating `DataLoaders`. It also has the *callback* system, which allows us to customize the training loop any way we like, and the *general optimizer*. Both will be covered in <chapter_accel_sgd>.
 
-> 注释：中级API：中级API不仅仅包含创建`DataLoaders`的功能。它也有回调系统，允许我们定义任何我们喜欢的训练循环和常用优化器。这两者会在<章节:加速随机梯度下降>所体现。
+> 注释：中级API：中级API不仅仅包含创建`DataLoaders`的功能。它也有回调系统，允许我们定义任何我们喜欢的训练循环和常用优化器。这两者会在< 章节:加速随机梯度下降 >所体现。
 
 ### Transforms
 
