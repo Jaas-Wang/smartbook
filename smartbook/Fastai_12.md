@@ -161,7 +161,7 @@ Since layer weights do not change, you might think of the sequential layers as "
 
 ### Our Language Model in PyTorch
 
-### 用PyTorch创建我们的语言模型
+### 我们在PyTorch中的语言模型
 
 We can now create the language model module that we described earlier:
 
@@ -349,11 +349,11 @@ Now that we know what an RNN is, let's try to make it a little bit better.
 
 ## Improving the RNN
 
-## 改善递归神经网络
+## 改善递归神经网络（RNN）
 
 Looking at the code for our RNN, one thing that seems problematic is that we are initializing our hidden state to zero for every new input sequence. Why is that a problem? We made our sample sequences short so they would fit easily into batches. But if we order the samples correctly, those sample sequences will be read in order by the model, exposing the model to long stretches of the original sequence.
 
-查看我们的RNN代码，有一个事情好像有问题那就是对每个新输入序列我们初始化隐含状态为零。为什么那是一个问题呢？我们缩短了我们的样本序列，它们会很容易的融合到批次中。但是如果我们正确的排序了样本，那些样本序列会被模型按照顺序读取，从而暴露模型在原始序列长度片段下。
+查看我们的递归神经网络（RNN）代码，有一个事情好像有问题那就是对每个新输入序列我们初始化隐含状态为零。为什么那是一个问题呢？我们缩短了我们的样本序列，它们会很容易的融合到批次中。但是如果我们正确的排序了样本，那些样本序列会被模型按照顺序读取，从而暴露模型在原始序列长度片段下。
 
 Another thing we can look at is having more signal: why only predict the fourth word when we could use the intermediate predictions to also predict the second and third words?
 
@@ -365,7 +365,7 @@ Let's see how we can implement those changes, starting with adding some state.
 
 ### Maintaining the State of an RNN
 
-### 维护RNN的状态
+### 维护递归神经网络的状态
 
 Because we initialize the model's hidden state to zero for each new sample, we are throwing away all the information we have about the sentences we have seen so far, which means that our model doesn't actually know where we are up to in the overall counting sequence. This is easily fixed; we can simply move the initialization of the hidden state to `__init__`.
 
@@ -507,3 +507,194 @@ learn.fit_one_cycle(10, 3e-3)
 This is already better! The next step is to use more targets and compare them to the intermediate predictions.
 
 这已经更好了！下一步使用更多的目标并用它们与中间预测做对比。
+
+### Creating More Signal
+
+### 创建更多信号
+
+Another problem with our current approach is that we only predict one output word for each three input words. That means that the amount of signal that we are feeding back to update weights with is not as large as it could be. It would be better if we predicted the next word after every single word, rather than every three words, as shown in <stateful_rep>.
+
+我们当前方法的另外一个问题是，对于每三个输入单词我们只预测一个输出单词。这表示没有足够大的我们反馈给更新权重的信号数量。如果预测每个单一单词后的下个单词，而不是每三个单词它也许会更好，如下图<递归神经网络在每个标记后进行预测>。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00024.png" alt="RNN predicting after every token" width="400" caption="RNN predicting after every token" id="stateful_rep" >
+  </p>
+  <p align="center">图：递归神经网络在每个标记后进行预测</p>
+</div>
+
+This is easy enough to add. We need to first change our data so that the dependent variable has each of the three next words after each of our three input words. Instead of `3`, we use an attribute, `sl` (for sequence length), and make it a bit bigger:
+
+这个添加非常容易。我们首选需要改变我们的数据，因此我们三个输入单词的每一个后面因变量就有了三个下个单词。我们使用特征`sl`（序列长度）而不是`3`，以使得的其更大一点：
+
+```
+sl = 16
+seqs = L((tensor(nums[i:i+sl]), tensor(nums[i+1:i+sl+1]))
+         for i in range(0,len(nums)-sl-1,sl))
+cut = int(len(seqs) * 0.8)
+dls = DataLoaders.from_dsets(group_chunks(seqs[:cut], bs),
+                             group_chunks(seqs[cut:], bs),
+                             bs=bs, drop_last=True, shuffle=False)
+```
+
+Looking at the first element of `seqs`, we can see that it contains two lists of the same size. The second list is the same as the first, but offset by one element:
+
+查看`seqs`的第一个元素，我们能够看到它包含了两个相同尺寸的列表。第二个列表是与第一个是相同的，但是偏移了一个元素：
+
+```
+[L(vocab[o] for o in s) for s in seqs[0]]
+```
+
+Out[ ]: [(#16) ['one' , '.' , 'two' , '.' , 'three' , '.' , 'four' , '.' , 'five' , '.'...], (#16) ['.' , 'two' , '.' , 'three' , '.' , 'four' , '.' , 'five' , '.' , 'six'...]]
+
+Now we need to modify our model so that it outputs a prediction after every word, rather than just at the end of a three-word sequence:
+
+现在我们需要修改我们的模型，它会在每个词后输出预测，而不是只是在三词序列的结尾输出：
+
+```
+class LMModel4(Module):
+    def __init__(self, vocab_sz, n_hidden):
+        self.i_h = nn.Embedding(vocab_sz, n_hidden)  
+        self.h_h = nn.Linear(n_hidden, n_hidden)     
+        self.h_o = nn.Linear(n_hidden,vocab_sz)
+        self.h = 0
+        
+    def forward(self, x):
+        outs = []
+        for i in range(sl):
+            self.h = self.h + self.i_h(x[:,i])
+            self.h = F.relu(self.h_h(self.h))
+            outs.append(self.h_o(self.h))
+        self.h = self.h.detach()
+        return torch.stack(outs, dim=1)
+    
+    def reset(self): self.h = 0
+```
+
+This model will return outputs of shape `bs x sl x vocab_sz` (since we stacked on `dim=1`). Our targets are of shape `bs x sl`, so we need to flatten those before using them in `F.cross_entropy`:
+
+这个模型会返回形状为`bs x sl x vocab_sz`的输出（因为我们在`dim=1`上堆栈）。我们目标具有`bs x sl`的形状，因此我们需要在`F.cross_entropy`中使用它们之前弄平它们：
+
+```
+def loss_func(inp, targ):
+    return F.cross_entropy(inp.view(-1, len(vocab)), targ.view(-1))
+```
+
+We can now use this loss function to train the model:
+
+现在我们可以用这个损失函数训练模型了：
+
+```
+learn = Learner(dls, LMModel4(len(vocab), 64), loss_func=loss_func,
+                metrics=accuracy, cbs=ModelResetter)
+learn.fit_one_cycle(15, 3e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   3.103298 |   2.874341 | 0.212565 | 00:01 |
+|     1 |   2.231964 |   1.971280 | 0.462158 | 00:01 |
+|     2 |   1.711358 |   1.813547 | 0.461182 | 00:01 |
+|     3 |   1.448516 |   1.828176 | 0.483236 | 00:01 |
+|     4 |   1.288630 |   1.659564 | 0.520671 | 00:01 |
+|     5 |   1.161470 |   1.714023 | 0.554932 | 00:01 |
+|     6 |   1.055568 |   1.660916 | 0.575033 | 00:01 |
+|     7 |   0.960765 |   1.719624 | 0.591064 | 00:01 |
+|     8 |   0.870153 |   1.839560 | 0.614665 | 00:01 |
+|     9 |   0.808545 |   1.770278 | 0.624349 | 00:01 |
+|    10 |   0.758084 |   1.842931 | 0.610758 | 00:01 |
+|    11 |   0.719320 |   1.799527 | 0.646566 | 00:01 |
+|    12 |   0.683439 |   1.917928 | 0.649821 | 00:01 |
+|    13 |   0.660283 |   1.874712 | 0.628581 | 00:01 |
+|    14 |   0.646154 |   1.877519 | 0.640055 | 00:01 |
+
+We need to train for longer, since the task has changed a bit and is more complicated now. But we end up with a good result... At least, sometimes. If you run it a few times, you'll see that you can get quite different results on different runs. That's because effectively we have a very deep network here, which can result in very large or very small gradients. We'll see in the next part of this chapter how to deal with this.
+
+我们需要训练的时间更长，因为任务已经有了些改变且现在更加复杂。但是我们会以好的结果结束... 至少，有时候是这样的。如果你运行它多次，你会看到在不同的运行上你能够取得完全不同的结果。这是因为在这里你实际上有了一个非常深的网络，它能够导致更大或更小的梯度。在本章的下个部分我们会学习如何处理这个问题。
+
+Now, the obvious way to get a better model is to go deeper: we only have one linear layer between the hidden state and the output activations in our basic RNN, so maybe we'll get better results with more.
+
+现在，获得更好模型的很显而易见的方法是更深：在我们基础的递归神经网络中在隐含状态和输出激活之间我们只有一个线性层，所以有更多的层我们可能会获得更好的结果。
+
+## Multilayer RNNs
+
+## 多层递归神经网络
+
+In a multilayer RNN, we pass the activations from our recurrent neural network into a second recurrent neural network, like in <stacked_rnn_rep>.
+
+在一个多层递归神经网络中，我们从我们的递归神经网络传递激活到第二个递归神经网络中去，如图<两层递归神经网络>所求。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00025.png" alt="2-layer RNN" width="550" caption="2-layer RNN" id="stacked_rnn_rep" >
+  </p>
+  <p align="center">图：两层递归神经网络</p>
+</div>
+
+The unrolled representation is shown in <unrolled_stack_rep> (similar to <lm_rep>).
+
+展开描述在图<两层展开递归的神经网络>所示（与<基础语言模型表示>图类似）。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00026.png" alt="2-layer unrolled RNN" width="500" caption="Two-layer unrolled RNN" id="unrolled_stack_rep" >
+  </p>
+  <p align="center">图：两层展开递的归神经网络</p>
+</div>
+
+Let's see how to implement this in practice.
+
+让我们看一下在实践中如何来实现它。
+
+### The Model
+
+### 模型
+
+We can save some time by using PyTorch's `RNN` class, which implements exactly what we created earlier, but also gives us the option to stack multiple RNNs, as we have discussed:
+
+通过使用PyTorch的`RNN`类我们能够节省一些问题，它准确的实现了早先我们创建的内容，但也给了我们已经讨论过的叠加多层递归神经网络的选项：
+
+```
+class LMModel5(Module):
+    def __init__(self, vocab_sz, n_hidden, n_layers):
+        self.i_h = nn.Embedding(vocab_sz, n_hidden)
+        self.rnn = nn.RNN(n_hidden, n_hidden, n_layers, batch_first=True)
+        self.h_o = nn.Linear(n_hidden, vocab_sz)
+        self.h = torch.zeros(n_layers, bs, n_hidden)
+        
+    def forward(self, x):
+        res,h = self.rnn(self.i_h(x), self.h)
+        self.h = h.detach()
+        return self.h_o(res)
+    
+    def reset(self): self.h.zero_()
+```
+
+```
+learn = Learner(dls, LMModel5(len(vocab), 64, 2), 
+                loss_func=CrossEntropyLossFlat(), 
+                metrics=accuracy, cbs=ModelResetter)
+learn.fit_one_cycle(15, 3e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   3.055853 |   2.591640 | 0.437907 | 00:01 |
+|     1 |   2.162359 |   1.787310 | 0.471598 | 00:01 |
+|     2 |   1.710663 |   1.941807 | 0.321777 | 00:01 |
+|     3 |   1.520783 |   1.999726 | 0.312012 | 00:01 |
+|     4 |   1.330846 |   2.012902 | 0.413249 | 00:01 |
+|     5 |   1.163297 |   1.896192 | 0.450684 | 00:01 |
+|     6 |   1.033813 |   2.005209 | 0.434814 | 00:01 |
+|     7 |   0.919090 |   2.047083 | 0.456706 | 00:01 |
+|     8 |   0.822939 |   2.068031 | 0.468831 | 00:01 |
+|     9 |   0.750180 |   2.136064 | 0.475098 | 00:01 |
+|    10 |   0.695120 |   2.139140 | 0.485433 | 00:01 |
+|    11 |   0.655752 |   2.155081 | 0.493652 | 00:01 |
+|    12 |   0.629650 |   2.162583 | 0.498535 | 00:01 |
+|    13 |   0.613583 |   2.171649 | 0.491048 | 00:01 |
+|    14 |   0.604309 |   2.180355 | 0.487874 | 00:01 |
+
+Now that's disappointing... our previous single-layer RNN performed better. Why? The reason is that we have a deeper model, leading to exploding or vanishing activations.
+
+目前让人很失望...我们之前的单层递归神经网络表现的更好。为什么？原因是我们有了一个更深的模型，导致正在爆炸和消失激活。
