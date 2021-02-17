@@ -698,3 +698,230 @@ learn.fit_one_cycle(15, 3e-3)
 Now that's disappointing... our previous single-layer RNN performed better. Why? The reason is that we have a deeper model, leading to exploding or vanishing activations.
 
 目前让人很失望...我们之前的单层递归神经网络表现的更好。为什么？原因是我们有了一个更深的模型，导致正在爆炸和消失激活。
+
+### Exploding or Disappearing Activations
+
+### 爆炸和消失精度
+
+In practice, creating accurate models from this kind of RNN is difficult. We will get better results if we call `detach` less often, and have more layers—this gives our RNN a longer time horizon to learn from, and richer features to create. But it also means we have a deeper model to train. The key challenge in the development of deep learning has been figuring out how to train these kinds of models.
+
+实际上，用这种递归神经网络创建精准的模型是困难的。如果我们更少的调用`detach`及有更多的层，我们会获得更好的结果。这给了我们递归神经网络一个更长的时间范围来学习，并更丰富的特征来创建。但它也表示我们有了一个更深的模型来训练。在深度学习发展中的关键挑战是一直弄清楚如何来训练这些类型的模型。
+
+The reason this is challenging is because of what happens when you multiply by a matrix many times. Think about what happens when you multiply by a number many times. For example, if you multiply by 2, starting at 1, you get the sequence 1, 2, 4, 8,... after 32 steps you are already at 4,294,967,296. A similar issue happens if you multiply by 0.5: you get 0.5, 0.25, 0.125… and after 32 steps it's 0.00000000023. As you can see, multiplying by a number even slightly higher or lower than 1 results in an explosion or disappearance of our starting number, after just a few repeated multiplications.
+
+这是挑战的原因是因为当你乘以一个矩阵多次时发生了什么。思考当你乘以一个数值多次时发生了什么。例如，如果你乘以2，从1开始，你获得了1, 2, 4, 8,...序列，32步后你已经在4,294,967,296这个数值上了。如果你乘以0.5类似的问题会发生：你获得 0.5, 0.25, 0.125…且32步后它是0.00000000023。如你所见，乘以一个即使比1稍微更大或稍微更小一点的数，只是重复几次后，会导致我们开始的数字爆炸或消失。
+
+Because matrix multiplication is just multiplying numbers and adding them up, exactly the same thing happens with repeated matrix multiplications. And that's all a deep neural network is —each extra layer is another matrix multiplication. This means that it is very easy for a deep neural network to end up with extremely large or extremely small numbers.
+
+因为矩阵乘法只是乘以数值并回部它们，与重复的矩阵乘法会发生完全相同的事情。而这就是一个深度神经网络，每个扩展层是另外的矩阵乘法。这表示对于深度神经网络它很容易在最终有超大或极小的数值。
+
+This is a problem, because the way computers store numbers (known as "floating point") means that they become less and less accurate the further away the numbers get from zero. The diagram in <float_prec>, from the excellent article ["What You Never Wanted to Know About Floating Point but Will Be Forced to Find Out"](http://www.volkerschatz.com/science/float.html), shows how the precision of floating-point numbers varies over the number line.
+
+这是一个问题，因为计算机存储数值的方法（被称为“浮点”）表示距离零越远的数值它们就会变的越来越不精准。来自优秀的文章[“关于浮点你永远不想知道但又必须寻找的内容”](http://www.volkerschatz.com/science/float.html)中的<浮点数的精度>图展示了数字线上浮点数值的精度如何变化的。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/fltscale.svg" alt="Precision of floating point numbers" width="1000" caption="Precision of floating-point numbers" id="float_prec" >
+  </p>
+  <p align="center">图：浮点数的精度</p>
+</div>
+
+This inaccuracy means that often the gradients calculated for updating the weights end up as zero or infinity for deep networks. This is commonly referred to as the *vanishing gradients* or *exploding gradients* problem. It means that in SGD, the weights are either not updated at all or jump to infinity. Either way, they won't improve with training.
+
+这个不精准表示，对于深度网络通常对于更新权重的梯度计算以零或无线结束。这通常指的是*消失梯度或爆炸梯度*问题。在随机梯度下降中它表示权重要么根本不跟新，要么跳到无限。每个方法我们都不能用训练来改善。
+
+Researchers have developed a number of ways to tackle this problem, which we will be discussing later in the book. One option is to change the definition of a layer in a way that makes it less likely to have exploding activations. We'll look at the details of how this is done in <chapter_convolutions>, when we discuss batch normalization, and <chapter_resnet>, when we discuss ResNets, although these details don't generally matter in practice (unless you are a researcher that is creating new approaches to solving this problem). Another strategy for dealing with this is by being careful about initialization, which is a topic we'll investigate in <chapter_foundations>.
+
+研究人员已经开发很多方法来追踪这个问题，在本书晚些时候我们会讨论它。一个选择是来改变层的定义，在某种程度上它不太可能有爆炸激活。当我们在<章节：卷积神经网络>中讨论批量归一化和在<章节：残差网络>中讨论残差网络架构的时候，我们会学习这是如何做的细节，然而这些细节在实践中通常并不重要（除非你是一名研究人员，正在创建一个新的方法来解决这个问题）。对于处理这个问题的另外一个策略是通过小心的 初始化，它是我们将要在<章节：神经网络基本原理>中调查的一个主题。
+
+For RNNs, there are two types of layers that are frequently used to avoid exploding activations: *gated recurrent units* (GRUs) and *long short-term memory* (LSTM) layers. Both of these are available in PyTorch, and are drop-in replacements for the RNN layer. We will only cover LSTMs in this book; there are plenty of good tutorials online explaining GRUs, which are a minor variant on the LSTM design.
+
+对于递归神经网络，有两个类型层频繁用于避免爆炸激活：*门控循环单元*（GRUs）和*长短期记忆*（LSTM）层。这两者在PyTorch中都可以获得，且他们是递归神经网络层的直接替代器。在本书我们只会讲解长短期记忆。有大量的优秀在线教程来解释门控循环单元，它是长短期记忆设计的小变种。
+
+## LSTM
+
+## 长短期记忆
+
+LSTM is an architecture that was introduced back in 1997 by Jürgen Schmidhuber and Sepp Hochreiter. In this architecture, there are not one but two hidden states. In our base RNN, the hidden state is the output of the RNN at the previous time step. That hidden state is then responsible for two things:
+
+- Having the right information for the output layer to predict the correct next token
+- Retaining memory of everything that happened in the sentence
+
+长短期记忆是在1997年由 Jürgen Schmidhuber 和 Sepp Hochreiter 引入的一种架构。在这个架构中，有不是一个而是两个隐含状态。在我们的基础递归神经网络中，隐含状态是在上一个时间步骤的递归神经网络的输出。那个隐含状态然后负责两个事情：
+
+- 对于输出层有正确信息来预测正确的下个标记
+- 保留句子中所发生的所有事情的记忆
+
+Consider, for example, the sentences "Henry has a dog and he likes his dog very much" and "Sophie has a dog and she likes her dog very much." It's very clear that the RNN needs to remember the name at the beginning of the sentence to be able to predict *he/she* or *his/her*.
+
+例如，思考这个两个句子“Henry has a dog and he likes his dog very much”和“Sophie has a dog and she likes her dog very much.” 它是非常明确的，递归神经网络需要记住在句子一开始的名字，以有能力预测*he/she*或*his/her*。
+
+In practice, RNNs are really bad at retaining memory of what happened much earlier in the sentence, which is the motivation to have another hidden state (called *cell state*) in the LSTM. The cell state will be responsible for keeping *long short-term memory*, while the hidden state will focus on the next token to predict. Let's take a closer look at how this is achieved and build an LSTM from scratch.
+
+在实践中，递归神经网络在保留句子中更早期发生了什么的那些记忆是真的很糟糕，其是在长短期记忆中有另外一个隐含（称为*单元状态*）状态的动机。单元状态会负责保留*长短期记忆*，而隐含状态会聚焦于预测下个标记。让我们仔细看一下这是如何实现的，并从零开始创建一个长短期记忆。
+
+### Building an LSTM from Scratch
+
+### 从零开始创建一个长短期记忆
+
+In order to build an LSTM, we first have to understand its architecture. <lstm> shows its inner structure.
+
+为了创建一个长短期记忆，我们首先必须理解它的架构。图<LSTM架构>中展示了它的内部架构。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/LSTM.png" id="lstm" caption="Architecture of an LSTM" alt="A graph showing the inner architecture of an LSTM" width="700" >
+  </p>
+  <p align="center">图：LSTM架构</p>
+</div>
+
+In this picture, our input $x_{t}$ enters on the left with the previous hidden state ($h_{t-1}$) and cell state ($c_{t-1}$). The four orange boxes represent four layers (our neural nets) with the activation being either sigmoid ($\sigma$) or tanh. tanh is just a sigmoid function rescaled to the range -1 to 1. Its mathematical expression can be written like this:
+
+在这幅图中，我们的输入$x_{t}$和之前的隐含状态 ($h_{t-1}$) 和单元状态 ($c_{t-1}$)进入左侧。四个橘黄色的方框代表有要么sigmoid ($\sigma$) 要么tanh的四个层（我们的神经网络）。sigmoid函数重新缩放到 -1 到 1 的范围。它的数学表达式可以这样写：
+$$
+\tanh(x) = \frac{e^{x} - e^{-x}}{e^{x}+e^{-x}} = 2 \sigma(2x) - 1
+$$
+where $\sigma$ is the sigmoid function. The green circles are elementwise operations. What goes out on the right is the new hidden state ($h_{t}$) and new cell state ($c_{t}$), ready for our next input. The new hidden state is also used as output, which is why the arrow splits to go up.
+
+$\sigma$ 的位置是S形函数。绿色的圆圈是逐元素运算。预测的输出内容是新的隐含状态 ($h_{t}$) 和新的单元状态 ($c_{t}$)，为我们下个输入做准备。新的隐含状态也被用作输出，这就是为什么箭头分开向上的原因了。
+
+Let's go over the four neural nets (called *gates*) one by one and explain the diagram—but before this, notice how very little the cell state (at the top) is changed. It doesn't even go directly through a neural net! This is exactly why it will carry on a longer-term state.
+
+让我们在四个神经网络（被称为*门*）上逐个遍历并解释图解，但在此之前，请注意微乎其微的单元状态（在顶部）被改变。它甚至没有直接穿过一个神经网络！这正事为什么它会保持一个长期状态。
+
+First, the arrows for input and old hidden state are joined together. In the RNN we wrote earlier in this chapter, we were adding them together. In the LSTM, we stack them in one big tensor. This means the dimension of our embeddings (which is the dimension of $x_{t}$) can be different than the dimension of our hidden state. If we call those `n_in` and `n_hid`, the arrow at the bottom is of size `n_in + n_hid`; thus all the neural nets (orange boxes) are linear layers with `n_in + n_hid` inputs and `n_hid` outputs.
+
+首先，输入箭头和老的隐含状态是连接在一起的。在本章早些时候我们编写了递归神经网络，我们加总它们在一起。在LSTM中，我们在一个大的张量中堆砌穴。这表示我们嵌入的维度（它是$x_{t}$的维度）能够与我们隐含状态的维度是不同的。如果我们调用那些`n_in`和`n_hid`，在底部的箭头为`n_in + n_hid`的尺寸。因此所有神经网络（橘黄色方框）是具有`n_in + n_hid`个输入和`n_hid`个输出的线性层。
+
+The first gate (looking from left to right) is called the *forget gate*. Since it’s a linear layer followed by a sigmoid, its output will consist of scalars between 0 and 1. We multiply this result by the cell state to determine which information to keep and which to throw away: values closer to 0 are discarded and values closer to 1 are kept. This gives the LSTM the ability to forget things about its long-term state. For instance, when crossing a period or an `xxbos` token, we would expect to it to (have learned to) reset its cell state.
+
+第一个门（从左向右看）被称为*遗忘门*。因为它是一个带有S型函数的线性层，它的输出会由在 0 到 1 之间的标量组成。我们用这个结果乘以单元状态来决定哪个信息保留和那些抛弃：数值接近 0 的被丢弃和数值接近 1 的被保留。这赋予LSTM忘记它的长期状态内容的能力。例如，当跨越一个句号或一个`xxbos`标记时，我们会期望它（学习）重新设置它的单元状态。
+
+The second gate is called the *input gate*. It works with the third gate (which doesn't really have a name but is sometimes called the *cell gate*) to update the cell state. For instance, we may see a new gender pronoun, in which case we'll need to replace the information about gender that the forget gate removed. Similar to the forget gate, the input gate decides which elements of the cell state to update (values close to 1) or not (values close to 0). The third gate determines what those updated values are, in the range of –1 to 1 (thanks to the tanh function). The result is then added to the cell state.
+
+第二个门被称为*输入门*。它与第三门（它实际上没有名字，但是有时被称为*单元门*）配合来更新单元状态。例如，我们可能看到一个新的性别代词，在这种情况下，我们会需要替换关于遗忘门移除的性别信息。与遗忘门类似，输入门决定哪些单元状态的元素更新（值接近 1）或不更新（值接近 0 ）。第三门决定那些更新的值是什么，在 -1 到 1 这个范围（归功于tanh函数）。然后结果添加到单元状态上。
+
+The last gate is the *output gate*. It determines which information from the cell state to use to generate the output. The cell state goes through a tanh before being combined with the sigmoid output from the output gate, and the result is the new hidden state.
+
+最后的门是*输出门*。它决定来自单元状态的哪些信息用于产生输出。单元状态在与来自输出门的S型输出组合前会通过tanh，并且结果是新的隐藏状态。
+
+In terms of code, we can write the same steps like this:
+
+在代码方面，我们能够编写同样步骤的如下代码：
+
+```
+class LSTMCell(Module):
+    def __init__(self, ni, nh):
+        self.forget_gate = nn.Linear(ni + nh, nh)
+        self.input_gate  = nn.Linear(ni + nh, nh)
+        self.cell_gate   = nn.Linear(ni + nh, nh)
+        self.output_gate = nn.Linear(ni + nh, nh)
+
+    def forward(self, input, state):
+        h,c = state
+        h = torch.cat([h, input], dim=1)
+        forget = torch.sigmoid(self.forget_gate(h))
+        c = c * forget
+        inp = torch.sigmoid(self.input_gate(h))
+        cell = torch.tanh(self.cell_gate(h))
+        c = c + inp * cell
+        out = torch.sigmoid(self.output_gate(h))
+        h = out * torch.tanh(c)
+        return h, (h,c)
+```
+
+In practice, we can then refactor the code. Also, in terms of performance, it's better to do one big matrix multiplication than four smaller ones (that's because we only launch the special fast kernel on the GPU once, and it gives the GPU more work to do in parallel). The stacking takes a bit of time (since we have to move one of the tensors around on the GPU to have it all in a contiguous array), so we use two separate layers for the input and the hidden state. The optimized and refactored code then looks like this:
+
+在实践中，那时我们能够重构代码。同时，在性能方面，相比四个更小的矩阵，它做一个大矩阵乘法是更好的（即因为我们启动了GPU上的特定快速核心一次，它会提供GPU在平行方面更多的工作来做）。堆积需要花费一些时间（因为我们必须在GPU上使张量之一移动让它都在一个连续的数组中），所以我们对于输入和隐含状态使用两个单独的层。因此优化和重构后的代码如下所求：
+
+```
+class LSTMCell(Module):
+    def __init__(self, ni, nh):
+        self.ih = nn.Linear(ni,4*nh)
+        self.hh = nn.Linear(nh,4*nh)
+
+    def forward(self, input, state):
+        h,c = state
+        # One big multiplication for all the gates is better than 4 smaller ones
+        gates = (self.ih(input) + self.hh(h)).chunk(4, 1)
+        ingate,forgetgate,outgate = map(torch.sigmoid, gates[:3])
+        cellgate = gates[3].tanh()
+
+        c = (forgetgate*c) + (ingate*cellgate)
+        h = outgate * c.tanh()
+        return h, (h,c)
+```
+
+Here we use the PyTorch `chunk` method to split our tensor into four pieces. It works like this:
+
+在这里我们使用PyTorch`chunk`方法来把我们的张量分割为四份。它的运行如下：
+
+```
+t = torch.arange(0,10); t
+```
+
+Out: tensor([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+```
+t.chunk(2)
+```
+
+Out: (tensor([0, 1, 2, 3, 4]), tensor([5, 6, 7, 8, 9]))
+
+Let's now use this architecture to train a language model!
+
+现在让我们使用这个架构来训练一个语言模型吧！
+
+### Training a Language Model Using LSTMs
+
+### 使用LSTM训练一个语言模型
+
+Here is the same network as `LMModel5`, using a two-layer LSTM. We can train it at a higher learning rate, for a shorter time, and get better accuracy:
+
+这是与`LMModel5`相同的网络，使用了一个两层LSTM。为了更短的训练时间和获得更好的精度，我们能够在更高的学习率上训练它：
+
+```
+class LMModel6(Module):
+    def __init__(self, vocab_sz, n_hidden, n_layers):
+        self.i_h = nn.Embedding(vocab_sz, n_hidden)
+        self.rnn = nn.LSTM(n_hidden, n_hidden, n_layers, batch_first=True)
+        self.h_o = nn.Linear(n_hidden, vocab_sz)
+        self.h = [torch.zeros(n_layers, bs, n_hidden) for _ in range(2)]
+        
+    def forward(self, x):
+        res,h = self.rnn(self.i_h(x), self.h)
+        self.h = [h_.detach() for h_ in h]
+        return self.h_o(res)
+    
+    def reset(self): 
+        for h in self.h: h.zero_()
+```
+
+```
+learn = Learner(dls, LMModel6(len(vocab), 64, 2), 
+                loss_func=CrossEntropyLossFlat(), 
+                metrics=accuracy, cbs=ModelResetter)
+learn.fit_one_cycle(15, 1e-2)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   3.000821 |   2.663942 | 0.438314 | 00:02 |
+|     1 |   2.139642 |   2.184780 | 0.240479 | 00:02 |
+|     2 |   1.607275 |   1.812682 | 0.439779 | 00:02 |
+|     3 |   1.347711 |   1.830982 | 0.497477 | 00:02 |
+|     4 |   1.123113 |   1.937766 | 0.594401 | 00:02 |
+|     5 |   0.852042 |   2.012127 | 0.631592 | 00:02 |
+|     6 |   0.565494 |   1.312742 | 0.725749 | 00:02 |
+|     7 |   0.347445 |   1.297934 | 0.711263 | 00:02 |
+|     8 |   0.208191 |   1.441269 | 0.731201 | 00:02 |
+|     9 |   0.126335 |   1.569952 | 0.737305 | 00:02 |
+|    10 |   0.079761 |   1.427187 | 0.754150 | 00:02 |
+|    11 |   0.052990 |   1.494990 | 0.745117 | 00:02 |
+|    12 |   0.039008 |   1.393731 | 0.757894 | 00:02 |
+|    13 |   0.031502 |   1.373210 | 0.758464 | 00:02 |
+|    14 |   0.028068 |   1.368083 | 0.758464 | 00:02 |
+
+Now that's better than a multilayer RNN! We can still see there is a bit of overfitting, however, which is a sign that a bit of regularization might help.
+
+现在这比一个多层递归神经网络的结果更好了！我们依然能够看到有一点过拟，因此，这是个一点正则化可能有帮助的信号。
