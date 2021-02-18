@@ -925,3 +925,114 @@ learn.fit_one_cycle(15, 1e-2)
 Now that's better than a multilayer RNN! We can still see there is a bit of overfitting, however, which is a sign that a bit of regularization might help.
 
 现在这比一个多层递归神经网络的结果更好了！我们依然能够看到有一点过拟，因此，这是个一点正则化可能有帮助的信号。
+
+## Regularizing an LSTM
+
+## 正则化一个LSTM
+
+Recurrent neural networks, in general, are hard to train, because of the problem of vanishing activations and gradients we saw before. Using LSTM (or GRU) cells makes training easier than with vanilla RNNs, but they are still very prone to overfitting. Data augmentation, while a possibility, is less often used for text data than for images because in most cases it requires another model to generate random augmentations (e.g., by translating the text into another language and then back into the original language). Overall, data augmentation for text data is currently not a well-explored space.
+
+通常递归神经网络是很难训练的，因为之前我们看过的消失激活问题和梯度问题。使用LSTM（或GRU）单元普通的递归神经网络要更容易训练，但是它们依然很容易过拟。而可能选择的数据增加相比图像对于文本数据不会经常使用，因为在大多数案例中它需要另外一个模型来生成随机增强（即，通过翻译文本为另外一个语言，并随后翻译回到原始语言）。总体来说，对于文本数据的数据增强当前是不是一个充分发掘的领域。
+
+However, there are other regularization techniques we can use instead to reduce overfitting, which were thoroughly studied for use with LSTMs in the paper ["Regularizing and Optimizing LSTM Language Models"](https://arxiv.org/abs/1708.02182) by Stephen Merity, Nitish Shirish Keskar, and Richard Socher. This paper showed how effective use of *dropout*, *activation regularization*, and *temporal activation regularization* could allow an LSTM to beat state-of-the-art results that previously required much more complicated models. The authors called an LSTM using these techniques an *AWD-LSTM*. We'll look at each of these techniques in turn.
+
+然而，有其它正则化技术我们能够使用以减小过拟，在由论文Stephen Merity、Nitish Shirish Keskar 和 Richard Socher在论文中[“正则化和优化LSTM语言模型”](https://arxiv.org/abs/1708.02182)中对于用于LSTM做了彻底的研究。这个论文研究了如何有效使用*dropout*,、*激活单元正则化*, 和*时序激活单元正则化*以能够让LSTM打败以前需要更加复杂模型的最先进结果。作者们称使用了那些技术的LSTM为*AWD-LSTM*。我们会依次学习这些每一个技术。
+
+### Dropout
+
+### Dropout
+
+Dropout is a regularization technique that was introduced by Geoffrey Hinton et al. in [Improving neural networks by preventing co-adaptation of feature detectors](https://arxiv.org/abs/1207.0580). The basic idea is to randomly change some activations to zero at training time. This makes sure all neurons actively work toward the output, as seen in <img_dropout> (from "Dropout: A Simple Way to Prevent Neural Networks from Overfitting" by Nitish Srivastava et al.).
+
+Dropout是一个正则化技术，它是由杰弗里·辛顿等人在[通过防止特征检测器的协同适应来改善神经网络](https://arxiv.org/abs/1207.0580)引入的。基础思想是在训练期间随机改变一些激活为零。以确保所有神经元积极的朝着输出的方向工作，如图<在神经网络中应用Dropout>所示（来自 Nitish Srivastava等人论文“一个简单的方法以防止神经网络过拟”）。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/Dropout1.png" alt="A figure from the article showing how neurons go off with dropout" width="800" id="img_dropout" caption="Applying dropout in a neural network (courtesy of Nitish Srivastava et al.)" >
+  </p>
+  <p align="center">图：在神经网络中应用Dropout</p>
+</div>
+
+Hinton used a nice metaphor when he explained, in an interview, the inspiration for dropout:
+
+> : I went to my bank. The tellers kept changing and I asked one of them why. He said he didn’t know but they got moved around a lot. I figured it must be because it would require cooperation between employees to successfully defraud the bank. This made me realize that randomly removing a different subset of neurons on each example would prevent conspiracies and thus reduce overfitting.
+
+辛顿在一个采访中当他解释dropout的灵感时使用了一个很好的比喻：
+
+> ：我去了银行。出纳不停的在换，我问他们中的一个人这是为什么。他说他不知道，但是他们到处走动。我猜它一定是因为需要职员们之间协同才可成功的欺诈银行。这使我意识到在每个事例上随机移除神经元的不同子集会阻止共谋并因此减小过拟。
+
+In the same interview, he also explained that neuroscience provided additional inspiration:
+
+> : We don't really know why neurons spike. One theory is that they want to be noisy so as to regularize, because we have many more parameters than we have data points. The idea of dropout is that if you have noisy activations, you can afford to use a much bigger model.
+
+在同一个采访中，他也解释了神经元科学提供的额外灵感：
+
+> ：我们确实不知道为什么神经元会突跳。一个原理是它们想要变得喧杂以便正则化，因为相比我们有的数据点，我们有更多的参数。dropout的想法是如果你有喧杂的激活，你就能够担负起使用更大的模型。
+
+This explains the idea behind why dropout helps to generalize: first it helps the neurons to cooperate better together, then it makes the activations more noisy, thus making the model more robust.
+
+这个解释了为什么dropout有助于泛华的背后思想：首先它有助神经元更好的共同协作，然后它使得激活更加嘈杂，因为使得模型更加健壮。
+
+We can see, however, that if we were to just zero those activations without doing anything else, our model would have problems training: if we go from the sum of five activations (that are all positive numbers since we apply a ReLU) to just two, this won't have the same scale. Therefore, if we apply dropout with a probability `p`, we rescale all activations by dividing them by `1-p` (on average `p` will be zeroed, so it leaves `1-p`), as shown in <img_dropout1>.
+
+然而，我们能够看到，如果我们不用任何其它的事情只是零化那些激活，我们的模型也许会有问题的训练：如果我们把五个激活的总和（因为我们应用了ReLU所以都是正值）为只有两个，这不会是相同的规模。因此，如果我们用一个概率`p`应用dropout，我们通过把全部激活除以`1-p`来重新调整所有激活（在`p`上的平均会是零，所以它就剩下了`1-p`），如下图<应用Dropout时扩大激活的原因>所示。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/Dropout.png" alt="A figure from the article introducing dropout showing how a neuron is on/off" width="600" id="img_dropout1" caption="Why scale the activations when applying dropout (courtesy of Nitish Srivastava et al.)" >
+  </p>
+  <p align="center">图：应用Dropout时扩大激活原因</p>
+</div>
+
+This is a full implementation of the dropout layer in PyTorch (although PyTorch's native layer is actually written in C, not Python):
+
+下面是用PyTorch对dropout的所有实现（不过PyTorch的原生层实际上是用C写的，而不是Python）：
+
+```
+class Dropout(Module):
+    def __init__(self, p): self.p = p
+    def forward(self, x):
+        if not self.training: return x
+        mask = x.new(*x.shape).bernoulli_(1-p)
+        return x * mask.div_(1-p)
+```
+
+The `bernoulli_` method is creating a tensor of random zeros (with probability `p`) and ones (with probability `1-p`), which is then multiplied with our input before dividing by `1-p`. Note the use of the `training` attribute, which is available in any PyTorch `nn.Module`, and tells us if we are doing training or inference.
+
+`bernoulli_`方法正在创建一个随机零（有概率`p`）和一（概率`1-p`）的张量，它然后在除以`1-p`之前乘以我们的输入。注意`训练`特征的使用，其可在任何PyTorch的`nn.Module`中使用，并告诉我们是做训练或是做推断。
+
+> note: Do Your Own Experiments: In previous chapters of the book we'd be adding a code example for `bernoulli_` here, so you can see exactly how it works. But now that you know enough to do this yourself, we're going to be doing fewer and fewer examples for you, and instead expecting you to do your own experiments to see how things work. In this case, you'll see in the end-of-chapter questionnaire that we're asking you to experiment with `bernoulli_`—but don't wait for us to ask you to experiment to develop your understanding of the code we're studying; go ahead and do it anyway!
+
+> 注释：做你自己的实验：在本书的前几章我们会为这里的`bernoulli_`添加代码例子，因此你能够精确的看到它是如何运行的。但是现在你自己做这个工作已经知道的足够多了，我们正在为你做越来越少的事例，以期望你做自己的实验来看这些方法是如何运行。在这个例子中，你会在章节结尾的练习题中看到我们正在要求你用`bernoulli_`做实验，但不要等待我们来要求你用实验来促进你对我们正在研究的代码的理解。不管怎么说去做吧！
+
+Using dropout before passing the output of our LSTM to the final layer will help reduce overfitting. Dropout is also used in many other models, including the default CNN head used in `fastai.vision`, and is available in `fastai.tabular` by passing the `ps` parameter (where each "p" is passed to each added `Dropout` layer), as we'll see in <chapter_arch_details>.
+
+传递我们的LSTM的输出给最后一层前使用dropout会有助于减小过拟。Dropout也在很多其它方法中所使用，包括在`fastai.vision`中使用默认的CNN和在`fastai.tabular`中通过传递`ps`参数（每个“p”被传递给每个增加的`Dropout`层）可供使用，在<章节：架构细节>中我们会看到。
+
+Dropout has different behavior in training and validation mode, which we specified using the `training` attribute in `Dropout`. Calling the `train` method on a `Module` sets `training` to `True` (both for the module you call the method on and for every module it recursively contains), and `eval` sets it to `False`. This is done automatically when calling the methods of `Learner`, but if you are not using that class, remember to switch from one to the other as needed.
+
+Dropout在训练和验证模型有不同的行为，那是我们在`Dropout`中具体使用了`训练`特征。在`Module`上调用`train`方法设置`training`为`True`（对调用该方法的模块和对递归包含这一方法的每个模块都适用），及`eval`设置为`False`。当调用`Learner`的这些方法时这是自动完成的，但如果你不是使用的这个类，根据需要记住从一个类切换到另一个类。
+
+### Activation Regularization and Temporal Activation Regularization
+
+### 激活单元正则化和时序激活单元正则化
+
+*Activation regularization* (AR) and *temporal activation regularization* (TAR) are two regularization methods very similar to weight decay, discussed in <chapter_collab>. When applying weight decay, we add a small penalty to the loss that aims at making the weights as small as possible. For activation regularization, it's the final activations produced by the LSTM that we will try to make as small as possible, instead of the weights.
+
+*激活单元正则化*（AR）和*时序激活单元正则化*（TAR）是两个正则化方法，其在<章节：协同过滤>中讨论过的权重衰减很相似。当应用权重衰减时，我们添加了小的惩罚给损失，目标是使得权重尽可能的小。对于激活单元正则化，这是通过LSTM产生的最终激活，我们会尝试使其尽可能的小，而不是权重。
+
+To regularize the final activations, we have to store those somewhere, then add the means of the squares of them to the loss (along with a multiplier `alpha`, which is just like `wd` for weight decay):
+
+
+
+```python
+loss += alpha * activations.pow(2).mean()
+```
+
+Temporal activation regularization is linked to the fact we are predicting tokens in a sentence. That means it's likely that the outputs of our LSTMs should somewhat make sense when we read them in order. TAR is there to encourage that behavior by adding a penalty to the loss to make the difference between two consecutive activations as small as possible: our activations tensor has a shape `bs x sl x n_hid`, and we read consecutive activations on the sequence length axis (the dimension in the middle). With this, TAR can be expressed as:
+
+```python
+loss += beta * (activations[:,1:] - activations[:,:-1]).pow(2).mean()
+```
+
+`alpha` and `beta` are then two hyperparameters to tune. To make this work, we need our model with dropout to return three things: the proper output, the activations of the LSTM pre-dropout, and the activations of the LSTM post-dropout. AR is often applied on the dropped-out activations (to not penalize the activations we turned into zeros afterward) while TAR is applied on the non-dropped-out activations (because those zeros create big differences between two consecutive time steps). There is then a callback called `RNNRegularizer` that will apply this regularization for us.
