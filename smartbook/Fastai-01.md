@@ -1395,7 +1395,7 @@ learn.fine_tune(8)
 
 We are not even going to walk through this code line by line, because it is nearly identical to our previous example! (Although we will be doing a deep dive into segmentation models in <chapter_arch_details>, along with all of the other models that we are briefly introducing in this chapter, and many, many more.)
 
-我们不会一行一行的看一遍这个代码，因为它与这前的例子几乎一样！（虽然我们将会深入分割模型，以及本节和许多其它章节的其它许多模型我们都会简短的介绍）
+我们不会一行一行的看一遍这个代码，因为它与这前的例子几乎一样！（不过我们将会在<章节：架构细节>中深入研究分割模型，连同所有的其它模型和很多很多的模型，在本章我们在简短的介绍。）
 
 We can visualize how well it achieved its task, by asking the model to color-code each pixel of an image. As you can see, it nearly perfectly classifies every pixel in every object. For instance, notice that all of the cars are overlaid with the same color and all of the trees are overlaid with the same color (in each pair of images, the lefthand image is the ground truth label and the right is the prediction from the model):
 
