@@ -1023,7 +1023,7 @@ Dropout在训练和验证模型有不同的行为，那是我们在`Dropout`中�
 
 To regularize the final activations, we have to store those somewhere, then add the means of the squares of them to the loss (along with a multiplier `alpha`, which is just like `wd` for weight decay):
 
-
+要正则化最终的激活单元，我们必须将那些单元存放在某个地方，然后加它们的平方的平均值给损失（连同一个乘数`alpha`，它只是与权重衰减的`wd`很类似）：
 
 ```python
 loss += alpha * activations.pow(2).mean()
@@ -1031,8 +1031,127 @@ loss += alpha * activations.pow(2).mean()
 
 Temporal activation regularization is linked to the fact we are predicting tokens in a sentence. That means it's likely that the outputs of our LSTMs should somewhat make sense when we read them in order. TAR is there to encourage that behavior by adding a penalty to the loss to make the difference between two consecutive activations as small as possible: our activations tensor has a shape `bs x sl x n_hid`, and we read consecutive activations on the sequence length axis (the dimension in the middle). With this, TAR can be expressed as:
 
+时序激活单元正则化与我们正在预测句子中的标记事实有关。这表示，它可能是我们的LSTM的输出应该在某种程度上当我们按照顺序阅读它们时是有意义的。TAR在这里是是鼓励通过添加一个惩罚行为让损失使得两个连续的激活单元之间有尽可能小的差别：我们激活单元的张量形状`bs x sl x n_hid`，然后我们阅读序列单元长度坐标（中等尺寸）上的连续激活单元。有这个描述，TAR能够被表达为：
+
 ```python
 loss += beta * (activations[:,1:] - activations[:,:-1]).pow(2).mean()
 ```
 
 `alpha` and `beta` are then two hyperparameters to tune. To make this work, we need our model with dropout to return three things: the proper output, the activations of the LSTM pre-dropout, and the activations of the LSTM post-dropout. AR is often applied on the dropped-out activations (to not penalize the activations we turned into zeros afterward) while TAR is applied on the non-dropped-out activations (because those zeros create big differences between two consecutive time steps). There is then a callback called `RNNRegularizer` that will apply this regularization for us.
+
+因此`alpha`和`beta`是两个调整的超参。要实现它，我们需要带有dropout的模型返回三个内容：合适的输出，LSTM的前dropout激活单元和LSTM的后dropout激活单元。AR通常应用在dropout后的激活单元上（不会惩罚激活单元，我们之后转换他们为零）同时TAR应用在没有dropout的激活单元上（因为那些零让两个连续的时间步进产生了很大的差异）。然后回调`RNNRegularize`，为我们应用这个正则化。
+
+### Training a Weight-Tied Regularized LSTM
+
+### 训练一个权重约束的正则化LSTM
+
+We can combine dropout (applied before we go into our output layer) with AR and TAR to train our previous LSTM. We just need to return three things instead of one: the normal output of our LSTM, the dropped-out activations, and the activations from our LSTMs. The last two will be picked up by the callback `RNNRegularization` for the contributions it has to make to the loss.
+
+我们能够用AR和TAR组合dropout（我们进入我们的输出层前应用）来训练我们之前的LSTM。我们只是需要返回三个内容而不是一个：我们LSTM的标准输出，dropout了的激活单元和来自我们LSTM的激活单元。后面两个会由回调`RNNRegularization`来收集，它必须为损失作出贡献。
+
+Another useful trick we can add from [the AWD LSTM paper](https://arxiv.org/abs/1708.02182) is *weight tying*. In a language model, the input embeddings represent a mapping from English words to activations, and the output hidden layer represents a mapping from activations to English words. We might expect, intuitively, that these mappings could be the same. We can represent this in PyTorch by assigning the same weight matrix to each of these layers:
+
+另外一个有用的技巧，我们能够添加来自[AWD LSTM论文](https://arxiv.org/abs/1708.02182) 的*权重绑定*。在一个语言模型中，输入嵌入描述了从英文单词到激活的映射，及输出隐含层描述了从激活到英文单词的映射。直觉上，我们可能期望那些映射能够是相同的。我们能够用PyTorch通过分配相同权重矩阵给这些每个层来描述：
+
+```
+self.h_o.weight = self.i_h.weight
+```
+
+In `LMModel7`, we include these final tweaks:
+
+在`LMModel7`中，我们包含了这些最终调整：
+
+```
+class LMModel7(Module):
+    def __init__(self, vocab_sz, n_hidden, n_layers, p):
+        self.i_h = nn.Embedding(vocab_sz, n_hidden)
+        self.rnn = nn.LSTM(n_hidden, n_hidden, n_layers, batch_first=True)
+        self.drop = nn.Dropout(p)
+        self.h_o = nn.Linear(n_hidden, vocab_sz)
+        self.h_o.weight = self.i_h.weight
+        self.h = [torch.zeros(n_layers, bs, n_hidden) for _ in range(2)]
+        
+    def forward(self, x):
+        raw,h = self.rnn(self.i_h(x), self.h)
+        out = self.drop(raw)
+        self.h = [h_.detach() for h_ in h]
+        return self.h_o(out),raw,out
+    
+    def reset(self): 
+        for h in self.h: h.zero_()
+```
+
+We can create a regularized `Learner` using the `RNNRegularizer` callback:
+
+我们能够使用`RNNRegularize`回调创建一个正则化`Learner`：
+
+```
+learn = Learner(dls, LMModel7(len(vocab), 64, 2, 0.5),
+                loss_func=CrossEntropyLossFlat(), metrics=accuracy,
+                cbs=[ModelResetter, RNNRegularizer(alpha=2, beta=1)])
+```
+
+A `TextLearner` automatically adds those two callbacks for us (with those values for `alpha` and `beta` as defaults), so we can simplify the preceding line to:
+
+`TextLearner`自动的为我们添加那两个回调（以`alpha`和`beta`为默认值），所以我们能够简化之前的代码为：
+
+```
+learn = TextLearner(dls, LMModel7(len(vocab), 64, 2, 0.4),
+                    loss_func=CrossEntropyLossFlat(), metrics=accuracy)
+```
+
+We can then train the model, and add additional regularization by increasing the weight decay to `0.1`:
+
+然后我们可以训练这个模型，并通过增加权重衰退到`0.1`来添加额外的正则化：
+
+```
+learn.fit_one_cycle(15, 1e-2, wd=0.1)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   2.693885 |   2.013484 | 0.466634 | 00:02 |
+|     1 |   1.685549 |   1.187310 | 0.629313 | 00:02 |
+|     2 |   0.973307 |   0.791398 | 0.745605 | 00:02 |
+|     3 |   0.555823 |   0.640412 | 0.794108 | 00:02 |
+|     4 |   0.351802 |   0.557247 | 0.836100 | 00:02 |
+|     5 |   0.244986 |   0.594977 | 0.807292 | 00:02 |
+|     6 |   0.192231 |   0.511690 | 0.846761 | 00:02 |
+|     7 |   0.162456 |   0.520370 | 0.858073 | 00:02 |
+|     8 |   0.142664 |   0.525918 | 0.842285 | 00:02 |
+|     9 |   0.128493 |   0.495029 | 0.858073 | 00:02 |
+|    10 |   0.117589 |   0.464236 | 0.867188 | 00:02 |
+|    11 |   0.109808 |   0.466550 | 0.869303 | 00:02 |
+|    12 |   0.104216 |   0.455151 | 0.871826 | 00:02 |
+|    13 |   0.100271 |   0.452659 | 0.873617 | 00:02 |
+|    14 |   0.098121 |   0.458372 | 0.869385 | 00:02 |
+
+Now this is far better than our previous model!
+
+现在这比我们之前的模型好得多了！
+
+## Conclusion
+
+## 结尾
+
+You have now seen everything that is inside the AWD-LSTM architecture we used in text classification in <chapter_nlp>. It uses dropout in a lot more places:
+
+我们现在学习了在<章节：自然语言处理>中我们所使用的分本分类AWD-LSTM架构的内部所有内容。在很多位置它使用了dropout：
+
+- Embedding dropout (just after the embedding layer)
+- Input dropout (after the embedding layer)
+- Weight dropout (applied to the weights of the LSTM at each training step)
+- Hidden dropout (applied to the hidden state between two layers)
+
+- 嵌入dropout（仅在嵌入层后）
+- 输入dropout（嵌入层之后）
+- 权重dropout（应用于每个训练步进上的LSTM的权重）
+- 隐藏dropout（应用于两个层之间的隐含状态）
+
+This makes it even more regularized. Since fine-tuning those five dropout values (including the dropout before the output layer) is complicated, we have determined good defaults and allow the magnitude of dropout to be tuned overall with the `drop_mult` parameter you saw in that chapter (which is multiplied by each dropout).
+
+这使得它甚至更加正则化。因此微调那个多dropout值（输出层之前包含dropout）是很复杂的，我们已经确定了非常好的默认设置并允许利用在该章你看到的`drop_mult`参数调整整体dropout的大小（该值乘以每个dropout）。
+
+Another architecture that is very powerful, especially in "sequence-to-sequence" problems (that is, problems where the dependent variable is itself a variable-length sequence, such as language translation), is the Transformers architecture. You can find it in a bonus chapter on the [book's website](https://book.fast.ai/).
+
+另一个非常强大的架构是Transformers架构，特别擅长处理“seq2seq”问题（即，因变量它自身是变长序列的问题，如语言翻译）。你能够在[本书网络](https://book.fast.ai/)的附赠章节上能够找到这个内容。
