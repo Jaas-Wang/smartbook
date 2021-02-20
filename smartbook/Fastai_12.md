@@ -732,7 +732,7 @@ This inaccuracy means that often the gradients calculated for updating the weigh
 
 Researchers have developed a number of ways to tackle this problem, which we will be discussing later in the book. One option is to change the definition of a layer in a way that makes it less likely to have exploding activations. We'll look at the details of how this is done in <chapter_convolutions>, when we discuss batch normalization, and <chapter_resnet>, when we discuss ResNets, although these details don't generally matter in practice (unless you are a researcher that is creating new approaches to solving this problem). Another strategy for dealing with this is by being careful about initialization, which is a topic we'll investigate in <chapter_foundations>.
 
-研究人员已经开发很多方法来追踪这个问题，在本书晚些时候我们会讨论它。一个选择是来改变层的定义，在某种程度上它不太可能有爆炸激活。当我们在<章节：卷积神经网络>中讨论批量归一化和在<章节：残差网络>中讨论残差网络架构的时候，我们会学习这是如何做的细节，然而这些细节在实践中通常并不重要（除非你是一名研究人员，正在创建一个新的方法来解决这个问题）。对于处理这个问题的另外一个策略是通过小心的 初始化，它是我们将要在<章节：神经网络基本原理>中调查的一个主题。
+研究人员已经开发很多方法来追踪这个问题，在本书晚些时候我们会讨论它。一个选择是来改变层的定义，在某种程度上它不太可能有爆炸激活。当我们在<章节：卷积>中讨论批量归一化和在<章节：残差网络>中讨论残差网络架构的时候，我们会学习这是如何做的细节，然而这些细节在实践中通常并不重要（除非你是一名研究人员，正在创建一个新的方法来解决这个问题）。对于处理这个问题的另外一个策略是通过小心的 初始化，它是我们将要在<章节：神经网络基本原理>中调查的一个主题。
 
 For RNNs, there are two types of layers that are frequently used to avoid exploding activations: *gated recurrent units* (GRUs) and *long short-term memory* (LSTM) layers. Both of these are available in PyTorch, and are drop-in replacements for the RNN layer. We will only cover LSTMs in this book; there are plenty of good tutorials online explaining GRUs, which are a minor variant on the LSTM design.
 
@@ -1155,3 +1155,99 @@ This makes it even more regularized. Since fine-tuning those five dropout values
 Another architecture that is very powerful, especially in "sequence-to-sequence" problems (that is, problems where the dependent variable is itself a variable-length sequence, such as language translation), is the Transformers architecture. You can find it in a bonus chapter on the [book's website](https://book.fast.ai/).
 
 另一个非常强大的架构是Transformers架构，特别擅长处理“seq2seq”问题（即，因变量它自身是变长序列的问题，如语言翻译）。你能够在[本书网络](https://book.fast.ai/)的附赠章节上能够找到这个内容。
+
+## Questionnaire
+
+## 练习题
+
+1. If the dataset for your project is so big and complicated that working with it takes a significant amount of time, what should you do?
+2. 如果你的项目数据集是很大及很增长，处理它需要花费非常多的时间，你应该怎么做？
+3. Why do we concatenate the documents in our dataset before creating a language model?
+4. 在创建一个语言模型前我们串联在数据集中的文档？
+5. To use a standard fully connected network to predict the fourth word given the previous three words, what two tweaks do we need to make to our model?
+6. 使用一个标准的全连接网络 在给定前三个词的情况下来预测第四个词，对于我们的模型我们需要做哪两个调整？
+7. How can we share a weight matrix across multiple layers in PyTorch?
+8. 在PyTorch中我们如何跨越多个层能够共享一个权重矩阵？
+9. Write a module that predicts the third word given the previous two words of a sentence, without peeking.
+10. 编写一个模型，给定一个句子的前两个词的情况下预测第三个词，不要偷看。
+11. What is a recurrent neural network?
+12. 什么是递归神经网络？
+13. What is "hidden state"?
+14. 什么是“隐含状态”？
+15. What is the equivalent of hidden state in `LMModel1`?
+16. 在`LMModel1`中隐含状态的等价物是什么？
+17. To maintain the state in an RNN, why is it important to pass the text to the model in order?
+18. 维护RNN中的状态，为什么按照顺序传递文本给模型是重要的？
+19. What is an "unrolled" representation of an RNN?
+20. 什么是RNN的“展开”表示？
+21. Why can maintaining the hidden state in an RNN lead to memory and performance problems? How do we fix this problem?
+22. 为什么在RNN中维护隐含状态会导致内存和性能问题？我们如何修复这个问题？
+23. What is "BPTT"?
+24. 什么是“BPTT”？
+25. Write code to print out the first few batches of the validation set, including converting the token IDs back into English strings, as we showed for batches of IMDb data in <chapter_nlp>.
+26. 编写打印验证集的头几个批次的代码，包含转换标记ID到语言字符串，如我们在<章节：自然语言处理>中所展示的IMDb数据的批次。
+27. What does the `ModelResetter` callback do? Why do we need it?
+28. 为什么要做`ModelResetter`回调？为什么我们需要它？
+29. What are the downsides of predicting just one output word for each three input words?
+30. 对每三个输入单词只有一个输出单词预测的缺点是什么？
+31. Why do we need a custom loss function for `LMModel4`?
+32. 为什么我们需要对`LMModel4`定义损失函数？
+33. Why is the training of `LMModel4` unstable?
+34. `LMModel4`的训练为什么是不稳定的？
+35. In the unrolled representation, we can see that a recurrent neural network actually has many layers. So why do we need to stack RNNs to get better results?
+36. 在展开表示中，我们能够看到一个递归神经网络实际上有很多层。那么为什么我们需要堆积递归神经网络以获取更好的结果？
+37. Draw a representation of a stacked (multilayer) RNN.
+38. 描述一个堆积（多层）RNN的表示。
+39. Why should we get better results in an RNN if we call `detach` less often? Why might this not happen in practice with a simple RNN?
+40. 如果我们不经常调用`detach`我们在RNN中为什么会获得更好的结果？在实践中用一个简单的RNN为什么这不可能发生？
+41. Why can a deep network result in very large or very small activations? Why does this matter?
+42. 为什么一个深度神经网络能够导致很大或很小的激活？为什么做这个事情？
+43. In a computer's floating-point representation of numbers, which numbers are the most precise?
+44. 在计算机中的数值的浮点表示，哪种数值最精准？
+45. Why do vanishing gradients prevent training?
+46. 消失梯度为什么会阻止训练？
+47. Why does it help to have two hidden states in the LSTM architecture? What is the purpose of each one?
+48. 为什么在LSTM架构中有两个隐含状态是有帮助的？每一个的目标分别是什么？
+49. What are these two states called in an LSTM?
+50. 在LSTM中这两个状态被称为什么？
+51. What is tanh, and how is it related to sigmoid?
+52. 什么是tanh，用它与sigmoid有怎样的关系？
+53. What is the purpose of this code in `LSTMCell`: `h = torch.cat([h, input], dim=1)`
+54. 在 `LSTMCell`: `h = torch.cat([h, input], dim=1)`中这个代码的目的是什么。
+55. What does `chunk` do in PyTorch?
+56. 在PyTorch中`chunk`做了什么？
+57. Study the refactored version of `LSTMCell` carefully to ensure you understand how and why it does the same thing as the non-refactored version.
+58. 认真研究`LSTMCell`重构后的版本，确保你理解这是如何和为什么做了与未重构版本相同的事情。
+59. Why can we use a higher learning rate for `LMModel6`?
+60. 为什么我们对于`LMModel6`能够使用更高的学习率？
+61. What are the three regularization techniques used in an AWD-LSTM model?
+62. 在AWD-LSTM中三个正则化技术是什么？
+63. What is "dropout"?
+64. 什么是“dropout”？
+65. Why do we scale the weights with dropout? Is this applied during training, inference, or both?
+66. 我们什么用dropout来缩放权重？它是应用在训练，还是推理区间，或是两者都用呢？
+67. What is the purpose of this line from `Dropout`: `if not self.training: return x`
+68.  `Dropout`: `if not self.training: return x`这行代码的目的是什么。
+69. Experiment with `bernoulli_` to understand how it works.
+70. 用`bernoulli_`做实验来理解它怎样工作的。
+71. How do you set your model in training mode in PyTorch? In evaluation mode?
+72. 用PyTorch在训练模型中你怎样设置你的模型？在评估模型中呢？
+73. Write the equation for activation regularization (in math or code, as you prefer). How is it different from weight decay?
+74. 编写激活单元正则化的等式（根据你的偏好用数学公式或代码）。它与权重衰减有怎样的差异？
+75. Write the equation for temporal activation regularization (in math or code, as you prefer). Why wouldn't we use this for computer vision problems?
+76. 编写时序激活单元的正则化等式（根据你的偏好，用数学公式或代码）。我们为什么不会对计算机视觉问题使用这个方法？
+77. What is "weight tying" in a language model?
+78. 在语言模型中“权重绑定”是什么？
+
+### Further Research
+
+### 深入研究
+
+1. In `LMModel2`, why can `forward` start with `h=0`? Why don't we need to say `h=torch.zeros(...)`?
+2. 在`LMModel2`中为什么`forward`能够从`h=0`开始？为什么我们不需要告诉`h=torch.zeros(...)`？
+3. Write the code for an LSTM from scratch (you may refer to <lstm>).
+4. 为LSTM从零开始编写代码（你可以参照图<LSTM架构>）。
+5. Search the internet for the GRU architecture and implement it from scratch, and try training a model. See if you can get results similar to those we saw in this chapter. Compare your results to the results of PyTorch's built in `GRU` module.
+6. 在互联网上搜索GRU架构，从零实现它，并尝试训练一个模型。看你是否能够得到本章节中看到的那些实验所获得的相似结果。把你的结果与绑定了PyTorch的`GRU`模块的结果做对比。
+7. Take a look at the source code for AWD-LSTM in fastai, and try to map each of the lines of code to the concepts shown in this chapter.
+8. 看一下fastai中AWD-LSTM的源码，并尝试把每行代码与本章中所展示的概念做对应。
