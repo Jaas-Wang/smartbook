@@ -253,3 +253,163 @@ We won't implement this convolution function from scratch, but use PyTorch's imp
 
 我们不会从零开始实现这个卷积函数，而是使用PyTorch的实现来替代（它比我们能够在Python中所使用的任何方式都要快）。
 
+### Convolutions in PyTorch
+
+### PyTorch中的卷积
+
+Convolution is such an important and widely used operation that PyTorch has it built in. It's called `F.conv2d` (recall that `F` is a fastai import from `torch.nn.functional`, as recommended by PyTorch). The PyTorch docs tell us that it includes these parameters:
+
+- input:: input tensor of shape `(minibatch, in_channels, iH, iW)`
+- weight:: filters of shape `(out_channels, in_channels, kH, kW)`
+
+卷积是如此的重要及被广泛使用的运算，以至PyTorch已经内置它了。它被称为`F.conv2d`（回忆想一下，`F`是`torch.nn.functional`的fastai导入，这是PyTorch所推荐的）。PyTorch文档告诉我们它包含这些参数：
+
+- 输入：输入形状张量 `(minibatch, in_channels, iH, iW)`
+- 权重：形状过滤器`(out_channels, in_channels, kH, kW)`
+
+Here `iH,iW` is the height and width of the image (i.e., `28,28`), and `kH,kW` is the height and width of our kernel (`3,3`). But apparently PyTorch is expecting rank-4 tensors for both these arguments, whereas currently we only have rank-2 tensors (i.e., matrices, or arrays with two axes).
+
+这里的`iH,iW`是图像的高和宽（例如：`28,28`），及 `kH,kW`是我们内核的高和宽（`3,3`）。但很显然PyTorch希望对这两个的那些参数是4阶张量，不管怎么说当前我们只有2阶张量（例如，矩阵或两个轴的数组）。
+
+The reason for these extra axes is that PyTorch has a few tricks up its sleeve. The first trick is that PyTorch can apply a convolution to multiple images at the same time. That means we can call it on every item in a batch at once!
+
+由于这些扩展轴的因素，PyTorch有一些处理它的技巧。第一个小技巧是PyTorch能够同时在多张图像上应用一个卷积。这表示我们能够一次性的在一个批次中每个数据项上调用它！
+
+The second trick is that PyTorch can apply multiple kernels at the same time. So let's create the diagonal-edge kernels too, and then stack all four of our edge kernels into a single tensor:
+
+第二个小技巧是PyTorch能够同时应用多个内样。所以我们也能够创建对角边缘内样，然后堆积我们所有边缘的四个内核在一个张量中：
+
+```
+diag1_edge = tensor([[ 0,-1, 1],
+                     [-1, 1, 0],
+                     [ 1, 0, 0]]).float()
+diag2_edge = tensor([[ 1,-1, 0],
+                     [ 0, 1,-1],
+                     [ 0, 0, 1]]).float()
+
+edge_kernels = torch.stack([left_edge, top_edge, diag1_edge, diag2_edge])
+edge_kernels.shape
+```
+
+Out: torch.Size([4, 3, 3])
+
+To test this, we'll need a `DataLoader` and a sample mini-batch. Let's use the data block API:
+
+来测试一下，我们会需要一个`DataLoader`和一个简单的小批次。让我们使用数据块API：
+
+```
+mnist = DataBlock((ImageBlock(cls=PILImageBW), CategoryBlock), 
+                  get_items=get_image_files, 
+                  splitter=GrandparentSplitter(),
+                  get_y=parent_label)
+
+dls = mnist.dataloaders(path)
+xb,yb = first(dls.valid)
+xb.shape
+```
+
+Out: torch.Size([64, 1, 28, 28])
+
+By default, fastai puts data on the GPU when using data blocks. Let's move it to the CPU for our examples:
+
+当使用数据块时，fastai默认放置数据在GPU上。让我们把我们的例子移到CPU上：
+
+```
+xb,yb = to_cpu(xb),to_cpu(yb)
+```
+
+One batch contains 64 images, each of 1 channel, with 28×28 pixels. `F.conv2d` can handle multichannel (i.e., color) images too. A *channel* is a single basic color in an image—for regular full-color images there are three channels, red, green, and blue. PyTorch represents an image as a rank-3 tensor, with dimensions `[channels, rows, columns]`.
+
+一个批次包含64张图像，每个都是1个通道及 28×28 个像素。`F.conv2d`也能够处理多通道（即，彩色）图像。一个*通道*是一张图像中的一个单基础色，对于通常的全色图像有三个通道：红、绿和蓝。PyTorch用一个3阶张量维度为`[通道，行，列]`描述一张图像。
+
+We'll see how to handle more than one channel later in this chapter. Kernels passed to `F.conv2d` need to be rank-4 tensors: `[channels_in, features_out, rows, columns]`. `edge_kernels` is currently missing one of these. We need to tell PyTorch that the number of input channels in the kernel is one, which we can do by inserting an axis of size one (this is known as a *unit axis*) in the first location, where the PyTorch docs show `in_channels` is expected. To insert a unit axis into a tensor, we use the `unsqueeze` method:
+
+稍后在本章节我们会看到如何处理超过一个通道。内核传递给`F.conv2d`需要是4阶张量：`[channels_in, features_out, rows, columns]`. `edge_kernels`，目前缺少其中一个。我们需要告诉PyTorch在内核中输入通道的数量是一个，在第一个位置我们能够通过插入一个尺寸为一的轴来实现（这被称为*单元轴*），这个位置PyTorch文档显示要求是`in_channels`。插入一个单元轴进入一个张量，我们使用`unsqueeze`方法：
+
+```
+edge_kernels.shape,edge_kernels.unsqueeze(1).shape
+```
+
+Out: (torch.Size([4, 3, 3]), torch.Size([4, 1, 3, 3]))
+
+This is now the correct shape for `edge_kernels`. Let's pass this all to `conv2d`:
+
+现在这就是`edge_kernels`的正确形状。让我们传递所有这些内容给`conv2d`：
+
+```
+edge_kernels = edge_kernels.unsqueeze(1)
+```
+
+```
+batch_features = F.conv2d(xb, edge_kernels)
+batch_features.shape
+```
+
+Out: torch.Size([64, 4, 26, 26])
+
+The output shape shows we gave 64 images in the mini-batch, 4 kernels, and 26×26 edge maps (we started with 28×28 images, but lost one pixel from each side as discussed earlier). We can see we get the same results as when we did this manually:
+
+输出形状显示，我们在这个小批次中有64张图像，4个内核，及 26×26 个边缘映射（我们从 28×28 的图像开始的，但是如之前讨论过的，每个边丢失了一个像素）。我们能够看到我们获得了与手动做这个操作相同的结果：
+
+```
+show_image(batch_features[0,0]);
+```
+
+Out:![img](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEQAAABECAYAAAA4E5OyAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADh0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uMy4xLjEsIGh0dHA6Ly9tYXRwbG90bGliLm9yZy8QZhcZAAADdUlEQVR4nO2cyUorQRRAT5wVFJxHVARxgDgguHbjzh9wq1s/x1/RrStXggqCExFRcZFExQEnHBeP25W+rw0x6XQ/Hvesmkp1p7x9UnXrdmPi6+sLw1ER9wD+NSwgCguIwgKisIAoqvJ9uLq6+t8uQSsrK4mgdjNEYQFRWEAUFhCFBURhAVFYQBQWEIUFRGEBUeRN3eNCilaXl5cAvL+/A9Df3w9AQ0MDACMjIwAcHx8D8Pz8XPJ3myGK2A15e3sD4Obmxmt7eXkB4PPzE4BEInAfxuDgoO/ci4uLksdjhihCM+Tu7g5wv+/q6urAfufn5wD09PQAzgKxohDk2l1dXQA0NTUVMeJgzBBFSYaIFQD7+/sATE9PAz8bUggyZ/T19QVeq66uztcvjNVFMEMUJRlye3vrHW9tbQEwOTmZ9xy5u4Lc/YmJCa9NVp7t7W0ARkdHfee0t7cDLl+5urr69dh/wgxRhLbKPDw8AC67HB4eBqC1tRVwq4nkDpIzfHx8AFBfX+9dS1acjY0NwBkic8bQ0BDgDL2/vw/rzzBDNCUZkrv+z87OAlBZWVnUtWTeANjb2wP8qxjA2NgYADU1NQCcnp4W9V35MEMUJRnS3NzsHY+PjwP+Ox2EzA/6NQzJYAHW19cBmJmZ8fWRuUSucXBwUMyw82KGKEJbZXp7ewPbr6+vCzo/lUp5x5lMBoDl5WUAOjs7AWhpaQFgc3MTcCtbmJghCguIIvYC0dPTEwA7Ozte29TUFOBS9GQyCbhCkCR/5cAMUcRuiEymMpECLC4uAi5FF1N2d3eB3xWTfosZoojNENnsyRZfSooA3d3dvraqqj/DPDo68p1bDswQRWyGnJycAC5xW1hY8D6TzdvAwAAAh4eHQHnNEMwQReSGPD4+Am7FkEJSbuovZUhZTcJ4AFUoZogickMk35Ai0NLSEgAdHR1eH9nmS9/c0kC5MUMUkRuSzWYB94qD5BptbW1eHylMr62tRTw6M+QvIjdEHipJgVpyDnk8AW4HHObjhUIxQxQWEEXkPxl5S0Cq9ILUTaHwOmw5MEMUkRtydnYGwPz8vK+9sbHRO5aNXxyYIYrIDZH3Q15fXwGora0FoKLC3RtZduPADFFEbsjc3BzgEjIhnU57x7nvrEaNGaJI2D9D8GOGKCwgCguIwgKisIAoLCCKb79WEcYbcUyrAAAAAElFTkSuQmCC)
+
+The most important trick that PyTorch has up its sleeve is that it can use the GPU to do all this work in parallel—that is, applying multiple kernels, to multiple images, across multiple channels. Doing lots of work in parallel is critical to getting GPUs to work efficiently; if we did each of these operations one at a time, we'd often run hundreds of times slower (and if we used our manual convolution loop from the previous section, we'd be millions of times slower!). Therefore, to become a strong deep learning practitioner, one skill to practice is giving your GPU plenty of work to do at a time.
+
+PyTorch有一个最重要的技巧，就是它能够使用GPU并行做这些所有处理。即，应用多个内核，给多个图像，遍历多个通道。并行做这么多的处理对于让GPU有效的工作是至关重要的。如果我们每次做每次运算中的一个，通常我们的运行速度会慢上数百倍（如果我们使用上部分的手动卷积循环，我们会慢上数百万倍）。因此一个优秀的深度学习从业人员，一个常规的技巧是每次给你的GPU大量的工作去做。
+
+It would be nice to not lose those two pixels on each axis. The way we do that is to add *padding*, which is simply additional pixels added around the outside of our image. Most commonly, pixels of zeros are added.
+
+在每个轴上不丢失那两个像素会更好些。因此我们通过添加*填充*来完成这个工作，它是简单的在我们图像的外围添加像素。最常用的是添加像素零。
+
+### Strides and Padding
+
+### 步进和填充
+
+With appropriate padding, we can ensure that the output activation map is the same size as the original image, which can make things a lot simpler when we construct our architectures. <pad_conv> shows how adding padding allows us to apply the kernels in the image corners.
+
+有合理的填充，我们能够确保输出激活映射与原始图像是相同的尺寸，当我们构建我们的架构时它能够使的事情简单的多。图<带有填充的卷积>显示了如何添加填充以允许我们在图像的角上应用内核。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/chapter9_padconv.svg" id="pad_conv" caption="A convolution with padding" alt="A convolution with padding" width="600" >
+  </p>
+  <p align="center">图：带有填充的卷积</p>
+</div>
+
+With a 5×5 input, 4×4 kernel, and 2 pixels of padding, we end up with a 6×6 activation map, as we can see in <four_by_five_conv>.
+
+有一个 5×5 的内核，4×4 的内核及填充了两个像素，最终有一个 6×6 的激活映射，如下图<5×5 输入的 4×4 内核及填充了 2 个像素>所示。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00029.png" alt="A 4×4 kernel with 5×5 input and 2 pixels of padding" width="783" caption="A 4×4 kernel with 5×5 input and 2 pixels of padding (courtesy of Vincent Dumoulin and Francesco Visin)" id="four_by_five_conv" >
+  </p>
+  <p align="center">图：5×5 输入的 4×4 内核及填充了 2 个像素</p>
+</div>
+
+If we add a kernel of size `ks` by `ks` (with `ks` an odd number), the necessary padding on each side to keep the same shape is `ks//2`. An even number for `ks` would require a different amount of padding on the top/bottom and left/right, but in practice we almost never use an even filter size.
+
+如果我们添加了尺寸`ks`乘以`ks`的内核（`ks`是一个奇数），必须每个边填充`ks//2`来保持相同的形状。如果`ks`为偶数也许需要在顶部/底部和左侧/右侧填充不同的数量，但实践中我们几乎从来都不用偶数过滤器尺寸。
+
+So far, when we have applied the kernel to the grid, we have moved it one pixel over at a time. But we can jump further; for instance, we could move over two pixels after each kernel application, as in <three_by_five_conv>. This is known as a *stride-2* convolution. The most common kernel size in practice is 3×3, and the most common padding is 1. As you'll see, stride-2 convolutions are useful for decreasing the size of our outputs, and stride-1 convolutions are useful for adding layers without changing the output size.
+
+截止目前，当我们已经应用内核到表格时，我们每次结束都移动内核一个像素。但我们能够跳的更远。例如，我们能够在每个内核应用后移两个像素，如图<有 5×5 输入的 3×3 内核和步进2卷积及填充1个像素>所示。这被称为*步进2*卷积。在实践中最常用的内核尺寸是 3×3，及最常用的填充是1.你将会看到，步进2卷积对于减小我们输出的尺寸是有帮助的，步进1卷积对于不用改变输出尺寸的添加层是有用处的。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00030.png" alt="A 3×3 kernel with 5×5 input, stride-2 convolution, and 1 pixel of padding" width="774" caption="A 3×3 kernel with 5×5 input, stride-2 convolution, and 1 pixel of padding (courtesy of Vincent Dumoulin and Francesco Visin)" id="three_by_five_conv">
+  </p>
+  <p align="center">图：有 5×5 输入的 3×3 内核和步进2卷积及填充1个像素</p>
+</div>
+
+In an image of size `h` by `w`, using a padding of 1 and a stride of 2 will give us a result of size `(h+1)//2` by `(w+1)//2`. The general formula for each dimension is `(n + 2*pad - ks)//stride + 1`, where `pad` is the padding, `ks`, the size of our kernel, and `stride` is the stride.
+
+在一张尺寸`h`乘以`w`的图像中，使用为1的填充和步进2会提供给我们尺寸`(h+1)//2` 乘以 `(w+1)//2`的结果。对于每个维度的常用公式是 `(n + 2*pad - ks)//stride + 1`，这里的`pad`是填充数，`ks`为我们内核的尺寸，及`stride`是步进数。
+
+Let's now take a look at how the pixel values of the result of our convolutions are computed.
+
+现在让我们看一下我们卷积结果的像素值是如何计算的。
