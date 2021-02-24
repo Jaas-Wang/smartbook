@@ -1420,7 +1420,7 @@ bias = init_params(1)
 
 In neural networks, the `w` in the equation `y=w*x+b` is called the *weights*, and the `b` is called the *bias*. Together, the weights and bias make up the *parameters*.
 
-在神经网络中，在等式`y=w*x+b`中`w`被称为*权重*，`b`被称为*偏差*。权重和偏差在一起组成了*参数*。
+在神经网络中，在等式`y=w*x+b`中`w`被称为*权重*，`b`被称为*偏置*。权重和偏差在一起组成了*参数*。
 
 > jargon: Parameters: The *weights* and *biases* of a model. The weights are the `w` in the equation `w*x+b`, and the biases are the `b` in that equation.
 >
