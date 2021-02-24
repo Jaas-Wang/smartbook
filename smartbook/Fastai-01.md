@@ -942,7 +942,7 @@ Another critical insight comes from considering how a model interacts with its e
 
 This is a *positive feedback loop*, where the more the model is used, the more biased the data becomes, making the model even more biased, and so forth.
 
-这是一个*正向的反馈循环*，更多的模型被使用，更多偏向数据产生，使得模型更加偏见，等等。
+这是一个*正向的反馈循环*，更多的模型被使用，更多偏向数据产生，使得模型甚至更加有偏见，等等。
 
 Feedback loops can also create problems in commercial settings. For instance, a video recommendation system might be biased toward recommending content consumed by the biggest watchers of video (e.g., conspiracy theorists and extremists tend to watch more online video content than the average), resulting in those users increasing their video consumption, resulting in more of those kinds of videos being recommended. We'll consider this topic more in detail in <chapter_ethics>.
 
