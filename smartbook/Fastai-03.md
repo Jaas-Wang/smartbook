@@ -334,7 +334,7 @@ It is extremely important to keep in mind that this kind of behavior can happen,
 
 Discussions of bias online tend to get pretty confusing pretty fast. The word "bias" means so many different things. Statisticians often think when data ethicists are talking about bias that they're talking about the statistical definition of the term bias. But they're not. And they're certainly not talking about the biases that appear in the weights and biases which are the parameters of your model!
 
-在线偏见讨论趋于更混乱更快。“偏见”一词意味着很多不同的事情。统计学家经常认为当数据伦理谈论偏见时，他们正在谈的是一个偏移术语的统计定义。但是他们不是。确实不是讨论关于显示在你模型参数权重和偏移中的那些偏移！
+在线偏见讨论趋于更混乱更快。“偏见”一词意味着很多不同的事情。统计学家经常认为当数据伦理谈论偏见时，他们正在谈的是一个偏置术语的统计定义。但是他们不是。确实不是讨论关于显示在你模型参数权重和偏移中的那些偏置！
 
 What they're talking about is the social science concept of bias. In ["A Framework for Understanding Unintended Consequences of Machine Learning"](https://arxiv.org/abs/1901.10002) MIT's Harini Suresh and John Guttag describe six types of bias in machine learning, summarized in <bias> from their paper.
 
