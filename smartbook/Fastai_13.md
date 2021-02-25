@@ -506,3 +506,268 @@ Now that we understand what a convolution is, let's use them to build a neural n
 
 现在我们理解什么是卷积，让我们使用它们来建立一个神经网络。
 
+## Our First Convolutional Neural Network
+
+## 我们的首个卷积神经网络
+
+There is no reason to believe that some particular edge filters are the most useful kernels for image recognition. Furthermore, we've seen that in later layers convolutional kernels become complex transformations of features from lower levels, but we don't have a good idea of how to manually construct these.
+
+没有理由相信一些特定边缘过滤器对于图像识别是最有用的卷积核。此外，我们已经看到了最后的层卷积核为了更低等级要求的复杂特征变换。
+
+Instead, it would be best to learn the values of the kernels. We already know how to do this—SGD! In effect, the model will learn the features that are useful for classification.
+
+相反，它也许最好来学习卷积核的值。我们已经知道如何为随机梯度下降做这个事情了！事实上，模型将要学习的特征对于特征分类是有用处的。
+
+When we use convolutions instead of (or in addition to) regular linear layers we create a *convolutional neural network* (CNN).
+
+当我们使用卷积而不是（或还有）常规的线性层，我们就创建了一个*卷积神经网络*（CNN）。
+
+### Creating the CNN
+
+### 创建卷积神经网络
+
+Let's go back to the basic neural network we had in <chapter_mnist_basics>. It was defined like this:
+
+我们先返回到<章节：mnist基础>中的基础神经网络。它的定义是这样的：
+
+```
+simple_net = nn.Sequential(
+   nn.Linear(28*28,30),
+   nn.ReLU(),
+   nn.Linear(30,1)
+)
+```
+
+We can view a model's definition:
+
+我们能够查看一个模型的定义：
+
+```
+simple_net
+```
+
+```
+Sequential(
+    (0): Linear(in_features=784, out_features=30, bias=True)
+    (1): ReLU()
+    (2): Linear(in_features=30, out_features=1, bias=True)
+)
+```
+
+We now want to create a similar architecture to this linear model, but using convolutional layers instead of linear. `nn.Conv2d` is the module equivalent of `F.conv2d`. It's more convenient than `F.conv2d` when creating an architecture, because it creates the weight matrix for us automatically when we instantiate it.
+
+现在希望创建一个与这个线性模型类似的结构，只是使用卷积层替代线性层。`nn.Conv2d`是与`F.conv2d`等价的模块。当创建一个架构时，它比`F.conv2d`更方便，因为当我们实例化它时，它会为我们自动创建权重矩阵。
+
+Here's a possible architecture:
+
+这是一个合适的架构：
+
+```
+broken_cnn = sequential(
+    nn.Conv2d(1,30, kernel_size=3, padding=1),
+    nn.ReLU(),
+    nn.Conv2d(30,1, kernel_size=3, padding=1)
+)
+```
+
+One thing to note here is that we didn't need to specify 28×28 as the input size. That's because a linear layer needs a weight in the weight matrix for every pixel, so it needs to know how many pixels there are, but a convolution is applied over each pixel automatically. The weights only depend on the number of input and output channels and the kernel size, as we saw in the previous section.
+
+有一个事情要注意，那就是我们不需要具体说明 28×28 作为输入尺寸。这是因为线性层对于每个像素在权重矩阵是需要一个权重，因此它需要知道有多少个像素，但是一个卷积在每个像素上自动的应用。权重仅仅依赖于输入的数值和输出通道及卷积核尺寸，就像我们在之前部分看到的那样。
+
+Think about what the output shape is going to be, then let's try it and see:
+
+想一下输出形状会是什么，然后我们实验一下并查看：
+
+```
+broken_cnn(xb).shape
+```
+
+Out: torch.Size([64, 1, 28, 28])
+
+This is not something we can use to do classification, since we need a single output activation per image, not a 28×28 map of activations. One way to deal with this is to use enough stride-2 convolutions such that the final layer is size 1. That is, after one stride-2 convolution the size will be 14×14, after two it will be 7×7, then 4×4, 2×2, and finally size 1.
+
+这不是我们能够用于分类的内容，因为我们需要每张图像一个单输出激活，而不是一个 28×28 的映射映射。有一个方法来处理这个内容是使用足够的步长2卷积，这样最后的层是尺寸 1 了。即，一个步长2卷积后尺寸会是 14×14，两个后它会是 7×7，其后是 4×4,，2×2，最终尺寸是 1。
+
+Let's try that now. First, we'll define a function with the basic parameters we'll use in each convolution:
+
+让我们现在实验一下。首先，我们会定义一个函数，并带有我们在每个卷积上使用的基础参数：
+
+```
+def conv(ni, nf, ks=3, act=True):
+    res = nn.Conv2d(ni, nf, stride=2, kernel_size=ks, padding=ks//2)
+    if act: res = nn.Sequential(res, nn.ReLU())
+    return res
+```
+
+> important: Refactoring: Refactoring parts of your neural networks like this makes it much less likely you'll get errors due to inconsistencies in your architectures, and makes it more obvious to the reader which parts of your layers are actually changing.
+
+> 重要提示：重构：像这样重构我们神经网络部分，使得它不太可能由于在你的架构中前后矛盾而导致出错，并使得它对于阅读者更明了你的层实际正在改变的部分。
+
+When we use a stride-2 convolution, we often increase the number of features at the same time. This is because we're decreasing the number of activations in the activation map by a factor of 4; we don't want to decrease the capacity of a layer by too much at a time.
+
+当你使用步长2卷积，我们通常会同时增加特征数值。这是因为在激活映射中我们激活数量减少了 4 倍。我们不希望每次减小太多层的容量。
+
+> jargon: channels and features: These two terms are largely used interchangeably, and refer to the size of the second axis of a weight matrix, which is, the number of activations per grid cell after a convolution. *Features* is never used to refer to the input data, but *channels* can refer to either the input data (generally channels are colors) or activations inside the network.
+
+> 术语：通道和特征：这两个概念很大程度上交替使用，参照权重矩阵第二个轴线的尺寸，那是一个卷积后每个表格单元激活的数量。特征永远不会用于涉及输入数据，但是通道能够要么涉及输入数据（通常通道是彩色的）要么涉及网络内部的激活。
+
+Here is how we can build a simple CNN:
+
+下面是我们如何创建一个简单的卷积神经网络：
+
+```
+simple_cnn = sequential(
+    conv(1 ,4),            #14x14
+    conv(4 ,8),            #7x7
+    conv(8 ,16),           #4x4
+    conv(16,32),           #2x2
+    conv(32,2, act=False), #1x1
+    Flatten(),
+)
+```
+
+> j: I like to add comments like the ones here after each convolution to show how large the activation map will be after each layer. These comments assume that the input size is 28*28
+
+> 杰：我喜欢在每个卷积后添加像这样的注释，来说明激活映射每层后会是多大。这些注释假定输入尺寸为 28*28
+
+Now the network outputs two activations, which map to the two possible levels in our labels:
+
+现在网络输出两个激活，在我们的标签上有两个可能级别的激活映射：
+
+```
+simple_cnn(xb).shape
+```
+
+Out: torch.Size([64, 2])
+
+We can now create our `Learner`:
+
+现在我们可以常见我们的`Learner`了：
+
+```
+learn = Learner(dls, simple_cnn, loss_func=F.cross_entropy, metrics=accuracy)
+```
+
+To see exactly what's going on in the model, we can use `summary`:
+
+来看一下在模型中到底是怎么回事，我们可以使用`summary`：
+
+```
+learn.summary()
+```
+
+```
+Sequential (Input shape: ['64 x 1 x 28 x 28'])
+================================================================
+Layer (type)         Output Shape         Param #    Trainable 
+================================================================
+Conv2d               64 x 4 x 14 x 14     40         True      
+________________________________________________________________
+ReLU                 64 x 4 x 14 x 14     0          False     
+________________________________________________________________
+Conv2d               64 x 8 x 7 x 7       296        True      
+________________________________________________________________
+ReLU                 64 x 8 x 7 x 7       0          False     
+________________________________________________________________
+Conv2d               64 x 16 x 4 x 4      1,168      True      
+________________________________________________________________
+ReLU                 64 x 16 x 4 x 4      0          False     
+________________________________________________________________
+Conv2d               64 x 32 x 2 x 2      4,640      True      
+________________________________________________________________
+ReLU                 64 x 32 x 2 x 2      0          False     
+________________________________________________________________
+Conv2d               64 x 2 x 1 x 1       578        True      
+________________________________________________________________
+Flatten              64 x 2               0          False     
+________________________________________________________________
+
+Total params: 6,722
+Total trainable params: 6,722
+Total non-trainable params: 0
+
+Optimizer used: <function Adam at 0x7fbc9c258cb0>
+Loss function: <function cross_entropy at 0x7fbca9ba0170>
+
+Callbacks:
+  - TrainEvalCallback
+  - Recorder
+  - ProgressCallback
+```
+
+Note that the output of the final `Conv2d` layer is `64x2x1x1`. We need to remove those extra `1x1` axes; that's what `Flatten` does. It's basically the same as PyTorch's `squeeze` method, but as a module.
+
+注意最后`Conv2d`层的输出是`64x2x1x1`。我们需要移除这些额外的`1x1` 轴线。这就是`Flatten`做的事情。这与PyTorch的`squeeze`方法基本相同，但是它是一个模型。
+
+Let's see if this trains! Since this is a deeper network than we've built from scratch before, we'll use a lower learning rate and more epochs:
+
+让我们看一下是否可以训练！因为这是一个比我们之前从零开始所创建的网络更深的网络，我们会使用一个更低的学习率和更多的周期：
+
+```
+learn.fit_one_cycle(2, 0.01)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   0.072684 |   0.045110 | 0.990186 | 00:05 |
+|     1 |   0.022580 |   0.030775 | 0.990186 | 00:05 |
+
+Success! It's getting closer to the `resnet18` result we had, although it's not quite there yet, and it's taking more epochs, and we're needing to use a lower learning rate. We still have a few more tricks to learn, but we're getting closer and closer to being able to create a modern CNN from scratch.
+
+成功了！它更接近我们取得的`resnet18`结果，然而它还没有完全达到这个结果，它需要更多的周期及我们需要使用更低的学习率。我们依然有很多技巧来学习，但是我们已经越来越接近从零开始创建一个现代卷积神经网络的能力了。
+
+### Understanding Convolution Arithmetic
+
+### 理解卷积算法
+
+We can see from the summary that we have an input of size `64x1x28x28`. The axes are `batch,channel,height,width`. This is often represented as `NCHW` (where `N` refers to batch size). Tensorflow, on the other hand, uses `NHWC` axis order. The first layer is:
+
+我们能够从模型总结命令输出结果中看到，我们有一个 `64x1x28x28`尺寸的输入。轴维度是`批次`，`通道`，`高`，`宽`。这经常表示为`NCHW`（这里的`N`指的是批次尺寸）。另一方面，Tensorflow使用`NHWC`轴顺序。第一层是：
+
+```
+m = learn.model[0]
+m
+```
+
+```
+Sequential(
+  (0): Conv2d(1, 4, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+  (1): ReLU()
+)
+```
+
+So we have 1 input channel, 4 output channels, and a 3×3 kernel. Let's check the weights of the first convolution:
+
+所以我们有1个输入通道，及4个输出通道，和一个 3×3 卷积核。让我们检查一下第一个卷积的权重：
+
+```
+m[0].weight.shape
+```
+
+Out: torch.Size([4, 1, 3, 3])
+
+The summary shows we have 40 parameters, and `4*1*3*3` is 36. What are the other four parameters? Let's see what the bias contains:
+
+模型总结命令输出结果展示我们有40个参数，及 `4*1*3*3`是36。其它四个参数是什么呢？让我们看一下偏置包含什么内容：
+
+```
+m[0].bias.shape
+```
+
+Out: torch.Size([4])
+
+We can now use this information to clarify our statement in the previous section: "When we use a stride-2 convolution, we often increase the number of features because we're decreasing the number of activations in the activation map by a factor of 4; we don't want to decrease the capacity of a layer by too much at a time."
+
+现在我们能够使用这个信息来澄清之前部分我们的陈述：“当我们使用步长2卷积时，我们通常增加特征数，因为我们在激活映射中缩小了激活数4倍。我们不希望每次减小一个层的容量太多。
+
+There is one bias for each channel. (Sometimes channels are called *features* or *filters* when they are not input channels.) The output shape is `64x4x14x14`, and this will therefore become the input shape to the next layer. The next layer, according to `summary`, has 296 parameters. Let's ignore the batch axis to keep things simple. So for each of `14*14=196` locations we are multiplying `296-8=288` weights (ignoring the bias for simplicity), so that's `196*288=56_448` multiplications at this layer. The next layer will have `7*7*(1168-16)=56_448` multiplications.
+
+每个通道有一个偏置。（有时候当通道不是输入通道时，他们被称为*特征*或*过滤器*。）输出形状是`64x4x14x14`，因此这会变成下个层的输入形状。根据`summary`输出下个层有 296 个参数。让我们忽略批次轴维度来让事情简单化。所以对于 `14*14=196` 的每个定位，我们是乘以`296-8=288`个权重（为了简化忽略了偏置）所以这就是 在这层是`196*288=56_448`的乘法。下一层会有 `7*7*(1168-16)=56_448`的乘法。
+
+What happened here is that our stride-2 convolution halved the *grid size* from `14x14` to `7x7`, and we doubled the *number of filters* from 8 to 16, resulting in no overall change in the amount of computation. If we left the number of channels the same in each stride-2 layer, the amount of computation being done in the net would get less and less as it gets deeper. But we know that the deeper layers have to compute semantically rich features (such as eyes or fur), so we wouldn't expect that doing *less* computation would make sense.
+
+在这里发生了什么，我们步长2卷积从 `14x14` 到 `7x7`减半了*表格尺寸*，且我们从 8 到 16加倍了*过滤器的数量*，这就导致计算数量总体上没有变化。如果我们在每个步长2层让通道数保持相同，在网络中随着网络加深计算数量会变的越来越少。但我们知道更深的层必须计算语意丰富的特征（如眼睛或皮毛），所以我们不希望做 *少* 的计算会有很意义。
+
+Another way to think of this is based on receptive fields.
+
+另外一个思考方式是基于感受野。
