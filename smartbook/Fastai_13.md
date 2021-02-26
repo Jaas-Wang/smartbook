@@ -771,3 +771,41 @@ What happened here is that our stride-2 convolution halved the *grid size* from 
 Another way to think of this is based on receptive fields.
 
 另外一个思考方式是基于感受野。
+
+### Receptive Fields
+
+### 感受野
+
+The *receptive field* is the area of an image that is involved in the calculation of a layer. On the [book's website](https://book.fast.ai/), you'll find an Excel spreadsheet called *conv-example.xlsx* that shows the calculation of two stride-2 convolutional layers using an MNIST digit. Each layer has a single kernel. <preced1> shows what we see if we click on one of the cells in the *conv2* section, which shows the output of the second convolutional layer, and click *trace precedents*.
+
+*感受野*是一个图像涉及到层计算中的面积。在本书的[网站](https://book.fast.ai/)，你会找到一个电子表格文件称为*conv-example.xlsx*，这个文件展示了使用一个MNIST数字两个步长2卷积层的计算。每个层有一个单核。在图<Conv2层的直接引用单元>中展示了如果你点击*conv2*区域中的一个单元（该单元展示了第二个卷积层的输出），并点击*追踪引用单元*后的结果。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00068.png" alt="Immediate precedents of conv2 layer" width="308" caption="Immediate precedents of Conv2 layer" id="preced1" >
+  </p>
+  <p align="center">图：Conv2层的直接引用单元</p>
+</div>
+
+Here, the cell with the green border is the cell we clicked on, and the blue highlighted cells are its *precedents*—that is, the cells used to calculate its value. These cells are the corresponding 3×3 area of cells from the input layer (on the left), and the cells from the filter (on the right). Let's now click *trace precedents* again, to see what cells are used to calculate these inputs. <preced2> shows what happens.
+
+这里，带有绿色边框的单元是我们点击的单元，蓝色高亮单元是它的*引用单元*，即，这些单元用于计算它的值。这些单元对应的是输入层（左侧）单元 3×3 的面积和过滤器（右侧）的那些单元。现在我们再次点击*追踪引用*，来看一下哪些单元被用于计算这些输入。图<Conv2层的第二引用单元>中展示了所发生的事情。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00069.png" alt="Secondary precedents of conv2 layer" width="601" caption="Secondary precedents of Conv2 layer" id="preced2" >
+  </p>
+  <p align="center">图：Conv2层的第二引用单元</p>
+</div>
+
+In this example, we have just two convolutional layers, each of stride 2, so this is now tracing right back to the input image. We can see that a 7×7 area of cells in the input layer is used to calculate the single green cell in the Conv2 layer. This 7×7 area is the *receptive field* in the input of the green activation in Conv2. We can also see that a second filter kernel is needed now, since we have two layers.
+
+在这个例子中，我们只有两个卷积层，每个都是步长2，所以现在可以立刻回溯到输入图像。我们能够看到在输入层的 7×7   单元面积被用于计算Conv2层中的那个单一绿色单元。这个 7×7 面积是Conv2中绿色激活输入中的*感受野*。你也能够看到因为我们有两个层，现在第二个过滤器卷积核也是需要的。
+
+As you see from this example, the deeper we are in the network (specifically, the more stride-2 convs we have before a layer), the larger the receptive field for an activation in that layer. A large receptive field means that a large amount of the input image is used to calculate each activation in that layer is. We now know that in the deeper layers of the network we have semantically rich features, corresponding to larger receptive fields. Therefore, we'd expect that we'd need more weights for each of our features to handle this increasing complexity. This is another way of saying the same thing we mentioned in the previous section: when we introduce a stride-2 conv in our network, we should also increase the number of channels.
+
+如你在本例子中所看到的，我们在网络中越深（具体来说，在一个层后，我们有更多的步长2卷积），在那个层中对于一个激活的感受野就更大。一个巨大的感受野意味着巨大的图像数量被用于被用于计算在那个层中的每个激活。因此，我们期望对于我们每个特征会需要更多的权重来处理这个逐步增加的复杂度。这是我们在之前部分提到的同样内容的另外一个方法：当我们在网络中引入一个步长2卷积，我们应该也要增加通道的数量。
+
+When writing this particular chapter, we had a lot of questions we needed answers for, to be able to explain CNNs to you as best we could. Believe it or not, we found most of the answers on Twitter. We're going to take a quick break to talk to you about that now, before we move on to color images.
+
+在编写这一章节时，我们有很多问题需要回答，尽我们最大的努力来为你解释卷积神经网络。不管你信不信，我们在Twitter上找到了绝大多的答案。在我们开始彩色图像前，现在我们会做短暂的休息来和你讨论一下这方面的内容。
