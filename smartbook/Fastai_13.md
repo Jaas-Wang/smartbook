@@ -808,4 +808,72 @@ As you see from this example, the deeper we are in the network (specifically, th
 
 When writing this particular chapter, we had a lot of questions we needed answers for, to be able to explain CNNs to you as best we could. Believe it or not, we found most of the answers on Twitter. We're going to take a quick break to talk to you about that now, before we move on to color images.
 
-在编写这一章节时，我们有很多问题需要回答，尽我们最大的努力来为你解释卷积神经网络。不管你信不信，我们在Twitter上找到了绝大多的答案。在我们开始彩色图像前，现在我们会做短暂的休息来和你讨论一下这方面的内容。
+在编写这一章节时，我们有很多问题需要回答，尽我们最大的努力来为你解释卷积神经网络。你相信吗，我们在Twitter上找到了绝大多数的答案。在我们开始彩色图像前，现在我们会做短暂的休息来和你讨论一下这方面的内容。
+
+### A Note About Twitter
+
+### Twitter的一条提问
+
+We are not, to say the least, big users of social networks in general. But our goal in writing this book is to help you become the best deep learning practitioner you can, and we would be remiss not to mention how important Twitter has been in our own deep learning journeys.
+
+至少对我们来说我们通常没有足够多的社交网络用户。但是在编写本书时我们的目标是帮助你能成为最好的深度学习行业人员，不提醒在我们的深度学习之旅中Twitter有多么的重要，这就是我们的失职。
+
+You see, there's another part of Twitter, far away from Donald Trump and the Kardashians, which is the part of Twitter where deep learning researchers and practitioners talk shop every day. As we were writing this section, Jeremy wanted to double-check that what we were saying about stride-2 convolutions was accurate, so he asked on Twitter:
+
+你会发现Twitter的一部分是深度学习研究人员和行业人员每天讨论本专业的地方，它的另一面是远离唐纳德·特朗普（Donald Trump）和卡戴珊（Kardashians）。在我们编写这一部分的时候，杰里米希望确认一下我们正在讨论的步长2卷积内容是否是准确的，所以他在Twitteer上做了提问：
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00064.png" alt="twitter 1" width="500">
+  </p>
+  <p align="center"></p>
+</div>
+
+A few minutes later, this answer popped up:
+
+几分钟后，这个答案突然出现了：
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00065.png" alt="twitter 2" width="500">
+  </p>
+  <p align="center"></p>
+</div>
+
+Christian Szegedy is the first author of [Inception](https://arxiv.org/pdf/1409.4842.pdf), the 2014 ImageNet winner and source of many key insights used in modern neural networks. Two hours later, this appeared:
+
+克里斯汀·塞格迪（Christian Szegedy）是 [Inception](https://arxiv.org/pdf/1409.4842.pdf)的第一作者，2014 ImageNet比赛获胜者及在现代神经网络中所采用的很多关键见解。两个小时后，出现了这个信息：
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00066.png" alt="twitter 3" width="500">
+  </p>
+  <p align="center"></p>
+</div>
+
+Do you recognize that name? You saw it in <chapter_production>, when we were talking about the Turing Award winners who established the foundations of deep learning today!
+
+你认识这个人吗？在<章节：产品>中我们讨论关于图灵奖获奖者奠定了今天深度学习的基础时，你看过这个名字。
+
+Jeremy also asked on Twitter for help checking our description of label smoothing in <chapter_sizing_and_tta> was accurate, and got a response again from directly from Christian Szegedy (label smoothing was originally introduced in the Inception paper):
+
+杰里米为了帮助检查在<章节：数据尺寸和测试数据增强>中我们对标签平滑的描述是否准确，也在Twitter上也做了提问，再次获得了克里斯汀·塞格迪（Christian Szegedy）直接回复（标签平滑最初是在Inception论文中引入的）：
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00067.png" alt="twitter 4" width="500">
+  </p>
+  <p align="center"></p>
+</div>
+
+Many of the top people in deep learning today are Twitter regulars, and are very open about interacting with the wider community. One good way to get started is to look at a list of Jeremy's [recent Twitter likes](https://twitter.com/jeremyphoward/likes), or [Sylvain's](https://twitter.com/GuggerSylvain/likes). That way, you can see a list of Twitter users that we think have interesting and useful things to say.
+
+很多顶级深度学习专家如今是Twitter的常客，且非常开放与广泛的社区交流。一个好的开始方法是查看[杰里米](https://twitter.com/jeremyphoward/likes)或[古格·西尔文](https://twitter.com/GuggerSylvain/likes)最近的Twitter喜好列表。那样，你能够看到Twitter用户的那些我们认为有意思和有益内容要讨论的列表。
+
+Twitter is the main way we both stay up to date with interesting papers, software releases, and other deep learning news. For making connections with the deep learning community, we recommend getting involved both in the [fast.ai forums](https://forums.fast.ai/) and on Twitter.
+
+Twitter是我们俩人紧跟最新感兴趣的论文、软件发布和其它深度学习新闻的主要方法。为了与深度学习社区建立联系，我们建议参与到[fast.ai](https://forums.fast.ai/)和Twitter这两者中来。
+
+That said, let's get back to the meat of this chapter. Up until now, we have only shown you examples of pictures in black and white, with one value per pixel. In practice, most colored images have three values per pixel to define their color. We'll look at working with color images next.
+
+那么，让我们返回到这个章节的实质部分。截至现在，我们仅仅展示了每个像素带有一个值的黑白图像例子。实践中，更多的彩色图像每个像素有三个值来定义它们的颜色。接下来我们看一下处理彩色图像。
