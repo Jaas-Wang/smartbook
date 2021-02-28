@@ -877,3 +877,102 @@ Twitter是我们俩人紧跟最新感兴趣的论文、软件发布和其它深�
 That said, let's get back to the meat of this chapter. Up until now, we have only shown you examples of pictures in black and white, with one value per pixel. In practice, most colored images have three values per pixel to define their color. We'll look at working with color images next.
 
 那么，让我们返回到这个章节的实质部分。截至现在，我们仅仅展示了每个像素带有一个值的黑白图像例子。实践中，更多的彩色图像每个像素有三个值来定义它们的颜色。接下来我们看一下处理彩色图像。
+
+## Color Images
+
+## 彩色图像
+
+A colour picture is a rank-3 tensor:
+
+一张彩色图像是一个3阶张量：
+
+```
+im = image2tensor(Image.open(image_bear()))
+im.shape
+```
+
+Out: torch.Size([3, 1000, 846])
+
+```
+show_image(im);
+```
+
+Out: <img src="./_v_images/bear1.png" style="zoom:100%;" />
+
+The first axis contains the channels, red, green, and blue:
+
+第一个轴包含通道，红，绿和蓝：
+
+```
+_,axs = subplots(1,3)
+for bear,ax,color in zip(im,axs,('Reds','Greens','Blues')):
+    show_image(255-bear, ax=ax, cmap=color)
+```
+
+Out: <img src="./_v_images/bear_channel.png" alt="bear_channel" style="zoom:100%;" />
+
+We saw what the convolution operation was for one filter on one channel of the image (our examples were done on a square). A convolutional layer will take an image with a certain number of channels (three for the first layer for regular RGB color images) and output an image with a different number of channels. Like our hidden size that represented the numbers of neurons in a linear layer, we can decide to have as many filters as we want, and each of them will be able to specialize, some to detect horizontal edges, others to detect vertical edges and so forth, to give something like we studied in <chapter_production>.
+
+我们看了卷积运算内容是对于图像一个通道上的一个过滤器（我们的例子在一个正方形上做的）。一个卷积层会取包含确定通道数的图像（对于常规的RGB彩色图像第一层是3个通道）和输出一个不同通道数的图像。像我们的隐含尺寸代表了在一个线性层中的神经元数量，我们可以决定有尽可能多的过滤器，且他们每一个会有专攻的能力，他们中的一些来探测水平边缘，另一些探测垂直边缘等等，来提供一些如我们在<章节：产品>中学习的那些内容。
+
+In one sliding window, we have a certain number of channels and we need as many filters (we don't use the same kernel for all the channels). So our kernel doesn't have a size of 3 by 3, but `ch_in` (for channels in) is 3 by 3. On each channel, we multiply the elements of our window by the elements of the coresponding filter, then sum the results (as we saw before) and sum over all the filters. In the example given in <rgbconv>, the result of our conv layer on that window is red + green + blue.
+
+在一个滑行窗口中，我们有确定数目的通道且我们需要尽可能多的过滤器（我们对所有的通道不会使用相同的卷积核）。所以我们的卷积核没有 3 乘以 3 的尺寸，`ch_in`（通道中）是 3 乘以 3 的尺寸。在每个通道上，我们窗口元素乘以相应的过滤器元素，然后加总结果（如之前我们所学）和加上所有的过滤器上。在图<RGB图像上的卷积>中给出的例子，在窗口上卷积层的结果是红+绿+蓝。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/chapter9_rgbconv.svg" id="rgbconv" caption="Convolution over an RGB image" alt="Convolution over an RGB image" width="550">
+  </p>
+  <p align="center">图：RGB图像上的卷积</p>
+</div>
+
+So, in order to apply a convolution to a color picture we require a kernel tensor with a size that matches the first axis. At each location, the corresponding parts of the kernel and the image patch are multiplied together.
+
+所以，为了应用一个卷积到一个彩色图像上，我们需要一个匹配第一个轴维度尺寸的卷积核张量。在每个位置，卷积核和相应部分和图像部分是乘在一起的。
+
+These are then all added together, to produce a single number, for each grid location, for each output feature, as shown in <rgbconv2>.
+
+然后把它们所有加总起来，对于每个表格位置和每个输出特征都产出一个数值，如下图<添加RGB过滤器>所示。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/chapter9_rgb_conv_stack.svg" id="rgbconv2" caption="Adding the RGB filters" alt="Adding the RGB filters" width="500">
+  </p>
+  <p align="center">图：添加RGB过滤器</p>
+</div>
+
+Then we have `ch_out` filters like this, so in the end, the result of our convolutional layer will be a batch of images with `ch_out` channels and a height and width given by the formula outlined earlier. This give us `ch_out` tensors of size `ch_in x ks x ks` that we represent in one big tensor of four dimensions. In PyTorch, the order of the dimensions for those weights is `ch_out x ch_in x ks x ks`.
+
+于是我们有了像这样的`ch_out`过滤器，所以最后，我们卷积层的结果会有带有之前给出概述公式的`ch_out`通道和高、宽的图像批次。这提供给我们在四维度的一个大张量中表示的`ch_in x ks x ks` 大小的`ch_out`张量。
+
+Additionally, we may want to have a bias for each filter. In the preceding example, the final result for our convolutional layer would be $y_R + y_G + y_B + b$ in that case. Like in a linear layer, there are as many bias as we have kernels, so the biases is a vector of size `ch_out`.
+
+此外，我们可能希望每个过滤器有一个偏置。在之前的例子中，这种情况下我们卷积层最终结果是 $y_R + y_G + y_B + b$ 。如线性层中那样，有与我们卷积核一样从的偏置，所以偏置是`ch_out`大小的向量。
+
+There are no special mechanisms required when setting up a CNN for training with color images. Just make sure your first layer has three inputs.
+
+当设置一个训练彩色图像的CNN不需要特别的机制。只要确保你的第一层有三个输入。
+
+There are lots of ways of processing color images. For instance, you can change them to black and white, change from RGB to HSV (hue, saturation, and value) color space, and so forth. In general, it turns out experimentally that changing the encoding of colors won't make any difference to your model results, as long as you don't lose information in the transformation. So, transforming to black and white is a bad idea, since it removes the color information entirely (and this can be critical; for instance, a pet breed may have a distinctive color); but converting to HSV generally won't make any difference.
+
+有很多个方法处理彩色图像。例如，你能够把彩色图像变为黑白色，从RGB变为HSV（色相，饱和度和值）的色彩空间，诸如此类。实验证明改变色彩编码对于你的模型结果不会产生任何差异，只要你不丢失变换中的信息。所以黑白色的变换不是个好想法，因为它移除了所有的色彩信息（这是很重要的，例如，宠物品种可能有不同的颜色），但是通常转换为HSV不会产生任何差异。
+
+Now you know what those pictures in <chapter_intro> of "what a neural net learns" from the [Zeiler and Fergus paper](https://arxiv.org/abs/1311.2901) mean! This is their picture of some of the layer 1 weights which we showed:
+
+现在你知道在<章节：概述>中来自[Zeiler和Fergus论文](https://arxiv.org/abs/1311.2901) 的那些图像“一个卷积网络学了什么”的意思了吧！下面是我们所展示的他们第一层权重的一些图像：
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00031.png" alt="Layer 1 kernels found by Zeiler and Fergus" width="120">
+  </p>
+  <p align="center">图：由Zeiler和Fergus发现的层一卷积核</p>
+</div>
+
+This is taking the three slices of the convolutional kernel, for each output feature, and displaying them as images. We can see that even though the creators of the neural net never explicitly created kernels to find edges, for instance, the neural net automatically discovered these features using SGD.
+
+这选取了卷积核的三个部分，并以图形的方式展示了它们。例如，我们甚至能够看到，卷积网络的创建者从来没有说明创建寻找边缘的卷积核，卷积网络使用SGD自动的发现这些特征。
+
+Now let's see how we can train these CNNs, and show you all the techniques fastai uses under the hood for efficient training.
+
+现在让我们看一下我们如何可以训练这些CNN，并给你展示为了有效训练在低层fastai使用的所有技术。
+
