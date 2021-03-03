@@ -1111,7 +1111,7 @@ One handy feature of the callbacks passed to `Learner` is that they are made ava
 
 `ActivationStats` includes some handy utilities for plotting the activations during training. `plot_layer_stats(idx)` plots the mean and standard deviation of the activations of layer number *`idx`*, along with the percentage of activations near zero. Here's the first layer's plot:
 
-`ActivationStats`包含一些在训练期间对于激活绘图有用的工具。`plot_layer_stats(idx)`绘制`idx`层激活的平均值和标准偏差，连同零附近的激活百分比。下面是第一层的图：
+`ActivationStats`包含一些在训练期间对于激活绘图有用的工具。`plot_layer_stats(idx)`绘制`idx`层激活的平均值和标准偏差，连同近零激活百分比。下面是第一层的图：
 
 ```
 learn.activation_stats.plot_layer_stats(0)
@@ -1265,7 +1265,7 @@ The percentage of near-zero weights is getting much better, although it's still 
 
 We can see even more about what's going on in our training using `color_dim`, passing it a layer index:
 
-零附近权重的百分比变的好多了，虽然它还是十分的高。
+近零权重的百分比变的好多了，虽然它还是十分的高。
 
 传递给`color_dim`层的索引值，我们甚至能够看到更多关于在我们的训练中发生了什么：
 
@@ -1309,7 +1309,7 @@ This illustrates why log(f) is more colorful than *f\* when \*f* follows a norma
 
 So with that in mind, let's take another look at the result for the penultimate layer:
 
-
+这个个图解中，当 *f* 符合一个正态分布时，为什么log(f)比 *f* 更加色彩丰富呢，因为求对数改变了二次方中的高斯函数，它不再那么狭窄了。
 
 ```
 learn.activation_stats.color_dim(-2)
@@ -1319,4 +1319,8 @@ Out:![img](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjwAAADNCAYAAAC8XqoPAAA
 
 This shows a classic picture of "bad training." We start with nearly all activations at zero—that's what we see at the far left, with all the dark blue. The bright yellow at the bottom represents the near-zero activations. Then, over the first few batches we see the number of nonzero activations exponentially increasing. But it goes too far, and collapses! We see the dark blue return, and the bottom becomes bright yellow again. It almost looks like training restarts from scratch. Then we see the activations increase again, and collapse again. After repeating this a few times, eventually we see a spread of activations throughout the range.
 
+这展示了一个典型的“糟糕训练”结果图。我们从几乎所有激活为零开始。即，我们在最左侧看到的全是深蓝色的内容。在底部的亮黄色代表零附近的激活。然后，在开始的几个批次我们看到近零激活数量呈几何倍数增长。但增长的太过了，并导致坍塌了！我们看到又回到了深蓝色和底部变为亮黄色。它看起来几乎从零重新开始训练。然后我们看到激活再次增长并再次坍塌。重复几次后，最终我们看到激活在整个范围展开。
+
 It's much better if training can be smooth from the start. The cycles of exponential increase and then collapse tend to result in a lot of near-zero activations, resulting in slow training and poor final results. One way to solve this problem is to use batch normalization.
+
+如果训练能够从一开始是平滑的会更好。几何增长且随后坍塌几个周期倾向产生很多近零激活，导致缓慢的训练和差的最终结果。解决这一问题的方法是使用批次标准化。
