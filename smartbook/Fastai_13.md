@@ -1177,7 +1177,7 @@ Our initial weights are not well suited to the task we're trying to solve. There
 
 Leslie Smith (yes, the same guy that invented the learning rate finder!) developed this idea in his article ["Super-Convergence: Very Fast Training of Neural Networks Using Large Learning Rates"](https://arxiv.org/abs/1708.07120). He designed a schedule for learning rate separated into two phases: one where the learning rate grows from the minimum value to the maximum value (*warmup*), and one where it decreases back to the minimum value (*annealing*). Smith called this combination of approaches *1cycle training*.
 
-莱斯利·史密斯（Leslie Smith）（是的，发明学习率查找器的家伙！）在他的论文[“超收敛：使用大学习率非常快速的训练神经网络”](https://arxiv.org/abs/1708.07120)中介绍了这一想法。他对学习率设计了一个计划，分割为两个阶段：一个阶段学习率从最小值到最大值增长（热身），另一个阶段是减小返回到最小值（退火）。史密斯称这个组合方法为*一循环训练*（1cycle training）。
+莱斯利·史密斯（Leslie Smith）（是的，发明学习率查找器的家伙！）在他的论文[“超收敛：使用大学习率非常快速的训练神经网络”](https://arxiv.org/abs/1708.07120)中介绍了这一想法。他对学习率设计了一个计划，分割为两个阶段：一个阶段学习率从最小值到最大值增长（预热），另一个阶段是减小返回到最小值（退火）。史密斯称这个组合方法为*一循环训练*（1cycle training）。
 
 1cycle training allows us to use a much higher maximum learning rate than other types of training, which gives two benefits:
 
@@ -1187,7 +1187,7 @@ Leslie Smith (yes, the same guy that invented the learning rate finder!) develop
 相比其它类型的训练，一循环训练允许我们使用更高的最大学习率，这个方法提供了两个好处：
 
 - 通过使用更高的学习率训练，我们训练的更快。史密斯命名这一现象*超级收敛*。
-- 通过使用更高的学习率训练，我们会减少过拟，因此我们略过了突出的局部最小值，最终有了更加平滑（因而能够更加泛华）的损失部分。
+- 通过使用更高的学习率训练，我们会减少过拟，因此我们略过了突出的局部最小值，最终有了更加平滑（因而能够更好泛华）的损失部分。
 
 The second point is an interesting and subtle one; it is based on the observation that a model that generalizes well is one whose loss would not change very much if you changed the input by a small amount. If a model trains at a large learning rate for quite a while, and can find a good loss when doing so, it must have found an area that also generalizes well, because it is jumping around a lot from batch to batch (that is basically the definition of a high learning rate). The problem is that, as we have discussed, just jumping to a high learning rate is more likely to result in diverging losses, rather than seeing your losses improve. So we don't jump straight to a high learning rate. Instead, we start at a low learning rate, where our losses do not diverge, and we allow the optimizer to gradually find smoother and smoother areas of our parameters by gradually going to higher and higher learning rates.
 
@@ -1195,11 +1195,15 @@ The second point is an interesting and subtle one; it is based on the observatio
 
 Then, once we have found a nice smooth area for our parameters, we want to find the very best part of that area, which means we have to bring our learning rates down again. This is why 1cycle training has a gradual learning rate warmup, and a gradual learning rate cooldown. Many researchers have found that in practice this approach leads to more accurate models and trains more quickly. That is why it is the approach that is used by default for `fine_tune` in fastai.
 
-In <> we'll learn all about *momentum* in SGD. Briefly, momentum is a technique where the optimizer takes a step not only in the direction of the gradients, but also that continues in the direction of previous steps. Leslie Smith introduced the idea of *cyclical momentums* in ["A Disciplined Approach to Neural Network Hyper-Parameters: Part 1"](https://arxiv.org/pdf/1803.09820.pdf). It suggests that the momentum varies in the opposite direction of the learning rate: when we are at high learning rates, we use less momentum, and we use more again in the annealing phase.
+然后，一旦我们发现参数好的平滑区域，我们希望找到那个区域的最佳部分，这就表示我们不弱让我们的学习率再次下降。这就是为什么1周期学习有学习率逐步预热，及学习率逐步退火。在实践中很多研究人员发现这一方法会使得模型更加精准及训练更加快速。这就是为什么这一方法在fastai中对于`fine_tune`是默认使用的。
+
+In <chapter_accel_sgd> we'll learn all about *momentum* in SGD. Briefly, momentum is a technique where the optimizer takes a step not only in the direction of the gradients, but also that continues in the direction of previous steps. Leslie Smith introduced the idea of *cyclical momentums* in ["A Disciplined Approach to Neural Network Hyper-Parameters: Part 1"](https://arxiv.org/pdf/1803.09820.pdf). It suggests that the momentum varies in the opposite direction of the learning rate: when we are at high learning rates, we use less momentum, and we use more again in the annealing phase.
+
+在<章节：加速随机梯度下降>中我们会学习SGD中所有*动量*内容。简短来说，动量是一项技术，优化器前进的一步不仅仅是在梯度的方向上，而且也是继续之前步骤的方向。莱斯利·史密斯（Leslie Smith）在["对神经网络超参的一个自律方法"](https://arxiv.org/pdf/1803.09820.pdf)中引入了*周期动量*思想。这个思想认为动量在学习率的相反方向变化：当我们是高学习率时，我们使用更少的动量，我们在退火阶段再次使用更多动量。
 
 We can use 1cycle training in fastai by calling `fit_one_cycle`:
 
-In [ ]:
+在fastai中通过调用`fit_one_cycle`我们能够使用一周期训练：
 
 ```
 def fit(epochs=1, lr=0.06):
@@ -1208,8 +1212,6 @@ def fit(epochs=1, lr=0.06):
     learn.fit_one_cycle(epochs, lr)
     return learn
 ```
-
-In [ ]:
 
 ```
 learn = fit()
@@ -1221,9 +1223,11 @@ learn = fit()
 
 We're finally making some progress! It's giving us a reasonable accuracy now.
 
+我最后取得了很大进步！现在它提供给我们一个合理的精度。
+
 We can view the learning rate and momentum throughout training by calling `plot_sched` on `learn.recorder`. `learn.recorder` (as the name suggests) records everything that happens during training, including losses, metrics, and hyperparameters such as learning rate and momentum:
 
-In [ ]:
+能够调用`learn.recorder`上的`plot_sched`我们能够查看整个训练过程的学习率和动量。`learn.recorder`记录了训练期间所发生的所有事项，包括损失、指标和超参，例如学习率和动量：
 
 ```
 learn.recorder.plot_sched()
@@ -1239,9 +1243,17 @@ Smith's original 1cycle paper used a linear warmup and linear annealing. As you 
 - `pct_start`:: What percentage of the batches to use for the warmup
 - `moms`:: A tuple `(mom1,mom2,mom3)` where *`mom1`* is the initial momentum, *`mom2`* is the minimum momentum, and *`mom3`* is the final momentum
 
+史密斯的原始一周期论文使用了线性预热和线性退火。正如你所看到的，我们在fastai中采纳了这一方法，把它与另一个流行方法“余弦退火”做了组合。`fit_one_cycle`提供了下述参数供我们调整：
+
+- `lr_max`：会被使用的最高学习率（也可以是对每个层组的学习率列表，或一个包含第一个或最后一个层组学习率的Python`slice`对象）
+- `div`：除以`lr_max`多少来获取开始的学习率
+- `div_final`：除以`lr_max`多谢来获取最终的学习率
+- `pct_start`：多少批次的百分比用于预热
+- `moms`：一个元组`(mom1,mom2,mom3)`中，*`mon1`*是初始的动量，*`mom2`*是最小动量，*`mom3`*是最终动量
+
 Let's take a look at our layer stats again:
 
-In [ ]:
+让我们再看一下我们层的状态：
 
 ```
 learn.activation_stats.plot_layer_stats(-2)
@@ -1253,7 +1265,9 @@ The percentage of near-zero weights is getting much better, although it's still 
 
 We can see even more about what's going on in our training using `color_dim`, passing it a layer index:
 
-In [ ]:
+零附近权重的百分比变的好多了，虽然它还是十分的高。
+
+传递给`color_dim`层的索引值，我们甚至能够看到更多关于在我们的训练中发生了什么：
 
 ```
 learn.activation_stats.color_dim(-2)
@@ -1263,11 +1277,13 @@ Out:![img](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjwAAADNCAYAAAC8XqoPAAA
 
 `color_dim` was developed by fast.ai in conjunction with a student, Stefano Giomo. Stefano, who refers to the idea as the *colorful dimension*, provides an [in-depth explanation](https://forums.fast.ai/t/the-colorful-dimension/42908) of the history and details behind the method. The basic idea is to create a histogram of the activations of a layer, which we would hope would follow a smooth pattern such as the normal distribution (colorful_dist).
 
+`color_dim`是由fast.ai与学生斯特凡诺·乔莫（Stefano Giomo）合作开发的。斯特凡诺提供了这一方法[深入研究的历史](https://forums.fast.ai/t/the-colorful-dimension/42908)和背后的细节。基本想法是创建一个层的激活直方图，我们希望它遵循一个平滑模式，如正态分布（色彩分布）。
+
 <div style="text-align:center">
   <p align="center">
     <img src="./_v_images/colorful_dist.jpeg" id="colorful_dist" caption="Histogram in 'colorful dimension'" alt="Histogram in 'colorful dimension'" width="800">
   </p>
-  <p align="center">图：彩色维度直方图</p>
+  <p align="center">图：色彩度量直方图</p>
 </div>
 
 To create `color_dim`, we take the histogram shown on the left here, and convert it into just the colored representation shown at the bottom. Then we flip it on its side, as shown on the right. We found that the distribution is clearer if we take the log of the histogram values. Then, Stefano describes:
@@ -1276,18 +1292,24 @@ To create `color_dim`, we take the histogram shown on the left here, and convert
 
 <colorful_summ> shows how this all fits together.
 
+在上图左侧我们展示了直方图，来创建`color_dim`，并在下方转化它为颜色表示。然后我们翻转它的侧面，如右侧所示。如果取了日志的直方图数值，我们发现分布更清晰了。于是，斯特凡诺描述到：
+
+> ：最终每层绘图是通过每个批次沿着水平轴堆砌激活的直方图。所以每个可视化中的垂直切片表示一个单批次激活的直方图。色彩强度的对应直方图的高度，换句话说在每个直方桶中的激活数量。
+
+<色彩度量总结>展示了这些内容如何组合在一起。
+
 <div style="text-align:center">
   <p align="center">
     <img src="./_v_images/colorful_summ.png" id="colorful_summ" caption="Summary of the colorful dimension (courtesy of Stefano Giomo)" alt="Summary of the colorful dimension" width="800">
   </p>
-  <p align="center">图：彩色维度总结</p>
+  <p align="center">图：色彩度量总结</p>
 </div>
 
 This illustrates why log(f) is more colorful than *f\* when \*f* follows a normal distribution because taking a log changes the Gaussian in a quadratic, which isn't as narrow.
 
 So with that in mind, let's take another look at the result for the penultimate layer:
 
-In [ ]:
+
 
 ```
 learn.activation_stats.color_dim(-2)
