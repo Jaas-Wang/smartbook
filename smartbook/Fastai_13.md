@@ -1324,3 +1324,109 @@ This shows a classic picture of "bad training." We start with nearly all activat
 It's much better if training can be smooth from the start. The cycles of exponential increase and then collapse tend to result in a lot of near-zero activations, resulting in slow training and poor final results. One way to solve this problem is to use batch normalization.
 
 如果训练能够从一开始是平滑的会更好。几何增长且随后坍塌几个周期倾向产生很多近零激活，导致缓慢的训练和差的最终结果。解决这一问题的方法是使用批次标准化。
+
+### Batch Normalization
+
+### 批次标准化
+
+To fix the slow training and poor final results we ended up with in the previous section, we need to fix the initial large percentage of near-zero activations, and then try to maintain a good distribution of activations throughout training.
+
+在上一部分我们以修复慢的训练和差的最终结果结尾，我们需要修复最初大的近零激活百分比，然后尝试在整个训练中维护一个好的激活分布。
+
+Sergey Ioffe and Christian Szegedy presented a solution to this problem in the 2015 paper ["Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift"](https://arxiv.org/abs/1502.03167). In the abstract, they describe just the problem that we've seen:
+
+> : Training Deep Neural Networks is complicated by the fact that the distribution of each layer's inputs changes during training, as the parameters of the previous layers change. This slows down the training by requiring lower learning rates and careful parameter initialization... We refer to this phenomenon as internal covariate shift, and address the problem by normalizing layer inputs.
+
+谢尔盖·艾菲（Sergey Ioffe）和克里斯蒂安·塞格迪（Christian Szegedy）对这个问题在2015年的论文[“批次标准化：通过减少内部协变量偏移来加速深度网络训练”](https://arxiv.org/abs/1502.03167)中展示了一个解决方案。在论文摘要中，他们只的描述了我们看到的这个问题：
+
+> ：训练深度神经网络，随着前几层参数的改变，实现训练期间改变每层输入的分布是复杂的。通过要求更低的学习率和小心的参数初始化这会降低训练速度... 我们把这一现象称为内部协变量偏移，并通过标准层输入来处理这个问题。
+
+Their solution, they say is:
+
+> : Making normalization a part of the model architecture and performing the normalization for each training mini-batch. Batch Normalization allows us to use much higher learning rates and be less careful about initialization.
+
+他们所描述的解决方案是：
+
+> ：使标准化作为模型架构的一部分和对每个训练最小批次做标准化。批次标准化让我们使用更高的学习率及少关心初始化。
+
+The paper caused great excitement as soon as it was released, because it included the chart in <batchnorm>, which clearly demonstrated that batch normalization could train a model that was even more accurate than the current state of the art (the *Inception* architecture) and around 5x faster.
+
+因为包含了图<批次标准化的影响>，这个论文一发布就引发了热潮，清晰示范操作证明相比当前先进的技术（*inception*架构）批次标准化能够训练模型更高精度及快大约五倍。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00046.png" alt="Impact of batch normalization" width="553" caption="Impact of batch normalization (courtesy of Sergey Ioffe and Christian Szegedy)" id="batchnorm">
+  </p>
+  <p align="center">图：批次标准化的影响</p>
+</div>
+
+Batch normalization (often just called *batchnorm*) works by taking an average of the mean and standard deviations of the activations of a layer and using those to normalize the activations. However, this can cause problems because the network might want some activations to be really high in order to make accurate predictions. So they also added two learnable parameters (meaning they will be updated in the SGD step), usually called `gamma` and `beta`. After normalizing the activations to get some new activation vector `y`, a batchnorm layer returns `gamma*y + beta`.
+
+批次标准化（通常只称为*batchnorm*）处理方式是求一个层激活的平均值和标准偏差的平均，并使用这些值来标准化激活。因此，它会产生一些问题，因为网络可能希望一些激活足够高，以使得精准预测。所以它们也要加上两个可学习的参数（表示它们会在随机梯度下架步进中被更新），通常这两个参数称为`gamma`和`beta`。标准化激活后取一些新的激活向量`y`，一个批次标准化返回 `gamma*y + beta`。
+
+That's why our activations can have any mean or variance, independent from the mean and standard deviation of the results of the previous layer. Those statistics are learned separately, making training easier on our model. The behavior is different during training and validation: during training, we use the mean and standard deviation of the batch to normalize the data, while during validation we instead use a running mean of the statistics calculated during training.
+
+Let's add a batchnorm layer to `conv`:
+
+这就是为什么我们的激活能够有任意平均或方差，自变量来自之前层结果的标准偏差和平均值。那些统计会独立的学习，使得在我们模型上更容易训练。在训练和验证期间的行为是不同的：训练期间，我们使用批次的标准偏差和平均值来标准化数据，当在验证期间时，我们使用一个训练期间所计算的运行统计平均值来代替。
+
+让我们添加一个批次标准化层到`conv`中：
+
+```
+def conv(ni, nf, ks=3, act=True):
+    layers = [nn.Conv2d(ni, nf, stride=2, kernel_size=ks, padding=ks//2)]
+    if act: layers.append(nn.ReLU())
+    layers.append(nn.BatchNorm2d(nf))
+    return nn.Sequential(*layers)
+```
+
+and fit our model:
+
+并拟合我们的模型：
+
+```
+learn = fit()
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   0.130036 |   0.055021 | 0.986400 | 00:10 |
+
+That's a great result! Let's take a look at `color_dim`:
+
+这是一个非常好的结果！我们查看一下`color_dim`：
+
+```
+learn.activation_stats.color_dim(-4)
+```
+
+Out:![img](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAjwAAADNCAYAAAC8XqoPAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADh0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uMy4xLjEsIGh0dHA6Ly9tYXRwbG90bGliLm9yZy8QZhcZAAAgAElEQVR4nO2dy5IcR5peIy91AwgQIBtg07ppo+nWQhrrkWkxO61legK9ip5MT6B30E47mcmM1JimmySAuuRFC3aPdf7/qcoPUVm8eJ+zq6CHh4eHR8CZceLzxX6/n0RERERGZvlTN0BERETkqXHCIyIiIsPjhEdERESGxwmPiIiIDI8THhERERkeJzwiIiIyPOuH/uN/Xv5Xv1n/kVj9278/3PDdu1Zm87sv+37f3bRt17/55HC/Z6tW5uy7Tdt2+6oPh/X7Xdu2vD3cdvO677dfLnpb7/pwunl5fM692PZtOxi5F98dtmtz2duw7Kc9TTDK99CsfenG1U3fkc6b2rEu+5593/v57nlvxNm7Xm5z1euv7NbZ9Vj06qft+eG+dD6r217X1Td3bVsdKwvo+yW06/pVH8PnpS/urnp/ra/7CW0vYFz0pvbjfdcH4vayH/PiX3pld88Pz7uOpWmapt1ZbxeN/Xo96DoSS7hGd59Q+w9vkt1Z9v/Fu3MY5+8OT4D6i+6Zxe74vUXjkPr17H2vawXjotZP55P2Ybsf4BLROdLYr+3a0nMN9tvA/VCv7Q/1HZaj67F+3wfi9Wf9IbzcHLbj/Nu+H/17RNeNnkUVuo7/47//t3sfiP7CIyIiIsPjhEdERESGxwmPiIiIDI8THhERERmeB6Vl+fHYX14c/L198zLa793ve7kqcpHcNy36pV9dd/Ht9iXYZMUwu3tO0iHsBtPrKrltQdxcgyi4uu113RZ58OqfQbR73c+HxFYS/uo5bS9aEZSD6zlO0zTtSzFq1wLWuXv3617uk/9zKCK+fwu3NUqTUOy8b7t9USTZ616G6r/+/Kxtq4L1Fo538SfoL5Iay+UleXe/ykRg2rfKwdsLGBNbumd6/2+qrAu3JI0TEqyrLE/CKomtJOFS+2/KxwskpPMHASD0vji8cHXcTxOL+Nef0X16WD9ds1u4RrfwfLqA867Pzfdv+vg9h48LaOzXsUP9vF/2ti7P4EOCMl7pQ5LNMxD2P/RyH97AByaLw7ZekGj8HK4HfrRx+Dd90EJ9QWOsnjdJ/SRYP4S/8IiIiMjwOOERERGR4XHCIyIiIsPjhEdERESGR2n5Z8Li+jAxeffmWSuzvO4yGQmYVUy7+CNIgSDJ7j7tdVFKaZVYMaUWXDIST69fH865UZAE05GSllcldPrDr/oBSawkQXn94bhASn2/CB06klFbXWEq9Pe/KenFsB/1fZqYXK/vEqTDD296H56DfFxFb+rDNCH7w+eHx6RxSG2luuiYtW3Uh5SGTeL65vLw7+df93uSxnQiB68gAfrD590Gv/i2HxPHeWlrFXDvY0mp0EU0pfFF4ildo3o9rl/1vr+EZx21/w4k3/ocoGcfSfBESxz+Yz8hEoFvXxwfT6sbeB6C0EvPippOPk3TdPtJkNROyeAwzs+KUE0foUzQh3fP4P4r7af7Y00fUDyAv/CIiIjI8DjhERERkeFxwiMiIiLDo8PzM+HD7z8/WoYcHuLs3eHLT1z1F1wWem++69lb0/n3JSwQ6qeAMVrV++qfD9/53r6k99O9rsTXWL+DUDV4R06+0c2nFNZYjkehdvDefPWhb9tclbrgfHiFc2hWWXUZryPc6VQ/r+Jd/4ZwSHBB6LrtSp+dQXgZXY+7rrRNZ+9q3XA8qIzGJq6yXXyH6ptNE/tSFOhY20r+ycV34PXQOZU+/P63kN4IvAfPitta7iMIJKV7mQLl1mXbBwgUJFcmGa/U9puXwcrl0z3jvLhEFJRaQx+niYNXq1ty92W/RhScSOdUww5pHJ5/ezwEcJru8fZujj/PW3DmxO2/KUG15NBtgjDNaZqag0S+Hz3DHsJfeERERGR4nPCIiIjI8DjhERERkeFxwiMiIiLDo7T8xKy+eNu27d981rat3x8aWbefduPz+m1fnhuF4SLfkThG0h5BoVRVyKNVw0mYIyGvSsq0X5U0/1wSjnlYjuQ4EmIxxBBWY28re5OYfdm3UchZ23eXybsocG+OB0GiQEyLqi+Ot3UHjuzypm+j1d7rNhI+cWVpGAObqxLAB23A8QTtP/u+H7OGwFG/0thf0tgp46KKwdM0TXcQgEkSfA15ROET7jVeob1vq6GY9IEDB0b29tfnDB2Px0AvV+XpLYxp6i8KtcO+qAGbtPp7ENL3w76Hf++XML5IdiYpuowL7HuQyAkMdi370kcJl/9CQZm9XAut3GXnSP8e1X/b6F4j4f0h/IVHREREhscJj4iIiAyPEx4REREZHic8IiIiMjxKyyeEBOXt19+0bYuvoNzF4dyTE2+zZN9NFZkxnbdvI7kvEWCpLhI3SRZtZSg5k5Jxk9Bp8tlQBM5WY9/XbSSLEuQTBiIwkaQop0nCJAKTMNyuCQmx8L9Oe2hIlYhp/G5phXAYTzXlmFK6KYF2olXu4ZyqpE5tpbFDEnG9jyjxtsrCP+xHdR1uo+u9A4l1hYnJfd+aCn0DqdA0BqgP6zhPP2ag8Vr7rN2P0zStaPV3+LCDPkroYn82DumcmpBM5w33Mo2Ldn/DM5LGCUn89Iyn/ql8+ByE9OBaUj/fvsj+nalyNv6bBeL3Q/gLj4iIiAyPEx4REREZHic8IiIiMjxOeERERGR4lJZPCAnKyz/8u7bt5lWPjFzdHBpZ17+CGFEAU1BLmi0mDlNdII4RLU0zlC1Jkq1CXpoSTHJfTRFFyRtEQZQ5Qe6r0hy1gWRLEveq9EltpT6kpNcqau5AQiQZmaRulMZru6APWYqGbaV6EoEpSRal7sVhZZSWTGOHuP7s+PWmsbOABN0k1ZqEUroe3IclgRbSvUnWprpYBK37ZWL2LvjQgtq1eXZ8v2mapkV51uHzhPoLxjSOi1KMkn3pAwQSpet9ih92wLM7Sb6++FM25qj9JCjXduAzAO7JOg6nqaf6032L140Gf7ln6GMGelY8hL/wiIiIyPA44REREZHhccIjIiIiw6PDc0JwZXQod/7H/gL//W/gRXbhDsLEzsFbuHl5fDVleudLPgWFmvXVlGm/46FztC1d1Ts9ZqsLA/7CttZilJFIOXfBitrkh3AwINRf3m2jAwOeFZ0jnhMFytW6KOww+N8pvLbkFsF1q+eJzgWAwYborxUXDvypNfkbwerfHCwKTYDVpiu4Ajm0FR2eIIQRxxw4Nhiw2drVt62uadtx14f6a0VOR+hG1XJ0OuQITfBcruOJPKvqoE0Tj+F6H1FwH0H3La2WXsuhMwlO4/rdvNXk+blwvA/T59VD+AuPiIiIDI8THhERERkeJzwiIiIyPE54REREZHiUlk/Ji+dt0+Z1X4749tNuhW2uDueeFEp19r4f8vp1n7PW8CcS9CgsEOVmCKqq9W1pZfEgdG6aIJQvlNBoledV7YpQpCVxFldVD0ISSVqmclXARGmWvFAKAAvOG1d/DyRyIg0LTGRRPB61FVe5b60IyrDMuQGpdLmtS333MiRAoxBby9D50H7BExpXGw/HOY7hKi2TYB0GbLbzXPYTp+BBfFbUbz3wAwEQxsOPMdbl+UdyMMrmMPZrv5JYjgT3FgrQaV0gwdexQv1F9wfeb8HYT59P7XrT8zw43F/jLzwiIiIyPE54REREZHic8IiIiMjwOOERERGR4VFaDqEU5Sopb968bEW2F31OiUJvKUYrcdM2EhZJ3GvHgyu/JQmNUoKLTLYFgRiTgylFuW4LU1FRkCzlqG8wnRVWrt5SInNpG5031bWBY1ZpEkVXuoxBCjEJmQT1IaYVl2OiYEh9ncjgYaoyybW1rXRtOUEZmhXIoiTKo/RLK15X6TO9RjQ26zXCFbyhMmg/tqNsIxE1lXDrea+hXTROUMSuq2fDWI2k/nvK3Zb0aEy+BlD+L22lexLHHN1HgQi8DBKzp+me1ctL26hda0jDputWt+E50r8NUNfdi1oI9vvIn2z8hUdERESGxwmPiIiIDI8THhERERkeJzwiIiIyPErLIduvv2nbVlMRmUFa3p33OeXds+PzzLvn8wXlKrmREEag0AZNrcmoKI6R8Aftn4rARqIgCb0kizZhjo4H4ttdD8hmKTMQbik1ls67to2aiknLwf+ioBQP20goTARSEj634XWr50R17c57w/aQ0Fv3RYkyFJlJgK3lUgkUhdtAqCexlcZm25fG9Cd9G4mteL/VMZaOkyDRmNpFIjMl+9b6sQ1hwjTJ4FFCNpWhuN/S1/gMJrkdnh+LILUZk9RhTNOzelk+XqAk51Qsb8ejbaEM3mTt8COOh/AXHhERERkeJzwiIiIyPE54REREZHic8IiIiMjwKC0DmKpMlKTlm8+7JXb3vM8pSTROEiNJZEaKyEWiHaV3osQayMck5FGaZpJ8jP0A+5HMWafv1AaS3FACpFToItMub8LrAcVqXYtdL1Rlwmm6R06sknr4vzGYJg1t7Qm3vRNX0Bc4nhIRMaSN6yAteZruETdJgi/9g+OJ2kUJwFVSD6VfPsDhn5T4jRZ8OlyDthIoqJZ9aUyToEzUexKFd7hvMdmXnon1fgivByY5B+M8FYGbrB2kwE/TfYn+veDuLEjmp2cK7Vb/baC2BrLzNE3twxdqu0nLIiIiIgUnPCIiIjI8TnhERERkeHR4Qja/+7Jtu357+LJ+c9nnj5ur/qJz/aG/i7z95LDc9jx74Z6s4EyhcDjVxXfi8N40aNoCguKSlasxII/e+VL767tuep9P4Y1rOMfAcdqBy4LAMZfbulx6L7N53jcu7yhospQLVsCepnw16OpKLDe9ss0zaCu5E+W6ofdBfgVco/WHsro1BRbCebe+v6f+2tdp8CDRXANypXBH2FSOSW1fwDnSOKfxVPu/ja9pmpYLSsXsm6p3Qb4R3mvkXpX66ToSeI2ClMQ9PPtir6f+yxqujE4BmLSt1QX9lTwjp2ma9tVNhPsb/x2g5yu1o5aB+tHPCcI6DR4UERERKTjhERERkeFxwiMiIiLD44RHREREhkdpmXjRU+3uXnZDq0rKFIJE225edWnr7pPjAh4JyiRtJZIbke5XpbY9SI0omKE4ezyAD4U5CvvaHm8XNQIlVpDoWhvS0DyScIOUOQwZpHbVoEkK1gsD+JIFiantdDppsGFSF68kXsYO1UUru5OES/Ju6Z+7F9l5Y7Ba7evw/iD5uI5rKkMNoz7Ee6vKoiSiQl0USFk/VMAwvHQF8jbOIUQvDXTEoL4i797Cc4HOkQJCa0hiELp6X7tqX6PQHQbJ4qrtBb4/ejnMD6xtpTbQMyz40CINuH0If+ERERGR4XHCIyIiIsPjhEdERESGxwmPiIiIDI/Scsh+BatB70qK6EWfP+Kq2+vjgmSaEozibNmWrPw9TSzDcRpoTebM6qe21mPu09RjTL2tMmcvQyJzuhp0q4s2kgicrNYcCtC4OnCQNooyZyijtm2hDIkCdB2bYUpwIj8uSDxOU6dhvEb7UTEU6ku7SFhFC/T4/cByfgfFUxr7wf8G0zFRii7iehqMS0HOSUo3tZ0SplH0Lmye9wtCKcT4sUctRn0TPtdawjt9zPCY+6iKxr3I7A9hYjE7gfYj4f0B/IVHREREhscJj4iIiAyPEx4REREZHic8IiIiMjx/89Ly6ou3bdvmzcu2bXdGiaeH20hC24HsfNurj0RjFFYDCw2FNpJ+w9FQ900Th1eQXNok1lCmxsTQ0q5U/CbonJqoGZ747vJ4si+mHlMgaSAap9cjSV39oeDhn7tnqZA+LyUYJdxAdMTE3sdQx3komeJ9WquGe3L1gZJ9g2OGbagC8TRl4iymC4O8i88ZKJdAKd3tvJNY8OmecUE3V0l5x1Ro6msar6UudOfTBOi2I+1HNyA0KxDqU5kaz7vY5vhRAj2Dg4dWcMmO4i88IiIiMjxOeERERGR4nPCIiIjI8PzNOzy0Mvrmee+Wi//XU7tu/+7wBXuy4vk0TfesNFzLZAF89P6+7poE/k3TNE1pGFoNAKP6Yb8NuCytreGK8/j+u7YrDOkj9yD1A1oReq+NPsXxyjBILxgDeD4Y3AfHnPl+nUj6Iln9/YdydIBkR9gvvk2PL/28X1Igaa+rh2JCgN0lNSJZPhuOB6ugp0F0Sf+k9ddSqU9D7k8d1zh+6RzDgM3WDFzhHMYAeSrln4tt6sVgQGiwBHkabEg+ZHUA0RWFbfBcaCGG4SrxtOL8VJ4NqDzp8IiIiIgc4oRHREREhscJj4iIiAyPEx4REREZHqXl7961TZvnb9q2D2+7aXXz8nC+SMFeFKCFoYJVyCO5LxB1fyh2XO7D/UjkowC+QBTDMtjWcjyS3CgAjA4a2Np7kA7TlcTbouG0sjucN60m30RBqItCtSIBPVwhnMMVqf7StnDsIGjJliJw4iw3H5d3o/0mXkm8StcseYfjqUi42C4Aw++C1dFRPifpOjCU00BHCpmrY5/HF9SVrF6P43CeAP3nraWu402YpntWXk+ekdT+QOqm649tCFclT4IyMaR0H4QKkl+NH8IEH+k84gOEfz3MxxUXERER+eXhhEdERESGxwmPiIiIDI8THhERERmevylpefFPf2jbbl90q5hWRt9ckvhWylzBQUG02kLicEK+CnZJdSVpL115HazlKlyiZIqr5B6vi4TuVNbu+1EyLpQjmZPuDBIDKyDfkcyerCKdyokkYrf9ILV5ClNv62rvsaSJonQSVx1uqzJnmKhLleE1Cq43SsWBkMwrTc9rA4HiNK6qTmPseLsQOKd9XYGcxgSlNqfierAfCtDU1vpsCJPasX/KdaNhj/f3xy7//UAbqP7kXx58xjxCsu8HgP1Qbg4+SlBaFhERETnECY+IiIgMjxMeERERGR4nPCIiIjI8f1PS8vJ/f9O3/e7Ltu361UXbRjLt5tnxY26fhUmsRSjEJNBUmKuBwyAFYsonbFtukjThTPrdQyptO0+S3khGJVoUclBmyuXBmmCNbSUxlK5lJF1D9Rf9AK2t1AYSN0N3vkqMKNzStkTAxIDYrGFN/CaBmJJ3QxE4kcFRZE/akYrZRK2K5FT6aOCWbvDg/k779Y6iqMt+Z8H4naZpt4Zyta9pSNOzjtoapLA/Ss6v50n3AmzancN53wX3Xziekn1jmRpl7fI3fiQC2+jDmnq5qW8+Uur3Fx4REREZHic8IiIiMjxOeERERGR4nPCIiIjI8AwtLa++eHvw9/U/ftXKbC+7kXfxpy5Hvfuyl6siMyUoY3IwgAnAtQxdrUR0TGVnStmF9leBbZfIndOEo60KcpjyGaY2N0ESk6NhU5gU3WRgumZJ0uh0jzzYCj1iWy1CSankmGKSczXqjx/vh8pgW21HKk5vemPxGgWkqbHteifnc0+5RRucUFco1Ld9wyRyEt6z6N1sGwnJzQ1+hKQeSeQp9CFEHZr03ElTiGtd4f0Xi8YBsdwcXCP8EIJk8FURrMP7Az96qJtmhlD/Nf7CIyIiIsPjhEdERESGxwmPiIiIDM/QDs/uq0OHZ7/qLwFvXvU5393zXu72Ra9/e1FW+obe3IWhc+19axxC1tvaMs4eEToXhWPB+914peHkXTftBr5A64vQ4cG6MHSsbEtdkCTADFcRp1A7CFabu7o1sIfAt2is4PUOwgjRbaCgTBpkAelu2GdBR6I/E4T54fLZ8y5cC2CcJjxvDNtLxnDodMz+3+c0ZLUl0UGZ0E3EVb3rvUX71WcAtYvaQY4KPRcSdxCvI1yQ2SuvZ0GyWK5uovFF543jMAiahDDCh/AXHhERERkeJzwiIiIyPE54REREZHic8IiIiMjwDC0tL643B3/fvO6ne/1Zn/NR2F4SKpgGoSVBVQj5ciSZ1tWtU7k2PGaT1UiKJkiii4ITSXKDclXcI5kz9fhIMqz7PqZfa/0oGFIbgrGT/m9MOg5r06itaV31HqHzgfoXMM6bIJmOk/Sy1XPC8w7rr+eJ43BeON3+gvoQdkuvUS1HkikFqlJdyThPxdZVIKiiQBymdSbjPA2frFDT048l2rMoFN7p34YEOm/q+7RcJRTLo4DNj8RfeERERGR4nPCIiIjI8DjhERERkeFxwiMiIiLDM7S0vH1xcfD3LSQok6C8uezbKGmySso7kgfTVZHnCrCUvFtXFU5X2E5X5a3TZBLOYHXraGXpVOZMzolWV6YVfuNA0sN99yTXUsouJQ5XyTAUDDHotXZ16iqGSaxNGKYxB4L4AiR+6rO2H41D6FfIm+37zU2bBfA6xgJ3kBKMEmgg9NLxML04HK9JGnaaFB3J2gAJvcnxdlm6Oo2xdnnTttIzZRk8K9J/B5IEeequue1P+2sD5cq4o+dCtDL6NDUBGvvrI+9vf+ERERGR4XHCIyIiIsPjhEdERESGxwmPiIiIDM8vUlpe/NMf2rbd2apt+/b3Vwd/by+64LQ97/Vvr7pBRUnLSbJyE4in6Z7kz5mgABYIktB2SrNNQPExdMn2lCxa66d2zZRRF5AEuoBpP/mprR9D23lJwl9pP0qB1DdBIPOCBHvygNfbo+1C4OIuL7K6lue7o2UIHGPb431Iwm18zEUVMPtAwbEJ/bPvg6fvB+3ne+twWyzdw3MHZdp6TlQG7qOsX0OZmpK12/0A/QXP2z09jOix3IqF/RV87EHXEaG+KH2932bjMBLSifDjFerrXhfsNzetmq5Z+qHNXw7zUaVFREREfoE44REREZHhccIjIiIiw/Ozd3hWX7xt2/bXPfHo5tfP+rZPD+dzm+e9/rsXx1dBn6Zp2pNjUbfR9JHe8SevuuMVZSlMLFmxNvMFiPZOPHwniy4LvOPt7YKNQXBY6jZUV+PPW4NN4btuaGvtC2wBqQf0Hrv2NaksoaeE78Rrv2K4IhyTggfrLUN9A+N3C95Cq5/GdG8Wez1UrrBK7qtpmnYQyEbn2doQim/L6halXgk1YXn8mEsIAdxDV9D1TvaLx9NZdVnC8w6PWZ+lc8c0Ej5iqK8rmHUZOU98zOS5P99BCvcLvNb4ej+Av/CIiIjI8DjhERERkeFxwiMiIiLD44RHREREhudnJy1XSfn2H37bynz/m54WuIFQwbtPSpnnmTS7uwQBDEPNyt9JmekeASxZVRglUwo+q8eDuohQil4uijwIZVbn3dzc7XpDVonomMqctV8ftTI6taNsgLGzh3MkqijNcm0WalfPk/q5iq7TNE07um5BoBxdD+pXkufn9v8qWQI+vN68cnUgsdIhYb/lBfR1vSbBfXXfMVsbKLCQyoVjIGFFci0FLpZtC7pnwnHYn5HHjzdNHLBJ1Ht3SW0I9iP4wwgoF4QFLuHZis+FmdeIoL7YUQBiuefT8UXPp9aujxSU8TiPrkFERETkZ44THhERERkeJzwiIiIyPE54REREZHh+dtLy/s1nB3/fvO6xx5urLkLdvuzbqqS8o5XRaRX0dIXzItwuQBIjCQ3FzSA9tUm599CE2DDJNGWueLoGebDWtYPzpoRbkgCr5EaJvakAzWJulYMp8hRWDQ+kTKorvd6V3S7bj/5vh9pRxw/JtSlzx05dIXyasmtJ4yRNZ23J3bQ6dyijLmFcZG2Y12GxJDuzD9Ny25KOu4K+x/soqJ+fAVFVXP9q3jXawf1Q711MNU8vbZKEDG3AeznoszTh/Qzk6TpeKUj/lM+6dGz+63FmHUVERETkF4QTHhERERkeJzwiIiIyPE54REREZHh+NGm5JihP0zTtvurbNleHkvL7N31ORoLy7UuSj0vdL0BiXYOASenIF11oWwbyI4mzKEDXImR7AZRIWkUuTB8NReZErEMxNJTJ5kqZcyG5L6VL0ZRaeny/aerXbQ2J05iYDOOplsOUWoDkwTU8ERIRNBUdk/2IuTJqIp/fVy7JOab7KJFFH9Ou5N7K08lJ7K9lSEamsdnLrcpzjK7jEp63mMoejGtMk8brke2b1FXPkeqaex3vO2aFpd+sD5Oxwtdt7kcV8z4cmdv2v8ZfeERERGR4nPCIiIjI8DjhERERkeH50RyeGig4TdN0/faqbfv27w6bdPspBAo+g3fKsG13Xt6j0uqx4E4sz8HXwQDBw20r8IHSd591G73fXZMPNBNaxZZWrCXaeZPHELosPcwPVuCd2a7UgSGSd8Nb8gyg/qQcHW+9hlWRgRqYRnXh+YT/u1PHSjpOiMwvO+4ppWyhfvZDjofOxTlxJ/zfyHlm0T3nSP0a+H2YkwohoqvEgQmfO4vF8VA7gp4Vm0V2Qerzle7bNTmfwKbsewbji8YmnWHiitK1xRXIYd/k35V01fME6sOkL+h8PrZd/sIjIiIiw+OER0RERIbHCY+IiIgMjxMeERERGZ4HpWUKC9x+/c3Rctf/+FUrc/eyH4pCBW9eH0pImysQlGHbjlY9Pz+UoxYgI9PKyeszWtUbyhX5isqQaEXb1kGoViodnhIWCh+xJPFRshWLSWCsfXF5dnu0zH11YcuKiLheZVIxSd1JH6aSXi2Hq1aDgPmYMLSEpH46R5S8QZJNjkcPuLlCLBEuTD/VjMptvJL1zOBBeFbM/biA9ptL2l90zNqutL9W4Ur1tW1rEI0ha5Sf+7vD/qfzWdKq4TMf59Sv58E9k5KHdR5C7aJzvAg/9ngs/sIjIiIiw+OER0RERIbHCY+IiIgMjxMeERERGZ6Hk5ZfPG+bVlMXmW//4beHf7/q1b77oi8pe/2rfsjtxaHltHkOstQFCL60mnlJVsaEY5CFz0BaJmG4Sm1n4SrVidycpJZO0/zE5FOm5aZ1kYT21JJsJe0vKrcrY+AxfZhwimTRv3ABAmZaV21HTZFN94sJUo+nKUuATtNsqaVJ71D9c887lTTpWXRK6hmlfTO3D1OihGmSlsPE4blQ/TQu2n6hodw+SsiaheeYtPVpP4NhqL/qv6+neN76C4+IiIgMjxMeERERGR4nPCIiIjI8TnhERERkeB6Ulm+/et223bzu0vL1q2Up0wWk6zPjgYsAAAYOSURBVM9BwLwAgepZEfLOYdl7SExeBonJK5CKL87uel1gbZ2vezprLbYGmXBu+vISlLMd6GQk6a0Xp5Mak4TNVDw+CxJP08TbKG02rIv6lfr/dnco3qcp2sk1ojYQ6bhIWME4wQTrUv8ZJdCGGuhmf/ismJsmTcdM++Ex4vqcMtMU3jPQr3MToB+T2vyUMv7cjyymaX7y7tMmwzP9E53OKZPOH/PcPCvb5o5pqj9NUqek5eSjhI/9iMNfeERERGR4nPCIiIjI8DjhERERkeFxwiMiIiLD86C0/H//42Xbtj3v5bZXh3/fQTry9nkX8hbPING4pCOfX3Sp+AyWva+pjNM0TauSrEyyJSVPUjkSgWviKUnLj5H02n4nzQedz1xJlpgrnlJfVCEW9wvFN0oTvlofjkWqi/Y7o4TvQBRM21qlQ+Kk4/AR8uDZdHhvnbJdaQI0XQ9sxxSIxsApReMtjOnkniEhPaW2n5Kdnzo1nUg+enhq5l7b9MOIhFRIn71veIpz27GGj4fm1rWAe/kh/IVHREREhscJj4iIiAyPEx4REREZngcdnu/+DbwHhoC//WUJ+Lvq71ovznpwH61KXv2Zc/B1riAskPyZ+o4UVzyHbefL3lbyCpKAvzW8d97Re/lS12aXRFfd45EELgsx16fAlcWfONyN+vBydVfKZPthqB2M8zqe6jWbpmk6h66f66TMXc187orqVFcKhivCvVU9m1OuCE99n9xr91H3TYM/ibnXaD0db+spwxunqZ8nuibwXKN+pf5P9iOSunC/mV5g6t0k9T/mnkw4ZVjkUz8/0rFZnxX0PPlY/IVHREREhscJj4iIiAyPEx4REREZHic8IiIiMjwPSstnv37ft4FoXFccvwRB+RzC/C5Wvdxl2UbS7zlso3I1VJCEM17xOpOjKLSw1TVTcqP97kDaS0S+VGJOj5lA7UKJeHFckEyFvEiAPqGIeEpIgKfrloSVnTLkbJpOK0TWezcVXef2RSr0cp9tjpaZK2A+5YrkH8NcaTxv/+nCAnf7x0urf+GUsnxSP4ViPvUYSINRa7lT9s2j6sq+2/ko/IVHREREhscJj4iIiAyPEx4REREZHic8IiIiMjwPSsv//tdft22X655yXOVBkpEpvfgMhMUqH58tKNGzi1ArSCT9scXAx0hvd/vjhtYF1L8N5qxpajNJmRfBftsw0Xhu/5CQTud0ysThhJ9C7nvqYxK1/rnp4feV6/v1ZwyRjute/+meC6lMvVvN+1Dhx5bnqR2PacPcupK+oOdO8iFJekz6YGN2/eFQPfU5zWlHOg7nfggxt65TtMFfeERERGR4nPCIiIjI8DjhERERkeFxwiMiIiLD86C0/J8+/19t2wqTcHdHy5wturScyIMkIyeibgrJwiRWbjFldfnRZe5jW8qlcl/db5r6Oe2WpxUfa/9TemeyHxFf71UXW2nfp4TaNbcNjxnTP/Z5n5LHCMRPLaUn/FzGwI/N3OdyKuKfkrStp7xuP9e66COgek1+ivOZe8yPvWd+OXeYiIiIyEyc8IiIiMjwOOERERGR4XnQ4fkvn/zPWZXSe1ryW4haLvVp7vb9VGo5KnMLDk9SF7WN6trBnDLxbtI2EHPdImoX8ZSO0GPC12r7V+Gq9+l5J/VRXbRfPc9TtzVpw1we019zr9FPQXKeyTneV+4peUwb5vqEc4PoUubef/J40nF+yrpquVPcV44OERERGR4nPCIiIjI8TnhERERkeJzwiIiIyPA8KC3/h/PLWZVu97BKMghtd3sIQZq2pUwPmLuDum73VH/dj2TnPue7Bvn4GiTiKhZf78+gXVRXL1frokBEkrbmhn2lgU1JMOPcVbFPTSp1V0650jdBdVUorPOUJG1I25H2M9X1lNcovT7ptU377KfmlP1MPOZeTvrwMdctYW77qQ/Tvq7lnrqux3DK+ufW9dRj+C/4C4+IiIgMjxMeERERGR4nPCIiIjI8TnhERERkeBZ7kH1FRERERsJfeERERGR4nPCIiIjI8DjhERERkeFxwiMiIiLD44RHREREhscJj4iIiAzP/wfEY39V6lGjrwAAAABJRU5ErkJggg==)
+
+This is just what we hope to see: a smooth development of activations, with no "crashes." Batchnorm has really delivered on its promise here! In fact, batchnorm has been so successful that we see it (or something very similar) in nearly all modern neural networks.
+
+这真是我们希望看到的内容：一个平滑发展的激活，没有任何*坍塌*。批次标准化真的兑现了它的承诺！事实上，批次标准化（或一些非常相似的方法）在几乎所有的现代神经网络中我们看它已经非常成功了。
+
+An interesting observation about models containing batch normalization layers is that they tend to generalize better than models that don't contain them. Although we haven't as yet seen a rigorous analysis of what's going on here, most researchers believe that the reason for this is that batch normalization adds some extra randomness to the training process. Each mini-batch will have a somewhat different mean and standard deviation than other mini-batches. Therefore, the activations will be normalized by different values each time. In order for the model to make accurate predictions, it will have to learn to become robust to these variations. In general, adding additional randomization to the training process often helps.
+
+一个有趣的发现，包含批次标准化层的模型倾向比没有包含的模型更的泛华。然而我们到现在还没有看到这到底发生了什么的严格分析，绝大多数研究人员相信这个原因是批次标准化在训练过程中添加了各位随机性。每个最小批次相比其它最小批次在一定程度有不同的平均值和标准偏差。因此，激活通过每次不同的值会被标准化。为了使得模型精准预测，对于这些变化它必须学习变得健壮。通常来说，在训练过程中添加额外随机性通常是有帮助的。
+
+Since things are going so well, let's train for a few more epochs and see how it goes. In fact, let's *increase* the learning rate, since the abstract of the batchnorm paper claimed we should be able to "train at much higher learning rates":
+
+由于事情发展的很好，让我们多训练几个周期并看它怎么样。实际上，我们是*增加*学习率，因为批次标准化论文摘要声称我们应该能够“在高的多的学习率上训练”：
+
+```
+learn = fit(5, lr=0.1)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   0.191731 |   0.121738 | 0.960900 | 00:11 |
+|     1 |   0.083739 |   0.055808 | 0.981800 | 00:10 |
+|     2 |   0.053161 |   0.044485 | 0.987100 | 00:10 |
+|     3 |   0.034433 |   0.030233 | 0.990200 | 00:10 |
+|     4 |   0.017646 |   0.025407 | 0.991200 | 00:10 |
+
+At this point, I think it's fair to say we know how to recognize digits! It's time to move on to something harder...
+
+基于这一点，我想可以公平的说我们知道了如何识别数字！是时候向更有难度的内容前进了...
+
