@@ -47,4 +47,6 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 
 [第十二章 自然语言处理深潜](./smartbook/Fastai-12.md)   [（英文原本：12_nlp_dive.ipynb）](./englishbook/12_nlp_dive.ipynb)（未校对）
 
-[第十三章 卷积](./smartbook/Fastai-13.md)   [（英文原本：13_convolutions.ipynb）](./englishbook/13_convolutions.ipynb)（翻译中）
+[第十三章 卷积](./smartbook/Fastai-13.md)   [（英文原本：13_convolutions.ipynb）](./englishbook/13_convolutions.ipynb)（未核对）
+
+[第十四章 残差网络](./smartbook/Fastai-14.md)   [（英文原本：14_resnet.ipynb）](./englishbook/14_resnet.ipynb)（翻译中）
