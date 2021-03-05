@@ -868,7 +868,7 @@ Jeremy also asked on Twitter for help checking our description of label smoothin
 
 Many of the top people in deep learning today are Twitter regulars, and are very open about interacting with the wider community. One good way to get started is to look at a list of Jeremy's [recent Twitter likes](https://twitter.com/jeremyphoward/likes), or [Sylvain's](https://twitter.com/GuggerSylvain/likes). That way, you can see a list of Twitter users that we think have interesting and useful things to say.
 
-很多顶级深度学习专家如今是Twitter的常客，且非常开放与广泛的社区交流。一个好的开始方法是查看[杰里米](https://twitter.com/jeremyphoward/likes)或[古格·西尔文](https://twitter.com/GuggerSylvain/likes)最近的Twitter喜好列表。那样，你能够看到Twitter用户的那些我们认为有意思和有益内容要讨论的列表。
+很多顶级深度学习专家如今是Twitter的常客，且非常开放与广泛的社区交流。一个好的开始方法是查看[杰里米](https://twitter.com/jeremyphoward/likes)或[古格·西尔文](https://twitter.com/GuggerSylvain/likes)最近的Twitter点赞列表。那样，你能够看到Twitter用户的那些我们认为有意思和有益内容要讨论的列表。
 
 Twitter is the main way we both stay up to date with interesting papers, software releases, and other deep learning news. For making connections with the deep learning community, we recommend getting involved both in the [fast.ai forums](https://forums.fast.ai/) and on Twitter.
 
@@ -1430,3 +1430,118 @@ At this point, I think it's fair to say we know how to recognize digits! It's ti
 
 基于这一点，我想可以公平的说我们知道了如何识别数字！是时候向更有难度的内容前进了...
 
+## Conclusions
+
+## 结尾
+
+We've seen that convolutions are just a type of matrix multiplication, with two constraints on the weight matrix: some elements are always zero, and some elements are tied (forced to always have the same value). In <chapter_intro> we saw the eight requirements from the 1986 book *Parallel Distributed Processing*; one of them was "A pattern of connectivity among units." That's exactly what these constraints do: they enforce a certain pattern of connectivity.
+
+我们已经发现卷积只是一类矩阵乘法，在权重矩阵上有两个约束：一个元素总是零，一些元素被绑定（强制总是有相同的值）。在<章节：概述>中我们看到了1986年出版的*并行分布式处理*有八个必备条件。其中一个是“单元间的连接模式”。那正是那些限制所做的事情：它们实施了一个确定的连接模式。
+
+These constraints allow us to use far fewer parameters in our model, without sacrificing the ability to represent complex visual features. That means we can train deeper models faster, with less overfitting. Although the universal approximation theorem shows that it should be *possible* to represent anything in a fully connected network in one hidden layer, we've seen now that in *practice* we can train much better models by being thoughtful about network architecture.
+
+这些约束允许我们在模型中使用更少的参数，而不会牺牲表示复杂视觉特征的能力。这意味着我们能够更快速的训练更深的模型，且会产生更少的过拟问题。虽然通用近似定理展示了在一个隐含层中一个全连连接网络里应该*可能*代表任何事物，现在我们在*实践*中已经发现通过思考网络架构我们能够训练更好的模型。
+
+Convolutions are by far the most common pattern of connectivity we see in neural nets (along with regular linear layers, which we refer to as *fully connected*), but it's likely that many more will be discovered.
+
+在神经网络中我们发现卷积是截至目前为止最常用的连通模式（加上规则的线性层，我们称其为*全连接*），然而可能会发现更多的连通模型。
+
+We've also seen how to interpret the activations of layers in the network to see whether training is going well or not, and how batchnorm helps regularize the training and makes it smoother. In the next chapter, we will use both of those layers to build the most popular architecture in computer vision: a residual network.
+
+我们也已经学习了如何解释网络中的层激活，并查看训练的好坏，以及批次标准化如何助力合理的训练且使其更加平滑。在下一个章节，我们会使用会使用这两层来创建计算机视觉最流行的架构：残差网络。
+
+## Questionnaire
+
+## 练习题
+
+1. What is a "feature"?
+2. 什么是“特征”？
+3. Write out the convolutional kernel matrix for a top edge detector.
+4. 写出顶部边缘探测器的卷积核矩阵。
+5. Write out the mathematical operation applied by a 3×3 kernel to a single pixel in an image.
+6. 写出 3×3 卷积核应用到图像中单个像素的数字运算。
+7. What is the value of a convolutional kernel apply to a 3×3 matrix of zeros?
+8. 卷积核应用于一个 3×3 零矩阵的值是什么？
+9. What is "padding"?
+10. 什么是“填充”？
+11. What is "stride"?
+12. 什么是“步长”？
+13. Create a nested list comprehension to complete any task that you choose.
+14. 创建一个嵌套列表解释来完成你选择的任务。
+15. What are the shapes of the `input` and `weight` parameters to PyTorch's 2D convolution?
+16. 对于PyTorch的2D卷积`输入`的形状和`权重`参数是什么？
+17. What is a "channel"?
+18. 什么是“通道”？
+19. What is the relationship between a convolution and a matrix multiplication?
+20. 卷积和矩阵乘法之间的关系是什么？
+21. What is a "convolutional neural network"?
+22. 什么是“卷积神经网络”？
+23. What is the benefit of refactoring parts of your neural network definition?
+24. 重构你的神经网络定义部分的收益是什么？
+25. What is `Flatten`? Where does it need to be included in the MNIST CNN? Why?
+26. 什么是`Flatten`？在MNIST卷积神经网络中它应该在什么位置？为什么？
+27. What does "NCHW" mean?
+28. “NCHW”平均做的什么？
+29. Why does the third layer of the MNIST CNN have `7*7*(1168-16)` multiplications?
+30. 为什么MNIST卷积神经网络的第三层做 `7*7*(1168-16)`乘法？
+31. What is a "receptive field"?
+32. 什么是“感受野”？
+33. What is the size of the receptive field of an activation after two stride 2 convolutions? Why?
+34. 两个步长个卷积后激活的感受野尺寸是什么？为什么？
+35. Run *conv-example.xlsx* yourself and experiment with *trace precedents*.
+36. 你自己运行*conv_example.xlsx*并实验追踪引用。
+37. Have a look at Jeremy or Sylvain's list of recent Twitter "like"s, and see if you find any interesting resources or ideas there.
+38. 杰里米或古格·西尔文最新的点赞列表，在那里找一下是否你能发现感兴趣的资源或想法。
+39. How is a color image represented as a tensor?
+40. 彩色图像如何用一个张量来表示？
+41. How does a convolution work with a color input?
+42. 一个卷积如何处理彩色输入？
+43. What method can we use to see that data in `DataLoaders`?
+44. 我们能够使用什么方法查看`DataLoaders`中的数据？
+45. Why do we double the number of filters after each stride-2 conv?
+46. 每次步长2卷积后为什么我们要加倍过滤器的数量？
+47. Why do we use a larger kernel in the first conv with MNIST (with `simple_cnn`)?
+48. 为什么我们在MNIST上的第一个卷积中使用了更大的卷积核（用了`simple_cnn`）？
+49. What information does `ActivationStats` save for each layer?
+50. 对于每层什么信息做了`ActivationStats`保存？
+51. How can we access a learner's callback after training?
+52. 训练之后我们怎么访问学习器的回调？
+53. What are the three statistics plotted by `plot_layer_stats`? What does the x-axis represent?
+54. `plot_layer_stats`的三个统计绘图是什么？x-axis代表的是什么？
+55. Why are activations near zero problematic?
+56. 近零的激活为什么是有问题的？
+57. What are the upsides and downsides of training with a larger batch size?
+58. 用一个更大的批次尺寸训练的利弊是什么？
+59. Why should we avoid using a high learning rate at the start of training?
+60. 为什么我们在训练的一开始避免使用高的学习率？
+61. What is 1cycle training?
+62. 什么是一周期训练？
+63. What are the benefits of training with a high learning rate?
+64. 用一个高的学习率训练的好处是什么？
+65. Why do we want to use a low learning rate at the end of training?
+66. 为什么我们希望在训练的结束使用一个低的学习率？
+67. What is "cyclical momentum"?
+68. 什么是“周期动量”？
+69. What callback tracks hyperparameter values during training (along with other information)?
+70. 训练期间什么回调追踪超参值（和其它信息）？
+71. What does one column of pixels in the `color_dim` plot represent?
+72. `color_dim`中像素的一列表示的是什么？
+73. What does "bad training" look like in `color_dim`? Why?
+74. “糟糕的训练”在`color_dim`中看起来是什么样子？为什么？
+75. What trainable parameters does a batch normalization layer contain?
+76. 批次标准化层包含了什么样的可训练参数？
+77. What statistics are used to normalize in batch normalization during training? How about during validation?
+78. 训练期间在批次标准化中使用了什么统计标准化？在验证期间呢？
+79. Why do models with batch normalization layers generalize better?
+80. 为什么模型做了批次标准化层泛华的更好？
+
+### Further Research
+
+### 深入研究
+
+1. What features other than edge detectors have been used in computer vision (especially before deep learning became popular)?
+2. 除了边缘探测器还有哪些特征已经被用于计算机视觉（尤其在深度学习变的流行前）？
+3. There are other normalization layers available in PyTorch. Try them out and see what works best. Learn about why other normalization layers have been developed, and how they differ from batch normalization.
+4. 在PyTorch中可获得其它的标准化层。实验一下他们并查看什么是最好的。了解一下为什么还要开发其它的标准化层，他们与批次标准有怎样的差异。
+5. Try moving the activation function after the batch normalization layer in `conv`. Does it make a difference? See what you can find out about what order is recommended, and why.
+6. 在`conv`中尝试把激活函数移到到批次标准化层之后。它产生了什么差异？看一下你能找到什么样的顺序建议，为什么。
