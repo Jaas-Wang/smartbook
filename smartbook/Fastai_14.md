@@ -72,9 +72,11 @@ def avg_pool(x): return x.mean((2,3))
 
 As you see, it is taking the mean over the x- and y-axes. This function will always convert a grid of activations into a single activation per image. PyTorch provides a slightly more versatile module called `nn.AdaptiveAvgPool2d`, which averages a grid of activations into whatever sized destination you require (although we nearly always use a size of 1).
 
+如你所见，它在x和y轴上求平均值。这个函数会把每张图像的激活表格转换为一个单激活。PyTorch提供了多用途模块`nn.AdaptiveAvgPool2d`，它把激活的表格平均为任何我们最终需要的尺寸（虽然我们几乎总是使用尺寸1）。
+
 A fully convolutional network, therefore, has a number of convolutional layers, some of which will be stride 2, at the end of which is an adaptive average pooling layer, a flatten layer to remove the unit axes, and finally a linear layer. Here is our first fully convolutional network:
 
-In [ ]:
+因此一个全卷积网络有许多卷积层，他们中的一些会是步长2，最后是自适应平均池化层，用以移除单元轴的扁平层，及最终的线性层。下面是我们的第一个全卷积网络：
 
 ```
 def block(ni, nf): return ConvLayer(ni, nf, stride=2)
@@ -92,15 +94,23 @@ def get_model():
 
 We're going to be replacing the implementation of `block` in the network with other variants in a moment, which is why we're not calling it `conv` any more. We're also saving some time by taking advantage of fastai's `ConvLayer`, which that already provides the functionality of `conv` from the last chapter (plus a lot more!).
 
+稍后我们会用其它变体来替换网络中的`block`实现，这是为什么我们没有再称它`conv`的原因。通过求fastai的`ConvLayer`平均值我们也节省了一些时间，在上一章它已经提供了实用的`conv`功能（还有更多！）
+
 > stop: Consider this question: would this approach makes sense for an optical character recognition (OCR) problem such as MNIST? The vast majority of practitioners tackling OCR and similar problems tend to use fully convolutional networks, because that's what nearly everybody learns nowadays. But it really doesn't make any sense! You can't decide, for instance, whether a number is a 3 or an 8 by slicing it into small pieces, jumbling them up, and deciding whether on average each piece looks like a 3 or an 8. But that's what adaptive average pooling effectively does! Fully convolutional networks are only really a good choice for objects that don't have a single correct orientation or size (e.g., like most natural photos).
+
+> 暂停：思考这个问题：这个方法对于如MNIST这种光学字符识别（OCR）问题有意义吗？广泛的行业人员与OCR和类似问题打交道倾向使用全神经网络，因为现如今这是几乎每个人都学过的。但是它真的没有任何意义！例如，你不能通过把他们切成很小的小块来决定一个数字是3还是8，弄碎它们并判断每块上的平均看起来像3或是8。但这是自适应平均池化实际做的事情！对于没有单一正确方向或尺寸（例如，像大多数自然照片）目标，全卷积网络确实是一个好的选择。
 
 Once we are done with our convolutional layers, we will get activations of size `bs x ch x h x w` (batch size, a certain number of channels, height, and width). We want to convert this to a tensor of size `bs x ch`, so we take the average over the last two dimensions and flatten the trailing 1×1 dimension like we did in our previous model.
 
+一旦我们用卷积层做完，我们会得到尺寸为 `bs x ch x h x w`的激活（批次尺寸，确定的通道数，高和宽）。我们希望把这个激活形状转换为尺寸为`bs x ch`的张量，所以我们在最后两个轴上求平均值，并像我们之前章节做的那样扁平化尾部的 1×1 维。
+
 This is different from regular pooling in the sense that those layers will generally take the average (for average pooling) or the maximum (for max pooling) of a window of a given size. For instance, max pooling layers of size 2, which were very popular in older CNNs, reduce the size of our image by half on each dimension by taking the maximum of each 2×2 window (with a stride of 2).
+
+某种意义上这与常规池化是不同的，这些层通常会求一个给定尺寸窗口的平均（平均池化）或最大值（最大池化）。例如，尺寸2的最大池化在老的CNN中非常流行，通过求每个 2×2 窗口（步长2）的最大值，通过在每个维度上减半压缩了我们图像的尺寸。
 
 As before, we can define a `Learner` with our custom model and then train it on the data we grabbed earlier:
 
-In [ ]:
+以前，我们能够用自定义模型定义`Learner`，多面手在我们之前抓取的数据上训练它：
 
 ```
 def get_learner(m):
@@ -109,8 +119,6 @@ def get_learner(m):
 
 learn = get_learner(get_model())
 ```
-
-In [ ]:
 
 ```
 learn.lr_find()
@@ -122,7 +130,7 @@ Out: (0.47863011360168456, 3.981071710586548)
 
 3e-3 is often a good learning rate for CNNs, and that appears to be the case here too, so let's try that:
 
-In [ ]:
+对于CNN 3e-3通常是一个合适的学习率，在这里的例子中好像也是这样，让我们尝试一下：
 
 ```
 learn.fit_one_cycle(5, 3e-3)
@@ -137,3 +145,5 @@ learn.fit_one_cycle(5, 3e-3)
 |     4 |   1.049770 |   1.092619 | 0.659108 | 00:07 |
 
 That's a pretty good start, considering we have to pick the correct one of 10 categories, and we're training from scratch for just 5 epochs! We can do way better than this using a deeper mode, but just stacking new layers won't really improve our results (you can try and see for yourself!). To work around this problem, ResNets introduce the idea of *skip connections*. We'll explore those and other aspects of ResNets in the next section.
+
+考虑到我们必须从10个分类中选择一个正确的，我们从零开始训练只有5个周期，这是一个非常好的开始！使用一个更深的模型我们能够做的比这个结果更好，但只是堆砌新的层不会真正改善我们的结果（你可以尝试一下并自己看一下！）。围绕这个问题的处理，残差网络 引入了*跳跃连接*思想。下一部分我们会探索这个方法和残差网络的其它部分。
