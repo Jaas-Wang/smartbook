@@ -147,3 +147,180 @@ learn.fit_one_cycle(5, 3e-3)
 That's a pretty good start, considering we have to pick the correct one of 10 categories, and we're training from scratch for just 5 epochs! We can do way better than this using a deeper mode, but just stacking new layers won't really improve our results (you can try and see for yourself!). To work around this problem, ResNets introduce the idea of *skip connections*. We'll explore those and other aspects of ResNets in the next section.
 
 考虑到我们必须从10个分类中选择一个正确的，我们从零开始训练只有5个周期，这是一个非常好的开始！使用一个更深的模型我们能够做的比这个结果更好，但只是堆砌新的层不会真正改善我们的结果（你可以尝试一下并自己看一下！）。围绕这个问题的处理，残差网络 引入了*跳跃连接*思想。下一部分我们会探索这个方法和残差网络的其它部分。
+
+## Building a Modern CNN: ResNet
+
+## 创建一个现代CNN：残差网络
+
+We now have all the pieces we need to build the models we have been using in our computer vision tasks since the beginning of this book: ResNets. We'll introduce the main idea behind them and show how it improves accuracy on Imagenette compared to our previous model, before building a version with all the recent tweaks.
+
+现在我们已经学习了创建模型的所有内容，因为在本书的一开始我们就在计算机视觉任务中使用了残差网络 。我们会介绍这个模型背后的主要思想，在用所有最新的微调创建一个版本之前，展示相比我们之前的模型，在Imagenette上如何改善模型精度的。
+
+### Skip Connections
+
+### 跳跃连接
+
+In 2015, the authors of the ResNet paper noticed something that they found curious. Even after using batchnorm, they saw that a network using more layers was doing less well than a network using fewer layers—and there were no other differences between the models. Most interestingly, the difference was observed not only in the validation set, but also in the training set; so, it wasn't just a generalization issue, but a training issue. As the paper explains:
+
+
+
+> : Unexpectedly, such degradation is not caused by overfitting, and adding more layers to a suitably deep model leads to higher training error, as [previously reported] and thoroughly verified by our experiments.
+
+This phenomenon was illustrated by the graph in <resnet_depth>, with training error on the left and test error on the right.
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00042.png" alt="Training of networks of different depth" width="700" caption="Training of networks of different depth (courtesy of Kaiming He et al.)" id="resnet_depth">
+  </p>
+  <p align="center">图：不同深度网络训练</p>
+</div>
+
+As the authors mention here, they are not the first people to have noticed this curious fact. But they were the first to make a very important leap:
+
+> : Let us consider a shallower architecture and its deeper counterpart that adds more layers onto it. There exists a solution by construction to the deeper model: the added layers are identity mapping, and the other layers are copied from the learned shallower model.
+
+As this is an academic paper this process is described in a rather inaccessible way, but the concept is actually very simple: start with a 20-layer neural network that is trained well, and add another 36 layers that do nothing at all (for instance, they could be linear layers with a single weight equal to 1, and bias equal to 0). The result will be a 56-layer network that does exactly the same thing as the 20-layer network, proving that there are always deep networks that should be *at least as good* as any shallow network. But for some reason, SGD does not seem able to find them.
+
+> jargon: Identity mapping: Returning the input without changing it at all. This process is performed by an *identity function*.
+
+Actually, there is another way to create those extra 36 layers, which is much more interesting. What if we replaced every occurrence of `conv(x)` with `x + conv(x)`, where `conv` is the function from the previous chapter that adds a second convolution, then a batchnorm layer, then a ReLU. Furthermore, recall that batchnorm does `gamma*y + beta`. What if we initialized `gamma` to zero for every one of those final batchnorm layers? Then our `conv(x)` for those extra 36 layers will always be equal to zero, which means `x+conv(x)` will always be equal to `x`.
+
+What has that gained us? The key thing is that those 36 extra layers, as they stand, are an *identity mapping*, but they have *parameters*, which means they are *trainable*. So, we can start with our best 20-layer model, add these 36 extra layers which initially do nothing at all, and then *fine-tune the whole 56-layer model*. Those extra 36 layers can then learn the parameters that make them most useful.
+
+The ResNet paper actually proposed a variant of this, which is to instead "skip over" every second convolution, so effectively we get `x+conv2(conv1(x))`. This is shown by the diagram in <resnet_block> (from the paper).
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00043.png" alt="A simple ResNet block" width="331" caption="A simple ResNet block (courtesy of Kaiming He et al.)" id="resnet_block">
+  </p>
+  <p align="center">图：一个简单的残差网络块</p>
+</div>
+
+That arrow on the right is just the `x` part of `x+conv2(conv1(x))`, and is known as the *identity branch* or *skip connection*. The path on the left is the `conv2(conv1(x))` part. You can think of the identity path as providing a direct route from the input to the output.
+
+In a ResNet, we don't actually proceed by first training a smaller number of layers, and then adding new layers on the end and fine-tuning. Instead, we use ResNet blocks like the one in <> throughout the CNN, initialized from scratch in the usual way, and trained with SGD in the usual way. We rely on the skip connections to make the network easier to train with SGD.
+
+There's another (largely equivalent) way to think of these ResNet blocks. This is how the paper describes it:
+
+> : Instead of hoping each few stacked layers directly fit a desired underlying mapping, we explicitly let these layers fit a residual mapping. Formally, denoting the desired underlying mapping as H(x), we let the stacked nonlinear layers fit another mapping of F(x) := H(x)−x. The original mapping is recast into F(x)+x. We hypothesize that it is easier to optimize the residual mapping than to optimize the original, unreferenced mapping. To the extreme, if an identity mapping were optimal, it would be easier to push the residual to zero than to fit an identity mapping by a stack of nonlinear layers.
+
+Again, this is rather inaccessible prose—so let's try to restate it in plain English! If the outcome of a given layer is `x`, when using a ResNet block that returns `y = x+block(x)` we're not asking the block to predict `y`, we are asking it to predict the difference between `y` and `x`. So the job of those blocks isn't to predict certain features, but to minimize the error between `x` and the desired `y`. A ResNet is, therefore, good at learning about slight differences between doing nothing and passing though a block of two convolutional layers (with trainable weights). This is how these models got their name: they're predicting residuals (reminder: "residual" is prediction minus target).
+
+One key concept that both of these two ways of thinking about ResNets share is the idea of ease of learning. This is an important theme. Recall the universal approximation theorem, which states that a sufficiently large network can learn anything. This is still true, but there turns out to be a very important difference between what a network *can learn* in principle, and what it is *easy for it to learn* with realistic data and training regimes. Many of the advances in neural networks over the last decade have been like the ResNet block: the result of realizing how to make something that was always possible actually feasible.
+
+> note: True Identity Path: The original paper didn't actually do the trick of using zero for the initial value of `gamma` in the last batchnorm layer of each block; that came a couple of years later. So, the original version of ResNet didn't quite begin training with a truly identity path through the ResNet blocks, but nonetheless having the ability to "navigate through" the skip connections did indeed make it train better. Adding the batchnorm `gamma` init trick made the models train at even higher learning rates.
+
+Here's the definition of a simple ResNet block (where `norm_type=NormType.BatchZero` causes fastai to init the `gamma` weights of the last batchnorm layer to zero):
+
+In [ ]:
+
+```
+class ResBlock(Module):
+    def __init__(self, ni, nf):
+        self.convs = nn.Sequential(
+            ConvLayer(ni,nf),
+            ConvLayer(nf,nf, norm_type=NormType.BatchZero))
+        
+    def forward(self, x): return x + self.convs(x)
+```
+
+There are two problems with this, however: it can't handle a stride other than 1, and it requires that `ni==nf`. Stop for a moment to think carefully about why this is.
+
+The issue is that with a stride of, say, 2 on one of the convolutions, the grid size of the output activations will be half the size on each axis of the input. So then we can't add that back to `x` in `forward` because `x` and the output activations have different dimensions. The same basic issue occurs if `ni!=nf`: the shapes of the input and output connections won't allow us to add them together.
+
+To fix this, we need a way to change the shape of `x` to match the result of `self.convs`. Halving the grid size can be done using an average pooling layer with a stride of 2: that is, a layer that takes 2×2 patches from the input and replaces them with their average.
+
+Changing the number of channels can be done by using a convolution. We want this skip connection to be as close to an identity map as possible, however, which means making this convolution as simple as possible. The simplest possible convolution is one where the kernel size is 1. That means that the kernel is size `ni*nf*1*1`, so it's only doing a dot product over the channels of each input pixel—it's not combining across pixels at all. This kind of *1x1 convolution* is very widely used in modern CNNs, so take a moment to think about how it works.
+
+> jargon: 1x1 convolution: A convolution with a kernel size of 1.
+
+Here's a ResBlock using these tricks to handle changing shape in the skip connection:
+
+In [ ]:
+
+```
+def _conv_block(ni,nf,stride):
+    return nn.Sequential(
+        ConvLayer(ni, nf, stride=stride),
+        ConvLayer(nf, nf, act_cls=None, norm_type=NormType.BatchZero))
+```
+
+In [ ]:
+
+```
+class ResBlock(Module):
+    def __init__(self, ni, nf, stride=1):
+        self.convs = _conv_block(ni,nf,stride)
+        self.idconv = noop if ni==nf else ConvLayer(ni, nf, 1, act_cls=None)
+        self.pool = noop if stride==1 else nn.AvgPool2d(2, ceil_mode=True)
+
+    def forward(self, x):
+        return F.relu(self.convs(x) + self.idconv(self.pool(x)))
+```
+
+Note that we're using the `noop` function here, which simply returns its input unchanged (*noop* is a computer science term that stands for "no operation"). In this case, `idconv` does nothing at all if `ni==nf`, and `pool` does nothing if `stride==1`, which is what we wanted in our skip connection.
+
+Also, you'll see that we've removed the ReLU (`act_cls=None`) from the final convolution in `convs` and from `idconv`, and moved it to *after* we add the skip connection. The thinking behind this is that the whole ResNet block is like a layer, and you want your activation to be after your layer.
+
+Let's replace our `block` with `ResBlock`, and try it out:
+
+In [ ]:
+
+```
+def block(ni,nf): return ResBlock(ni, nf, stride=2)
+learn = get_learner(get_model())
+```
+
+In [ ]:
+
+```
+learn.fit_one_cycle(5, 3e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   1.973174 |   1.845491 | 0.373248 | 00:08 |
+|     1 |   1.678627 |   1.778713 | 0.439236 | 00:08 |
+|     2 |   1.386163 |   1.596503 | 0.507261 | 00:08 |
+|     3 |   1.177839 |   1.102993 | 0.644841 | 00:09 |
+|     4 |   1.052435 |   1.038013 | 0.667771 | 00:09 |
+
+It's not much better. But the whole point of this was to allow us to train *deeper* models, and we're not really taking advantage of that yet. To create a model that's, say, twice as deep, all we need to do is replace our `block` with two `ResBlock`s in a row:
+
+In [ ]:
+
+```
+def block(ni, nf):
+    return nn.Sequential(ResBlock(ni, nf, stride=2), ResBlock(nf, nf))
+```
+
+In [ ]:
+
+```
+learn = get_learner(get_model())
+learn.fit_one_cycle(5, 3e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   1.964076 |   1.864578 | 0.355159 | 00:12 |
+|     1 |   1.636880 |   1.596789 | 0.502675 | 00:12 |
+|     2 |   1.335378 |   1.304472 | 0.588535 | 00:12 |
+|     3 |   1.089160 |   1.065063 | 0.663185 | 00:12 |
+|     4 |   0.942904 |   0.963589 | 0.692739 | 00:12 |
+
+Now we're making good progress!
+
+The authors of the ResNet paper went on to win the 2015 ImageNet challenge. At the time, this was by far the most important annual event in computer vision. We have already seen another ImageNet winner: the 2013 winners, Zeiler and Fergus. It is interesting to note that in both cases the starting points for the breakthroughs were experimental observations: observations about what layers actually learn, in the case of Zeiler and Fergus, and observations about which kinds of networks can be trained, in the case of the ResNet authors. This ability to design and analyze thoughtful experiments, or even just to see an unexpected result, say "Hmmm, that's interesting," and then, most importantly, set about figuring out what on earth is going on, with great tenacity, is at the heart of many scientific discoveries. Deep learning is not like pure mathematics. It is a heavily experimental field, so it's important to be a strong practitioner, not just a theoretician.
+
+Since the ResNet was introduced, it's been widely studied and applied to many domains. One of the most interesting papers, published in 2018, is Hao Li et al.'s ["Visualizing the Loss Landscape of Neural Nets"](https://arxiv.org/abs/1712.09913). It shows that using skip connections helps smooth the loss function, which makes training easier as it avoids falling into a very sharp area. <> shows a stunning picture from the paper, illustrating the difference between the bumpy terrain that SGD has to navigate to optimize a regular CNN (left) versus the smooth surface of a ResNet (right).
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00044.png" alt="Impact of ResNet on loss landscape" width="600" caption="Impact of ResNet on loss landscape (courtesy of Hao Li et al.)" id="resnet_surface">
+  </p>
+  <p align="center">图：损失地貌上残差网络的影响</p>
+</div>
+
+Our first model is already good, but further research has discovered more tricks we can apply to make it better. We'll look at those next.
+
