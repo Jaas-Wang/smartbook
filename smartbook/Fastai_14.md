@@ -162,11 +162,15 @@ We now have all the pieces we need to build the models we have been using in our
 
 In 2015, the authors of the ResNet paper noticed something that they found curious. Even after using batchnorm, they saw that a network using more layers was doing less well than a network using fewer layers—and there were no other differences between the models. Most interestingly, the difference was observed not only in the validation set, but also in the training set; so, it wasn't just a generalization issue, but a training issue. As the paper explains:
 
-
+在2015年，残差网络论文的作者们注意到他们发现的一些奇怪的现象。即使使用批次标准化后，他们发现网络使用更多的层做的不如使用更少的层做的好，模型间没有其它的差异。更有趣的是，这个差异不仅仅在验证集上可观察到，而且在训练集上也能发现。所以它不仅仅是一个泛化问题，而是一个训练问题。论文解释到：
 
 > : Unexpectedly, such degradation is not caused by overfitting, and adding more layers to a suitably deep model leads to higher training error, as [previously reported] and thoroughly verified by our experiments.
 
+> ：让人很意外，这种降级不是过拟导致的，增加更多的层来适配深度模型导致更高的训练错误，如[之前的报道]并通过我们的实验完全证实了。
+
 This phenomenon was illustrated by the graph in <resnet_depth>, with training error on the left and test error on the right.
+
+这一现象在下图<不同深度网络训练>中做了插图说话 ，左侧是训练错误，或侧是测试错误。
 
 <div style="text-align:center">
   <p align="center">
@@ -177,7 +181,11 @@ This phenomenon was illustrated by the graph in <resnet_depth>, with training er
 
 As the authors mention here, they are not the first people to have noticed this curious fact. But they were the first to make a very important leap:
 
+正如下面作者提到的，他们不是注意到这个奇怪现象的第一人，但是他们是第一个作出重要跳跃的人：
+
 > : Let us consider a shallower architecture and its deeper counterpart that adds more layers onto it. There exists a solution by construction to the deeper model: the added layers are identity mapping, and the other layers are copied from the learned shallower model.
+
+> ：
 
 As this is an academic paper this process is described in a rather inaccessible way, but the concept is actually very simple: start with a 20-layer neural network that is trained well, and add another 36 layers that do nothing at all (for instance, they could be linear layers with a single weight equal to 1, and bias equal to 0). The result will be a 56-layer network that does exactly the same thing as the 20-layer network, proving that there are always deep networks that should be *at least as good* as any shallow network. But for some reason, SGD does not seem able to find them.
 
