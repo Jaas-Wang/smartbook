@@ -185,17 +185,23 @@ As the authors mention here, they are not the first people to have noticed this 
 
 > : Let us consider a shallower architecture and its deeper counterpart that adds more layers onto it. There exists a solution by construction to the deeper model: the added layers are identity mapping, and the other layers are copied from the learned shallower model.
 
-> ：让我们考虑一个浅层架构，及给它添加了更多层的更深的的副本。通过构建更深的模型找解决方案：添加的层是特征映射，其它层是从已经学习的浅层模型拷贝来的。
+> ：让我们考虑一个浅层架构，及给它添加了更多层的更深的的副本。通过构建更深的模型找解决方案：添加的层是恒等映射，其它层是从已经学习的浅层模型拷贝来的。
 
 As this is an academic paper this process is described in a rather inaccessible way, but the concept is actually very simple: start with a 20-layer neural network that is trained well, and add another 36 layers that do nothing at all (for instance, they could be linear layers with a single weight equal to 1, and bias equal to 0). The result will be a 56-layer network that does exactly the same thing as the 20-layer network, proving that there are always deep networks that should be *at least as good* as any shallow network. But for some reason, SGD does not seem able to find them.
 
-作为一篇学术论文，这个处理以难以理解的方式做了描述，但是这个概念实际非常简单：
+作为一篇学术论文，这个处理以难以理解的方式做了描述，但是这个概念实际非常简单：用一个20层已经被训练好的神经网络开始，添加完全没有做任何操作的36层（例如，它们可以是单权重等于1，偏置等于0的线性层）。结果是56层网络做与20层网络完全相同的事情，证明了总会有深度网络做的至少应该与任何浅层网络一样好。但是由于某种原因，SGD好像无法找到它们。
 
 > jargon: Identity mapping: Returning the input without changing it at all. This process is performed by an *identity function*.
 
+> 术语：恒等映射：返回输入而没有任何变化。这个处理是通过恒等函数做的。
+
 Actually, there is another way to create those extra 36 layers, which is much more interesting. What if we replaced every occurrence of `conv(x)` with `x + conv(x)`, where `conv` is the function from the previous chapter that adds a second convolution, then a batchnorm layer, then a ReLU. Furthermore, recall that batchnorm does `gamma*y + beta`. What if we initialized `gamma` to zero for every one of those final batchnorm layers? Then our `conv(x)` for those extra 36 layers will always be equal to zero, which means `x+conv(x)` will always be equal to `x`.
 
+实际上，有其它方法来创建那些额外的36层，这个方法更加有趣。如果我们用`x + conv(x)`替换每个存在的`conv(x)`，这里的`conv`是上一章节添加的第二个卷积函数，然后是一个批次标准化层，然后一个ReLU。而且回忆一下批次标准化的操作 `gamma*y + beta`。如果我们对那些批次标准化的每一个层初始化`gamma`为零呢？那么对于我们扩展的36层`conv(x)`会总是等于零，这表示 `x+conv(x)`会总是等于`x`。
+
 What has that gained us? The key thing is that those 36 extra layers, as they stand, are an *identity mapping*, but they have *parameters*, which means they are *trainable*. So, we can start with our best 20-layer model, add these 36 extra layers which initially do nothing at all, and then *fine-tune the whole 56-layer model*. Those extra 36 layers can then learn the parameters that make them most useful.
+
+
 
 The ResNet paper actually proposed a variant of this, which is to instead "skip over" every second convolution, so effectively we get `x+conv2(conv1(x))`. This is shown by the diagram in <resnet_block> (from the paper).
 
