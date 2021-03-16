@@ -201,7 +201,7 @@ Actually, there is another way to create those extra 36 layers, which is much mo
 
 What has that gained us? The key thing is that those 36 extra layers, as they stand, are an *identity mapping*, but they have *parameters*, which means they are *trainable*. So, we can start with our best 20-layer model, add these 36 extra layers which initially do nothing at all, and then *fine-tune the whole 56-layer model*. Those extra 36 layers can then learn the parameters that make them most useful.
 
-
+这给我们什么样的收益呢？关键点是那36个额外层，依照他们的定位，是一个*恒等映射*，但是它们有参数，这表示它们是可训练的。所以我们能够用我们最好的20层模型开始，添加的那36个额外层初始根本没有任何内容，然后*微调整个56层模型*。那些额外36层然后能够学习参数，使它们最有用处。
 
 The ResNet paper actually proposed a variant of this, which is to instead "skip over" every second convolution, so effectively we get `x+conv2(conv1(x))`. This is shown by the diagram in <resnet_block> (from the paper).
 
