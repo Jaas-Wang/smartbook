@@ -205,14 +205,17 @@ What has that gained us? The key thing is that those 36 extra layers, as they st
 
 The ResNet paper actually proposed a variant of this, which is to instead "skip over" every second convolution, so effectively we get `x+conv2(conv1(x))`. This is shown by the diagram in <resnet_block> (from the paper).
 
+残差网络的确提出这样的变种，而不是每遇到第二个卷积就“跳过”，所以我们有效的获得了`x+conv2(conv1(x))`。这个原理在下图<一个简单的残差网络块>中使了插图说明（来自这篇论文）。
+
 <div style="text-align:center">
   <p align="center">
     <img src="./_v_images/att_00043.png" alt="A simple ResNet block" width="331" caption="A simple ResNet block (courtesy of Kaiming He et al.)" id="resnet_block">
   </p>
   <p align="center">图：一个简单的残差网络块</p>
 </div>
-
 That arrow on the right is just the `x` part of `x+conv2(conv1(x))`, and is known as the *identity branch* or *skip connection*. The path on the left is the `conv2(conv1(x))` part. You can think of the identity path as providing a direct route from the input to the output.
+
+右侧的箭头正好是 `x+conv2(conv1(x))`中的`x`部分，且被称为*恒等分支或跳跃连接*。
 
 In a ResNet, we don't actually proceed by first training a smaller number of layers, and then adding new layers on the end and fine-tuning. Instead, we use ResNet blocks like the one in <> throughout the CNN, initialized from scratch in the usual way, and trained with SGD in the usual way. We rely on the skip connections to make the network easier to train with SGD.
 
