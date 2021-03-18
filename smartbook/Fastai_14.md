@@ -215,7 +215,7 @@ The ResNet paper actually proposed a variant of this, which is to instead "skip 
 </div>
 That arrow on the right is just the `x` part of `x+conv2(conv1(x))`, and is known as the *identity branch* or *skip connection*. The path on the left is the `conv2(conv1(x))` part. You can think of the identity path as providing a direct route from the input to the output.
 
-右侧的箭头正好是 `x+conv2(conv1(x))`中的`x`部分，且被称为*恒等分支或跳跃连接*。
+右侧的箭头正好是 `x+conv2(conv1(x))`中的`x`部分，且被称为*恒等分支或跳跃连接*。你可以认为恒等路径为从输入到输出提供直接的路由。
 
 In a ResNet, we don't actually proceed by first training a smaller number of layers, and then adding new layers on the end and fine-tuning. Instead, we use ResNet blocks like the one in <> throughout the CNN, initialized from scratch in the usual way, and trained with SGD in the usual way. We rely on the skip connections to make the network easier to train with SGD.
 
