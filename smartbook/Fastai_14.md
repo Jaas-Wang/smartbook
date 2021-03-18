@@ -217,11 +217,17 @@ That arrow on the right is just the `x` part of `x+conv2(conv1(x))`, and is know
 
 右侧的箭头正好是 `x+conv2(conv1(x))`中的`x`部分，且被称为*恒等分支或跳跃连接*。你可以认为恒等路径为从输入到输出提供直接的路由。
 
-In a ResNet, we don't actually proceed by first training a smaller number of layers, and then adding new layers on the end and fine-tuning. Instead, we use ResNet blocks like the one in <> throughout the CNN, initialized from scratch in the usual way, and trained with SGD in the usual way. We rely on the skip connections to make the network easier to train with SGD.
+In a ResNet, we don't actually proceed by first training a smaller number of layers, and then adding new layers on the end and fine-tuning. Instead, we use ResNet blocks like the one in <resnet_block> throughout the CNN, initialized from scratch in the usual way, and trained with SGD in the usual way. We rely on the skip connections to make the network easier to train with SGD.
+
+在残差网络中，实际上我们没有延续首先通过训练一个更小的层数，然后在尾部添加新的层并微调，相反，就像图<一个简单的残差网络块>中那样，在整个卷积神经网络中我们会用残差网络块，以常用的方式初始化并用随机梯度下降来训练。我们依赖跳跃连接使网络更容易用随机梯度下降训练。
 
 There's another (largely equivalent) way to think of these ResNet blocks. This is how the paper describes it:
 
+还有另外一个方法来思考这些残差网络块（思路大体相同）。下面是论文对这个方法的描述：
+
 > : Instead of hoping each few stacked layers directly fit a desired underlying mapping, we explicitly let these layers fit a residual mapping. Formally, denoting the desired underlying mapping as H(x), we let the stacked nonlinear layers fit another mapping of F(x) := H(x)−x. The original mapping is recast into F(x)+x. We hypothesize that it is easier to optimize the residual mapping than to optimize the original, unreferenced mapping. To the extreme, if an identity mapping were optimal, it would be easier to push the residual to zero than to fit an identity mapping by a stack of nonlinear layers.
+
+> ：
 
 Again, this is rather inaccessible prose—so let's try to restate it in plain English! If the outcome of a given layer is `x`, when using a ResNet block that returns `y = x+block(x)` we're not asking the block to predict `y`, we are asking it to predict the difference between `y` and `x`. So the job of those blocks isn't to predict certain features, but to minimize the error between `x` and the desired `y`. A ResNet is, therefore, good at learning about slight differences between doing nothing and passing though a block of two convolutional layers (with trainable weights). This is how these models got their name: they're predicting residuals (reminder: "residual" is prediction minus target).
 
