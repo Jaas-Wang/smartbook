@@ -231,7 +231,11 @@ There's another (largely equivalent) way to think of these ResNet blocks. This i
 
 Again, this is rather inaccessible prose—so let's try to restate it in plain English! If the outcome of a given layer is `x`, when using a ResNet block that returns `y = x+block(x)` we're not asking the block to predict `y`, we are asking it to predict the difference between `y` and `x`. So the job of those blocks isn't to predict certain features, but to minimize the error between `x` and the desired `y`. A ResNet is, therefore, good at learning about slight differences between doing nothing and passing though a block of two convolutional layers (with trainable weights). This is how these models got their name: they're predicting residuals (reminder: "residual" is prediction minus target).
 
+同样，这是有点难以理解的散文。所以让我们用浅显的英文来尝试重数这段内容！如果一个给定的层结果是`x`，当使用一个残差网络块返回 `y = x+block(x)` 时，我们不要求这个块来预测`y`，我们需要它来预设`y`和`x`间的差异。所以那些块的工作不是预测确定的特征，而是来最小化`x`和期望`y`间的错误。因此，残差网络很擅长学习什么都不做和通过两个卷积层块（带有可训练权重）之间的细小差别。这就是这些模型名字的由来：它们预测残差（记住：“残差”是预测减去目标）。
+
 One key concept that both of these two ways of thinking about ResNets share is the idea of ease of learning. This is an important theme. Recall the universal approximation theorem, which states that a sufficiently large network can learn anything. This is still true, but there turns out to be a very important difference between what a network *can learn* in principle, and what it is *easy for it to learn* with realistic data and training regimes. Many of the advances in neural networks over the last decade have been like the ResNet block: the result of realizing how to make something that was always possible actually feasible.
+
+
 
 > note: True Identity Path: The original paper didn't actually do the trick of using zero for the initial value of `gamma` in the last batchnorm layer of each block; that came a couple of years later. So, the original version of ResNet didn't quite begin training with a truly identity path through the ResNet blocks, but nonetheless having the ability to "navigate through" the skip connections did indeed make it train better. Adding the batchnorm `gamma` init trick made the models train at even higher learning rates.
 
@@ -270,8 +274,6 @@ def _conv_block(ni,nf,stride):
         ConvLayer(nf, nf, act_cls=None, norm_type=NormType.BatchZero))
 ```
 
-In [ ]:
-
 ```
 class ResBlock(Module):
     def __init__(self, ni, nf, stride=1):
@@ -295,8 +297,6 @@ In [ ]:
 def block(ni,nf): return ResBlock(ni, nf, stride=2)
 learn = get_learner(get_model())
 ```
-
-In [ ]:
 
 ```
 learn.fit_one_cycle(5, 3e-3)
