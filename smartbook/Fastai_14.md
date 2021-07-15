@@ -235,7 +235,7 @@ Again, this is rather inaccessible prose—so let's try to restate it in plain E
 
 One key concept that both of these two ways of thinking about ResNets share is the idea of ease of learning. This is an important theme. Recall the universal approximation theorem, which states that a sufficiently large network can learn anything. This is still true, but there turns out to be a very important difference between what a network *can learn* in principle, and what it is *easy for it to learn* with realistic data and training regimes. Many of the advances in neural networks over the last decade have been like the ResNet block: the result of realizing how to make something that was always possible actually feasible.
 
-关于残差网络共享的这两个思考方法的关键概念是易于训练的思想。这是一个重要的主题。
+关于残差网络共享的这两个思考方法的关键概念是易于训练的思想。这是一个重要的主题。回想通用近似定理，它描述的是一个足够大的网络能够学习任何事情。这总是对的，但是这与一个网络在实践中*能够学到* 的内容与利用真实数据和训练方法它*多么容易的学到*之间会产生很大的差异，
 
 > note: True Identity Path: The original paper didn't actually do the trick of using zero for the initial value of `gamma` in the last batchnorm layer of each block; that came a couple of years later. So, the original version of ResNet didn't quite begin training with a truly identity path through the ResNet blocks, but nonetheless having the ability to "navigate through" the skip connections did indeed make it train better. Adding the batchnorm `gamma` init trick made the models train at even higher learning rates.
 
