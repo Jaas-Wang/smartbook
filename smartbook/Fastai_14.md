@@ -235,13 +235,15 @@ Again, this is rather inaccessible prose—so let's try to restate it in plain E
 
 One key concept that both of these two ways of thinking about ResNets share is the idea of ease of learning. This is an important theme. Recall the universal approximation theorem, which states that a sufficiently large network can learn anything. This is still true, but there turns out to be a very important difference between what a network *can learn* in principle, and what it is *easy for it to learn* with realistic data and training regimes. Many of the advances in neural networks over the last decade have been like the ResNet block: the result of realizing how to make something that was always possible actually feasible.
 
-关于残差网络共享的这两个思考方法的关键概念是易于训练的思想。这是一个重要的主题。回想通用近似定理，它描述的是一个足够大的网络能够学习任何事情。这总是对的，但是这与一个网络在实践中*能够学到* 的内容与利用真实数据和训练方法它*多么容易的学到*之间会产生很大的差异，
+关于残差网络共享的这两个思考方法的关键概念是易于训练的思想。这是一个重要的主题。回想通用近似定理，它描述的是一个足够大的网络能够学习任何事情。这总是对的，但是这与一个网络在实践中*能够学到* 的内容与利用真实数据和训练方法它*多么容易的学到*之间会产生很大的差异。在过去的十年中神经网络已经取得了很多的进展，如ResNet块：认识到如何总会能够做到实际可行的结果。
 
 > note: True Identity Path: The original paper didn't actually do the trick of using zero for the initial value of `gamma` in the last batchnorm layer of each block; that came a couple of years later. So, the original version of ResNet didn't quite begin training with a truly identity path through the ResNet blocks, but nonetheless having the ability to "navigate through" the skip connections did indeed make it train better. Adding the batchnorm `gamma` init trick made the models train at even higher learning rates.
 
+> 注释：现实特性路径：在原始论文中对于每个块的最后批次标准化层中'gamma'的初始值实际上不会使用零化的技巧，那是几年后产生的。所以，原始的ResNet版本对于ResNet块完全不是使用一个现实特性路径开始训练的，然而虽然如此它有能力来'浏览'跳跃连接确实使得它训练更好。增加标准批次*gamma*初始化技巧，使得模型在甚至更高的学习率上训练。
+
 Here's the definition of a simple ResNet block (where `norm_type=NormType.BatchZero` causes fastai to init the `gamma` weights of the last batchnorm layer to zero):
 
-In [ ]:
+下面是一个简单的ResNet块的定义（'norm_type=NormType.BatchZero'会让fastai初始化最后批次标准化层的'gamma'权重为零）：
 
 ```
 class ResBlock(Module):
@@ -255,17 +257,27 @@ class ResBlock(Module):
 
 There are two problems with this, however: it can't handle a stride other than 1, and it requires that `ni==nf`. Stop for a moment to think carefully about why this is.
 
+上面的定义有两个问题，无论如何它不能处理大小1的步长，且它需要ni==nf 。停一会，来仔细的思考一下为什么会这样。
+
 The issue is that with a stride of, say, 2 on one of the convolutions, the grid size of the output activations will be half the size on each axis of the input. So then we can't add that back to `x` in `forward` because `x` and the output activations have different dimensions. The same basic issue occurs if `ni!=nf`: the shapes of the input and output connections won't allow us to add them together.
+
+说到的步长的问题，其中一个卷积的步长为2，输出激活的风格大小会是每个输入坐标轴大小的一半。所以在'forward'中我们不能够把它加回到 'x'，因为 'x' 和输出激活有不同的尺寸。如果 'ni != nf' 会发生同样的问题：输入和输出连接的形态，不允许我们把他们加总在一起。
 
 To fix this, we need a way to change the shape of `x` to match the result of `self.convs`. Halving the grid size can be done using an average pooling layer with a stride of 2: that is, a layer that takes 2×2 patches from the input and replaces them with their average.
 
+修复这个问题，我们需要一个方法来改变 'x' 的形态以匹配 'self.convs' 的结果。对半分的网格尺寸能够使用一个步长为2的平均池化层来完成：即，一个层从输入中取2×2大小的部分，并用他们的平均值进行替换。
+
 Changing the number of channels can be done by using a convolution. We want this skip connection to be as close to an identity map as possible, however, which means making this convolution as simple as possible. The simplest possible convolution is one where the kernel size is 1. That means that the kernel is size `ni*nf*1*1`, so it's only doing a dot product over the channels of each input pixel—it's not combining across pixels at all. This kind of *1x1 convolution* is very widely used in modern CNNs, so take a moment to think about how it works.
+
+改变通道的数量通过使用卷积能够完成。然而，我们希望这个跳跃连接尽可能的靠近一个恒等映射，这意味着使得这个卷积尽可能的简单。可能最简单的卷积是一，它的卷积核大小是1 。这表示核的大小是'`ni*nf*1*1`' ，所以在每个输入像素的通道上它仅仅做了一个点积，它根本不能跨像素组合。这类 *1x1* 卷积被非常广泛的用于CNN模型，所以花一点时间来思考它是如何运作的。
 
 > jargon: 1x1 convolution: A convolution with a kernel size of 1.
 
+> 术语：1x1 卷积：一个核大小为 1 的一个卷积。
+
 Here's a ResBlock using these tricks to handle changing shape in the skip connection:
 
-In [ ]:
+下面ResBlock使用这些技巧在跳跃连接中处理形态改变：
 
 ```
 def _conv_block(ni,nf,stride):
@@ -287,11 +299,15 @@ class ResBlock(Module):
 
 Note that we're using the `noop` function here, which simply returns its input unchanged (*noop* is a computer science term that stands for "no operation"). In this case, `idconv` does nothing at all if `ni==nf`, and `pool` does nothing if `stride==1`, which is what we wanted in our skip connection.
 
+注意，在这里我们使用了 'noop' 函数，它简单的返回了它们没有发生改变的输入（*noop* 是一个计算机科学术语，代表“无操作”）。在这种情况下，如果 'ni == nf' 'idconv'就根本不做任何事情，如果 'stride==1' 'pool'不做任何事情，在我们跳跃连接中这是我们期望的。
+
 Also, you'll see that we've removed the ReLU (`act_cls=None`) from the final convolution in `convs` and from `idconv`, and moved it to *after* we add the skip connection. The thinking behind this is that the whole ResNet block is like a layer, and you want your activation to be after your layer.
+
+同时，你会看到我们从 'convs' 中的最后卷积和 'idconv' 中移除了ReLU（ 'act_cls=None' ）, 并移动它到我们添加的跳跃连接之后。这个想法的背后是整个ResNet块像一个层，且你希望你的激活在你的层之后。
 
 Let's replace our `block` with `ResBlock`, and try it out:
 
-In [ ]:
+让我们用 'ResBlock' 替换 'block' ，试试看：
 
 ```
 def block(ni,nf): return ResBlock(ni, nf, stride=2)
@@ -312,14 +328,12 @@ learn.fit_one_cycle(5, 3e-3)
 
 It's not much better. But the whole point of this was to allow us to train *deeper* models, and we're not really taking advantage of that yet. To create a model that's, say, twice as deep, all we need to do is replace our `block` with two `ResBlock`s in a row:
 
-In [ ]:
+它没好多少。但是它的全部点允许我们训练*更深* 的模型，我们还没有实际利用它的好处。来创建一个两倍深度的模型，我们需要做的是用在一行代码中用两个 'ResBlock' 替换我们的 'block'：
 
 ```
 def block(ni, nf):
     return nn.Sequential(ResBlock(ni, nf, stride=2), ResBlock(nf, nf))
 ```
-
-In [ ]:
 
 ```
 learn = get_learner(get_model())
@@ -336,16 +350,24 @@ learn.fit_one_cycle(5, 3e-3)
 
 Now we're making good progress!
 
+现在我们获得了好的进展！
+
 The authors of the ResNet paper went on to win the 2015 ImageNet challenge. At the time, this was by far the most important annual event in computer vision. We have already seen another ImageNet winner: the 2013 winners, Zeiler and Fergus. It is interesting to note that in both cases the starting points for the breakthroughs were experimental observations: observations about what layers actually learn, in the case of Zeiler and Fergus, and observations about which kinds of networks can be trained, in the case of the ResNet authors. This ability to design and analyze thoughtful experiments, or even just to see an unexpected result, say "Hmmm, that's interesting," and then, most importantly, set about figuring out what on earth is going on, with great tenacity, is at the heart of many scientific discoveries. Deep learning is not like pure mathematics. It is a heavily experimental field, so it's important to be a strong practitioner, not just a theoretician.
 
-Since the ResNet was introduced, it's been widely studied and applied to many domains. One of the most interesting papers, published in 2018, is Hao Li et al.'s ["Visualizing the Loss Landscape of Neural Nets"](https://arxiv.org/abs/1712.09913). It shows that using skip connections helps smooth the loss function, which makes training easier as it avoids falling into a very sharp area. <> shows a stunning picture from the paper, illustrating the difference between the bumpy terrain that SGD has to navigate to optimize a regular CNN (left) versus the smooth surface of a ResNet (right).
+ResNet论文的作者们继续赢取了2015年ImageNet挑战的胜利。那时候它成为迄今为止在计算机视觉中更重要的年度事件。我们已经看过别一个ImageNet获胜者：2013年的获胜者齐勒和弗格斯。有趣的关注点是，这两个案例为突破实验观测的起点：在齐勒和弗格斯的案例中，观测了层实际学习了什么，在ResNet作者的案例中，观测了哪种网络能够被训练。这是设计和分析深思熟虑实验的能力，即使看到了超出预期的结果，说到“嗯... ，真有趣”，最重要的是其后带着伟大的坚韧开始找出到底发生了什么事是许多科学家发现的核心。深度学习不像纯数学。它是大量实验的领域，所以一个强大的实践者是很重要的，而不仅仅是一个理论家。
+
+Since the ResNet was introduced, it's been widely studied and applied to many domains. One of the most interesting papers, published in 2018, is Hao Li et al.'s ["Visualizing the Loss Landscape of Neural Nets"](https://arxiv.org/abs/1712.09913). It shows that using skip connections helps smooth the loss function, which makes training easier as it avoids falling into a very sharp area. <resnet_surface> shows a stunning picture from the paper, illustrating the difference between the bumpy terrain that SGD has to navigate to optimize a regular CNN (left) versus the smooth surface of a ResNet (right).
+
+自从ResNet被引入，它已经被广泛的研究和应用于很多领域。最有趣的论文之一是李浩等人发布于2018年的[“可视化神经网络的损失景象”](https://arxiv.org/abs/1712.09913)。它展示了使用跳跃连接有帮于损失函数平滑，它使得训练更容易避免掉入一个非常陡峭的区域。<损失地貌上残差网络的影响>展示了来自论文令人正经的图片，插图说明了SGD必须指引优化一个常规CNN（图左侧）对于一个平滑表面的ResNet（图右侧）凹凸不平地貌间的差异。
 
 <div style="text-align:center">
   <p align="center">
     <img src="./_v_images/att_00044.png" alt="Impact of ResNet on loss landscape" width="600" caption="Impact of ResNet on loss landscape (courtesy of Hao Li et al.)" id="resnet_surface">
   </p>
-  <p align="center">图：损失地貌上残差网络的影响</p>
+  <p align="center">图：损失镜像上残差网络的影响</p>
 </div>
+
 
 Our first model is already good, but further research has discovered more tricks we can apply to make it better. We'll look at those next.
 
+我们第一个模型已经很好了，但进一步的研究已经发现了更多我们能够应用的技巧来使它更好。让我们继续学习那些技巧。
