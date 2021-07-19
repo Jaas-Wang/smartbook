@@ -371,3 +371,65 @@ Since the ResNet was introduced, it's been widely studied and applied to many do
 Our first model is already good, but further research has discovered more tricks we can apply to make it better. We'll look at those next.
 
 我们第一个模型已经很好了，但进一步的研究已经发现了更多我们能够应用的技巧来使它更好。让我们继续学习那些技巧。
+
+### A State-of-the-Art ResNet
+
+### 先进的残差网络（ResNet）
+
+In ["Bag of Tricks for Image Classification with Convolutional Neural Networks"](https://arxiv.org/abs/1812.01187), Tong He et al. study different variations of the ResNet architecture that come at almost no additional cost in terms of number of parameters or computation. By using a tweaked ResNet-50 architecture and Mixup they achieved 94.6% top-5 accuracy on ImageNet, in comparison to 92.2% with a regular ResNet-50 without Mixup. This result is better than that achieved by regular ResNet models that are twice as deep (and twice as slow, and much more likely to overfit).
+
+在何彤等人发表的论文[“利用卷积神经网络图像分类的技巧包”](https://arxiv.org/abs/1812.01187)中研究了ResNet架构的不同变种，得出了在计算和参数的数量方面几乎没有额外的成本。通过使用一个微调过的ResNet-50架构和Mixup，他们取得了在ImageNet上94.6%排名前5的精度，相对没有使用Mixup常规的ResNet-50获得了92.2%的精度。这个结果比两倍深度常规ResNet模型的成果更好（两倍深度慢，且更像过拟）。
+
+> jargon: top-5 accuracy: A metric testing how often the label we want is in the top 5 predictions of our model. It was used in the ImageNet competition because many of the images contained multiple objects, or contained objects that could be easily confused or may even have been mislabeled with a similar label. In these situations, looking at top-1 accuracy may be inappropriate. However, recently CNNs have been getting so good that top-5 accuracy is nearly 100%, so some researchers are using top-1 accuracy for ImageNet too now.
+
+> 术语：前5准确率：一种指标衡量我们希望我们的模型对的标注数据有前 5 的预测度。它被用于ImageNet竞赛，因为很多图片包含多个目标，或所包含的目标会被很轻易的混淆或者甚至被错误的用类似的标签误标注，在这些情况下，着眼于第一的精确度可能是不合适的。然而，最近的一些卷积神经网络已经取得的前五的精确度超不多是100%，所以现在一些研究人员对于ImageNet挑战开始使用第一的精确度。
+
+We'll use this tweaked version as we scale up to the full ResNet, because it's substantially better. It differs a little bit from our previous implementation, in that instead of just starting with ResNet blocks, it begins with a few convolutional layers followed by a max pooling layer. This is what the first layers, called the *stem* of the network, look like:
+
+我们会使用这个微调过的版本，逐步扩展到整个ResNet，因为本质上它更好。有我们之前的实践它有一点不同，在模型的开始，它用一些带有最大池化层的卷积层，来替代ResNet块。下面是第一层的内容，称为网络的*stem*，如下所示：
+
+```
+def _resnet_stem(*sizes):
+    return [
+        ConvLayer(sizes[i], sizes[i+1], 3, stride = 2 if i==0 else 1)
+            for i in range(len(sizes)-1)
+    ] + [nn.MaxPool2d(kernel_size=3, stride=2, padding=1)]
+```
+
+```
+#hide_output
+_resnet_stem(3,32,32,64)
+```
+
+```
+[ConvLayer(
+   (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+   (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+   (2): ReLU()
+ ), ConvLayer(
+   (0): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+   (1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+   (2): ReLU()
+ ), ConvLayer(
+   (0): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+   (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+   (2): ReLU()
+ ), MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)]
+[ConvLayer(
+   (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+   (1): BatchNorm2d(32, eps=1e-05, momentum=0.1)
+   (2): ReLU()
+ ), ConvLayer(
+   (0): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+   (1): BatchNorm2d(32, eps=1e-05, momentum=0.1)
+   (2): ReLU()
+ ), ConvLayer(
+   (0): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+   (1): BatchNorm2d(64, eps=1e-05, momentum=0.1)
+   (2): ReLU()
+ ), MaxPool2d(kernel_size=3, stride=2, padding=1, ceil_mode=False)]
+```
+
+> jargon: Stem: The first few layers of a CNN. Generally, the stem has a different structure than the main body of the CNN.
+>
+> 术语：Stem：卷积神经网络的开始一些层。通常，stem与卷积神经网络的主体部分有不同的架构。
