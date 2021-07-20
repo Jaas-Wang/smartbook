@@ -433,3 +433,74 @@ _resnet_stem(3,32,32,64)
 > jargon: Stem: The first few layers of a CNN. Generally, the stem has a different structure than the main body of the CNN.
 >
 > 术语：Stem：卷积神经网络的开始一些层。通常，stem与卷积神经网络的主体部分有不同的架构。
+
+The reason that we have a stem of plain convolutional layers, instead of ResNet blocks, is based on a very important insight about all deep convolutional neural networks: the vast majority of the computation occurs in the early layers. Therefore, we should keep the early layers as fast and simple as possible.
+
+我用简单的卷积层替代ResNet块作为stem，是基于所有深度卷积神经网络一个非常重要的洞察：绝大多数的计算发生在早先的层。因此，我们应该确保开始的这些层尽可能的快和简单。
+
+To see why so much computation occurs in the early layers, consider the very first convolution on a 128-pixel input image. If it is a stride-1 convolution, then it will apply the kernel to every one of the 128×128 pixels. That's a lot of work! In the later layers, however, the grid size could be as small as 4×4 or even 2×2, so there are far fewer kernel applications to do.
+
+来看一下，为什么有如此多的计算发生在早期的层中，思考一下一张输入是128像素图像的最开始的卷积。如果它是一个步进为1的卷积，然后它会应用卷积核到128×128上的每个像素。这个工作量很大！然而，在后期的层中，格的尺寸大小会有 4×4 甚至会有 2×2 一样的大小，所以这会有少的多的核应用计算。
+
+On the other hand, the first-layer convolution only has 3 input features and 32 output features. Since it is a 3×3 kernel, this is 3×32×3×3 = 864 parameters in the weights. But the last convolution will have 256 input features and 512 output features, resulting in 1,179,648 weights! So the first layers contain the vast majority of the computation, but the last layers contain the vast majority of the parameters.
+
+从另一方面来看，第一层卷积只有3个输入特征和32个输出特征。因为它是一个 3×3 的核，在权重里这是 3×32×3×3 = 864 个参数。但是最后的卷积会有 256 个输入特征和 512 个输出特征，因此有 1,179,648 个权重！所以第一层包含绝大多数的计算量，而最后的卷积层包含了绝大多数的参数 。
+
+A ResNet block takes more computation than a plain convolutional block, since (in the stride-2 case) a ResNet block has three convolutions and a pooling layer. That's why we want to have plain convolutions to start off our ResNet.
+
+
+
+We're now ready to show the implementation of a modern ResNet, with the "bag of tricks." It uses four groups of ResNet blocks, with 64, 128, 256, then 512 filters. Each group starts with a stride-2 block, except for the first one, since it's just after a `MaxPooling` layer:
+
+In [ ]:
+
+```
+class ResNet(nn.Sequential):
+    def __init__(self, n_out, layers, expansion=1):
+        stem = _resnet_stem(3,32,32,64)
+        self.block_szs = [64, 64, 128, 256, 512]
+        for i in range(1,5): self.block_szs[i] *= expansion
+        blocks = [self._make_layer(*o) for o in enumerate(layers)]
+        super().__init__(*stem, *blocks,
+                         nn.AdaptiveAvgPool2d(1), Flatten(),
+                         nn.Linear(self.block_szs[-1], n_out))
+    
+    def _make_layer(self, idx, n_layers):
+        stride = 1 if idx==0 else 2
+        ch_in,ch_out = self.block_szs[idx:idx+2]
+        return nn.Sequential(*[
+            ResBlock(ch_in if i==0 else ch_out, ch_out, stride if i==0 else 1)
+            for i in range(n_layers)
+        ])
+```
+
+The `_make_layer` function is just there to create a series of `n_layers` blocks. The first one is going from `ch_in` to `ch_out` with the indicated `stride` and all the others are blocks of stride 1 with `ch_out` to `ch_out` tensors. Once the blocks are defined, our model is purely sequential, which is why we define it as a subclass of `nn.Sequential`. (Ignore the `expansion` parameter for now; we'll discuss it in the next section. For now, it'll be `1`, so it doesn't do anything.)
+
+The various versions of the models (ResNet-18, -34, -50, etc.) just change the number of blocks in each of those groups. This is the definition of a ResNet-18:
+
+In [ ]:
+
+```
+rn = ResNet(dls.c, [2,2,2,2])
+```
+
+Let's train it for a little bit and see how it fares compared to the previous model:
+
+In [ ]:
+
+```
+learn = get_learner(rn)
+learn.fit_one_cycle(5, 3e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   1.673882 |   1.828394 | 0.413758 | 00:13 |
+|     1 |   1.331675 |   1.572685 | 0.518217 | 00:13 |
+|     2 |   1.087224 |   1.086102 | 0.650701 | 00:13 |
+|     3 |   0.900428 |   0.968219 | 0.684331 | 00:12 |
+|     4 |   0.760280 |   0.782558 | 0.757197 | 00:12 |
+
+Even though we have more channels (and our model is therefore even more accurate), our training is just as fast as before, thanks to our optimized stem.
+
+To make our model deeper without taking too much compute or memory, we can use another kind of layer introduced by the ResNet paper for ResNets with a depth of 50 or more: the bottleneck layer.
