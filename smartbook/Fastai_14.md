@@ -476,11 +476,11 @@ class ResNet(nn.Sequential):
 
 The `_make_layer` function is just there to create a series of `n_layers` blocks. The first one is going from `ch_in` to `ch_out` with the indicated `stride` and all the others are blocks of stride 1 with `ch_out` to `ch_out` tensors. Once the blocks are defined, our model is purely sequential, which is why we define it as a subclass of `nn.Sequential`. (Ignore the `expansion` parameter for now; we'll discuss it in the next section. For now, it'll be `1`, so it doesn't do anything.)
 
-在这里的`_make_layer`函数只是用来创建一系列`n_layers`层数的块。第一个层是从`ch_in`到`ch_out`且指定了`stride`的值，其余的是从`ch_out`到`ch_out`张量大小且步长为1的块。
+在这里的`_make_layer`函数只是用来创建一系列`n_layers`层数的块。第一个层是从`ch_in`到`ch_out`且指定了`stride`的值，其余的是从`ch_out`到`ch_out`张量大小且步长为1的块。一旦块被定义了，我们的模型就是序列化的，这就是为什么我们定义它作为`nn.Sequential`的子类。（目前为止忽略`expansion`参数，我们会在下一部分讨论它。现在我们会设置它为1，所以它不会做任何事情。）
 
 The various versions of the models (ResNet-18, -34, -50, etc.) just change the number of blocks in each of those groups. This is the definition of a ResNet-18:
 
-In [ ]:
+ResNet的许多版本（ResNet-18, -34, -50, 等等）只是改变了在那些每个组中的块的数量。下面是一个 ResNet-18 的定义：
 
 ```
 rn = ResNet(dls.c, [2,2,2,2])
@@ -488,7 +488,7 @@ rn = ResNet(dls.c, [2,2,2,2])
 
 Let's train it for a little bit and see how it fares compared to the previous model:
 
-In [ ]:
+让我们训练它一下，并看查看它与之前的模型对比是怎么样的：
 
 ```
 learn = get_learner(rn)
@@ -505,4 +505,8 @@ learn.fit_one_cycle(5, 3e-3)
 
 Even though we have more channels (and our model is therefore even more accurate), our training is just as fast as before, thanks to our optimized stem.
 
+即使我们有了更多的通道（因此我们模型甚至更加精确），我们的训练与之前一样的快，这样感谢我们优化了的stem。
+
 To make our model deeper without taking too much compute or memory, we can use another kind of layer introduced by the ResNet paper for ResNets with a depth of 50 or more: the bottleneck layer.
+
+使得我们的模型更深而不会花费更多的计算或内存，我们能够使用另一个类型的层，ResNet论文介绍了有50或更高的深度的ResNet：瓶颈层。
