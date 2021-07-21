@@ -243,7 +243,7 @@ One key concept that both of these two ways of thinking about ResNets share is t
 
 Here's the definition of a simple ResNet block (where `norm_type=NormType.BatchZero` causes fastai to init the `gamma` weights of the last batchnorm layer to zero):
 
-下面是一个简单的ResNet块的定义（'norm_type=NormType.BatchZero'会让fastai初始化最后批次标准化层的'gamma'权重为零）：
+下面是一个简单的ResNet块的定义（`norm_type=NormType.BatchZero`会让fastai初始化最后批次标准化层的`gamma`权重为零）：
 
 ```
 class ResBlock(Module):
@@ -257,19 +257,19 @@ class ResBlock(Module):
 
 There are two problems with this, however: it can't handle a stride other than 1, and it requires that `ni==nf`. Stop for a moment to think carefully about why this is.
 
-上面的定义有两个问题，无论如何它不能处理大小1的步长，且它需要ni==nf 。停一会，来仔细的思考一下为什么会这样。
+上面的定义有两个问题，无论如何它不能处理大小1的步长，且它需要`ni==nf` 。停一会，来仔细的思考一下为什么会这样。
 
 The issue is that with a stride of, say, 2 on one of the convolutions, the grid size of the output activations will be half the size on each axis of the input. So then we can't add that back to `x` in `forward` because `x` and the output activations have different dimensions. The same basic issue occurs if `ni!=nf`: the shapes of the input and output connections won't allow us to add them together.
 
-说到的步长的问题，其中一个卷积的步长为2，输出激活的风格大小会是每个输入坐标轴大小的一半。所以在'forward'中我们不能够把它加回到 'x'，因为 'x' 和输出激活有不同的尺寸。如果 'ni != nf' 会发生同样的问题：输入和输出连接的形态，不允许我们把他们加总在一起。
+说到的步长的问题，其中一个卷积的步长为2，输出激活的风格大小会是每个输入坐标轴大小的一半。所以在`forward`中我们不能够把它加回到 `x`，因为 `x` 和输出激活有不同的尺寸。如果 `ni != nf` 会发生同样的问题：输入和输出连接的形态，不允许我们把他们加总在一起。
 
 To fix this, we need a way to change the shape of `x` to match the result of `self.convs`. Halving the grid size can be done using an average pooling layer with a stride of 2: that is, a layer that takes 2×2 patches from the input and replaces them with their average.
 
-修复这个问题，我们需要一个方法来改变 'x' 的形态以匹配 'self.convs' 的结果。对半分的网格尺寸能够使用一个步长为2的平均池化层来完成：即，一个层从输入中取2×2大小的部分，并用他们的平均值进行替换。
+修复这个问题，我们需要一个方法来改变 `x` 的形态以匹配 `self.convs` 的结果。对半分的网格尺寸能够使用一个步长为2的平均池化层来完成：即，一个层从输入中取2×2大小的部分，并用他们的平均值进行替换。
 
 Changing the number of channels can be done by using a convolution. We want this skip connection to be as close to an identity map as possible, however, which means making this convolution as simple as possible. The simplest possible convolution is one where the kernel size is 1. That means that the kernel is size `ni*nf*1*1`, so it's only doing a dot product over the channels of each input pixel—it's not combining across pixels at all. This kind of *1x1 convolution* is very widely used in modern CNNs, so take a moment to think about how it works.
 
-改变通道的数量通过使用卷积能够完成。然而，我们希望这个跳跃连接尽可能的靠近一个恒等映射，这意味着使得这个卷积尽可能的简单。可能最简单的卷积是一，它的卷积核大小是1 。这表示核的大小是'`ni*nf*1*1`' ，所以在每个输入像素的通道上它仅仅做了一个点积，它根本不能跨像素组合。这类 *1x1* 卷积被非常广泛的用于CNN模型，所以花一点时间来思考它是如何运作的。
+改变通道的数量通过使用卷积能够完成。然而，我们希望这个跳跃连接尽可能的靠近一个恒等映射，这意味着使得这个卷积尽可能的简单。可能最简单的卷积是一，它的卷积核大小是1 。这表示核的大小是`ni*nf*1*1` ，所以在每个输入像素的通道上它仅仅做了一个点积，它根本不能跨像素组合。这类 *1x1* 卷积被非常广泛的用于CNN模型，所以花一点时间来思考它是如何运作的。
 
 > jargon: 1x1 convolution: A convolution with a kernel size of 1.
 
@@ -299,11 +299,11 @@ class ResBlock(Module):
 
 Note that we're using the `noop` function here, which simply returns its input unchanged (*noop* is a computer science term that stands for "no operation"). In this case, `idconv` does nothing at all if `ni==nf`, and `pool` does nothing if `stride==1`, which is what we wanted in our skip connection.
 
-注意，在这里我们使用了 'noop' 函数，它简单的返回了它们没有发生改变的输入（*noop* 是一个计算机科学术语，代表“无操作”）。在这种情况下，如果 'ni == nf' 'idconv'就根本不做任何事情，如果 'stride==1' 'pool'不做任何事情，在我们跳跃连接中这是我们期望的。
+注意，在这里我们使用了 `noop` 函数，它简单的返回了它们没有发生改变的输入（*noop* 是一个计算机科学术语，代表“无操作”）。在这种情况下，如果 `ni == nf` `idconv`就根本不做任何事情，如果 `stride==1` `pool`不做任何事情，在我们跳跃连接中这是我们期望的。
 
 Also, you'll see that we've removed the ReLU (`act_cls=None`) from the final convolution in `convs` and from `idconv`, and moved it to *after* we add the skip connection. The thinking behind this is that the whole ResNet block is like a layer, and you want your activation to be after your layer.
 
-同时，你会看到我们从 'convs' 中的最后卷积和 'idconv' 中移除了ReLU（ 'act_cls=None' ）, 并移动它到我们添加的跳跃连接之后。这个想法的背后是整个ResNet块像一个层，且你希望你的激活在你的层之后。
+同时，你会看到我们从 `convs` 中的最后卷积和 `idconv` 中移除了ReLU（ `act_cls=None` ）, 并移动它到我们添加的跳跃连接之后。这个想法的背后是整个ResNet块像一个层，且你希望你的激活在你的层之后。
 
 Let's replace our `block` with `ResBlock`, and try it out:
 
@@ -448,11 +448,11 @@ On the other hand, the first-layer convolution only has 3 input features and 32 
 
 A ResNet block takes more computation than a plain convolutional block, since (in the stride-2 case) a ResNet block has three convolutions and a pooling layer. That's why we want to have plain convolutions to start off our ResNet.
 
+一个ResNet块相比一个普通的卷积块要采取更多的计算，因为（以步进2为例）RetNet块有三个卷积和一个池化层。这就是为什么我们希望用普通的卷积来开始我们的ResNet。
 
+We're now ready to show the implementation of a modern ResNet, with the "bag of tricks." It uses four groups of ResNet blocks, with 64, 128, 256, then 512 filters. Each group starts with a stride-2 block, except for the first one, since it's just after a `MaxPooling` layer: 
 
-We're now ready to show the implementation of a modern ResNet, with the "bag of tricks." It uses four groups of ResNet blocks, with 64, 128, 256, then 512 filters. Each group starts with a stride-2 block, except for the first one, since it's just after a `MaxPooling` layer:
-
-In [ ]:
+现在我们准备来展示一个带有“技巧包”的现代ResNet的实现。它使用了带有 64, 128, 256 和 512个过滤器的四组ResNet块。每一组以一个步进2块开始，但第一个除外，因为它正好在`最大池化`层之后：
 
 ```
 class ResNet(nn.Sequential):
@@ -475,6 +475,8 @@ class ResNet(nn.Sequential):
 ```
 
 The `_make_layer` function is just there to create a series of `n_layers` blocks. The first one is going from `ch_in` to `ch_out` with the indicated `stride` and all the others are blocks of stride 1 with `ch_out` to `ch_out` tensors. Once the blocks are defined, our model is purely sequential, which is why we define it as a subclass of `nn.Sequential`. (Ignore the `expansion` parameter for now; we'll discuss it in the next section. For now, it'll be `1`, so it doesn't do anything.)
+
+在这里的`_make_layer`函数只是用来创建一系列`n_layers`层数的块。第一个层是从`ch_in`到`ch_out`且指定了`stride`的值，其余的是从`ch_out`到`ch_out`张量大小且步长为1的块。
 
 The various versions of the models (ResNet-18, -34, -50, etc.) just change the number of blocks in each of those groups. This is the definition of a ResNet-18:
 
