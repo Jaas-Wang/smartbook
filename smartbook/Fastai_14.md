@@ -510,3 +510,88 @@ Even though we have more channels (and our model is therefore even more accurate
 To make our model deeper without taking too much compute or memory, we can use another kind of layer introduced by the ResNet paper for ResNets with a depth of 50 or more: the bottleneck layer.
 
 使得我们的模型更深而不会花费更多的计算或内存，我们能够使用另一个类型的层，ResNet论文介绍了有50或更高的深度的ResNet：瓶颈层。
+
+### Bottleneck Layers
+
+### 瓶颈层
+
+Instead of stacking two convolutions with a kernel size of 3, bottleneck layers use three different convolutions: two 1×1 (at the beginning and the end) and one 3×3, as shown on the right in <resnet_compare>.
+
+不是堆砌了核大小为 3 的两个卷积，瓶颈层使用了三个不同的卷积：两个  1×1 大小的核（在开始和末尾）和一个 3×3 大小的核，如图<常规层和瓶颈层ResNet块对比>所示。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00045.png" alt="Comparison of regular and bottleneck ResNet blocks" width="550" caption="Comparison of regular and bottleneck ResNet blocks (courtesy of Kaiming He et al.)" id="resnet_compare" >
+  </p>
+  <p align="center">图：常规层和瓶颈层ResNet块对比</p>
+</div>
+
+Why is that useful? 1×1 convolutions are much faster, so even if this seems to be a more complex design, this block executes faster than the first ResNet block we saw. This then lets us use more filters: as we see in the illustration, the number of filters in and out is 4 times higher (256 instead of 64) diminish then restore the number of channels (hence the name bottleneck). The overall impact is that we can use more filters in the same amount of time.
+
+这什么会有用？1×1 卷积更快，所以即使这是好像更复杂的设计，我们发现这个块执行的比第一个（图左侧）ResNet块更快。然后我们使用更多的过滤器：正如我们在图例中所看到的，进出过滤器的数量是四倍减少（256而不是64），然后恢复了通道的数量（因此称为瓶颈）。整体的影响是我们在相同的时间量内能够使用更多的过滤器。
+
+Let's try replacing our `ResBlock` with this bottleneck design:
+
+我们尝试用这个瓶颈设计来替换我们的`ResBlock`：
+
+```
+def _conv_block(ni,nf,stride):
+    return nn.Sequential(
+        ConvLayer(ni, nf//4, 1),
+        ConvLayer(nf//4, nf//4, stride=stride), 
+        ConvLayer(nf//4, nf, 1, act_cls=None, norm_type=NormType.BatchZero))
+```
+
+We'll use this to create a ResNet-50 with group sizes of `(3,4,6,3)`. We now need to pass `4` in to the `expansion` parameter of `ResNet`, since we need to start with four times less channels and we'll end with four times more channels.
+
+我们会用这个函数来创建组大小为 `(3,4,6,3)`的ResNet-50。现在我们需要传递数字 `4` 给`ResNet`的`expansion`参数，因为我们需要用少于四倍的通道开始，并以多于四倍的通道来结束。
+
+Deeper networks like this don't generally show improvements when training for only 5 epochs, so we'll bump it up to 20 epochs this time to make the most of our bigger model. And to really get great results, let's use bigger images too:
+
+像这种更深的网络，当只训练5个周期的时候，通常不会有所改善，所以这次我们会把它的训练周期提升到20周期以充分里利用这个更大的模型。为了获取到了更好的结果，我们也会使用更大的图片：
+
+```
+dls = get_data(URLs.IMAGENETTE_320, presize=320, resize=224)
+```
+
+We don't have to do anything to account for the larger 224-pixel images; thanks to our fully convolutional network, it just works. This is also why we were able to do *progressive resizing* earlier in the book—the models we used were fully convolutional, so we were even able to fine-tune models trained with different sizes. We can now train our model and see the effects:
+
+我们不必为较大的 224 像素图像做任何解释说明；感谢我们的全卷积网络，它是可以有效工作的。这就是为什么我们在本书早先时候能够做*渐进式调整大小*的原因了。我们的模型使用了全卷积，所以我们甚至能够用不同的尺寸来微调模型。现在我们能够训练我们的模型了，并来看一下效果：
+
+```
+rn = ResNet(dls.c, [3,4,6,3], 4)
+```
+
+```
+learn = get_learner(rn)
+learn.fit_one_cycle(20, 3e-3)
+```
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   1.613448 |   1.473355 | 0.514140 | 00:31 |
+|     1 |   1.359604 |   2.050794 | 0.397452 | 00:31 |
+|     2 |   1.253112 |   4.511735 | 0.387006 | 00:31 |
+|     3 |   1.133450 |   2.575221 | 0.396178 | 00:31 |
+|     4 |   1.054752 |   1.264525 | 0.613758 | 00:32 |
+|     5 |   0.927930 |   2.670484 | 0.422675 | 00:32 |
+|     6 |   0.838268 |   1.724588 | 0.528662 | 00:32 |
+|     7 |   0.748289 |   1.180668 | 0.666497 | 00:31 |
+|     8 |   0.688637 |   1.245039 | 0.650446 | 00:32 |
+|     9 |   0.645530 |   1.053691 | 0.674904 | 00:31 |
+|    10 |   0.593401 |   1.180786 | 0.676433 | 00:32 |
+|    11 |   0.536634 |   0.879937 | 0.713885 | 00:32 |
+|    12 |   0.479208 |   0.798356 | 0.741656 | 00:32 |
+|    13 |   0.440071 |   0.600644 | 0.806879 | 00:32 |
+|    14 |   0.402952 |   0.450296 | 0.858599 | 00:32 |
+|    15 |   0.359117 |   0.486126 | 0.846369 | 00:32 |
+|    16 |   0.313642 |   0.442215 | 0.861911 | 00:32 |
+|    17 |   0.294050 |   0.485967 | 0.853503 | 00:32 |
+|    18 |   0.270583 |   0.408566 | 0.875924 | 00:32 |
+|    19 |   0.266003 |   0.411752 | 0.872611 | 00:33 |
+
+We're getting a great result now! Try adding Mixup, and then training this for a hundred epochs while you go get lunch. You'll have yourself a very accurate image classifier, trained from scratch.
+
+
+
+The bottleneck design we've shown here is typically only used in ResNet-50, -101, and -152 models. ResNet-18 and -34 models usually use the non-bottleneck design seen in the previous section. However, we've noticed that the bottleneck layer generally works better even for the shallower networks. This just goes to show that the little details in papers tend to stick around for years, even if they're actually not quite the best design! Questioning assumptions and "stuff everyone knows" is always a good idea, because this is still a new field, and there are lots of details that aren't always done well.
