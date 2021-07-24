@@ -592,6 +592,8 @@ learn.fit_one_cycle(20, 3e-3)
 
 We're getting a great result now! Try adding Mixup, and then training this for a hundred epochs while you go get lunch. You'll have yourself a very accurate image classifier, trained from scratch.
 
-
+现在我们取得了非常好的结果！尝试增加Mixup，然后在你去吃午餐的同时对它训练个一百个周期。从零开始训练，你将会拥有一个你自己的非常精准的图像分类器，
 
 The bottleneck design we've shown here is typically only used in ResNet-50, -101, and -152 models. ResNet-18 and -34 models usually use the non-bottleneck design seen in the previous section. However, we've noticed that the bottleneck layer generally works better even for the shallower networks. This just goes to show that the little details in papers tend to stick around for years, even if they're actually not quite the best design! Questioning assumptions and "stuff everyone knows" is always a good idea, because this is still a new field, and there are lots of details that aren't always done well.
+
+我们在这里所展示的瓶颈设计通常仅适用于ResNet-50， -101， 和 -152 模型。ResNet-18 和-34 模型通常使用非瓶颈设计，在之前的部分我们已经看过了。然而，我们已经注意到瓶颈层通常只是对浅层网络有效。这明天这个论文中的小细节会存在很多年，即使它们实际上不是最好的设计！问题质疑和“所有人都知道的东西”一直都是好的想法，因为这一直是个新领域，会有很多不会总是做的很好的小细节。
