@@ -170,7 +170,7 @@ In 2015, the authors of the ResNet paper noticed something that they found curio
 
 This phenomenon was illustrated by the graph in <resnet_depth>, with training error on the left and test error on the right.
 
-这一现象在下图<不同深度网络训练>中做了插图说话 ，左侧是训练错误，或侧是测试错误。
+这一现象在下图<不同深度网络训练>中做了插图说话 ，左侧是训练错误，右侧是测试错误。
 
 <div style="text-align:center">
   <p align="center">
@@ -597,3 +597,61 @@ We're getting a great result now! Try adding Mixup, and then training this for a
 The bottleneck design we've shown here is typically only used in ResNet-50, -101, and -152 models. ResNet-18 and -34 models usually use the non-bottleneck design seen in the previous section. However, we've noticed that the bottleneck layer generally works better even for the shallower networks. This just goes to show that the little details in papers tend to stick around for years, even if they're actually not quite the best design! Questioning assumptions and "stuff everyone knows" is always a good idea, because this is still a new field, and there are lots of details that aren't always done well.
 
 我们在这里所展示的瓶颈设计通常仅适用于ResNet-50， -101， 和 -152 模型。ResNet-18 和-34 模型通常使用非瓶颈设计，在之前的部分我们已经看过了。然而，我们已经注意到瓶颈层通常只是对浅层网络有效。这明天这个论文中的小细节会存在很多年，即使它们实际上不是最好的设计！问题质疑和“所有人都知道的东西”一直都是好的想法，因为这一直是个新领域，会有很多不会总是做的很好的小细节。
+
+## Conclusion
+
+## 结尾
+
+You have now seen how the models we have been using for computer vision since the first chapter are built, using skip connections to allow deeper models to be trained. Even if there has been a lot of research into better architectures, they all use one version or another of this trick, to make a direct path from the input to the end of the network. When using transfer learning, the ResNet is the pretrained model. In the next chapter, we will look at the final details of how the models we actually used were built from it.
+
+我们现在已经学习了，使用在第一章创建的计算机视觉模型如何使用跳跃连接允许更深的模型被训练。及时有很多对更好架构的研究，所有的这些研究只是使用了一个技巧的一个或另一个版本，来建立从网络输入到网络结尾的直接路径。当使用迁移训练时，ResNet是预训练模型。在下个章节，我们会学习到我们实际使用的模型是如何从中被创建的最终细节。
+
+## Questionnaire
+
+## 联系题
+
+1. How did we get to a single vector of activations in the CNNs used for MNIST in previous chapters? Why isn't that suitable for Imagenette?
+2. What do we do for Imagenette instead?
+3. What is "adaptive pooling"?
+4. What is "average pooling"?
+5. Why do we need `Flatten` after an adaptive average pooling layer?
+6. What is a "skip connection"?
+7. Why do skip connections allow us to train deeper models?
+8. What does <resnet_depth> show? How did that lead to the idea of skip connections?
+9. What is "identity mapping"?
+10. What is the basic equation for a ResNet block (ignoring batchnorm and ReLU layers)?
+11. What do ResNets have to do with residuals?
+12. How do we deal with the skip connection when there is a stride-2 convolution? How about when the number of filters changes?
+13. How can we express a 1×1 convolution in terms of a vector dot product?
+14. Create a `1x1 convolution` with `F.conv2d` or `nn.Conv2d` and apply it to an image. What happens to the `shape` of the image?
+15. What does the `noop` function return?
+16. Explain what is shown in <resnet_surface>.
+17. When is top-5 accuracy a better metric than top-1 accuracy?
+18. What is the "stem" of a CNN?
+19. Why do we use plain convolutions in the CNN stem, instead of ResNet blocks?
+20. How does a bottleneck block differ from a plain ResNet block?
+21. Why is a bottleneck block faster?
+22. How do fully convolutional nets (and nets with adaptive pooling in general) allow for progressive resizing?
+
+1. 在之前的章节用于MNIST的CNN中我们如何获得一个单向量激活？为什么这不适用于Imagenette？
+2. 相替代的对于Imagenette我们怎么做？
+3. 什么是“自适应池化”？
+4. 什么是“平均池化”？
+5. 为什么在一个自适应平均池化层后需要`Flatten`？
+6. 什么是“跳跃连接”？
+7. 为什么跳跃连接允许我们训练更深的模型？
+8. 图<不同深度网络训练>显示做了什么？这是如何引出跳跃连接这个想法的？
+9. 什么是“恒等映射”？
+10. ResNet块的基础等式是什么（忽略批次标准化和ReLU层）？
+11. ResNet与残渣之间是什么关系？
+12. 当有一个步进2卷积时，我们如何处理跳跃连接？哪过滤器的数量改变时又如何呢？
+13. 我们如何依据一个向量点积来描述一个 1×1 卷积？
+14. 用`F.conv2d`或`nn.Conv2d`创建一个 `1x1` 卷积，并把它应用到一张图像上。这张图像的`形状`会发生什么样的改变？
+15. `noop`函数返回了什么内容？
+16. 解释一下图<损失地貌上残差网络的影响>中显示的是什么？
+17. 什么时候前5的精确度比前1的精确度指标更好？
+18. CNN的“stem”是什么？
+19. 为什么我们在CNN stem中使用用纯卷积，来替代ResNet块？
+20. 瓶颈块与纯ResNet块的差异是怎样的？
+21. 为什么瓶颈块更快？
+22. 全卷积网络 （和一般带有自适应池的网络）如何做渐进式调整大小的操作？
