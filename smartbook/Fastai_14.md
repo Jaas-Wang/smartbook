@@ -655,3 +655,15 @@ You have now seen how the models we have been using for computer vision since th
 20. 瓶颈块与纯ResNet块的差异是怎样的？
 21. 为什么瓶颈块更快？
 22. 全卷积网络 （和一般带有自适应池的网络）如何做渐进式调整大小的操作？
+
+### Further Research
+
+1. Try creating a fully convolutional net with adaptive average pooling for MNIST (note that you'll need fewer stride-2 layers). How does it compare to a network without such a pooling layer?
+2. In <chapter_foundations> we introduce *Einstein summation notation*. Skip ahead to see how this works, and then write an implementation of the 1×1 convolution operation using `torch.einsum`. Compare it to the same operation using `torch.conv2d`.
+3. Write a "top-5 accuracy" function using plain PyTorch or plain Python.
+4. Train a model on Imagenette for more epochs, with and without label smoothing. Take a look at the Imagenette leaderboards and see how close you can get to the best results shown. Read the linked pages describing the leading approaches.
+
+1. 尝试为MNIST创建一个带有自适应平均池的全卷积网络（注意我们需要更少的步进2的层）。它相对于一个诸如不带有池化层的网络是怎样的？
+2. 在<章节：基础>中，我们介绍了*爱因斯坦求和约定*。略过开头看来它是如何工作的，然后使用`torch.einsum`写出 1×1 卷积操作的实现。把它与使用了`torch.conv2d`同样操作的方法做对比。
+3. 使用纯PyTorch或纯Python写一个“前5精度”的函数。
+4. 分别用标签平滑与不使用标签平滑，用更多的周期在Imagenette上训练一个模型。看一下Imagenette的榜单，查看与榜单上展示的最好结果是如何的接近。阅读领先方法的描述链接页。
