@@ -10,7 +10,7 @@ We will also go back to the custom data preprocessing pipeline we saw in <chapte
 
 We'll start with computer vision.
 
-我们也会返回到在<章节：用中级API做数据整理>中我们看到的自定义数据预处理管道与展示我们如何使用fastai库中的组件为新任务创建自定义预训练模型。
+我们也会返回到在<章节：用中级API做数据整理>中我们看到的自定义数据预处理流水线与展示我们如何使用fastai库中的组件为新任务创建自定义预训练模型。
 
 我们会从计算机视觉开始。
 
@@ -122,13 +122,19 @@ One of the most interesting architectures in deep learning is the one that we us
 
 The way we do this is to start with the exact same approach to developing a CNN head as we saw in the previous problem. We start with a ResNet, for instance, and cut off the adaptive pooling layer and everything after that. Then we replace those layers with our custom head, which does the generative task.
 
-如我们之前看到的问题，我们做这个的方式是以完全相关的方法来开发一个CNN头。例如，我们从ResNet入手，并裁剪自适应池化层和其后的所有内容。然后我们用我们可做生成任务的自定义头来替换那些层，
+如我们之前看到的问题，我们做这个的方式是以完全相关的方法来开发一个CNN头。例如，我们从ResNet入手，并裁剪自适应池化层和其后的所有内容。然后我们用可做生成任务的自定义头来替换那些层，
 
 There was a lot of handwaving in that last sentence! How on earth do we create a CNN head that generates an image? If we start with, say, a 224-pixel input image, then at the end of the ResNet body we will have a 7×7 grid of convolutional activations. How can we convert that into a 224-pixel segmentation mask?
 
-Naturally, we do this with a neural network! So we need some kind of layer that can increase the grid size in a CNN. One very simple approach to this is to replace every pixel in the 7×7 grid with four pixels in a 2×2 square. Each of those four pixels will have the same value—this is known as *nearest neighbor interpolation*. PyTorch provides a layer that does this for us, so one option is to create a head that contains stride-1 convolutional layers (along with batchnorm and ReLU layers as usual) interspersed with 2×2 nearest neighbor interpolation layers. In fact, you can try this now! See if you can create a custom head designed like this, and try it on the CamVid segmentation task. You should find that you get some reasonable results, although they won't be as good as our <> results.
+最后一名太含糊其辞了！我们到底如何创建一个生成图片的CNN头呢？如果我们从224像素输入图像开始，然后在ResNet体的末尾我们会得到一个 7×7 卷积激活格。我们如何将其转换为一个224像素的分割掩码呢？
 
-Another approach is to replace the nearest neighbor and convolution combination with a *transposed convolution*, otherwise known as a *stride half convolution*. This is identical to a regular convolution, but first zero padding is inserted between all the pixels in the input. This is easiest to see with a picture—<> shows a diagram from the excellent [convolutional arithmetic paper](https://arxiv.org/abs/1603.07285) we discussed in <>, showing a 3×3 transposed convolution applied to a 3×3 image.
+Naturally, we do this with a neural network! So we need some kind of layer that can increase the grid size in a CNN. One very simple approach to this is to replace every pixel in the 7×7 grid with four pixels in a 2×2 square. Each of those four pixels will have the same value—this is known as *nearest neighbor interpolation*. PyTorch provides a layer that does this for us, so one option is to create a head that contains stride-1 convolutional layers (along with batchnorm and ReLU layers as usual) interspersed with 2×2 nearest neighbor interpolation layers. In fact, you can try this now! See if you can create a custom head designed like this, and try it on the CamVid segmentation task. You should find that you get some reasonable results, although they won't be as good as our <chapter_intro> results.
+
+我们自然用神经网络做这个工作！所以我们需要某种在CNN中能够增加表格尺寸的层类型。一个非常简单的方法是在 2×2 方框内用四个像素来替换 7×7 表格中的每个像素。那个四像素每个的值都会相同，这被称为*最近邻插值*。PyTorch提供了一个为了我们做这个操作的层，所以一个操作是来创建包含步进 1 卷积层（像往常一样带有批次标准化和ReLU层）穿插有 2×2 最近邻插值层的头。实际上，你现在可以尝试一下！看是否能够创建一个如此设计的自定义头，并在CamVid分割任务上运行一下。你应该可以发现我获得了一些合理的结果，虽然它们没有我们在<第一章：概述>中的结果好。
+
+Another approach is to replace the nearest neighbor and convolution combination with a *transposed convolution*, otherwise known as a *stride half convolution*. This is identical to a regular convolution, but first zero padding is inserted between all the pixels in the input. This is easiest to see with a picture—<transp_conv> shows a diagram from the excellent [convolutional arithmetic paper](https://arxiv.org/abs/1603.07285) we discussed in <chapter_convolutions>, showing a 3×3 transposed convolution applied to a 3×3 image.
+
+别外一个方法是用*转置卷积*替换最近邻和卷积组合，或被称为*步幅半卷积*。这与常规卷积相同，但首个零填充是在输入的所有像素间插入的。用图例<转置卷积>很容易看来，这个图例来自我们在<第十三章：卷积>中所讨论的[卷积算法论文](https://arxiv.org/abs/1603.07285)，展示了应用在 3×3 图像上的 3×3 转置卷积。
 
 <div style="text-align:center">
   <p align="center">
@@ -139,7 +145,11 @@ Another approach is to replace the nearest neighbor and convolution combination 
 
 As you see, the result of this is to increase the size of the input. You can try this out now by using fastai's `ConvLayer` class; pass the parameter `transpose=True` to create a transposed convolution, instead of a regular one, in your custom head.
 
-Neither of these approaches, however, works really well. The problem is that our 7×7 grid simply doesn't have enough information to create a 224×224-pixel output. It's asking an awful lot of the activations of each of those grid cells to have enough information to fully regenerate every pixel in the output. The solution to this problem is to use *skip connections*, like in a ResNet, but skipping from the activations in the body of the ResNet all the way over to the activations of the transposed convolution on the opposite side of the architecture. This approach, illustrated in <>, was developed by Olaf Ronneberger, Philipp Fischer, and Thomas Brox in the 2015 paper ["U-Net: Convolutional Networks for Biomedical Image Segmentation"](https://arxiv.org/abs/1505.04597). Although the paper focused on medical applications, the U-Net has revolutionized all kinds of generative vision models.
+如你所见，这个结果是用来增加输入的尺寸。你现在可以用fastai的`ConvLayer`类来尝试一下它的输出；在你的自定义头中，传入参数 `transpose=True` 来创建转置卷积，以替代常规卷积层。
+
+Neither of these approaches, however, works really well. The problem is that our 7×7 grid simply doesn't have enough information to create a 224×224-pixel output. It's asking an awful lot of the activations of each of those grid cells to have enough information to fully regenerate every pixel in the output. The solution to this problem is to use *skip connections*, like in a ResNet, but skipping from the activations in the body of the ResNet all the way over to the activations of the transposed convolution on the opposite side of the architecture. This approach, illustrated in < unet >, was developed by Olaf Ronneberger, Philipp Fischer, and Thomas Brox in the 2015 paper ["U-Net: Convolutional Networks for Biomedical Image Segmentation"](https://arxiv.org/abs/1505.04597). Although the paper focused on medical applications, the U-Net has revolutionized all kinds of generative vision models.
+
+然而，这些方法实际上工作的都不好。问题在于我们的 7×7 简单表格没有足够的信息来创建一个 224×224 像素的输出。这要求那些表格单元的大量激活要有足够的信息来完全生成输出中的每个像素。对于这人问题的解决方案是使用像ResNet中那样的*跳跃连接*，但是从ResNet体中的激活径直跳跃到架构对立面上的转置卷积的激活。这一方法是由奥拉夫·罗尼伯格，菲利普·菲舍尔和托马斯·布鲁克斯在其论文["U-Net：生物医疗图像分割神经网络"](https://arxiv.org/abs/1505.04597)中开发的，如下图<U-Net架构>所求。虽然论文聚焦于医学应用，U-Net已经彻底改革了所有类型的生成视觉模型。
 
 <div style="text-align:center">
   <p align="center">
@@ -150,6 +160,13 @@ Neither of these approaches, however, works really well. The problem is that our
 
 This picture shows the CNN body on the left (in this case, it's a regular CNN, not a ResNet, and they're using 2×2 max pooling instead of stride-2 convolutions, since this paper was written before ResNets came along) and the transposed convolutional ("up-conv") layers on the right. Then extra skip connections are shown as gray arrows crossing from left to right (these are sometimes called *cross connections*). You can see why it's called a "U-Net!"
 
+这个图例在左侧展示了CNN体（在本例中，它是一个常规CNN，不是ResNet，且他们使用 2×2 最大池化而不是步进2卷积，因为这个论文撰写时间在ResNet面世之前）和在右侧的转置卷积层（“up-conv”）。扩展的跳远连接以从左侧横跨到右侧的灰色箭头形式展示的（所以有时间它被称为*交叉连接*）。我们可以看出为什么它被称为“U-Net”！
+
 With this architecture, the input to the transposed convolutions is not just the lower-resolution grid in the preceding layer, but also the higher-resolution grid in the ResNet head. This allows the U-Net to use all of the information of the original image, as it is needed. One challenge with U-Nets is that the exact architecture depends on the image size. fastai has a unique `DynamicUnet` class that autogenerates an architecture of the right size based on the data provided.
 
+使用这个架构，对转置卷积的输入不仅仅是之前层中的低分辨率表格，也是ResNet头中的高分辨率表格。这使得U-Net根据其需要使用原始图像的所有信息。使用U-Net的一个挑战是确切的架构依赖于图像尺寸大小。fastai有一个独一无二的`DynamicUnet`类，基于先前数据它自动生成一个合适大小的架构。
+
 Let's focus now on an example where we leverage the fastai library to write a custom model.
+
+让我们现在聚焦在一个例子上，利用fastai库来写一个自定义模型。
+
