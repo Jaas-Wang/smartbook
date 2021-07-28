@@ -122,7 +122,7 @@ One of the most interesting architectures in deep learning is the one that we us
 
 The way we do this is to start with the exact same approach to developing a CNN head as we saw in the previous problem. We start with a ResNet, for instance, and cut off the adaptive pooling layer and everything after that. Then we replace those layers with our custom head, which does the generative task.
 
-
+如我们之前看到的问题，我们做这个的方式是以完全相关的方法来开发一个CNN头。例如，我们从ResNet入手，并裁剪自适应池化层和其后的所有内容。然后我们用我们可做生成任务的自定义头来替换那些层，
 
 There was a lot of handwaving in that last sentence! How on earth do we create a CNN head that generates an image? If we start with, say, a 224-pixel input image, then at the end of the ResNet body we will have a 7×7 grid of convolutional activations. How can we convert that into a 224-pixel segmentation mask?
 
