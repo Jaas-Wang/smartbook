@@ -40,7 +40,7 @@ Then, for transfer learning, the network needs to be *cut*. This refers to slici
 model_meta[resnet50]
 ```
 
-输出结果:
+实验输出:
 
 ```
 {'cut': -2,
@@ -63,7 +63,7 @@ If we take all of the layers prior to the cut point of `-2`, we get the part of 
 create_head(20,2)
 ```
 
-输出结果:
+实验输出:
 
 ```
 Sequential(
@@ -169,4 +169,316 @@ With this architecture, the input to the transposed convolutions is not just the
 Let's focus now on an example where we leverage the fastai library to write a custom model.
 
 让我们现在聚焦在一个例子上，利用fastai库来写一个自定义模型。
+
+### A Siamese Network
+
+### 孪生网络
+
+实验代码:
+
+```
+#hide
+from fastai.vision.all import *
+path = untar_data(URLs.PETS)
+files = get_image_files(path/"images")
+
+class SiameseImage(fastuple):
+    def show(self, ctx=None, **kwargs): 
+        img1,img2,same_breed = self
+        if not isinstance(img1, Tensor):
+            if img2.size != img1.size: img2 = img2.resize(img1.size)
+            t1,t2 = tensor(img1),tensor(img2)
+            t1,t2 = t1.permute(2,0,1),t2.permute(2,0,1)
+        else: t1,t2 = img1,img2
+        line = t1.new_zeros(t1.shape[0], t1.shape[1], 10)
+        return show_image(torch.cat([t1,line,t2], dim=2), 
+                          title=same_breed, ctx=ctx)
+    
+def label_func(fname):
+    return re.match(r'^(.*)_\d+.jpg$', fname.name).groups()[0]
+
+class SiameseTransform(Transform):
+    def __init__(self, files, label_func, splits):
+        self.labels = files.map(label_func).unique()
+        self.lbl2files = {l: L(f for f in files if label_func(f) == l) for l in self.labels}
+        self.label_func = label_func
+        self.valid = {f: self._draw(f) for f in files[splits[1]]}
+        
+    def encodes(self, f):
+        f2,t = self.valid.get(f, self._draw(f))
+        img1,img2 = PILImage.create(f),PILImage.create(f2)
+        return SiameseImage(img1, img2, t)
+    
+    def _draw(self, f):
+        same = random.random() < 0.5
+        cls = self.label_func(f)
+        if not same: cls = random.choice(L(l for l in self.labels if l != cls)) 
+        return random.choice(self.lbl2files[cls]),same
+    
+splits = RandomSplitter()(files)
+tfm = SiameseTransform(files, label_func, splits)
+tls = TfmdLists(files, tfm, splits=splits)
+dls = tls.dataloaders(after_item=[Resize(224), ToTensor], 
+    after_batch=[IntToFloatTensor, Normalize.from_stats(*imagenet_stats)])
+```
+
+Let's go back to the input pipeline we set up in <chapter_midlevel_data> for a Siamese network. If you remember, it consisted of pair of images with the label being `True` or `False`, depending on if they were in the same class or not.
+
+对于孪生网络，我们返回到<第：数据处理中级API>中设置的输入流水线。如果你还记的，它是由带有被标记`True`和`Flase`的一对图像组成，这个标记取决于他们是否是同一类。
+
+Using what we just saw, let's build a custom model for this task and train it. How? We will use a pretrained architecture and pass our two images through it. Then we can concatenate the results and send them to a custom head that will return two predictions. In terms of modules, this looks like this:
+
+使用我们刚刚看的内容，为这个任务创建一个自定义模型并训练它。怎么做呢？我们会使用一个预训练架构并通过给它传递我们的两张图像。然后我们可以把结果联系起来，发送给他们一个会返回两个预测的自定义头。这样的模型，如下所示：
+
+实验代码:
+
+```
+class SiameseModel(Module):
+    def __init__(self, encoder, head):
+        self.encoder,self.head = encoder,head
+    
+    def forward(self, x1, x2):
+        ftrs = torch.cat([self.encoder(x1), self.encoder(x2)], dim=1)
+        return self.head(ftrs)
+```
+
+To create our encoder, we just need to take a pretrained model and cut it, as we explained before. The function `create_body` does that for us; we just have to pass it the place where we want to cut. As we saw earlier, per the dictionary of metadata for pretrained models, the cut value for a resnet is `-2`:
+
+创建编码器，我们只需要按照之前解释的那样，取一个预训练模型并裁剪它。`create_body`函数为我们做了这个工作，我们只需要传递给这个函数我们希望裁剪的位置。如我们之前学习到的，对于预训练模型的每个元数据字典，resnet的裁剪值是 `-2`：
+
+实验代码:
+
+```
+encoder = create_body(resnet34, cut=-2)
+```
+
+Then we can create our head. A look at the encoder tells us the last layer has 512 features, so this head will need to receive `512*2`. Why 2? We have to multiply by 2 because we have two images. So we create the head as follows:
+
+然后我们就能够创建模型头了。查看编码器我们会知道最后的层有 512 个特征，所以这个头会需要接收 `512*2`。为什么是 2？我们必须乘以 2 ，因为我们有两张图像。下面是我们创建模型头的代码：
+
+实验代码:
+
+```
+head = create_head(512*2, 2, ps=0.5)
+```
+
+With our encoder and head, we can now build our model:
+
+有了编码器和模型头，我们现在能够创建模型了：
+
+实验代码:
+
+```
+model = SiameseModel(encoder, head)
+```
+
+Before using `Learner`, we have two more things to define. First, we must define the loss function we want to use. It's regular cross-entropy, but since our targets are Booleans, we need to convert them to integers or PyTorch will throw an error:
+
+使用`Learner`之前，我们需要确定两个以上的事项。首先，我们必须确定希望使用的损失函数（loss）。它是常规的交叉熵，但因为我们的目标是布尔型，我们需要把他们转换为整型，否则PyTorch会抛出错误提示：
+
+实验代码:
+
+```
+def loss_func(out, targ):
+    return nn.CrossEntropyLoss()(out, targ.long())
+```
+
+More importantly, to take full advantage of transfer learning, we have to define a custom *splitter*. A splitter is a function that tells the fastai library how to split the model into parameter groups. These are used behind the scenes to train only the head of a model when we do transfer learning.
+
+更重要的是，要取得迁移学习的所有优点，我们必须定义一个自定义*分割器*（splitter），一个分割器就是一个函数，它告诉fastai库如何分割模型为参数组。当我们做迁移学习时，这些用于后台只训练模型的头。
+
+Here we want two parameter groups: one for the encoder and one for the head. We can thus define the following splitter (`params` is just a function that returns all parameters of a given module):
+
+在这里我们希望两个参数组：一个为编码器和一个为模型头。因为我们可以定义如下的分割器（`params`只是一个返回给定模型所有参数的函数）：
+
+实验代码:
+
+```
+def siamese_splitter(model):
+    return [params(model.encoder), params(model.head)]
+```
+
+Then we can define our `Learner` by passing the data, model, loss function, splitter, and any metric we want. Since we are not using a convenience function from fastai for transfer learning (like `cnn_learner`), we have to call `learn.freeze` manually. This will make sure only the last parameter group (in this case, the head) is trained:
+
+然后我们通过传递数据、模型、损失函数，及任何我们需要的指标来定义我们的`Learner`。因为我们为迁移学习没有使用fastai的的便捷函数（如`cnn_learner`），我们必须手动调用`learn.freeze`。这会确保只有最后的参数组（在这个事例中，是模型头）被训练：
+
+实验代码:
+
+```
+learn = Learner(dls, model, loss_func=loss_func, 
+                splitter=siamese_splitter, metrics=accuracy)
+learn.freeze()
+```
+
+Then we can directly train our model with the usual methods:
+
+然后我们直接用常用的方法来训练我们的模型：
+
+实验代码:
+
+```
+learn.fit_one_cycle(4, 3e-3)
+```
+
+实验输出:
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   0.367015 |   0.281242 | 0.885656 | 00:26 |
+|     1 |   0.307688 |   0.214721 | 0.915426 | 00:26 |
+|     2 |   0.275221 |   0.170615 | 0.936401 | 00:26 |
+|     3 |   0.223771 |   0.159633 | 0.943843 | 00:26 |
+
+Before unfreezing and fine-tuning the whole model a bit more with discriminative learning rates (that is: a lower learning rate for the body and a higher one for the head):
+
+在解冻与微调整个模型之前，要多用一点有区分的学习率（即：模型体是更低的学习率，模型头是更高的学习率）：
+
+实验代码:
+
+```
+learn.unfreeze()
+learn.fit_one_cycle(4, slice(1e-6,1e-4))
+```
+
+实验输出:
+
+| epoch | train_loss | valid_loss | accuracy |  time |
+| ----: | ---------: | ---------: | -------: | ----: |
+|     0 |   0.212744 |   0.159033 | 0.944520 | 00:35 |
+|     1 |   0.201893 |   0.159615 | 0.942490 | 00:35 |
+|     2 |   0.204606 |   0.152338 | 0.945196 | 00:36 |
+|     3 |   0.213203 |   0.148346 | 0.947903 | 00:36 |
+
+94.8% is very good when we remember a classifier trained the same way (with no data augmentation) had an error rate of 7%.
+
+Now that we've seen how to create complete state-of-the-art computer vision models, let's move on to NLP.
+
+94.8%是非常好的结果，我们记得以同样的方式（没有做数据增强）训练一个分类器时有7%的错误率。
+
+现在我们已经学习了如何创建完整的先进的计算机视觉模型。现在让我们来学习一下自然语言处理（NLP）。
+
+## Natural Language Processing
+
+## 自然语言处理
+
+Converting an AWD-LSTM language model into a transfer learning classifier, as we did in <chapter_nlp>, follows a very similar process to what we did with `cnn_learner` in the first section of this chapter. We do not need a "meta" dictionary in this case, because we do not have such a variety of architectures to support in the body. All we need to do is select the stacked RNN for the encoder in the language model, which is a single PyTorch module. This encoder will provide an activation for every word of the input, because a language model needs to output a prediction for every next word.
+
+正如我们在<第十章：自然语言处理>中做的，把AWD-LSTM语言模型转换为迁移学习分类器，遵循了我们在本章第一部分中用`cnn_learner`做的非常相似的内容过程。在本案例中，我们不需要“元数据”字典，因为在模型体中我们没有此种类的架构。我们所需要做的是在语言模型中为编码器选择叠加的RNN，它是一个单PyTorch模型。这个编码会为每个输入的词提供一个激活，因为语言模型需要为每下个词输出预测。
+
+To create a classifier from this we use an approach described in the [ULMFiT paper](https://arxiv.org/abs/1801.06146) as "BPTT for Text Classification (BPT3C)":
+
+我们使用[ULMFiT 论文](https://arxiv.org/abs/1801.06146)中描述的方法用于“用于文本分类的BPTT（BPT3C）”来为其创建一个分类器：
+
+> : We divide the document into fixed-length batches of size *b*. At the beginning of each batch, the model is initialized with the final state of the previous batch; we keep track of the hidden states for mean and max-pooling; gradients are back-propagated to the batches whose hidden states contributed to the final prediction. In practice, we use variable length backpropagation sequences.
+
+> ：我们将文档划分为大小为*b*的固定长度批次。每个批次的一开始，模型用之前批次的最终状态做初始化；我们记录平均与最大池化的隐藏状态；梯度被反向传播到隐含状态对最终预测具有贡献的批次。实际上，我们使用变长反向传播序列。
+
+In other words, the classifier contains a `for` loop, which loops over each batch of a sequence. The state is maintained across batches, and the activations of each batch are stored. At the end, we use the same average and max concatenated pooling trick that we use for computer vision models—but this time, we do not pool over CNN grid cells, but over RNN sequences.
+
+换句话话，分类器包含一个`for`循环，其循环遍历一个序列的每个批次。状态是跨批次维持的，且每个批次的激活被保存下来。在最终，我们使用同样用于计算机视觉模型的平均和最大连接池化技巧。但这次，我们在CNN表格单元上不做池化，而是在RNN序列上做。
+
+For this `for` loop we need to gather our data in batches, but each text needs to be treated separately, as they each have their own labels. However, it's very likely that those texts won't all be of the same length, which means we won't be able to put them all in the same array, like we did with the language model.
+
+对于这个`for`循环，我们需要在批次中收集我们的数据，但每个文本需要被分割处理，因为他们每个都有自己的标签。然而那些文本非常可以具有相同的长度，就像我们用语言模型做的那样，这意味我们不能够把他们放在相同的数组中。
+
+That's where padding is going to help: when grabbing a bunch of texts, we determine the one with the greatest length, then we fill the ones that are shorter with a special token called `xxpad`. To avoid extreme cases where we have a text with 2,000 tokens in the same batch as a text with 10 tokens (so a lot of padding, and a lot of wasted computation), we alter the randomness by making sure texts of comparable size are put together. The texts will still be in a somewhat random order for the training set (for the validation set we can simply sort them by order of length), but not completely so.
+
+这就是填充的作用所在：当抓取一个批次文本，我们要确定最长的那一个文本，然后我们用一个称为`xxpad`的特定令牌来填充那些短的文本。为避免在相同的批次中我们有的文本有2000个令牌，有的文本有10个令牌的极端事例发生（因为有大约的填充，和有大量多余计算），我们通过确保相似大小文本放在一起改变随机性。对于训练集文本会始终处于一个随机排序的状态（对于验证集我们通过他们的长度做简单的配需），然而并不是完全如此。
+
+This is done automatically behind the scenes by the fastai library when creating our `DataLoaders`.
+
+当我们创建我们的`DataLoaders`时，这是通过fastai库在后台自动完成的。
+
+## Tabular
+
+## 表格
+
+Finally, let's take a look at `fastai.tabular` models. (We don't need to look at collaborative filtering separately, since we've already seen that these models are just tabular models, or use the dot product approach, which we've implemented earlier from scratch.)
+
+最后，我们学习一下`fastai.tabular`模型。（我们不需要单独看协同过滤，因为我们已经发现这些模型只是表格模型，或使用了点积方法，之前我们已经从零开始实现过的。）
+
+Here is the `forward` method for `TabularModel`:
+
+下面是`TabularModel`模型的`forward`方法的代码：
+
+```python
+if self.n_emb != 0:
+    x = [e(x_cat[:,i]) for i,e in enumerate(self.embeds)]
+    x = torch.cat(x, 1)
+    x = self.emb_drop(x)
+if self.n_cont != 0:
+    x_cont = self.bn_cont(x_cont)
+    x = torch.cat([x, x_cont], 1) if self.n_emb != 0 else x_cont
+return self.layers(x)
+```
+
+We won't show `__init__` here, since it's not that interesting, but we will look at each line of code in `forward` in turn. The first line:
+
+在这里我们不会展示`__init__`函数，因为它不是那么有趣，但我们会依次查看`forward`中的每一行代码。
+
+第一行代码：
+
+```python
+if self.n_emb != 0:
+```
+
+is just testing whether there are any embeddings to deal with—we can skip this section if we only have continuous variables. `self.embeds` contains the embedding matrices, so this gets the activations of each:
+
+这只是判断，是否有嵌入需要处理，如果我们只有连续变量可以略过这一部分。`self.embeds`包含了嵌入矩阵，所以这获得了每个矩阵的激活：
+
+```python
+    x = [e(x_cat[:,i]) for i,e in enumerate(self.embeds)]
+```
+
+and concatenates them into a single tensor:
+
+并把他们串联为一个单一张量：
+
+```python
+    x = torch.cat(x, 1)
+```
+
+Then dropout is applied. You can pass `embd_p` to `__init__` to change this value:
+
+然后应用dropout。你可以传递`embd_p`给`__init___`来改变这个变量：
+
+```python
+    x = self.emb_drop(x)
+```
+
+Now we test whether there are any continuous variables to deal with:
+
+现在判断是否存在任何连续变量需要处理：
+
+```python
+if self.n_cont != 0:
+```
+
+They are passed through a batchnorm layer:
+
+他们传递了一个批次标准化层：
+
+```python
+    x_cont = self.bn_cont(x_cont)
+```
+
+and concatenated with the embedding activations, if there were any:
+
+如果有嵌入需要处理，同时会与嵌入激活连接：
+
+```python
+    x = torch.cat([x, x_cont], 1) if self.n_emb != 0 else x_cont
+```
+
+Finally, this is passed through the linear layers (each of which includes batchnorm, if `use_bn` is `True`, and dropout, if `ps` is set to some value or list of values):
+
+最后，传递了线性层（如果`use_bn`是`True`，每个都会包含批次标准化层，如果`ps`设置了某个值或值列表，会包含dropout层）：
+
+```python
+return self.layers(x)
+```
+
+Congratulations! Now you know every single piece of the architectures used in the fastai library!
+
+恭喜！现在你知道了fastai库中所使用架构的每一部分！
 
