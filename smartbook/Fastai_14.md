@@ -658,6 +658,8 @@ You have now seen how the models we have been using for computer vision since th
 
 ### Further Research
 
+### 深入研究
+
 1. Try creating a fully convolutional net with adaptive average pooling for MNIST (note that you'll need fewer stride-2 layers). How does it compare to a network without such a pooling layer?
 2. In <chapter_foundations> we introduce *Einstein summation notation*. Skip ahead to see how this works, and then write an implementation of the 1×1 convolution operation using `torch.einsum`. Compare it to the same operation using `torch.conv2d`.
 3. Write a "top-5 accuracy" function using plain PyTorch or plain Python.
