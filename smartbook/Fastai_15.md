@@ -507,10 +507,78 @@ So, step one is to get to the point where you can overfit. Then the question is 
 
 Many practitioners, when faced with an overfitting model, start at exactly the wrong end of this diagram. Their starting point is to use a smaller model, or more regularization. Using a smaller model should be absolutely the last step you take, unless training your model is taking up too much time or memory. Reducing the size of your model reduces the ability of your model to learn subtle relationships in your data.
 
+很多从业人员，当面对过拟模型时，完全错误的从这个图例的末端开始。他们开始的点是使用一个更小的模型，和更多的正则化。使用一个更小的模型应该绝对是你采取的最后步骤，除非你的模型化费了太多的时间和占用了太多内存。压缩你的模型大小减小你的模型能力来学习你的数据中微妙的联系。
+
 Instead, your first step should be to seek to *create more data*. That could involve adding more labels to data that you already have, finding additional tasks that your model could be asked to solve (or, to think of it another way, identifying different kinds of labels that you could model), or creating additional synthetic data by using more or different data augmentation techniques. Thanks to the development of Mixup and similar approaches, effective data augmentation is now available for nearly all kinds of data.
+
+相反，你的第一步应该是寻求*创建更多数据*。这牵扯到在你已有的数据上添加更多的标记，寻找你的模型能够被要求解决的附加任务（或，思考其它方法，识别你能够建模的不同类型的标签），或通过使用更多或不同的数据增强技术创建附加的合成数据。感谢Mixup和类似方法的发展，有效的数据增加现在可用于几乎所有类型的数据。
 
 Once you've got as much data as you think you can reasonably get hold of, and are using it as effectively as possible by taking advantage of all the labels that you can find and doing all the augmentation that makes sense, if you are still overfitting you should think about using more generalizable architectures. For instance, adding batch normalization may improve generalization.
 
+一旦你获取到了你能够合理掌握的一样多的数据，和通过利用你所能发现的所有标签尽可能有效的使用它，及做有意义的所有增强，如果你还是过拟，你应该思考使用更加可泛华的架构。例如，增加批次标准化可以改善泛化。
+
 If you are still overfitting after doing the best you can at using your data and tuning your architecture, then you can take a look at regularization. Generally speaking, adding dropout to the last layer or two will do a good job of regularizing your model. However, as we learned from the story of the development of AWD-LSTM, it is often the case that adding dropout of different types throughout your model can help even more. Generally speaking, a larger model with more regularization is more flexible, and can therefore be more accurate than a smaller model with less regularization.
 
+尽你最大的努力使用了你的数据和调整了你的架构后，还是过拟，那么你可以思考一下正则化。通过来说，在最后一层或两层添加dropout正则化你的模型会做的很好。因此，正如我们从AWD-LSTM发展的故事中学习的，往往是在你的整个模型中添加不同类型的dropout竟然可获得更多的帮助。通常来说，一个带有更多正则化的更大模型是更加复杂的，因此相比带有较少正则化的更小模型能够更加的精准。
+
 Only after considering all of these options would we recommend that you try using a smaller version of your architecture.
+
+只有思考过所有的这些操作，也许我们会建议你尝试使用你的架构的更小版本。
+
+## Questionnaire
+
+## 练习题
+
+1. What is the "head" of a neural net?
+2. What is the "body" of a neural net?
+3. What is "cutting" a neural net? Why do we need to do this for transfer learning?
+4. What is `model_meta`? Try printing it to see what's inside.
+5. Read the source code for `create_head` and make sure you understand what each line does.
+6. Look at the output of `create_head` and make sure you understand why each layer is there, and how the `create_head` source created it.
+7. Figure out how to change the dropout, layer size, and number of layers created by `cnn_learner`, and see if you can find values that result in better accuracy from the pet recognizer.
+8. What does `AdaptiveConcatPool2d` do?
+9. What is "nearest neighbor interpolation"? How can it be used to up sample convolutional activations?
+10. What is a "transposed convolution"? What is another name for it?
+11. Create a conv layer with `transpose=True` and apply it to an image. Check the output shape.
+12. Draw the U-Net architecture.
+13. What is "BPTT for Text Classification" (BPT3C)?
+14. How do we handle different length sequences in BPT3C?
+15. Try to run each line of `TabularModel.forward` separately, one line per cell, in a notebook, and look at the input and output shapes at each step.
+16. How is `self.layers` defined in `TabularModel`?
+17. What are the five steps for preventing over-fitting?
+18. Why don't we reduce architecture complexity before trying other approaches to preventing overfitting?
+
+1. 什么是神经网络的“头”？
+2. 什么是神经网络的“体”
+3. 什么是“裁剪”一个神经网络？对于迁移学习我们为什么需要做这个工作？
+4. 什么是`model_meta`？尝试打印输出它的内容看它里面是什么。
+5. 读一下`create_head`的源代码并确保你理解了每一行所做的操作。
+6. 看一下`create_head`的输出并确保你理解每层为什么是在这里，且`create_head`源如何创建的它。
+7. 思考如何改变dropout、层的大小和通过`cnn_learner`所创建的层的数量，看是否你能够找到来自宠物分类器的更好的精度结果值。
+8. `AdaptiveConcatPool2d`做了什么操作？
+9. 什么是“最近邻插值”？它如何使用提升简单卷积的激活？
+10. 什么是“转置卷积”？它的另一个名字是什么？
+11. 创建一个`transpose=True`的卷积层并把它应用到一张图像上。检查输出的形状。
+12. 画出U-Net架构。
+13. 什么是“用于文本分类的BPTT（BPT3C）”？
+14. 在BPT3C中我们如何处理不同的长度序列？
+15. 尝试分别运行``TabularModel.forward`的每一行代码，在notebook中每个单元一行代码。并查看第一步输入和输出的形态。
+16. 在`TabularModel`中`self.layers`是如何定义的？
+17. 为了预防过拟的五个步骤是什么？
+18. 在尝试其它方法来预防过拟之前为什么我们不能减小架构的复杂度？
+
+### Further Research
+
+### 深入研究
+
+1. Write your own custom head and try training the pet recognizer with it. See if you can get a better result than fastai's default.
+2. Try switching between `AdaptiveConcatPool2d` and `AdaptiveAvgPool2d` in a CNN head and see what difference it makes.
+3. Write your own custom splitter to create a separate parameter group for every ResNet block, and a separate group for the stem. Try training with it, and see if it improves the pet recognizer.
+4. Read the online chapter about generative image models, and create your own colorizer, super-resolution model, or style transfer model.
+5. Create a custom head using nearest neighbor interpolation and use it to do segmentation on CamVid.
+
+1. 编写你自己定义的头并用它尝试训练宠物分类器。看你是否能够获得比fastai默认情况下更好的结果。
+2. 在CNN头中尝试在`AdaptiveConcatPool2d`和`AdaptiveAvgPool2d`间转换，并看它会产生什么不同。
+3. 编写你自己定义的分割器为每个ResNet块创建一个单独的参数组，或为stem创建一个独立的组。尝试训练它，并看它是否改善了宠物分类器。
+4. 阅读生成图像模型的在线文章，创建你自己的颜色生成器，超分辨模型，或风格迁移模型。
+5. 使用最近邻插值创建一个自定义头，并用它在CamVid上做分割。
