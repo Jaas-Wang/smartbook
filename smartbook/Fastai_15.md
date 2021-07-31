@@ -482,3 +482,35 @@ Congratulations! Now you know every single piece of the architectures used in th
 
 恭喜！现在你知道了fastai库中所使用架构的每一部分！
 
+## Wrapping Up Architectures
+
+## 包装架构
+
+As you can see, the details of deep learning architectures need not scare you now. You can look inside the code of fastai and PyTorch and see just what is going on. More importantly, try to understand *why* it's going on. Take a look at the papers that are being referenced in the code, and try to see how the code matches up to the algorithms that are described.
+
+如你所见，现在深度学习架构细节不会让你感到害怕。你能够看到fastai和PyTorch的内部代码，并看到发生了什么。更重要的是，尝试理解*为什么*它会这样。花点时间看一下代码中所参考的论文，并尝试看一下代码匹配的算法是如何描述的。
+
+Now that we have investigated all of the pieces of a model and the data that is passed into it, we can consider what this means for practical deep learning. If you have unlimited data, unlimited memory, and unlimited time, then the advice is easy: train a huge model on all of your data for a really long time. But the reason that deep learning is not straightforward is because your data, memory, and time are typically limited. If you are running out of memory or time, then the solution is to train a smaller model. If you are not able to train for long enough to overfit, then you are not taking advantage of the capacity of your model.
+
+现在我们已经了解了模型的所有部分和传递给他的数据，我们可以思考对于实践深度学习这意味着什么。如果我们有无穷的数据，不限的内存和无穷的时间，那么建议是简单了：在一个相当长的时间在你的所有数据上训练一个巨大的模型。但由于深度学习不会这么简单，是因为你的数据、内存和时间通过是有限的。如果你在运行时内存不足或时间不足，那么解决方案是训练一个更小的模型。如果你不能训练模型相当长的时间知道过拟，那么你就不会获得模型能力的优势。
+
+So, step one is to get to the point where you can overfit. Then the question is how to reduce that overfitting. <reduce_overfit> shows how we recommend prioritizing the steps from there.
+
+所以，第一步是获得你能够过拟的点。然后的问题是如果减小过拟。图<减小过拟>展示了在这里我们如何建议的优先步骤顺序。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00047.png" alt="Steps to reducing overfitting" width="400" caption="Steps to reducing overfitting" id="reduce_overfit" >
+  </p>
+  <p align="center">图：减小过拟</p>
+</div>
+
+Many practitioners, when faced with an overfitting model, start at exactly the wrong end of this diagram. Their starting point is to use a smaller model, or more regularization. Using a smaller model should be absolutely the last step you take, unless training your model is taking up too much time or memory. Reducing the size of your model reduces the ability of your model to learn subtle relationships in your data.
+
+Instead, your first step should be to seek to *create more data*. That could involve adding more labels to data that you already have, finding additional tasks that your model could be asked to solve (or, to think of it another way, identifying different kinds of labels that you could model), or creating additional synthetic data by using more or different data augmentation techniques. Thanks to the development of Mixup and similar approaches, effective data augmentation is now available for nearly all kinds of data.
+
+Once you've got as much data as you think you can reasonably get hold of, and are using it as effectively as possible by taking advantage of all the labels that you can find and doing all the augmentation that makes sense, if you are still overfitting you should think about using more generalizable architectures. For instance, adding batch normalization may improve generalization.
+
+If you are still overfitting after doing the best you can at using your data and tuning your architecture, then you can take a look at regularization. Generally speaking, adding dropout to the last layer or two will do a good job of regularizing your model. However, as we learned from the story of the development of AWD-LSTM, it is often the case that adding dropout of different types throughout your model can help even more. Generally speaking, a larger model with more regularization is more flexible, and can therefore be more accurate than a smaller model with less regularization.
+
+Only after considering all of these options would we recommend that you try using a smaller version of your architecture.
