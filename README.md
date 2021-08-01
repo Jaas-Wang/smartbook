@@ -51,7 +51,6 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 
 [第十四章 残差网络](./smartbook/Fastai-14.md)   [（英文原本：14_resnet.ipynb）](./englishbook/14_resnet.ipynb)（未核对）
 
-[第十五章 应用架构深入研究](./smartbook/Fastai-15.md)   [（英文原本：14_resnet.ipynb）](./englishbook/15_arch_details.ipynb)（未核对）
+[第十五章 应用架构深入研究](./smartbook/Fastai-15.md)   [（英文原本：15_arch_details.ipynb）](./englishbook/15_arch_details.ipynb)（未核对）
 
-[第十六章 加速随机梯度下降](./smartbook/Fastai-16.md)   [（英文原本：14_resnet.ipynb）](./englishbook/16_accel_sgd.ipynb)（翻译中）
-[第十五章 应用架构深入研究](./smartbook/Fastai-15.md)   [（英文原本：14_resnet.ipynb）](./englishbook/15_arch_details.ipynb)（未核对）
+[第十六章 加速随机梯度下降](./smartbook/Fastai-16.md)   [（英文原本：16_accel_sgd.ipynb）](./englishbook/16_accel_sgd.ipynb)（翻译中）
