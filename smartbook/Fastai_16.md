@@ -439,3 +439,50 @@ Much better! Now we just have to bring these ideas together, and we have Adam, f
 
 好多了！现在我们只需要把这些想法合在一起，并且我们有fastai默认优化器 Adam。
 
+## Adam
+
+## Adam
+
+Adam mixes the ideas of SGD with momentum and RMSProp together: it uses the moving average of the gradients as a direction and divides by the square root of the moving average of the gradients squared to give an adaptive learning rate to each parameter.
+
+Adam把带有动量的SGD和RMSProp混合在了一起：它用梯度的移动平均作为方向并除以梯度平方移动平均的平方根，得出每个参数的自适应学习率。
+
+There is one other difference in how Adam calculates moving averages. It takes the *unbiased* moving average, which is:
+
+在Adam如何计算移到平均中有一个其它差异。它求了*无偏差* 移动平均，即：
+
+```python
+w.avg = beta * w.avg + (1-beta) * w.grad
+unbias_avg = w.avg / (1 - (beta**(i+1)))
+```
+
+if we are the `i`-th iteration (starting at 0 like Python does). This divisor of `1 - (beta**(i+1))` makes sure the unbiased average looks more like the gradients at the beginning (since `beta < 1`, the denominator is very quickly close to 1).
+
+Putting everything together, our update step looks like:
+
+如果我们是第 `i` 次迭代（像Python做的那样从 0 开始）。这个`1 - (beta**(i+1))` 的除数确保无偏差平均看起来更像开始时的梯度（因为`beta < 1`，分母非常快速的接近到 1 ）。
+
+把所有的内容放在一起，我们的更新步骤像下面的样子：
+
+```python
+w.avg = beta1 * w.avg + (1-beta1) * w.grad
+unbias_avg = w.avg / (1 - (beta1**(i+1)))
+w.sqr_avg = beta2 * w.sqr_avg + (1-beta2) * (w.grad ** 2)
+new_w = w - lr * unbias_avg / sqrt(w.sqr_avg + eps)
+```
+
+Like for RMSProp, `eps` is usually set to 1e-8, and the default for `(beta1,beta2)` suggested by the literature is `(0.9,0.999)`.
+
+如RMSProp，`eps`通常设置为 1e-8，根据文献建议`(beta1,beta2)`默认值为`(0.9,0.99)`。
+
+In fastai, Adam is the default optimizer we use since it allows faster training, but we've found that `beta2=0.99` is better suited to the type of schedule we are using. `beta1` is the momentum parameter, which we specify with the argument `moms` in our call to `fit_one_cycle`. As for `eps`, fastai uses a default of 1e-5. `eps` is not just useful for numerical stability. A higher `eps` limits the maximum value of the adjusted learning rate. To take an extreme example, if `eps` is 1, then the adjusted learning will never be higher than the base learning rate.
+
+在fastai中，Adam是我们所使用的默认优化器，因为它允许更快速的训练，但是我们发现`beta2=0.99`更适合我们用于计划类型。`beta1`是动量参数，在我们调用`fit_one_cycle`中用参数`moms`做了说明，fastai使用了1e-5的默认值。`eps`不仅仅用于数值稳定。一个更高的`eps`限制了调整学习率的最大值。举一个极端的例子，如果`eps`等于 1 ，那么被调整的学习率将永远不会比基础学习率高。
+
+Rather than show all the code for this in the book, we'll let you look at the optimizer notebook in [fastai's GitHub repository](https://github.com/fastai/fastai) (browse the *nbs* folder and search for the notebook called optimizer). You'll see all the code we've shown so far, along with Adam and other optimizers, and lots of examples and tests.
+
+我们不会在本书为这部分内容展示所有的代码，我们希望你看一下[fastai的GitHub仓库](https://github.com/fastai/fastai)中的优化器部分（浏览*nbs*文件夹并搜索名为optimizer的笔记）。你会看到截至目前我们已经呈现的所有代码，包含Adam和其它优化器，和很多例子及测试。
+
+One thing that changes when we go from SGD to Adam is the way we apply weight decay, and it can have important consequences.
+
+当我们从SGD到Adam时有一个事情改变了，是我们应用权重衰减的方法变了，它能够有重要的影响。
