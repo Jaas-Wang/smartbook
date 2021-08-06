@@ -486,3 +486,293 @@ Rather than show all the code for this in the book, we'll let you look at the op
 One thing that changes when we go from SGD to Adam is the way we apply weight decay, and it can have important consequences.
 
 当我们从SGD到Adam时有一个事情改变了，是我们应用权重衰减的方法变了，它能够有重要的影响。
+
+## Decoupled Weight Decay
+
+## 解耦权重衰减
+
+Weight decay, which we discussed in <chapter_collab>, is equivalent to (in the case of vanilla SGD) updating the parameters with:
+
+权重衰减，我们在<第八章：协同过滤>中探讨过，等同于（在普通的SGD案例中）更新参数：
+
+```python
+new_weight = weight - lr*weight.grad - lr*wd*weight
+```
+
+The last part of this formula explains the name of this technique: each weight is decayed by a factor `lr * wd`.
+
+这是公式的最后部分，解释了这个技术的命名：每个权重是通过因子`lr * wd`退化的。
+
+The other name of weight decay is L2 regularization, which consists in adding the sum of all squared weights to the loss (multiplied by the weight decay). As we have seen in <chapter_collab>, this can be directly expressed on the gradients with:
+
+权重衰减的另外的名字是L2正则化，它包含把所有权重平方和添加到损失上（乘以权重衰减）。如你在<第八章：协同过滤>中学习过的，它能够直接表示在梯度上：
+
+```python
+weight.grad += wd*weight
+```
+
+For SGD, those two formulas are equivalent. However, this equivalence only holds for standard SGD, because we have seen that with momentum, RMSProp or in Adam, the update has some additional formulas around the gradient.
+
+那两个公式对于SGD来说是等同的。然而，这个等同仅仅是对于标准的SGD适用，因为我们学习过动量、RMSProp或Adam中梯度的更新有一些附加公式。
+
+Most libraries use the second formulation, but it was pointed out in ["Decoupled Weight Decay Regularization"](https://arxiv.org/pdf/1711.05101.pdf) by Ilya Loshchilov and Frank Hutter, that the first one is the only correct approach with the Adam optimizer or momentum, which is why fastai makes it its default.
+
+大多数库使用的是第二个公式，但在伊利亚·洛希洛夫和弗兰克·赫特论文["解耦权重衰减正则化"](https://arxiv.org/pdf/1711.05101.pdf)中指出，第一个公式是Adam优化器或动量唯一正确的方法，这就是为什么fastai把它作为默认的原因。
+
+Now you know everything that is hidden behind the line `learn.fit_one_cycle`!
+
+现在你学习了`learn.fit_one_cycle`代码行后所隐含的所有内容了！
+
+Optimizers are only one part of the training process, however when you need to change the training loop with fastai, you can't directly change the code inside the library. Instead, we have designed a system of callbacks to let you write any tweaks you like in independent blocks that you can then mix and match.
+
+优化器仅仅是训练过程的一部分，然而当我们需要用fastai改变训练循环时，我们不能直接改变库内部的代码。因此，我们设计了一个回调系统，以允许你在独立的块中编写你喜欢的任何调整，然后你能够混合并匹配。
+
+## Callbacks
+
+## 回调
+
+Sometimes you need to change how things work a little bit. In fact, we have already seen examples of this: Mixup, fp16 training, resetting the model after each epoch for training RNNs, and so forth. How do we go about making these kinds of tweaks to the training process?
+
+有时候你需要稍微改变一下代码是如何运作的，我们已经看到过相关的例子：Mixup，fp16训练，对训练RNN每个周期后重置模型，等等。对训练过程我们如何做出这些类型的调整呢？
+
+We've seen the basic training loop, which, with the help of the `Optimizer` class, looks like this for a single epoch:
+
+我们学过基础训练循环，在`优化器`的帮助下，看起来像个单周期：
+
+```python
+for xb,yb in dl:
+    loss = loss_func(model(xb), yb)
+    loss.backward()
+    opt.step()
+    opt.zero_grad()
+```
+
+<basic_loop> shows how to picture that.
+
+图<基础训练循环>展示了如何来描绘它。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00048.png" alt="Basic training loop" width="300" caption="Basic training loop" id="basic_loop">
+  </p>
+  <p align="center">图：基础训练循环</p>
+</div>
+
+The usual way for deep learning practitioners to customize the training loop is to make a copy of an existing training loop, and then insert the code necessary for their particular changes into it. This is how nearly all code that you find online will look. But it has some very serious problems.
+
+深度学习从业人员定义训练循环的常用方法是拷贝一个现存的训练循环，然后把它们特定改变的必备代码插入其中。这是你所发现的线上几乎所有代码的样子。但这有一些非常严重的问题。
+
+It's not very likely that some particular tweaked training loop is going to meet your particular needs. There are hundreds of changes that can be made to a training loop, which means there are billions and billions of possible permutations. You can't just copy one tweak from a training loop here, another from a training loop there, and expect them all to work together. Each will be based on different assumptions about the environment that it's working in, use different naming conventions, and expect the data to be in different formats.
+
+这不像一些训练循环的特定调整以满足你的特定需求。对于训练循环能够做出的变化有数百个，这表示有数十亿个和数十人可能组合。我们不能只是从这一个训练循环中拷贝一个调整，另外从那个训练训练中拷贝一个，且希望他们都能在一起运行。每个调整将会依据它们正在运行环境的不同假设，使用不同的命名约定，和希望数据以不同的格式存在。
+
+We need a way to allow users to insert their own code at any part of the training loop, but in a consistent and well-defined way. Computer scientists have already come up with an elegant solution: the callback. A callback is a piece of code that you write, and inject into another piece of code at some predefined point. In fact, callbacks have been used with deep learning training loops for years. The problem is that in previous libraries it was only possible to inject code in a small subset of places where this may have been required, and, more importantly, callbacks were not able to do all the things they needed to do.
+
+我们需要一个方法以允许用户在训练循环的任何地方插入他们自己的代码，但是以一致和明确的方法。计算机科学有已经提出一个优化的解决方案：回调。一个回调是你所编写的一部分代码，并在某个预定义的点上注入到别一部分代码中。实际上，回调已经被用于深度学习训练循环好多年了。问题是之前的那些库只能做到在一些可能需要的和更重要的小子集位置注入代码，回调无法完成他们需要做的所有事情。
+
+In order to be just as flexible as manually copying and pasting a training loop and directly inserting code into it, a callback must be able to read every possible piece of information available in the training loop, modify all of it as needed, and fully control when a batch, epoch, or even the whole training loop should be terminated. fastai is the first library to provide all of this functionality. It modifies the training loop so it looks like <cb_loop>. 
+
+为了尽可能柔性的手动拷贝与粘贴训练循环和直接向其插入代码，回调必须能够读取训练循环中可获取到的每个可能部分的信息，根据需要修改它的所有部分，并当一个批次，周期，或甚至整个训练循环应该被终止时可完全控制。fastai是首个提供所有这些功能的库。它如下图<用回调的训练循环>的图例修改训练循环。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00049.png" alt="Training loop with callbacks" width="550" caption="Training loop with callbacks" id="cb_loop" >
+  </p>
+  <p align="center">图：用回调的训练循环</p>
+</div>
+
+The real effectiveness of this approach has been borne out over the last couple of years—it has turned out that, by using the fastai callback system, we were able to implement every single new paper we tried and fulfilled every user request for modifying the training loop. The training loop itself has not required modifications. <some_cbs> shows just a few of the callbacks that have been added.
+
+这一方法的实际效果已经在近几年得到了证实，事实证明，通过使用fastai回调系统，我们能够实现每一篇新论文，我们尝试并实现每位用户修改训练循环的需求。训练循环自身不需要修改。图<一些fastai回调>展示的只是已经添加的少部分回调。
+
+<div style="text-align:center">
+  <p align="center">
+    <img src="./_v_images/att_00050.png" alt="Some fastai callbacks" width="500" caption="Some fastai callbacks" id="some_cbs" >
+  </p>
+  <p align="center">图：一些fastai回调</p>
+</div>
+
+The reason that this is important is because it means that whatever idea we have in our head, we can implement it. We need never dig into the source code of PyTorch or fastai and hack together some one-off system to try out our ideas. And when we do implement our own callbacks to develop our own ideas, we know that they will work together with all of the other functionality provided by fastai–so we will get progress bars, mixed-precision training, hyperparameter annealing, and so forth.
+
+这重要的原因是它意味着无论我们脑袋里有什么样的想法，我们都能实现它。我们永远不需要深入研究PyTorch或fastai的源代码和拼凑起一些一次性系统来实验我们的想法。及当我们实现自己的回调来开发我们自己的想法明，我们知道它们将会于fastai提供的所有其它功能一起运行，所以我们会获得进度跳，混合精度训练，超参退火，等等。
+
+Another advantage is that it makes it easy to gradually remove or add functionality and perform ablation studies. You just need to adjust the list of callbacks you pass along to your fit function.
+
+另一个优势是它使得很容易的逐步移除或添加功能并执行消融研究。你只需要来调整你传递给你的适当功能的回调列表。
+
+As an example, here is the fastai source code that is run for each batch of the training loop:
+
+例如，下面是fastai运行于训练循环的每个批次的源代码：
+
+```python
+try:
+    self._split(b);                                  self('begin_batch')
+    self.pred = self.model(*self.xb);                self('after_pred')
+    self.loss = self.loss_func(self.pred, *self.yb); self('after_loss')
+    if not self.training: return
+    self.loss.backward();                            self('after_backward')
+    self.opt.step();                                 self('after_step')
+    self.opt.zero_grad()
+except CancelBatchException:                         self('after_cancel_batch')
+finally:                                             self('after_batch')
+```
+
+The calls of the form `self('...')` are where the callbacks are called. As you see, this happens after every step. The callback will receive the entire state of training, and can also modify it. For instance, the input data and target labels are in `self.xb` and `self.yb`, respectively; a callback can modify these to alter the data the training loop sees. It can also modify `self.loss`, or even the gradients.
+
+形式`self('...')`的调用是回调被调用的地方。如你所见，这发生在每个步骤之后。回调会接收到训练的整个状态，并也能够修改它。例如，输入数据和目标标签分别在`self.xb`和`self.yb`中；一个回调能够修改这些来改变训练循环所看到的数据。它也能够修改`self.loss`，或甚至可以修改梯度。
+
+Let's see how this works in practice by writing a callback.
+
+通过写一个回调，让我们看一下在实践中它如何工作的
+
+### Creating a Callback
+
+### 创建一个回调
+
+When you want to write your own callback, the full list of available events is:
+
+- `begin_fit`:: called before doing anything; ideal for initial setup.
+- `begin_epoch`:: called at the beginning of each epoch; useful for any behavior you need to reset at each epoch.
+- `begin_train`:: called at the beginning of the training part of an epoch.
+- `begin_batch`:: called at the beginning of each batch, just after drawing said batch. It can be used to do any setup necessary for the batch (like hyperparameter scheduling) or to change the input/target before it goes into the model (for instance, apply Mixup).
+- `after_pred`:: called after computing the output of the model on the batch. It can be used to change that output before it's fed to the loss function.
+- `after_loss`:: called after the loss has been computed, but before the backward pass. It can be used to add penalty to the loss (AR or TAR in RNN training, for instance).
+- `after_backward`:: called after the backward pass, but before the update of the parameters. It can be used to make changes to the gradients before said update (via gradient clipping, for instance).
+- `after_step`:: called after the step and before the gradients are zeroed.
+- `after_batch`:: called at the end of a batch, to perform any required cleanup before the next one.
+- `after_train`:: called at the end of the training phase of an epoch.
+- `begin_validate`:: called at the beginning of the validation phase of an epoch; useful for any setup needed specifically for validation.
+- `after_validate`:: called at the end of the validation part of an epoch.
+- `after_epoch`:: called at the end of an epoch, for any cleanup before the next one.
+- `after_fit`:: called at the end of training, for final cleanup.
+
+当你想编写你自己的回调，可获取事件的完整列表是：
+
+- `begin_fit`：做任何事情前调用；处理初始化设置。
+- `begin_epoch`：在每个周期的开始调用；用于每个周期你需要重置的任何行为。
+- `begin_train`：一个周期的训练部分的开始调用。
+- `begin_batch`：每个批次的开始，恰好在所述批次提取之后调用。它能够被用于做任何必要的批次设置（如超参数调度）或批次输入模型前改变输入/目标（例如，应用Mixup）。
+- `after_pred`：计算该批次模型的输出后调用。它可以被用于输出给损失函数前改变输出。
+- `after_loss`：损失已经被计算之后，但是后向传播传送之前调用。它可以被用于给损失增加处罚（例如，在RNN训练中的AR or TAR）。
+- `after_backward`：后向传播传递之后，但是参数更新之前调用。它可以用于对所述更新之前的梯度做出改变（例如，通过梯度裁剪）。
+- `after_step`：在步骤之后及梯度归零之前调用。
+- `after_batch`：在一个批次结束时调用，在下一个批次之前来执行任何必要的清理。
+- `after_train`：在一个周期训练阶段结束时调用。
+- `begin_validate`：在一个周期的验证阶段的开始调用；对于验证任何特别需要的设置是有用处的。
+- `after_validate`：在一个周期的验证部分结束时调用。
+- `after_epoch`：一个周期结束时调用，用于下一个周期之前的任何清理。
+- `after_fit`：训练结束时调用，用于最终的清理。
+
+The elements of this list are available as attributes of the special variable `event`, so you can just type `event.` and hit Tab in your notebook to see a list of all the options.
+
+这个列表的元素可以特定变量`event`的属性来获取，所以你可以只录入`event`，并在你的notebook中敲击Tab键来看所有的选择项列表。
+
+Let's take a look at an example. Do you recall how in <chapter_nlp_dive> we needed to ensure that our special `reset` method was called at the start of training and validation for each epoch? We used the `ModelResetter` callback provided by fastai to do this for us. But how does it work? Here's the full source code for that class:
+
+我们来看一下例子。你还记得<第十二章：自然语言深潜>中我们需要确保对于每个周期在训练和验证的开始调用我们的特定`reset`方法吗？我们使用了由fastai提供的`ModelResetter`回调为我们做这个事情。但是它是如何工作的呢？下面是对于那个类的全面源代码：
+
+实验代码：
+
+```
+class ModelResetter(Callback):
+    def begin_train(self):    self.model.reset()
+    def begin_validate(self): self.model.reset()
+```
+
+Yes, that's actually it! It just does what we said in the preceding paragraph: after completing training or validation for an epoch, call a method named `reset`.
+
+是，这就是它！它正好做了我们在之前段落说过的内容：一个周期训练或验证完成后，调用一个名为`reset`方法。
+
+Callbacks are often "short and sweet" like this one. In fact, let's look at one more. Here's the fastai source for the callback that adds RNN regularization (AR and TAR):
+
+回调通常“简洁明了”，就像上面这样。事实上呢，让我们再看一些代码。这是添加RNN正则化（AR 和 TAR）的faistai回调源代码：
+
+实验代码：
+
+```
+class RNNRegularizer(Callback):
+    def __init__(self, alpha=0., beta=0.): self.alpha,self.beta = alpha,beta
+
+    def after_pred(self):
+        self.raw_out,self.out = self.pred[1],self.pred[2]
+        self.learn.pred = self.pred[0]
+
+    def after_loss(self):
+        if not self.training: return
+        if self.alpha != 0.:
+            self.learn.loss += self.alpha * self.out[-1].float().pow(2).mean()
+        if self.beta != 0.:
+            h = self.raw_out[-1]
+            if len(h)>1:
+                self.learn.loss += self.beta * (h[:,1:] - h[:,:-1]
+                                               ).float().pow(2).mean()
+```
+
+> note: Code It Yourself: Go back and reread "Activation Regularization and Temporal Activation Regularization" in <chapter_nlp_dive> then take another look at the code here. Make sure you understand what it's doing, and why.
+
+> 注解：你自己编写它：返回并重新读<第十二章：自然语言处理深潜>中的“*激活单元正则化*（AR）和*时序激活单元正则化*（TAR）”，然后再看看这里的代码。确保你理解它在做什么及为什么这样做。
+
+In both of these examples, notice how we can access attributes of the training loop by directly checking `self.model` or `self.pred`. That's because a `Callback` will always try to get an attribute it doesn't have inside the `Learner` associated with it. These are shortcuts for `self.learn.model` or `self.learn.pred`. Note that they work for reading attributes, but not for writing them, which is why when `RNNRegularizer` changes the loss or the predictions you see `self.learn.loss =` or `self.learn.pred =`.
+
+在那两个例子中，解释了我们可以通过直接检查`self.model`或`self.pred`访问训练循环的属性。那是因为`回调`会总是尝试获取与它相关联的`Learner`内容所没有的属性。这些是`self.learn.model`或`self.learn.pred`的快捷方式。注意它们的工作是为了读取属性，而不是为了写它们，这就是为什么当`RNNRegularizer`改变损失和预测时，我们看到`self.learn.loss =` 或 `self.learn.pred =`。
+
+When writing a callback, the following attributes of `Learner` are available:
+
+- `model`:: The model used for training/validation.
+- `data`:: The underlying `DataLoaders`.
+- `loss_func`:: The loss function used.
+- `opt`:: The optimizer used to update the model parameters.
+- `opt_func`:: The function used to create the optimizer.
+- `cbs`:: The list containing all the `Callback`s.
+- `dl`:: The current `DataLoader` used for iteration.
+- `x`/`xb`:: The last input drawn from `self.dl` (potentially modified by callbacks). `xb` is always a tuple (potentially with one element) and `x` is detuplified. You can only assign to `xb`.
+- `y`/`yb`:: The last target drawn from `self.dl` (potentially modified by callbacks). `yb` is always a tuple (potentially with one element) and `y` is detuplified. You can only assign to `yb`.
+- `pred`:: The last predictions from `self.model` (potentially modified by callbacks).
+- `loss`:: The last computed loss (potentially modified by callbacks).
+- `n_epoch`:: The number of epochs in this training.
+- `n_iter`:: The number of iterations in the current `self.dl`.
+- `epoch`:: The current epoch index (from 0 to `n_epoch-1`).
+- `iter`:: The current iteration index in `self.dl` (from 0 to `n_iter-1`).
+
+当编写一个回调时，下面是可用的`Learner`属性：
+
+- `model`：用于训练/验证的模型。
+- `data`：`DataLoaders`构成的基础。
+- `loss_func`：所使用的损失函数。
+- `opt`：优化器用于更新模型参数。
+- `opt_func`：创建优化器的函数。
+- `cbs`：包含所有`回调`的列表。
+- `dl`：用于迭代的当前`DataLoader`。
+- `x`/`xb`：来自`self.dl`最后一个输入提取（可能会被回调修改）。`xb`一直是一个元组（可能带一个元素），`x`是被解耦的。你只能分配给`xb`。
+- `y`/`yb`：来自`self.dl`的最后一个目标提取（可能会被回调修改）。`yb`一直是一个元组（可能带一个元素），`y`是被解耦的。你只能分配给`yb`。
+- `pred`：来自`self.model`的最后一次预测（可能会被回调修改）。
+- `loss`：最后完成计算的损失（可能会被回调修改）。
+- `n_epoch`：这次训练中的周期数。
+- `n_iter`：在当前`self.dl`中的迭代次数。
+- `epoch`：当前周期索引（从 0 到 `n_epoch - 1`）。
+- `iter`：在`welf.dl`中当前迭代的索引（从 0 到 `n_iter - 1`）。
+
+The following attributes are added by `TrainEvalCallback` and should be available unless you went out of your way to remove that callback:
+
+- `train_iter`:: The number of training iterations done since the beginning of this training
+- `pct_train`:: The percentage of training iterations completed (from 0. to 1.)
+- `training`:: A flag to indicate whether or not we're in training mode
+
+下列的属性是由`TrainEvalCallback`添加的且应该是可用的，除非你要用你自己的方法移除这个回调：
+
+- `train_iter`：从训练开始到结束的训练迭代次数。
+- `pct_train`：训练迭代完成的百分比（从 0 到 1）。
+- `training`：指示我们是否在训练模式的标志。
+
+The following attribute is added by `Recorder` and should be available unless you went out of your way to remove that callback:
+
+- `smooth_loss`:: An exponentially averaged version of the training loss
+
+下列属性是由`Recorder`添加的且应该可用，除非你要用你自己的方法移除这个回调：
+
+- `smooth_loss`：训练损失指数平均版本。
+
+Callbacks can also interrupt any part of the training loop by using a system of exceptions.
+
+回调也可以通过使用系统异常中断训练循环的任意部分。
+
