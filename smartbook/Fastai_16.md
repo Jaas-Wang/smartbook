@@ -776,3 +776,56 @@ Callbacks can also interrupt any part of the training loop by using a system of 
 
 回调也可以通过使用系统异常中断训练循环的任意部分。
 
+### Callback Ordering and Exceptions
+
+### 回调顺序和异常
+
+Sometimes, callbacks need to be able to tell fastai to skip over a batch, or an epoch, or stop training altogether. For instance, consider `TerminateOnNaNCallback`. This handy callback will automatically stop training any time the loss becomes infinite or `NaN` (*not a number*). Here's the fastai source for this callback:
+
+有时，回调需要能够告诉fastai略过一个批次，或一个周期，或完全停止训练。例如，思考一下`TerminateOnNaNCallback`。这个好用的回调会自动在任何时间停止训练，损失变为无限或`NaN`*（没有数值）*。下面是这个回调的fastai源代码：
+
+实验代码：
+
+```
+class TerminateOnNaNCallback(Callback):
+    run_before=Recorder
+    def after_batch(self):
+        if torch.isinf(self.loss) or torch.isnan(self.loss):
+            raise CancelFitException
+```
+
+The line `raise CancelFitException` tells the training loop to interrupt training at this point. The training loop catches this exception and does not run any further training or validation. The callback control flow exceptions available are:
+
+- `CancelBatchException`:: Skip the rest of this batch and go to `after_batch`.
+- `CancelTrainException`:: Skip the rest of the training part of the epoch and go to `after_train`.
+- `CancelValidException`:: Skip the rest of the validation part of the epoch and go to `after_validate`.
+- `CancelEpochException`:: Skip the rest of this epoch and go to `after_epoch`.
+- `CancelFitException`:: Interrupt training and go to `after_fit`.
+
+代码行`raise CancelFitException`告诉训练循环在这个点中止训练。训练循环捕捉到这个异常，并不会再运行后续的训练或验证。有效的回调控制流异常是：
+
+- `CancelBatchException`：略过本批次的剩余部分，并进入`after_batch`。
+- `CancelTrainException`：略过该周期的剩余训练部分，并进入`afteer_train`。
+- `CancelValidException`：略过该周期剩余的验证部分，并进入`after_validate`。
+- `CancelEpochException`：略过这个周期的剩余部分并进入`after_epoch`。
+- `CancelFitException`：中断训练并进入`after_fit`。
+
+You can detect if one of those exceptions has occurred and add code that executes right after with the following events:
+
+- `after_cancel_batch`:: Reached immediately after a `CancelBatchException` before proceeding to `after_batch`
+- `after_cancel_train`:: Reached immediately after a `CancelTrainException` before proceeding to `after_train`
+- `after_cancel_valid`:: Reached immediately after a `CancelValidException` before proceeding to `after_valid`
+- `after_cancel_epoch`:: Reached immediately after a `CancelEpochException` before proceeding to `after_epoch`
+- `after_cancel_fit`:: Reached immediately after a `CancelFitException` before proceeding to `after_fit`
+
+利用下列事件并增加到执行代码的后面，如果发生了上述异常任何一个异常，你都能够监测到：
+
+- `after_cancel_batch`：进入到`after_batch`之前`CancelBatchException`之后立即达成。
+- `after_cancel_train`：进入到`after_train`之前`CancelTrainException`之后立即达成。
+- `after_cancel_valid`：进入到`after_valid`之前`CancelValidException`之后立即达成。
+- `after_cancel_epoch`：进入到`after_epoch`之前`CancelEpochException`之后立即达成。
+- `after_cancel_fit`：进入到`after_fit`之前`CancelFitException`之后立即达成。
+
+Sometimes, callbacks need to be called in a particular order. For example, in the case of `TerminateOnNaNCallback`, it's important that `Recorder` runs its `after_batch` after this callback, to avoid registering an `NaN` loss. You can specify `run_before` (this callback must run before ...) or `run_after` (this callback must run after ...) in your callback to ensure the ordering that you need.
+
+有时候，回调需要以特定的顺序来调用，在`TerminateOnNaNCallback`事例中，`Recorder`在这个这个回调之后运行`after_batch`是很重要的，以避免登记`NaN`损失。你可以在你的回调中特别说明`run_before`（必须在...这前运行回调）或`run_after`（必须在...之后运行回调）以确保是你所需要的执行顺序。
