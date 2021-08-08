@@ -484,7 +484,7 @@ Congratulations! Now you know every single piece of the architectures used in th
 
 ## Wrapping Up Architectures
 
-## 包装架构
+## 架构总结
 
 As you can see, the details of deep learning architectures need not scare you now. You can look inside the code of fastai and PyTorch and see just what is going on. More importantly, try to understand *why* it's going on. Take a look at the papers that are being referenced in the code, and try to see how the code matches up to the algorithms that are described.
 
