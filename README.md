@@ -53,4 +53,6 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 
 [第十五章 应用架构深入研究](./smartbook/Fastai-15.md)   [（英文原本：15_arch_details.ipynb）](./englishbook/15_arch_details.ipynb)（未核对）
 
-[第十六章 加速随机梯度下降](./smartbook/Fastai-16.md)   [（英文原本：16_accel_sgd.ipynb）](./englishbook/16_accel_sgd.ipynb)（翻译中）
+[第十六章 加速随机梯度下降](./smartbook/Fastai-16.md)   [（英文原本：16_accel_sgd.ipynb）](./englishbook/16_accel_sgd.ipynb)（未核对）
+
+[第十七章 基础神经网络](./smartbook/Fastai-17.md)   [（英文原本：17_foundations.ipynb）](./englishbook/17_foundations.ipynb)（未核对）
