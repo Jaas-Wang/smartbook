@@ -829,3 +829,105 @@ You can detect if one of those exceptions has occurred and add code that execute
 Sometimes, callbacks need to be called in a particular order. For example, in the case of `TerminateOnNaNCallback`, it's important that `Recorder` runs its `after_batch` after this callback, to avoid registering an `NaN` loss. You can specify `run_before` (this callback must run before ...) or `run_after` (this callback must run after ...) in your callback to ensure the ordering that you need.
 
 有时候，回调需要以特定的顺序来调用，在`TerminateOnNaNCallback`事例中，`Recorder`在这个这个回调之后运行`after_batch`是很重要的，以避免登记`NaN`损失。你可以在你的回调中特别说明`run_before`（必须在...这前运行回调）或`run_after`（必须在...之后运行回调）以确保是你所需要的执行顺序。
+
+## Conclusion
+
+## 结尾
+
+In this chapter we took a close look at the training loop, exploring different variants of SGD and why they can be more powerful. At the time of writing, developing new optimizers is a very active area of research, so by the time you read this chapter there may be an addendum on the book's website that presents new variants. Be sure to check out how our general optimizer framework can help you implement new optimizers very quickly.
+
+在本章，我们仔细学习了训练循环，研究了不同类型的SGD和为什么它们能够更强大。在编写本章的时候，开发新的优化器是非常活跃的研究领域，所以在你阅读这个章时可能在本书的网站上会添加补充时下新的变种。确保理解我们普通优化器框架能够帮助我们如何快速实现新的优化器。
+
+We also examined the powerful callback system that allows you to customize every bit of the training loop by enabling you to inspect and modify any parameter you like between each step.
+
+我们也查看了强大的回调系统，它允许你能够在每个步骤间检查和修改任何你喜欢的参数来自定义训练循环的每个部分。
+
+## Questionnaire
+
+## 练习题
+
+1. What is the equation for a step of SGD, in math or code (as you prefer)?
+2. What do we pass to `cnn_learner` to use a non-default optimizer?
+3. What are optimizer callbacks?
+4. What does `zero_grad` do in an optimizer?
+5. What does `step` do in an optimizer? How is it implemented in the general optimizer?
+6. Rewrite `sgd_cb` to use the `+=` operator, instead of `add_`.
+7. What is "momentum"? Write out the equation.
+8. What's a physical analogy for momentum? How does it apply in our model training settings?
+9. What does a bigger value for momentum do to the gradients?
+10. What are the default values of momentum for 1cycle training?
+11. What is RMSProp? Write out the equation.
+12. What do the squared values of the gradients indicate?
+13. How does Adam differ from momentum and RMSProp?
+14. Write out the equation for Adam.
+15. Calculate the values of `unbias_avg` and `w.avg` for a few batches of dummy values.
+16. What's the impact of having a high `eps` in Adam?
+17. Read through the optimizer notebook in fastai's repo, and execute it.
+18. In what situations do dynamic learning rate methods like Adam change the behavior of weight decay?
+19. What are the four steps of a training loop?
+20. Why is using callbacks better than writing a new training loop for each tweak you want to add?
+21. What aspects of the design of fastai's callback system make it as flexible as copying and pasting bits of code?
+22. How can you get the list of events available to you when writing a callback?
+23. Write the `ModelResetter` callback (without peeking).
+24. How can you access the necessary attributes of the training loop inside a callback? When can you use or not use the shortcuts that go with them?
+25. How can a callback influence the control flow of the training loop?
+26. Write the `TerminateOnNaN` callback (without peeking, if possible).
+27. How do you make sure your callback runs after or before another callback?
+
+1. SGD步骤的方程是什么（用数学方式或代码你喜欢的方式表示）？
+2. 我们传递给`cnn_learner`什么参数来使用非默认的优化器？
+3. 什么是优化器回调？
+4. 在优化器中`zero_grad`做了什么？
+5. 在优化器中`step`做了什么？在普通优化器它是如何实现的？
+6. 使用`+=`操作符重新`sgd_cb`，以替代`add_`。
+7. 什么是“动量”？写出其方程。
+8. 什么是动量的物理类推？在我们模型训练设置中如何应用它？
+9. 更大的动量值对梯度有什么影响？
+10. 1 循环训练动量的默认值是什么？
+11. 什么是RMSProp？写出其方程。
+12. 梯度的平均值表示的是什么？
+13. Adam与动量和RMSProp有何区别？
+14. 写出Adam的方程？
+15. 为少量批次的虚拟值计算`unbias_avg`和`w.avg`的值。
+16. 在Adam中一个高`eps`有什么样的影响？
+17. 在fastai库中阅读整个优化器notebook，并执行它。
+18. 如Adam这样的动态学习率方法在什么情况下改变了权重衰减的行为？
+19. 训练循环的四个步骤是什么？
+20. 对于我们希望添加的调整，为什么回调比写一个新的训练循环更好？
+21. fastai回调系统设计的哪部分使得它像拷贝和粘贴代码一样灵活？
+22. 当你编写一个回调时，你如何可以获得可用的事件列表？
+23. 编写`ModelResetter`（不要偷看）。
+24. 在一个回调内部你如何存取训练循环的必要属性？你可以在什么时候用或不用随附的快捷方式？
+25. 一个回调如何影响训练循环的控制流？
+26. 编写`TerminateOnNaN`回调（尽量不要偷看）。
+27. 你如何确保你的回调运行在其它回调之前或之后？
+
+### Further Research
+
+### 深入研究
+
+1. Look up the "Rectified Adam" paper, implement it using the general optimizer framework, and try it out. Search for other recent optimizers that work well in practice, and pick one to implement.
+2. Look at the mixed-precision callback with the documentation. Try to understand what each event and line of code does.
+3. Implement your own version of the learning rate finder from scratch. Compare it with fastai's version.
+4. Look at the source code of the callbacks that ship with fastai. See if you can find one that's similar to what you're looking to do, to get some inspiration.
+
+1. 查找“修复Adam”论文，使用普通的优化器框架实现它，并试用。搜索其它在实践中性能记好的新优化器，并选择一个来实现它。
+2. 查看混合精度回调文档。尝试理解每个事件和代码行做了什么。
+3. 从零实现你自有版学习率查找器。与fastai的版本做对比。
+4. 查看fastai附带的回调源代码。看你是否能够找到与你打算要做的事情的相似之处，以获得某些灵感。
+
+## Foundations of Deep Learning: Wrap up
+
+## 深度学习基础：总结
+
+Congratulations, you have made it to the end of the "foundations of deep learning" section of the book! You now understand how all of fastai's applications and most important architectures are built, and the recommended ways to train them—and you have all the information you need to build these from scratch. While you probably won't need to create your own training loop, or batchnorm layer, for instance, knowing what is going on behind the scenes is very helpful for debugging, profiling, and deploying your solutions.
+
+恭喜，你已经学到了本书“深度学习基础”的末尾！你现在理解了fastai所有应用和最重要架构是如何创建的，且一些推荐方法来训练它们。你拥有了需要从零开始创建这些的所有信息。在此期间你可能不需要创建你自己的训练循环或批次标准化层，例如，了解背后发生了什么是非常有帮于调试，介绍，及部署你的解决方案的。
+
+Since you understand the foundations of fastai's applications now, be sure to spend some time digging through the source notebooks and running and experimenting with parts of them. This will give you a better idea of how everything in fastai is developed.
+
+既然现在我们理解了fastai的应用基础，务必要花一些事情深入研究notebook上的整个源代码，并用部分代码运行且实验一下。这会让你更好的理解fastai中的相关内容是如何开发的。
+
+In the next section, we will be looking even further under the covers: we'll explore how the actual forward and backward passes of a neural network are done, and we will see what tools are at our disposal to get better performance. We will then continue with a project that brings together all the material in the book, which we will use to build a tool for interpreting convolutional neural networks. Last but not least, we'll finish by building fastai's `Learner` class from scratch.
+
+在接下来的部分，我们会进一步探索：我们会研究真实神经网络前向和后向传播是如何做的，且我们会学习我们所支配的哪些工具可获得更好的性能。然后我们会做一个项目，把本书中所有的内容汇集在一起，我们这用于创建一个解释卷积神经网络的工具。最后，我们会以从零开始创建fastai的`Learner`类来结束。
