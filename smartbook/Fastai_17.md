@@ -328,9 +328,11 @@ We're already ~700 times faster, just by removing that inner `for` loop! And tha
 
 As we discussed in <chapter_mnist_basics>, broadcasting is a term introduced by the [NumPy library](https://docs.scipy.org/doc/) that describes how tensors of different ranks are treated during arithmetic operations. For instance, it's obvious there is no way to add a 3×3 matrix with a 4×5 matrix, but what if we want to add one scalar (which can be represented as a 1×1 tensor) with a matrix? Or a vector of size 3 with a 3×4 matrix? In both cases, we can find a way to make sense of this operation.
 
-
+我们在<第四章：mnist基础>中讨论过传播，它是由[NumPy库](https://docs.scipy.org/doc/)引入的，描述了在计算运算期间如何处理不同阶张量。例如，很明显把 3×3 矩阵和 4×5 矩阵进行相加，但是如果我们希望用一个矩阵与一个标量（可以表示为一个 1×1 张量）相加呢？或用 3×4 矩阵与大小为 3 的向量相加？在这两个案例中，我们能够寻找一个方法来搞清楚这个运算。
 
 Broadcasting gives specific rules to codify when shapes are compatible when trying to do an elementwise operation, and how the tensor of the smaller shape is expanded to match the tensor of the bigger shape. It's essential to master those rules if you want to be able to write code that executes quickly. In this section, we'll expand our previous treatment of broadcasting to understand these rules.
+
+当尝试做按元素运算在形状兼容时传播给出具体的规则，及小形状张量如何扩展以匹配大形状张量。如果你想能够编写快速执行的代码，熟悉那些规则是必须的。在本小节，我们把之前处理的传播展开来讲以理解这些规则。
 
 #### Broadcasting with a scalar
 
@@ -338,14 +340,16 @@ Broadcasting gives specific rules to codify when shapes are compatible when tryi
 
 Broadcasting with a scalar is the easiest type of broadcasting. When we have a tensor `a` and a scalar, we just imagine a tensor of the same shape as `a` filled with that scalar and perform the operation:
 
-In [ ]:
+用标题传播是最容易的传播类型。当我们有一个张量`a`和一个标题，我们只是想像一个与`a`相同形状的张量来填满标量并执行运算：
+
+实验代码：
 
 ```
 a = tensor([10., 6, -4])
 a > 0
 ```
 
-Out[ ]:
+实验输出：
 
 ```
 tensor([ True,  True, False])
@@ -353,16 +357,20 @@ tensor([ True,  True, False])
 
 How are we able to do this comparison? `0` is being *broadcast* to have the same dimensions as `a`. Note that this is done without creating a tensor full of zeros in memory (that would be very inefficient).
 
+我们如何能够做这个对比？`0`被*传播*以有与`a`相关的维度。注意没有在内存中创建一个全是零的张量做完这个事情（那会非常没有效率）。
+
 This is very useful if you want to normalize your dataset by subtracting the mean (a scalar) from the entire data set (a matrix) and dividing by the standard deviation (another scalar):
 
-In [ ]:
+如果你想通过从整个数据集（一个矩阵）中减去平均值（一个标量）并除以偏差（另一个标题）来标准化是非常有用处的：
+
+实验代码：
 
 ```
 m = tensor([[1., 2, 3], [4,5,6], [7,8,9]])
 (m - 5) / 2.73
 ```
 
-Out[ ]:
+实验输出：
 
 ```
 tensor([[-1.4652, -1.0989, -0.7326],
@@ -372,13 +380,17 @@ tensor([[-1.4652, -1.0989, -0.7326],
 
 What if have different means for each row of the matrix? in that case you will need to broadcast a vector to a matrix.
 
+如果对于矩阵的每行都有不同的平均值呢？在这种情况下我们会需要传播向量到矩阵。
+
 #### Broadcasting a vector to a matrix
 
 #### 传播向量到矩阵
 
 We can broadcast a vector to a matrix as follows:
 
-In [ ]:
+我们能够用下面的代码传播向量到矩阵：
+
+实验代码：
 
 ```
 c = tensor([10.,20,30])
@@ -386,19 +398,19 @@ m = tensor([[1., 2, 3], [4,5,6], [7,8,9]])
 m.shape,c.shape
 ```
 
-Out[ ]:
+实验输出：
 
 ```
 (torch.Size([3, 3]), torch.Size([3]))
 ```
 
-In [ ]:
+实验代码：
 
 ```
 m + c
 ```
 
-Out[ ]:
+实验输出：
 
 ```
 tensor([[11., 22., 33.],
@@ -408,13 +420,15 @@ tensor([[11., 22., 33.],
 
 Here the elements of `c` are expanded to make three rows that match, making the operation possible. Again, PyTorch doesn't actually create three copies of `c` in memory. This is done by the `expand_as` method behind the scenes:
 
-In [ ]:
+这里`c`的元素被扩展以生成三行匹配，使得运算成为可能。同样的，PyTorch没有实际在内存中创建`c`的三个拷贝。这是通过`expand_as`方法后台完成的：
+
+实验代码：
 
 ```
 c.expand_as(m)
 ```
 
-Out[ ]:
+实验输出：
 
 ```
 tensor([[10., 20., 30.],
@@ -424,14 +438,16 @@ tensor([[10., 20., 30.],
 
 If we look at the corresponding tensor, we can ask for its `storage` property (which shows the actual contents of the memory used for the tensor) to check there is no useless data stored:
 
-In [ ]:
+如果想你看一下相对应的张量，你可以请求它的`storage`属性（展示用于张量的实际内存内容）来检查没有多于的存储数据：
+
+实验代码：
 
 ```
 t = c.expand_as(m)
 t.storage()
 ```
 
-Out[ ]:
+实验输出：
 
 ```
  10.0
@@ -442,19 +458,23 @@ Out[ ]:
 
 Even though the tensor officially has nine elements, only three scalars are stored in memory. This is possible thanks to the clever trick of giving that dimension a *stride* of 0 (which means that when PyTorch looks for the next row by adding the stride, it doesn't move):
 
-In [ ]:
+虽然即使正式的张量有九个元素，在内存中只存储了三个标量。这可能要归功于提供的维度 0 *步进*的聪明技巧（这表示当PyTorch通过增加步进查找下一行时，它不会移动）：
+
+实验代码：
 
 ```
 t.stride(), t.shape
 ```
 
-Out[ ]:
+实验代码：
 
 ```
 ((0, 1), torch.Size([3, 3]))
 ```
 
 Since `m` is of size 3×3, there are two ways to do broadcasting. The fact it was done on the last dimension is a convention that comes from the rules of broadcasting and has nothing to do with the way we ordered our tensors. If instead we do this, we get the same result:
+
+因为`m`是 3×3 大小，有两个方法来做传播。
 
 In [ ]:
 
