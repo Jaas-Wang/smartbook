@@ -918,7 +918,7 @@ yt.backward()
 
 The "backward" here refers to *backpropagation*, which is the name given to the process of calculating the derivative of each layer. We'll see how this is done exactly in chapter <chapter_foundations>, when we calculate the gradients of a deep neural net from scratch. This is called the "backward pass" of the network, as opposed to the "forward pass," which is where the activations are calculated. Life would probably be easier if `backward` was just called `calculate_grad`, but deep learning folks really do like to add jargon everywhere they can!
 
-这里的“backward”指的是*反向*，这个名字给出了每导计算导数的过程。当我们从头开始计算一个深度神经网络的梯度时，在<章节：基础>里我们会看到具体如何做的。这被称为网络的“反向传递”，与之相对的是“前向传递”，后者是计算激活的位置。如果`backward`只是被叫做`计算梯度`工作可能会更容易，但做深度学习的这些人真喜欢在任何能加的地方的增加术语！
+这里的“backward”指的是*反向*，这个名字给出了每导计算导数的过程。当我们从头开始计算一个深度神经网络的梯度时，在<章节：基础>里我们会看到具体如何做的。这被称为网络的“反向传递”，与之相对的是“正向传递”，后者是计算激活的位置。如果`backward`只是被叫做`计算梯度`工作可能会更容易，但做深度学习的这些人真喜欢在任何能加的地方的增加术语！
 
 We can now view the gradients by checking the `grad` attribute of our tensor:
 
