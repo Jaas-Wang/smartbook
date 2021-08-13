@@ -8,7 +8,7 @@ This chapter begins a journey where we will dig deep into the internals of the m
 
 We will build everything from scratch, only using basic indexing into a tensor. We'll write a neural net from the ground up, then implement backpropagation manually, so we know exactly what's happening in PyTorch when we call `loss.backward`. We'll also see how to extend PyTorch with custom *autograd* functions that allow us to specify our own forward and backward computations.
 
-我们将从零开始创建所有内容，只使用基础索引到张量中。我们将从基础开始编写一个神经网络，然后手动实现反向传播，所以当我们调用`loss.backward`时就能够准确的知道PyTorch里发生了什么。我们也会学习扩展PyTorch，用自定义*autograd*函数允许我们详细说明我们自己的前向和反向计算。
+我们将从零开始创建所有内容，只使用基础索引到张量中。我们将从基础开始编写一个神经网络，然后手动实现反向传播，所以当我们调用`loss.backward`时就能够准确的知道PyTorch里发生了什么。我们也会学习扩展PyTorch，用自定义*autograd*函数允许我们详细说明我们自己的正向和反向计算。
 
 ## Building a Neural Net Layer from Scratch
 
@@ -691,7 +691,7 @@ When operating on two tensors, PyTorch compares their shapes elementwise. It sta
 - They are equal.
 - One of them is 1, in which case that dimension is broadcast to make it the same as the other.
 
-当在两个张量上运算时，PyTorch会按元素对比它们的形状。它从*尾部维度*开始且它的处理方式是后向，当它遇到空维度会加 1 。当满足下面条件之一时两个维度就是兼任的：
+当在两个张量上运算时，PyTorch会按元素对比它们的形状。它从*尾部维度*开始且它的处理方式是反向的，当它遇到空维度会加 1 。当满足下面条件之一时两个维度就是兼任的：
 
 - 它们是相等的。
 - 它们其中一个是 1 ，在这样的情况下维度被传播以使它与另一个相同。
@@ -816,6 +816,377 @@ As you can see, not only is it practical, but it's *very* fast. `einsum` is ofte
 
 Now that we know how to implement a matrix multiplication from scratch, we are ready to build our neural net—specifically its forward and backward passes—using just matrix multiplications.
 
-现在我们知道了如果从零开始实现一个矩阵乘法，我们准备只使用矩阵乘法创建我们的神经网络，特别是它的前向和后向传递。
+现在我们知道了如果从零开始实现一个矩阵乘法，我们准备只使用矩阵乘法创建我们的神经网络，特别是它的正向和反向传递。
 
-## The
+## The Forward and Backward Passes
+
+## 正向和反向传递
+
+As we saw in <chapter_mnist_basics>, to train a model, we will need to compute all the gradients of a given loss with respect to its parameters, which is known as the *backward pass*. The *forward pass* is where we compute the output of the model on a given input, based on the matrix products. As we define our first neural net, we will also delve into the problem of properly initializing the weights, which is crucial for making training start properly.
+
+如我们在<第四章：mnist基础>中学的，训练一个模型，我们将需要计算给损失对于它的参数的所以梯度，它被称为*反向传递*。*正向传递*是基于矩阵成绩计算给定输出情况下模型的输出，如我们定义的第一个神经网络，我们也会深入研究正确的初始化权重的问题，对于使得训练正确的开始它是至关重要的。
+
+### Defining and Initializing a Layer
+
+### 定义和初始化层
+
+We will take the example of a two-layer neural net first. As we've seen, one layer can be expressed as `y = x @ w + b`, with `x` our inputs, `y` our outputs, `w` the weights of the layer (which is of size number of inputs by number of neurons if we don't transpose like before), and `b` is the bias vector:
+
+我们将首先以两层神经网络为例。正如你学过的，一层可以表示为 `y = x @ w + b`，`x`是我们的输入，`y`我们的输出，`w`层的权重（如果我们没有像以前那做转置，它的大小是输入的数量乘以神经元的数量），`b`是偏差向量：
+
+实验代码：
+
+```
+def lin(x, w, b): return x @ w + b
+```
+
+We can stack the second layer on top of the first, but since mathematically the composition of two linear operations is another linear operation, this only makes sense if we put something nonlinear in the middle, called an activation function. As mentioned at the beginning of the chapter, in deep learning applications the activation function most commonly used is a ReLU, which returns the maximum of `x` and `0`.
+
+我们可以在第一层的上面叠加第二层，但是因为两个线性运算的数学性构成是另外一个线性运算，如果我们在它们两者这间放某个非线性方程才有意思，这被称为激活函数。正如在本章的一开始提到的，深度学习应用的激活函数大多数通常使用的是ReLU，它返回`x`和 `0` 的最大值。
+
+We won't actually train our model in this chapter, so we'll use random tensors for our inputs and targets. Let's say our inputs are 200 vectors of size 100, which we group into one batch, and our targets are 200 random floats:
+
+在这个章我们将不会实际的训练我们的模型，所以我们会使用随机张量作为我们的输出和目标。假定我们的输入是200个大小为100的向量，我们归合它为一个批次，及我们的目标是200个随机浮点数。
+
+实验代码：
+
+```
+x = torch.randn(200, 100)
+y = torch.randn(200)
+```
+
+For our two-layer model we will need two weight matrices and two bias vectors. Let's say we have a hidden size of 50 and the output size is 1 (for one of our inputs, the corresponding output is one float in this toy example). We initialize the weights randomly and the bias at zero:
+
+对于我们的双层模型我们将需要两个权重矩阵和两个偏差向量。假定我们有一个隐含层大小为50和输出大小为1（在这个实验例子中相应输出是一个浮点数，这个浮点数是我们输入中的一个）。我们初始化随机权重和偏差为零：
+
+实验代码：
+
+```
+w1 = torch.randn(100,50)
+b1 = torch.zeros(50)
+w2 = torch.randn(50,1)
+b2 = torch.zeros(1)
+```
+
+Then the result of our first layer is simply:
+
+那么我们第一层的结果是：
+
+实验代码：
+
+```
+l1 = lin(x, w1, b1)
+l1.shape
+```
+
+实验输出：
+
+```
+torch.Size([200, 50])
+```
+
+Note that this formula works with our batch of inputs, and returns a batch of hidden state: `l1` is a matrix of size 200 (our batch size) by 50 (our hidden size).
+
+There is a problem with the way our model was initialized, however. To understand it, we need to look at the mean and standard deviation (std) of `l1`:
+
+注意这个算式处理的是我们的输入批次，并返回一个隐含状态批次：`l1`是一个大小为 200 （我们的批次大小）乘 50 （我们的隐含层大小）的矩阵。
+
+然而我们模型初始的方法有个问题。理解它，我们需要看平均值和`l1`的标准差：
+
+实验代码：
+
+```
+l1.mean(), l1.std()
+```
+
+实验输出：
+
+```
+(tensor(0.0019), tensor(10.1058))
+```
+
+The mean is close to zero, which is understandable since both our input and weight matrices have means close to zero. But the standard deviation, which represents how far away our activations go from the mean, went from 1 to 10. This is a really big problem because that's with just one layer. Modern neural nets can have hundred of layers, so if each of them multiplies the scale of our activations by 10, by the end of the last layer we won't have numbers representable by a computer.
+
+这个平均值接近于零，这是可理解的因为我们的输入和权重矩阵的平均值都接近于零。但是标准差，它代表我们的激活距离平均值非常的远，从 1 到 10 。这是真的是一个大问题，因为这只是一层。现代神经网络可以有上百层，所以如果它们每层激活的规模乘以 10 ，最终在最后层我们也许不会有计算机能够表示的数据。
+
+Indeed, if we make just 50 multiplications between `x` and random matrices of size 100×100, we'll have:
+
+的确，如果我们只做 50 次 `x` 和大小为 100×100 的随机矩阵之间的乘法，我们会得到：
+
+实验代码：
+
+```
+x = torch.randn(200, 100)
+for i in range(50): x = x @ torch.randn(100,100)
+x[0:5,0:5]
+```
+
+实验输出：
+
+```
+tensor([[nan, nan, nan, nan, nan],
+        [nan, nan, nan, nan, nan],
+        [nan, nan, nan, nan, nan],
+        [nan, nan, nan, nan, nan],
+        [nan, nan, nan, nan, nan]])
+```
+
+The result is `nan`s everywhere. So maybe the scale of our matrix was too big, and we need to have smaller weights? But if we use too small weights, we will have the opposite problem—the scale of our activations will go from 1 to 0.1, and after 50 layers we'll be left with zeros everywhere:
+
+所有的结果都是`nan`。所以可能我们矩阵的缩放太大了，我们需要更小的权重？但是如果我们使用小权重，我们会有相反的问题：我们激活的缩放会是从 1 到 0.1 ，且 50 层后我们会得到所有都是零的结果：
+
+实验代码：
+
+```
+x = torch.randn(200, 100)
+for i in range(50): x = x @ (torch.randn(100,100) * 0.01)
+x[0:5,0:5]
+```
+
+实验输出：
+
+```
+tensor([[0., 0., 0., 0., 0.],
+        [0., 0., 0., 0., 0.],
+        [0., 0., 0., 0., 0.],
+        [0., 0., 0., 0., 0.],
+        [0., 0., 0., 0., 0.]])
+```
+
+So we have to scale our weight matrices exactly right so that the standard deviation of our activations stays at 1. We can compute the exact value to use mathematically, as illustrated by Xavier Glorot and Yoshua Bengio in ["Understanding the Difficulty of Training Deep Feedforward Neural Networks"](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf). The right scale for a given layer is $1/\sqrt{n_{in}}$, where $n_{in}$​represents the number of inputs.
+
+所以我们必须完全正确的缩放我们的权重矩阵，这样我们激活的标准差就会在 1 上。由泽维尔·格洛洛特和约书亚·本吉奥在["理解训练深度前馈神经网络的困难"](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf)中做了说明，我们能够使用数学方法计算出精确的值。对于给定的层正确的缩放是 $1/\sqrt{n_{in}}$​，这里的$n_{in}$​是输入的数量。
+
+In our case, if we have 100 inputs, we should scale our weight matrices by 0.1:
+
+在我们的例子中，如果我们有 100 个输入，我们应该缩放权重矩阵 0.1 ：
+
+实验代码：
+
+```
+x = torch.randn(200, 100)
+for i in range(50): x = x @ (torch.randn(100,100) * 0.1)
+x[0:5,0:5]
+```
+
+实验输出：
+
+```
+tensor([[ 0.7554,  0.6167, -0.1757, -1.5662,  0.5644],
+        [-0.1987,  0.6292,  0.3283, -1.1538,  0.5416],
+        [ 0.6106,  0.2556, -0.0618, -0.9463,  0.4445],
+        [ 0.4484,  0.7144,  0.1164, -0.8626,  0.4413],
+        [ 0.3463,  0.5930,  0.3375, -0.9486,  0.5643]])
+```
+
+Finally some numbers that are neither zeros nor `nan`s! Notice how stable the scale of our activations is, even after those 50 fake layers:
+
+最终一些数值既不是零也不是`nan`！注意我们激活的缩放是如此稳定，甚至是做了那些 50 个虚拟层之后：
+
+实验代码：
+
+```
+x.std()
+```
+
+实验输出：
+
+```
+tensor(0.7042)
+```
+
+If you play a little bit with the value for scale you'll notice that even a slight variation from 0.1 will get you either to very small or very large numbers, so initializing the weights properly is extremely important.
+
+如果你对缩放稍微调整一点点，甚至是 0.1 的小的变化，你将会取得要么很小要么很大的数值，所以正确的初始化权重是异常重要的。
+
+Let's go back to our neural net. Since we messed a bit with our inputs, we need to redefine them:
+
+让我们返回到我们的神经网。因为我们已经有点弄乱了输入值，我们需要重新定义他们：
+
+实验代码：
+
+```
+x = torch.randn(200, 100)
+y = torch.randn(200)
+```
+
+And for our weights, we'll use the right scale, which is known as *Xavier initialization* (or *Glorot initialization*):
+
+对于我们的权重，我们将名为*Xavier初始化*（或*Glorot*初始化）做正确的缩放：
+
+实验代码：
+
+```
+from math import sqrt
+w1 = torch.randn(100,50) / sqrt(100)
+b1 = torch.zeros(50)
+w2 = torch.randn(50,1) / sqrt(50)
+b2 = torch.zeros(1)
+```
+
+Now if we compute the result of the first layer, we can check that the mean and standard deviation are under control:
+
+现在如果我们计算了第一层的结果，我们可以检查它的平均值和标准差是受到控制的：
+
+实验代码：
+
+```
+l1 = lin(x, w1, b1)
+l1.mean(),l1.std()
+```
+
+实验输出：
+
+```
+(tensor(-0.0050), tensor(1.0000))
+```
+
+Very good. Now we need to go through a ReLU, so let's define one. A ReLU removes the negatives and replaces them with zeros, which is another way of saying it clamps our tensor at zero:
+
+非常好。现在我们需要学习ReLU，所以让我们定义一下。ReLU移除了负数并用零替换它们，它是另一种强制我们的张量为零的方法：
+
+实验代码：
+
+```
+def relu(x): return x.clamp_min(0.)
+```
+
+We pass our activations through this:
+
+我们传递激活通过这个函数：
+
+实验代码：
+
+```
+l2 = relu(l1)
+l2.mean(),l2.std()
+```
+
+实验输出：
+
+```
+(tensor(0.3961), tensor(0.5783))
+```
+
+And we're back to square one: the mean of our activations has gone to 0.4 (which is understandable since we removed the negatives) and the std went down to 0.58. So like before, after a few layers we will probably wind up with zeros:
+
+
+
+实验代码：
+
+```
+x = torch.randn(200, 100)
+for i in range(50): x = relu(x @ (torch.randn(100,100) * 0.1))
+x[0:5,0:5]
+```
+
+实验输出：
+
+```
+tensor([[0.0000e+00, 1.9689e-08, 4.2820e-08, 0.0000e+00, 0.0000e+00],
+        [0.0000e+00, 1.6701e-08, 4.3501e-08, 0.0000e+00, 0.0000e+00],
+        [0.0000e+00, 1.0976e-08, 3.0411e-08, 0.0000e+00, 0.0000e+00],
+        [0.0000e+00, 1.8457e-08, 4.9469e-08, 0.0000e+00, 0.0000e+00],
+        [0.0000e+00, 1.9949e-08, 4.1643e-08, 0.0000e+00, 0.0000e+00]])
+```
+
+This means our initialization wasn't right. Why? At the time Glorot and Bengio wrote their article, the popular activation in a neural net was the hyperbolic tangent (tanh, which is the one they used), and that initialization doesn't account for our ReLU. Fortunately, someone else has done the math for us and computed the right scale for us to use. In ["Delving Deep into Rectifiers: Surpassing Human-Level Performance"](https://arxiv.org/abs/1502.01852) (which we've seen before—it's the article that introduced the ResNet), Kaiming He et al. show that we should use the following scale instead: $\sqrt{2 / n_{in}}$, where $n_{in}$ is the number of inputs of our model. Let's see what this gives us:
+
+实验代码：
+
+```
+x = torch.randn(200, 100)
+for i in range(50): x = relu(x @ (torch.randn(100,100) * sqrt(2/100)))
+x[0:5,0:5]
+```
+
+实验输出：
+
+```
+tensor([[0.2871, 0.0000, 0.0000, 0.0000, 0.0026],
+        [0.4546, 0.0000, 0.0000, 0.0000, 0.0015],
+        [0.6178, 0.0000, 0.0000, 0.0180, 0.0079],
+        [0.3333, 0.0000, 0.0000, 0.0545, 0.0000],
+        [0.1940, 0.0000, 0.0000, 0.0000, 0.0096]])
+```
+
+That's better: our numbers aren't all zeroed this time. So let's go back to the definition of our neural net and use this initialization (which is named *Kaiming initialization* or *He initialization*):
+
+实验代码：
+
+```
+x = torch.randn(200, 100)
+y = torch.randn(200)
+```
+
+实验代码：
+
+```
+w1 = torch.randn(100,50) * sqrt(2 / 100)
+b1 = torch.zeros(50)
+w2 = torch.randn(50,1) * sqrt(2 / 50)
+b2 = torch.zeros(1)
+```
+
+Let's look at the scale of our activations after going through the first linear layer and ReLU:
+
+实验代码：
+
+```
+l1 = lin(x, w1, b1)
+l2 = relu(l1)
+l2.mean(), l2.std()
+```
+
+实验输出：
+
+```
+(tensor(0.5661), tensor(0.8339))
+```
+
+Much better! Now that our weights are properly initialized, we can define our whole model:
+
+实验代码：
+
+```
+def model(x):
+    l1 = lin(x, w1, b1)
+    l2 = relu(l1)
+    l3 = lin(l2, w2, b2)
+    return l3
+```
+
+This is the forward pass. Now all that's left to do is to compare our output to the labels we have (random numbers, in this example) with a loss function. In this case, we will use the mean squared error. (It's a toy problem, and this is the easiest loss function to use for what is next, computing the gradients.)
+
+The only subtlety is that our outputs and targets don't have exactly the same shape—after going though the model, we get an output like this:
+
+实验代码：
+
+```
+out = model(x)
+out.shape
+```
+
+实验输出：
+
+```
+torch.Size([200, 1])
+```
+
+To get rid of this trailing 1 dimension, we use the `squeeze` function:
+
+实验代码：
+
+```
+def mse(output, targ): return (output.squeeze(-1) - targ).pow(2).mean()
+```
+
+And now we are ready to compute our loss:
+
+实验代码：
+
+```
+loss = mse(out, y)
+```
+
+That's all for the forward pass—let's now look at the gradients.
