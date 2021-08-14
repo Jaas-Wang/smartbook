@@ -1070,7 +1070,7 @@ l2.mean(),l2.std()
 
 And we're back to square one: the mean of our activations has gone to 0.4 (which is understandable since we removed the negatives) and the std went down to 0.58. So like before, after a few layers we will probably wind up with zeros:
 
-
+我们返回初始点：我们激活的平均值已经到了 0.4（这是可理解的，因为我们移除和负数）且std降到了 0.58 。所以像以前一样，几个层后我们可能将以零结束：
 
 实验代码：
 
@@ -1090,7 +1090,9 @@ tensor([[0.0000e+00, 1.9689e-08, 4.2820e-08, 0.0000e+00, 0.0000e+00],
         [0.0000e+00, 1.9949e-08, 4.1643e-08, 0.0000e+00, 0.0000e+00]])
 ```
 
-This means our initialization wasn't right. Why? At the time Glorot and Bengio wrote their article, the popular activation in a neural net was the hyperbolic tangent (tanh, which is the one they used), and that initialization doesn't account for our ReLU. Fortunately, someone else has done the math for us and computed the right scale for us to use. In ["Delving Deep into Rectifiers: Surpassing Human-Level Performance"](https://arxiv.org/abs/1502.01852) (which we've seen before—it's the article that introduced the ResNet), Kaiming He et al. show that we should use the following scale instead: $\sqrt{2 / n_{in}}$, where $n_{in}$ is the number of inputs of our model. Let's see what this gives us:
+This means our initialization wasn't right. Why? At the time Glorot and Bengio wrote their article, the popular activation in a neural net was the hyperbolic tangent (tanh, which is the one they used), and that initialization doesn't account for our ReLU. Fortunately, someone else has done the math for us and computed the right scale for us to use. In ["Delving Deep into Rectifiers: Surpassing Human-Level Performance"](https://arxiv.org/abs/1502.01852) (which we've seen before—it's the article that introduced the ResNet), Kaiming He et al. show that we should use the following scale instead: $\sqrt{2 / n_{in}}$, where $n_{in}$​ is the number of inputs of our model. Let's see what this gives us:
+
+这意味着我们的初始不正确。为什么？在泽维尔·格洛洛特和约书亚·本吉奥编写他们的文章时，神经网络流行的激活是双曲正切（双曲正切tanh，是他们使用的一种），且初始化没有考虑ReLU。幸运的是，其他人已经为我们做了数学计算并为我们完成了正确的缩放以供我们使用。在何凯明等人的文章中[“深入研究矫正器：超越人类水平的表现”](https://arxiv.org/abs/1502.01852)（在之前我们已经学习过，它是引入ResNet的文章），提供了我们应该使用这样的缩放作为替代： $\sqrt{2 / n_{in}}$，这里的  $n_{in}$ 是我们模型输入的数量。让我们看看这个方法给我们提供了什么：
 
 实验代码：
 
@@ -1112,6 +1114,8 @@ tensor([[0.2871, 0.0000, 0.0000, 0.0000, 0.0026],
 
 That's better: our numbers aren't all zeroed this time. So let's go back to the definition of our neural net and use this initialization (which is named *Kaiming initialization* or *He initialization*):
 
+这个结果好太多了：这次我们的数值并不都是零。所以返回我们神经网络的定义并使用这个初始化方法（它被命名为*凯明初始化*或*何初始化*）：
+
 实验代码：
 
 ```
@@ -1130,6 +1134,8 @@ b2 = torch.zeros(1)
 
 Let's look at the scale of our activations after going through the first linear layer and ReLU:
 
+让我们一下通过第一个线性层和ReLU后激活的缩放:
+
 实验代码：
 
 ```
@@ -1146,6 +1152,8 @@ l2.mean(), l2.std()
 
 Much better! Now that our weights are properly initialized, we can define our whole model:
 
+好太多了！现在我们的权重正确的初始化了，我们能够定义整个模型了：
+
 实验代码：
 
 ```
@@ -1157,6 +1165,8 @@ def model(x):
 ```
 
 This is the forward pass. Now all that's left to do is to compare our output to the labels we have (random numbers, in this example) with a loss function. In this case, we will use the mean squared error. (It's a toy problem, and this is the easiest loss function to use for what is next, computing the gradients.)
+
+这是一个正向传递。 
 
 The only subtlety is that our outputs and targets don't have exactly the same shape—after going though the model, we get an output like this:
 
