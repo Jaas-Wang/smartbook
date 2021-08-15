@@ -1166,9 +1166,11 @@ def model(x):
 
 This is the forward pass. Now all that's left to do is to compare our output to the labels we have (random numbers, in this example) with a loss function. In this case, we will use the mean squared error. (It's a toy problem, and this is the easiest loss function to use for what is next, computing the gradients.)
 
-这是一个正向传递。 
+这是一个正向传递。 现在剩下的工作是用损失函数把我们的输出与已有的标注做对比（在这个例子中是随机数值）。在这个例子中，我们会使用均方差误差。（这是一个实验问题，且这是用于下一步计算梯度的最容易的损失函数。）
 
 The only subtlety is that our outputs and targets don't have exactly the same shape—after going though the model, we get an output like this:
+
+唯一精妙之处是我们的输出和目标没有完全相同的形状，执行完整个模型后，我们获得了如下的输出：
 
 实验代码：
 
@@ -1185,6 +1187,8 @@ torch.Size([200, 1])
 
 To get rid of this trailing 1 dimension, we use the `squeeze` function:
 
+舍弃这个数为 1 的维度，我们使用`squeeze`函数：
+
 实验代码：
 
 ```
@@ -1193,6 +1197,8 @@ def mse(output, targ): return (output.squeeze(-1) - targ).pow(2).mean()
 
 And now we are ready to compute our loss:
 
+现在我们准备计算损失：
+
 实验代码：
 
 ```
@@ -1200,3 +1206,69 @@ loss = mse(out, y)
 ```
 
 That's all for the forward pass—let's now look at the gradients.
+
+这就是正向传递的全部内容，现在我们看一下梯度。
+
+### Gradients and the Backward Pass
+
+### 梯度和反向传递
+
+We've seen that PyTorch computes all the gradients we need with a magic call to `loss.backward`, but let's explore what's happening behind the scenes.
+
+
+
+Now comes the part where we need to compute the gradients of the loss with respect to all the weights of our model, so all the floats in `w1`, `b1`, `w2`, and `b2`. For this, we will need a bit of math—specifically the *chain rule*. This is the rule of calculus that guides how we can compute the derivative of a composed function:
+
+$$(g \circ f)'(x) = g'(f(x)) f'(x)$$
+
+> j: I find this notation very hard to wrap my head around, so instead I like to think of it as: if `y = g(u)` and `u=f(x)`; then `dy/dx = dy/du * du/dx`. The two notations mean the same thing, so use whatever works for you.
+
+Our loss is a big composition of different functions: mean squared error (which is in turn the composition of a mean and a power of two), the second linear layer, a ReLU and the first linear layer. For instance, if we want the gradients of the loss with respect to `b2` and our loss is defined by:
+
+```
+loss = mse(out,y) = mse(lin(l2, w2, b2), y)
+```
+
+The chain rule tells us that we have:
+
+$$\frac{\text{d} loss}{\text{d} b_{2}} = \frac{\text{d} loss}{\text{d} out} \times \frac{\text{d} out}{\text{d} b_{2}} = \frac{\text{d}}{\text{d} out} mse(out, y) \times \frac{\text{d}}{\text{d} b_{2}} lin(l_{2}, w_{2}, b_{2})$$
+
+To compute the gradients of the loss with respect to 𝑏2b2, we first need the gradients of the loss with respect to our output 𝑜𝑢𝑡out. It's the same if we want the gradients of the loss with respect to 𝑤2w2. Then, to get the gradients of the loss with respect to 𝑏1b1 or 𝑤1w1, we will need the gradients of the loss with respect to 𝑙1l1, which in turn requires the gradients of the loss with respect to 𝑙2l2, which will need the gradients of the loss with respect to 𝑜𝑢𝑡out.
+
+So to compute all the gradients we need for the update, we need to begin from the output of the model and work our way *backward*, one layer after the other—which is why this step is known as *backpropagation*. We can automate it by having each function we implemented (`relu`, `mse`, `lin`) provide its backward step: that is, how to derive the gradients of the loss with respect to the input(s) from the gradients of the loss with respect to the output.
+
+Here we populate those gradients in an attribute of each tensor, a bit like PyTorch does with `.grad`.
+
+The first are the gradients of the loss with respect to the output of our model (which is the input of the loss function). We undo the `squeeze` we did in `mse`, then we use the formula that gives us the derivative of 𝑥2x2: 2𝑥2x. The derivative of the mean is just $1/n$ where $n$ is the number of elements in our input:
+
+In [ ]:
+
+```
+def mse_grad(inp, targ): 
+    # grad of loss with respect to output of previous layer
+    inp.g = 2. * (inp.squeeze() - targ).unsqueeze(-1) / inp.shape[0]
+```
+
+For the gradients of the ReLU and our linear layer, we use the gradients of the loss with respect to the output (in `out.g`) and apply the chain rule to compute the gradients of the loss with respect to the input (in `inp.g`). The chain rule tells us that `inp.g = relu'(inp) * out.g`. The derivative of `relu` is either 0 (when inputs are negative) or 1 (when inputs are positive), so this gives us:
+
+In [ ]:
+
+```
+def relu_grad(inp, out):
+    # grad of relu with respect to input activations
+    inp.g = (inp>0).float() * out.g
+```
+
+The scheme is the same to compute the gradients of the loss with respect to the inputs, weights, and bias in the linear layer:
+
+In [ ]:
+
+```
+def lin_grad(inp, out, w, b):
+    # grad of matmul with respect to input
+    inp.g = out.g @ w.t()
+    w.g = inp.t() @ out.g
+    b.g = out.g.sum(0)
+```
+
+We won't linger on the mathematical formulas that define them since they're not important for our purposes, but do check out Khan Academy's excellent calculus lessons if you're interested in this topic.
