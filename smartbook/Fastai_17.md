@@ -1215,9 +1215,11 @@ That's all for the forward pass—let's now look at the gradients.
 
 We've seen that PyTorch computes all the gradients we need with a magic call to `loss.backward`, but let's explore what's happening behind the scenes.
 
-
+我们已经学习过要想PyTorch计算所有的梯度，我们需要一个神奇的调用`loss.backward`，现在让我们研究一下在这个功能后发生了什么。
 
 Now comes the part where we need to compute the gradients of the loss with respect to all the weights of our model, so all the floats in `w1`, `b1`, `w2`, and `b2`. For this, we will need a bit of math—specifically the *chain rule*. This is the rule of calculus that guides how we can compute the derivative of a composed function:
+
+
 
 $$(g \circ f)'(x) = g'(f(x)) f'(x)$$
 
