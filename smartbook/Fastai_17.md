@@ -1219,11 +1219,15 @@ We've seen that PyTorch computes all the gradients we need with a magic call to 
 
 Now comes the part where we need to compute the gradients of the loss with respect to all the weights of our model, so all the floats in `w1`, `b1`, `w2`, and `b2`. For this, we will need a bit of math—specifically the *chain rule*. This is the rule of calculus that guides how we can compute the derivative of a composed function:
 
-
+现在学习一下需要计算关于我们模型所有权重的损失梯度部分，因此所有的内容都在 `w1`, `b1`, `w2`, 和`b2`中。为此，我们将需要一些计算知识，具体的*链式法则*。这是我们可以如何计算梯度合成函数的导数的微积分规则：
 
 $$(g \circ f)'(x) = g'(f(x)) f'(x)$$
 
 > j: I find this notation very hard to wrap my head around, so instead I like to think of it as: if `y = g(u)` and `u=f(x)`; then `dy/dx = dy/du * du/dx`. The two notations mean the same thing, so use whatever works for you.
+
+$$(g \circ f)'(x) = g'(f(x)) f'(x)$$
+
+> 杰：
 
 Our loss is a big composition of different functions: mean squared error (which is in turn the composition of a mean and a power of two), the second linear layer, a ReLU and the first linear layer. For instance, if we want the gradients of the loss with respect to `b2` and our loss is defined by:
 
