@@ -1227,9 +1227,11 @@ $$(g \circ f)'(x) = g'(f(x)) f'(x)$$
 
 $$(g \circ f)'(x) = g'(f(x)) f'(x)$$
 
-> 杰：
+> 杰：我发现这个表达式理解的难度很好，所以我喜欢这样理解：如果 `y = g(u)` 和 `u=f(x)`；那么 `dy/dx = dy/du * du/dx` 。这两种表达式是相同的意思，所以对你来说无论在什么情况下，用这种方式思考。
 
 Our loss is a big composition of different functions: mean squared error (which is in turn the composition of a mean and a power of two), the second linear layer, a ReLU and the first linear layer. For instance, if we want the gradients of the loss with respect to `b2` and our loss is defined by:
+
+我们的损失是一个不同的大组合函数：均方误差（其依次是平均数和二幂的组合），第二线性层，一个ReLU 及第一线性层。例如，如果我们想求关于`b2`的损失的梯度，那么我们损失的定义是：
 
 ```
 loss = mse(out,y) = mse(lin(l2, w2, b2), y)
