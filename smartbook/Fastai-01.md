@@ -8,7 +8,7 @@ Hello, and thank you for letting us join you on your deep learning journey, howe
 
 ## Deep Learning Is for Everyone
 
-## 所有人的深度学习
+## 大众的深度学习
 
 A lot of people assume that you need all kinds of hard-to-find stuff to get great results with deep learning, but as you'll see in this book, those people are wrong. Here's a few things you absolutely don't need to do world-class deep learning:
 
