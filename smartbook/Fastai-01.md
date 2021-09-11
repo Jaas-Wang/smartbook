@@ -1435,9 +1435,9 @@ learn.fine_tune(4, 1e-2)
 |             2 |               0.136392 |               0.220086 |         0.918200 |        03:16 |
 |             3 |               0.106423 |               0.191092 |         0.931360 |        03:15 |
 
-\#clean If you hit a "CUDA out of memory error" after running this cell, click on the menu Kernel, then restart. Instead of executing the cell above, copy and paste the following code in it:
+\# clean If you hit a "CUDA out of memory error" after running this cell, click on the menu Kernel, then restart. Instead of executing the cell above, copy and paste the following code in it:
 
-#如果在运行这个单元格后你遇到了“CUDA 内存举出错误”，点击内核菜单，然后重启来清楚这个错误。拷贝和粘贴下面的代码，以替代上面单元格的代码。
+\# 如果在运行这个单元格后你遇到了“CUDA 内存举出错误”，点击内核菜单，然后重启来清楚这个错误。拷贝和粘贴下面的代码，以替代上面单元格的代码。
 
 ```
 from fastai.text.all import *
