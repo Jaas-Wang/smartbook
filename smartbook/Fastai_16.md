@@ -342,7 +342,7 @@ learn = get_learner(opt_func=opt_func)
 learn.fit_one_cycle(3, 0.03)
 ```
 
-实验结果：
+实验输出：
 
 | epoch | train_loss | valid_loss | accuracy |  time |
 | ----: | ---------: | ---------: | -------: | ----: |
@@ -930,4 +930,4 @@ Since you understand the foundations of fastai's applications now, be sure to sp
 
 In the next section, we will be looking even further under the covers: we'll explore how the actual forward and backward passes of a neural network are done, and we will see what tools are at our disposal to get better performance. We will then continue with a project that brings together all the material in the book, which we will use to build a tool for interpreting convolutional neural networks. Last but not least, we'll finish by building fastai's `Learner` class from scratch.
 
-在接下来的部分，我们会进一步探索：我们会研究真实神经网络正向和后向传播是如何做的，且我们会学习我们所支配的哪些工具可获得更好的性能。然后我们会做一个项目，把本书中所有的内容汇集在一起，我们这用于创建一个解释卷积神经网络的工具。最后，我们会以从零开始创建fastai的`Learner`类来结束。
+在接下来的部分，我们会进一步探索：我们会研究真实神经网络前向和反向传播是如何做的，且我们会学习我们所支配的哪些工具可获得更好的性能。然后我们会做一个项目，把本书中所有的内容汇集在一起，我们这用于创建一个解释卷积神经网络的工具。最后，我们会以从零开始创建fastai的`Learner`类来结束。
