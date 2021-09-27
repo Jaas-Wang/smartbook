@@ -527,7 +527,7 @@ On the other hand, the `binary_cross_entropy` function, which is just `mnist_los
 
 换个角度说，`binary_cross_entropy`函数只是一个结合了`log`的`mnist_loss`函数，它正好提供了我们所需要的，这要感谢PyTorch神奇的元素操作。每个激活会与每一列的每个目标做对比，因此我们不必做任何事情，就能使得这个函数处理多列。
 
-> 杰：我真正喜欢使用如PyTorch这种具有传播和元素操作的库的原因是，我经常发现我能够编写出对于单一数据项或批次数据项运行同样良好的代码，且不需要改代码。`binary_cross_entropy`是这样一个非常棒的例子。通过使用这些操作，我不必自己编写循环，我们需要对正在处理的数据具有合适的张量阶，且能够依赖PyTorch来做这个循环。
+> 杰：我真正喜欢使用如PyTorch这种具有广播和元素操作的库的原因是，我经常发现我能够编写出对于单一数据项或批次数据项运行同样良好的代码，且不需要改代码。`binary_cross_entropy`是这样一个非常棒的例子。通过使用这些操作，我不必自己编写循环，我们需要对正在处理的数据具有合适的张量阶，且能够依赖PyTorch来做这个循环。
 
 PyTorch already provides this function for us. In fact, it provides a number of versions, with rather confusing names!
 
