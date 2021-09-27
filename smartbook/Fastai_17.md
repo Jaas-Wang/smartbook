@@ -8,7 +8,7 @@ This chapter begins a journey where we will dig deep into the internals of the m
 
 We will build everything from scratch, only using basic indexing into a tensor. We'll write a neural net from the ground up, then implement backpropagation manually, so we know exactly what's happening in PyTorch when we call `loss.backward`. We'll also see how to extend PyTorch with custom *autograd* functions that allow us to specify our own forward and backward computations.
 
-我们将从零开始创建所有内容，只使用基础索引到张量中。我们将从基础开始编写一个神经网络，然后手动实现反向传播，所以当我们调用`loss.backward`时就能够准确的知道PyTorch里发生了什么。我们也会学习扩展PyTorch，用自定义*autograd*函数允许我们详细说明我们自己的正向和反向计算。
+我们将从零开始创建所有内容，只使用基础索引到张量中。我们将从基础开始编写一个神经网络，然后手动实现反向传播，所以当我们调用`loss.backward`时就能够准确的知道PyTorch里发生了什么。我们也会学习扩展PyTorch，用自定义*autograd*函数允许我们详细说明我们自己的前向和反向计算。
 
 ## Building a Neural Net Layer from Scratch
 
@@ -173,11 +173,11 @@ As we can see, in Python three nested loops is a very bad idea! Python is a slow
 
 Where does this difference come from? PyTorch didn't write its matrix multiplication in Python, but rather in C++ to make it fast. In general, whenever we do computations on tensors we will need to *vectorize* them so that we can take advantage of the speed of PyTorch, usually by using two techniques: elementwise arithmetic and broadcasting.
 
-这个区别来自什么地方？PyTorch不是用Python编写的矩阵乘法，而是C++以使它很快。无论什么时候我们在张量上做计算，我们将需要*向量化*它们，所以我们可以采纳PyTorch的速度优势，通常使用两个技术：按元素计算和广播。
+这个区别来自什么地方？PyTorch不是用Python编写的矩阵乘法，而是C++以使它很快。无论什么时候我们在张量上做计算，我们将需要*向量化*它们，所以我们可以采纳PyTorch的速度优势，通常使用两个技术：元素计算和广播。
 
 ### Elementwise Arithmetic
 
-### 按元素计算
+### 元素计算
 
 All the basic operators (`+`, `-`, `*`, `/`, `>`, `<`, `==`) can be applied elementwise. That means if we write `a+b` for two tensors `a` and `b` that have the same shape, we will get a tensor composed of the sums the elements of `a` and `b`:
 
@@ -285,7 +285,7 @@ m*n
 
 With elementwise arithmetic, we can remove one of our three nested loops: we can multiply the tensors that correspond to the `i`-th row of `a` and the `j`-th column of `b` before summing all the elements, which will speed things up because the inner loop will now be executed by PyTorch at C speed.
 
-用按元素计算，我们能够移除三个嵌套循环的一个：我们能够在所有元素加总之前，乘以`a`的第`i`行和`b`的第`j`列的相应张量，它会提升速度，因为内部循环现在会通过PyTorch以 C 的速度执行。
+用元素计算，我们能够移除三个嵌套循环的一个：我们能够在所有元素加总之前，乘以`a`的第`i`行和`b`的第`j`列的相应张量，它会提升速度，因为内部循环现在会通过PyTorch以 C 的速度执行。
 
 To access one column or row, we can simply write `a[i,:]` or `b[:,j]`. The `:` means take everything in that dimension. We could restrict this and take only a slice of that particular dimension by passing a range, like `1:5`, instead of just `:`. In that case, we would take the elements in columns or rows 1 to 4 (the second number is noninclusive).
 
@@ -320,27 +320,27 @@ def matmul(a,b):
 
 We're already ~700 times faster, just by removing that inner `for` loop! And that's just the beginning—with broadcasting we can remove another loop and get an even more important speed up.
 
-只是移除了内部的`for`循环，我们就已经快了大约 ~700倍！这只是个开始，利用传播我们能够移除其它的循环并取得更重要的加速。
+只是移除了内部的`for`循环，我们就已经快了大约 ~700倍！这只是个开始，利用广播我们能够移除其它的循环并取得更重要的加速。
 
 ### Broadcasting
 
-### 传播
+### 广播
 
 As we discussed in <chapter_mnist_basics>, broadcasting is a term introduced by the [NumPy library](https://docs.scipy.org/doc/) that describes how tensors of different ranks are treated during arithmetic operations. For instance, it's obvious there is no way to add a 3×3 matrix with a 4×5 matrix, but what if we want to add one scalar (which can be represented as a 1×1 tensor) with a matrix? Or a vector of size 3 with a 3×4 matrix? In both cases, we can find a way to make sense of this operation.
 
-我们在<第四章：mnist基础>中讨论过传播，它是由[NumPy库](https://docs.scipy.org/doc/)引入的，描述了在计算运算期间如何处理不同阶张量。例如，很明显把 3×3 矩阵和 4×5 矩阵进行相加，但是如果我们希望用一个矩阵与一个标量（可以表示为一个 1×1 张量）相加呢？或用 3×4 矩阵与大小为 3 的向量相加？在这两个案例中，我们能够寻找一个方法来搞清楚这个运算。
+我们在<第四章：mnist基础>中讨论过广播，它是由[NumPy库](https://docs.scipy.org/doc/)引入的，描述了在计算运算期间如何处理不同阶张量。例如，很明显把 3×3 矩阵和 4×5 矩阵进行相加，但是如果我们希望用一个矩阵与一个标量（可以表示为一个 1×1 张量）相加呢？或用 3×4 矩阵与大小为 3 的向量相加？在这两个案例中，我们能够寻找一个方法来搞清楚这个运算。
 
 Broadcasting gives specific rules to codify when shapes are compatible when trying to do an elementwise operation, and how the tensor of the smaller shape is expanded to match the tensor of the bigger shape. It's essential to master those rules if you want to be able to write code that executes quickly. In this section, we'll expand our previous treatment of broadcasting to understand these rules.
 
-当尝试做按元素运算在形状兼容时传播给出具体的规则，及小形状张量如何扩展以匹配大形状张量。如果你想能够编写快速执行的代码，熟悉那些规则是必须的。在本小节，我们把之前处理的传播展开来讲以理解这些规则。
+当尝试做按元素运算在形状兼容时广播给出具体的规则，及小形状张量如何扩展以匹配大形状张量。如果你想能够编写快速执行的代码，熟悉那些规则是必须的。在本小节，我们把之前处理的广播展开来讲以理解这些规则。
 
 #### Broadcasting with a scalar
 
-#### 用标量传播
+#### 用标量广播
 
 Broadcasting with a scalar is the easiest type of broadcasting. When we have a tensor `a` and a scalar, we just imagine a tensor of the same shape as `a` filled with that scalar and perform the operation:
 
-用标题传播是最容易的传播类型。当我们有一个张量`a`和一个标题，我们只是想像一个与`a`相同形状的张量来填满标量并执行运算：
+用标题广播是最容易的广播类型。当我们有一个张量`a`和一个标题，我们只是想像一个与`a`相同形状的张量来填满标量并执行运算：
 
 实验代码：
 
@@ -357,7 +357,7 @@ tensor([ True,  True, False])
 
 How are we able to do this comparison? `0` is being *broadcast* to have the same dimensions as `a`. Note that this is done without creating a tensor full of zeros in memory (that would be very inefficient).
 
-我们如何能够做这个对比？`0`被*传播*以有与`a`相关的维度。注意没有在内存中创建一个全是零的张量做完这个事情（那会非常没有效率）。
+我们如何能够做这个对比？`0`被*广播*以有与`a`相关的维度。注意没有在内存中创建一个全是零的张量做完这个事情（那会非常没有效率）。
 
 This is very useful if you want to normalize your dataset by subtracting the mean (a scalar) from the entire data set (a matrix) and dividing by the standard deviation (another scalar):
 
@@ -380,15 +380,15 @@ tensor([[-1.4652, -1.0989, -0.7326],
 
 What if have different means for each row of the matrix? in that case you will need to broadcast a vector to a matrix.
 
-如果对于矩阵的每行都有不同的平均值呢？在这种情况下我们会需要传播向量到矩阵。
+如果对于矩阵的每行都有不同的平均值呢？在这种情况下我们会需要广播向量到矩阵。
 
 #### Broadcasting a vector to a matrix
 
-#### 传播向量到矩阵
+#### 广播向量到矩阵
 
 We can broadcast a vector to a matrix as follows:
 
-我们能够用下面的代码传播向量到矩阵：
+我们能够用下面的代码广播向量到矩阵：
 
 实验代码：
 
@@ -474,7 +474,7 @@ t.stride(), t.shape
 
 Since `m` is of size 3×3, there are two ways to do broadcasting. The fact it was done on the last dimension is a convention that comes from the rules of broadcasting and has nothing to do with the way we ordered our tensors. If instead we do this, we get the same result:
 
-因为`m`是 3×3 大小，有两个方法来做传播。事实上，在最后一个维度上完成传播是来自传播规则的一个惯例，且用这个方法我们不需要安排张量做任何事情，如果我们用这个方法，我会会获得相同的结果：
+因为`m`是 3×3 大小，有两个方法来做广播。事实上，在最后一个维度上完成广播是来自广播规则的一个惯例，且用这个方法我们不需要安排张量做任何事情，如果我们用这个方法，我会会获得相同的结果：
 
 实验代码：
 
@@ -492,7 +492,7 @@ tensor([[11., 22., 33.],
 
 In fact, it's only possible to broadcast a vector of size `n` with a matrix of size `m` by `n`:
 
-事实上，这一方法只可能用`m × n`大小的矩阵来传播一个`n`大小的向量：
+事实上，这一方法只可能用`m × n`大小的矩阵来广播一个`n`大小的向量：
 
 实验代码：
 
@@ -532,7 +532,7 @@ c+m
 
 If we want to broadcast in the other dimension, we have to change the shape of our vector to make it a 3×1 matrix. This is done with the `unsqueeze` method in PyTorch:
 
-如果我们想在其它维度上做传播，我们必须改变我们向量的形状，使为成为一个 2×1 矩阵。用PyTorch的`unsqueeze`方法作为这个事情：
+如果我们想在其它维度上做广播，我们必须改变我们向量的形状，使为成为一个 2×1 矩阵。用PyTorch的`unsqueeze`方法作为这个事情：
 
 实验代码：
 
@@ -603,7 +603,7 @@ t.stride(), t.shape
 
 With broadcasting, by default if we need to add dimensions, they are added at the beginning. When we were broadcasting before, PyTorch was doing `c.unsqueeze(0)` behind the scenes:
 
-利用传播，如果我们需要以默认的方式添加维度，它们会在开始就添加。当我们进行传播之前，PyTorchd在后台就做了`c.unsqueeze(0)`：
+利用广播，如果我们需要以默认的方式添加维度，它们会在开始就添加。当我们进行广播之前，PyTorchd在后台就做了`c.unsqueeze(0)`：
 
 实验代码：
 
@@ -652,7 +652,7 @@ c[None].shape,c[...,None].shape
 
 With this, we can remove another `for` loop in our matrix multiplication function. Now, instead of multiplying `a[i]` with `b[:,j]`, we can multiply `a[i]` with the whole matrix `b` using broadcasting, then sum the results:
 
-利用这个方法，我们可以在我们的矩阵乘法函数中移除另外一个`for`循环。现在，不是用`a[i]`和`b[:,j]`相乘，相替代的我们可以使用传播让`a[i]`与整个矩阵`b`相乘，然后合计结果：
+利用这个方法，我们可以在我们的矩阵乘法函数中移除另外一个`for`循环。现在，不是用`a[i]`和`b[:,j]`相乘，相替代的我们可以使用广播让`a[i]`与整个矩阵`b`相乘，然后合计结果：
 
 实验代码：
 
@@ -680,11 +680,11 @@ def matmul(a,b):
 
 We're now 3,700 times faster than our first implementation! Before we move on, let's discuss the rules of broadcasting in a little more detail.
 
-现在我们比第一次实现的代码快了3,700倍！在我们继续向后学习前，让我们更详细一点来讨论传播规则。
+现在我们比第一次实现的代码快了3,700倍！在我们继续向后学习前，让我们更详细一点来讨论广播规则。
 
 #### Broadcasting rules
 
-#### 传播规则
+#### 广播规则
 
 When operating on two tensors, PyTorch compares their shapes elementwise. It starts with the *trailing dimensions* and works its way backward, adding 1 when it meets empty dimensions. Two dimensions are *compatible* when one of the following is true:
 
@@ -694,11 +694,11 @@ When operating on two tensors, PyTorch compares their shapes elementwise. It sta
 当在两个张量上运算时，PyTorch会按元素对比它们的形状。它从*尾部维度*开始且它的处理方式是反向的，当它遇到空维度会加 1 。当满足下面条件之一时两个维度就是兼任的：
 
 - 它们是相等的。
-- 它们其中一个是 1 ，在这样的情况下维度被传播以使它与另一个相同。
+- 它们其中一个是 1 ，在这样的情况下维度被广播以使它与另一个相同。
 
 Arrays do not need to have the same number of dimensions. For example, if you have a 256×256×3 array of RGB values, and you want to scale each color in the image by a different value, you can multiply the image by a one-dimensional array with three values. Lining up the sizes of the trailing axes of these arrays according to the broadcast rules, shows that they are compatible:
 
-数组不需要有相同数量的维度。例如，如果我有一个RGB值的 256×256×3 数组，你想需要用不同的值来缩放图像中的每个颜色，你可以图像乘以有三个值的一维数组。根据传播规则排列这些数组的尾部坐标轴的大小，显示它们是兼容的：
+数组不需要有相同数量的维度。例如，如果我有一个RGB值的 256×256×3 数组，你想需要用不同的值来缩放图像中的每个颜色，你可以图像乘以有三个值的一维数组。根据广播规则排列这些数组的尾部坐标轴的大小，显示它们是兼容的：
 
 ```
 Image  (3d tensor): 256 x 256 x 3
@@ -718,7 +718,7 @@ Error
 
 In our earlier examples we had with a 3×3 matrix and a vector of size 3, broadcasting was done on the rows:
 
-在我们之前的例子中，我们有一个 3×3 矩阵和一个大小为 3 的向量，传播在行上完成了：
+在我们之前的例子中，我们有一个 3×3 矩阵和一个大小为 3 的向量，广播在行上完成了：
 
 ```
 Matrix (2d tensor):   3 x 3
@@ -816,15 +816,15 @@ As you can see, not only is it practical, but it's *very* fast. `einsum` is ofte
 
 Now that we know how to implement a matrix multiplication from scratch, we are ready to build our neural net—specifically its forward and backward passes—using just matrix multiplications.
 
-现在我们知道了如果从零开始实现一个矩阵乘法，我们准备只使用矩阵乘法创建我们的神经网络，特别是它的正向和反向传递。
+现在我们知道了如果从零开始实现一个矩阵乘法，我们准备只使用矩阵乘法创建我们的神经网络，特别是它的前向和反向传递。
 
 ## The Forward and Backward Passes
 
-## 正向和反向传递
+## 前向和反向传递
 
 As we saw in <chapter_mnist_basics>, to train a model, we will need to compute all the gradients of a given loss with respect to its parameters, which is known as the *backward pass*. The *forward pass* is where we compute the output of the model on a given input, based on the matrix products. As we define our first neural net, we will also delve into the problem of properly initializing the weights, which is crucial for making training start properly.
 
-如我们在<第四章：mnist基础>中学的，训练一个模型，我们将需要计算给损失对于它的参数的所以梯度，它被称为*反向传递*。*正向传递*是基于矩阵成绩计算给定输出情况下模型的输出，如我们定义的第一个神经网络，我们也会深入研究正确的初始化权重的问题，对于使得训练正确的开始它是至关重要的。
+如我们在<第四章：mnist基础>中学的，训练一个模型，我们将需要计算给损失对于它的参数的所以梯度，它被称为*反向传递*。*前向传递*是基于矩阵成绩计算给定输出情况下模型的输出，如我们定义的第一个神经网络，我们也会深入研究正确的初始化权重的问题，对于使得训练正确的开始它是至关重要的。
 
 ### Defining and Initializing a Layer
 
@@ -1166,7 +1166,7 @@ def model(x):
 
 This is the forward pass. Now all that's left to do is to compare our output to the labels we have (random numbers, in this example) with a loss function. In this case, we will use the mean squared error. (It's a toy problem, and this is the easiest loss function to use for what is next, computing the gradients.)
 
-这是一个正向传递。 现在剩下的工作是用损失函数把我们的输出与已有的标注做对比（在这个例子中是随机数值）。在这个例子中，我们会使用均方差误差。（这是一个实验问题，且这是用于下一步计算梯度的最容易的损失函数。）
+这是一个前向传递。 现在剩下的工作是用损失函数把我们的输出与已有的标注做对比（在这个例子中是随机数值）。在这个例子中，我们会使用均方差误差。（这是一个实验问题，且这是用于下一步计算梯度的最容易的损失函数。）
 
 The only subtlety is that our outputs and targets don't have exactly the same shape—after going though the model, we get an output like this:
 
@@ -1207,7 +1207,7 @@ loss = mse(out, y)
 
 That's all for the forward pass—let's now look at the gradients.
 
-这就是正向传递的全部内容，现在我们看一下梯度。
+这就是前向传递的全部内容，现在我们看一下梯度。
 
 ### Gradients and the Backward Pass
 
@@ -1251,7 +1251,7 @@ To compute the gradients of the loss with respect to $b_{2}$, we first need the 
 
 So to compute all the gradients we need for the update, we need to begin from the output of the model and work our way *backward*, one layer after the other—which is why this step is known as *backpropagation*. We can automate it by having each function we implemented (`relu`, `mse`, `lin`) provide its backward step: that is, how to derive the gradients of the loss with respect to the input(s) from the gradients of the loss with respect to the output.
 
-所以计算我们需要更新的所有梯度，我们需要一层接一层的从模型的输出开始并*逆向*处理，这就是为什么这一步被称为*反向传播*。我们可以通过实现的 (`relu`, `mse`, `lin`) 提供给它反向步骤的每个函数自动的实现它：即，如何驱动从关于输出的损失的梯度到输入的损失的梯度。
+所以计算我们需要更新的所有梯度，我们需要一层接一层的从模型的输出开始并*逆向*处理，这就是为什么这一步被称为*反向广播*。我们可以通过实现的 (`relu`, `mse`, `lin`) 提供给它反向步骤的每个函数自动的实现它：即，如何驱动从关于输出的损失的梯度到输入的损失的梯度。
 
 Here we populate those gradients in an attribute of each tensor, a bit like PyTorch does with `.grad`.
 
@@ -1298,3 +1298,479 @@ def lin_grad(inp, out, w, b):
 We won't linger on the mathematical formulas that define them since they're not important for our purposes, but do check out Khan Academy's excellent calculus lessons if you're interested in this topic.
 
 我们逗留在数学公式的定义上，因为他们对于我们的学习目标是不重要的，但是如果你对这个话题有兴趣，可以访问可汗学院优秀的微积分课程。
+
+### Sidebar: SymPy
+
+### 侧边栏：SymPy
+
+SymPy is a library for symbolic computation that is extremely useful library when working with calculus. Per the [documentation](https://docs.sympy.org/latest/tutorial/intro.html):
+
+> : Symbolic computation deals with the computation of mathematical objects symbolically. This means that the mathematical objects are represented exactly, not approximately, and mathematical expressions with unevaluated variables are left in symbolic form.
+
+SymPy 是一个符号计算库，当用于微积分时它是极其有用的库，根据[文档](https://docs.sympy.org/latest/tutorial/intro.html):
+
+> ：符号计算处理数学目标符号的计算。这表示数据目标被准确的描述，不是近似的，且有未评估变量的数据表达是在左侧以符号的形式表示。
+
+To do symbolic computation, we first define a *symbol*, and then do a computation, like so:
+
+对于做符号计算，我们首先定义一个 *符号*，然后做计算，如下：
+
+实验代码:
+
+```
+from sympy import symbols,diff
+sx,sy = symbols('sx sy')
+diff(sx**2, sx)
+```
+
+实验输出: $2sx$
+
+Here, SymPy has taken the derivative of `x**2` for us! It can take the derivative of complicated compound expressions, simplify and factor equations, and much more. There's really not much reason for anyone to do calculus manually nowadays—for calculating gradients, PyTorch does it for us, and for showing the equations, SymPy does it for us!
+
+在这里，SymPy 为我们求了 `x**2` 的导数！它能够求复杂构成表达式、简化的、因子议程等的导数。现如今每个人真的没有太多理由手动的来计算微积分。对于计算梯度，PyTorch 为我们进行计算，SymPy 为我们做展示方程！
+
+### End sidebar
+
+### 侧边栏结束
+
+Once we have have defined those functions, we can use them to write the backward pass. Since each gradient is automatically populated in the right tensor, we don't need to store the results of those `_grad` functions anywhere—we just need to execute them in the reverse order of the forward pass, to make sure that in each function `out.g` exists:
+
+一旦我们定义了那些函数，我们就能够使用它们来编写反向传递。因为每个梯度是自动的填充在正确的张量中，无论何处我们都不需要存贮那些`_grad`函数的结果，我们只需要以前向传递的相反顺序执行他们，确保在每个函数中 `out.g`是存在的：
+
+实验代码:
+
+```
+def forward_and_backward(inp, targ):
+    # forward pass:
+    l1 = inp @ w1 + b1
+    l2 = relu(l1)
+    out = l2 @ w2 + b2
+    # we don't actually need the loss in backward!
+    loss = mse(out, targ)
+    
+    # backward pass:
+    mse_grad(out, targ)
+    lin_grad(l2, out, w2, b2)
+    relu_grad(l1, l2)
+    lin_grad(inp, l1, w1, b1)
+```
+
+And now we can access the gradients of our model parameters in `w1.g`, `b1.g`, `w2.g`, and `b2.g`.
+
+现在我们能够访问 `w1.g`，`b1.g`，`w2.g` 和 `b2.g`中我们模型参数的梯度了。
+
+We have successfully defined our model—now let's make it a bit more like a PyTorch module.
+
+我们成功定义了我们的模型，现在让我们让它更像一点PyTorch 模型吧。
+
+### Refactoring the Model
+
+### 重构模型
+
+The three functions we used have two associated functions: a forward pass and a backward pass. Instead of writing them separately, we can create a class to wrap them together. That class can also store the inputs and outputs for the backward pass. This way, we will just have to call `backward`:
+
+我们使用的三个函数有两个是有关联的：一个前向传递，一个是反向传递。相对于分别编写他们，我们能够创建一个类把他们合并在一起。这个类也能够存贮反向传递的输入和输出。这样，我们只需要调用 `backward` 了：
+
+实验代码:
+
+```
+class Relu():
+    def __call__(self, inp):
+        self.inp = inp
+        self.out = inp.clamp_min(0.)
+        return self.out
+    
+    def backward(self): self.inp.g = (self.inp>0).float() * self.out.g
+```
+
+`__call__` is a magic name in Python that will make our class callable. This is what will be executed when we type `y = Relu()(x)`. We can do the same for our linear layer and the MSE loss:
+
+`__call__`在 Python 中是一个神奇的命名，这会使得我们的类可调用。当我们键入 `y = Relu()(x)` 时它会执行此内容。我们能够对我们的线性层和 MSE 损失做同样的操作：
+
+实验代码:
+
+```
+class Lin():
+    def __init__(self, w, b): self.w,self.b = w,b
+        
+    def __call__(self, inp):
+        self.inp = inp
+        self.out = inp@self.w + self.b
+        return self.out
+    
+    def backward(self):
+        self.inp.g = self.out.g @ self.w.t()
+        self.w.g = self.inp.t() @ self.out.g
+        self.b.g = self.out.g.sum(0)
+```
+
+实验代码:
+
+```
+class Mse():
+    def __call__(self, inp, targ):
+        self.inp = inp
+        self.targ = targ
+        self.out = (inp.squeeze() - targ).pow(2).mean()
+        return self.out
+    
+    def backward(self):
+        x = (self.inp.squeeze()-self.targ).unsqueeze(-1)
+        self.inp.g = 2.*x/self.targ.shape[0]
+```
+
+Then we can put everything in a model that we initiate with our tensors `w1`, `b1`, `w2`, `b2`:
+
+我们能够在模型中放置任何内容，用我们张量 `w1`， `b1`， `w2`， `b2`我们做初始化：
+
+实验代码:
+
+```
+class Model():
+    def __init__(self, w1, b1, w2, b2):
+        self.layers = [Lin(w1,b1), Relu(), Lin(w2,b2)]
+        self.loss = Mse()
+        
+    def __call__(self, x, targ):
+        for l in self.layers: x = l(x)
+        return self.loss(x, targ)
+    
+    def backward(self):
+        self.loss.backward()
+        for l in reversed(self.layers): l.backward()
+```
+
+What is really nice about this refactoring and registering things as layers of our model is that the forward and backward passes are now really easy to write. If we want to instantiate our model, we just need to write:
+
+这个重构的真正的好处是，注册内容作为我们模型的层是现在让前向和反向传递真正的容易编写。如果我们希望实例化我们的模型，我们只需要这样写：
+
+实验代码:
+
+```
+model = Model(w1, b1, w2, b2)
+```
+
+The forward pass can then be executed with:
+
+然后前向传递能够这样被执行：
+
+实验代码:
+
+```
+loss = model(x, y)
+```
+
+And the backward pass with:
+
+和反向传递：
+
+实验代码:
+
+```
+model.backward()
+```
+
+### Going to PyTorch
+
+### 用 PyTorch 实现
+
+The `Lin`, `Mse` and `Relu` classes we wrote have a lot in common, so we could make them all inherit from the same base class:
+
+我们编写的`Lin`, `Mse` 和 `Relu` 类有一些共同点，所以我们能够使得他们从相同的基类继承：
+
+实验代码:
+
+```
+class LayerFunction():
+    def __call__(self, *args):
+        self.args = args
+        self.out = self.forward(*args)
+        return self.out
+    
+    def forward(self):  raise Exception('not implemented')
+    def bwd(self):      raise Exception('not implemented')
+    def backward(self): self.bwd(self.out, *self.args)
+```
+
+Then we just need to implement `forward` and `bwd` in each of our subclasses:
+
+然后我们只需要在我们的每个子类中实现 `forward` 和 `bwd`：
+
+实验代码:
+
+```
+class Relu(LayerFunction):
+    def forward(self, inp): return inp.clamp_min(0.)
+    def bwd(self, out, inp): inp.g = (inp>0).float() * out.g
+```
+
+实验代码:
+
+```
+class Lin(LayerFunction):
+    def __init__(self, w, b): self.w,self.b = w,b
+        
+    def forward(self, inp): return inp@self.w + self.b
+    
+    def bwd(self, out, inp):
+        inp.g = out.g @ self.w.t()
+        self.w.g = inp.t() @ self.out.g
+        self.b.g = out.g.sum(0)
+```
+
+实验代码:
+
+```
+class Mse(LayerFunction):
+    def forward (self, inp, targ): return (inp.squeeze() - targ).pow(2).mean()
+    def bwd(self, out, inp, targ): 
+        inp.g = 2*(inp.squeeze()-targ).unsqueeze(-1) / targ.shape[0]
+```
+
+The rest of our model can be the same as before. This is getting closer and closer to what PyTorch does. Each basic function we need to differentiate is written as a `torch.autograd.Function` object that has a `forward` and a `backward` method. PyTorch will then keep trace of any computation we do to be able to properly run the backward pass, unless we set the `requires_grad` attribute of our tensors to `False`.
+
+剩下的我们模型与之前是相同的。这越来越接近 PyTorch 做的内容。我们需要差异化每个基础函，编写为 `torch.autograd.Function` 目标，它有 一个`forward` 和 一个 `backward` 方法。其后PyTorch 会对我们做的任何计算保持记录，以能够合适的运行反向传递，除非我们设置我们张量的 `requires_grad` 属性为 `False`。
+
+Writing one of these is (almost) as easy as writing our original classes. The difference is that we choose what to save and what to put in a context variable (so that we make sure we don't save anything we don't need), and we return the gradients in the `backward` pass. It's very rare to have to write your own `Function` but if you ever need something exotic or want to mess with the gradients of a regular function, here is how to write one:
+
+编写这样的函数与我们所编写的最初的类是（差不多）是一样的。差异是我们选择保存什么和放置什么环境变量（这样我们确保我们保存需要的内容），并且我们返回在 `backward` 传递中的梯度。这是非常罕见的必须编写你自己的`函数`，但是如果你需要一些奇异的内容或想去把一个常规函数的梯度弄乱，下面展示了如何编写一个函数：
+
+实验代码:
+
+```
+from torch.autograd import Function
+
+class MyRelu(Function):
+    @staticmethod
+    def forward(ctx, i):
+        result = i.clamp_min(0.)
+        ctx.save_for_backward(i)
+        return result
+    
+    @staticmethod
+    def backward(ctx, grad_output):
+        i, = ctx.saved_tensors
+        return grad_output * (i>0).float()
+```
+
+The structure used to build a more complex model that takes advantage of those `Function`s is a `torch.nn.Module`. This is the base structure for all models, and all the neural nets you have seen up until now inherited from that class. It mostly helps to register all the trainable parameters, which as we've seen can be used in the training loop.
+
+利用那些函数构建一个更复杂模型的架构是`torch.nn.Module`。这是适用所有模型的基础架构，我们迄今为止看到的所有的神经网络都来自这个类。它主要用于注册所有的可训练参数，如我们所见能够用于训练循环。
+
+To implement an `nn.Module` you just need to:
+
+- Make sure the superclass `__init__` is called first when you initialize it.
+- Define any parameters of the model as attributes with `nn.Parameter`.
+- Define a `forward` function that returns the output of your model.
+
+实现一个`nn.Module`你只需要：
+
+- 当我们初始化的时候，确保子类`__init__` 首先被调用。
+- 用 `nn.Parameter` 定义模型的任意参数作为属性。
+- 定义一个 `forward` 函数，返回你的模型的输出。
+
+As an example, here is the linear layer from scratch:
+
+作为一个实例，下面是从头定义的线性层：
+
+实验代码:
+
+```
+import torch.nn as nn
+
+class LinearLayer(nn.Module):
+    def __init__(self, n_in, n_out):
+        super().__init__()
+        self.weight = nn.Parameter(torch.randn(n_out, n_in) * sqrt(2/n_in))
+        self.bias = nn.Parameter(torch.zeros(n_out))
+    
+    def forward(self, x): return x @ self.weight.t() + self.bias
+```
+
+As you see, this class automatically keeps track of what parameters have been defined:
+
+如你所见，这个类自动的记录已经被定义的参数：
+
+实验代码:
+
+```
+lin = LinearLayer(10,2)
+p1,p2 = lin.parameters()
+p1.shape,p2.shape
+```
+
+实验输出:
+
+```
+(torch.Size([2, 10]), torch.Size([2]))
+```
+
+It is thanks to this feature of `nn.Module` that we can just say `opt.step()` and have an optimizer loop through the parameters and update each one.
+
+这要感谢于 `nn.Module` 的这个特性，我们可以只声明 `opt.step()`，就有了一个贯穿参数的优化器循环，并对每一个参数进行更新。
+
+Note that in PyTorch, the weights are stored as an `n_out x n_in` matrix, which is why we have the transpose in the forward pass.
+
+在 PyTorch 中要注意，权重被存贮为一个 `n_out x n_in` 矩阵，这就是为什么在反向传递中我们有转置：
+
+By using the linear layer from PyTorch (which uses the Kaiming initialization as well), the model we have been building up during this chapter can be written like this:
+
+通过使用来自 PyTorch 中的线性层（它同样使用了  Kaiming 初始化），在本章期间我们创建起来的模型，能够编写以下的样子：
+
+实验代码:
+
+```
+class Model(nn.Module):
+    def __init__(self, n_in, nh, n_out):
+        super().__init__()
+        self.layers = nn.Sequential(
+            nn.Linear(n_in,nh), nn.ReLU(), nn.Linear(nh,n_out))
+        self.loss = mse
+        
+    def forward(self, x, targ): return self.loss(self.layers(x).squeeze(), targ)
+```
+
+fastai provides its own variant of `Module` that is identical to `nn.Module`, but doesn't require you to call `super().__init__()` (it does that for you automatically):
+
+fastai 提供了它自己的 `Module` 变种，它与 `nn.Module` 是相同的，但是不需要你调用 `super().__init__()` （它为你自动的做这个事情）：
+
+实验代码:
+
+```
+class Model(Module):
+    def __init__(self, n_in, nh, n_out):
+        self.layers = nn.Sequential(
+            nn.Linear(n_in,nh), nn.ReLU(), nn.Linear(nh,n_out))
+        self.loss = mse
+        
+    def forward(self, x, targ): return self.loss(self.layers(x).squeeze(), targ)
+```
+
+In the last chapter, we will start from such a model and see how to build a training loop from scratch and refactor it to what we've been using in previous chapters.
+
+在最后一章，我们会从这样的一个模型开始，并学习如何从头开始创建一个训练循环，并把它重构为我们之前章节所使用的内容。
+
+## Conclusion
+
+## 总结
+
+In this chapter we explored the foundations of deep learning, beginning with matrix multiplication and moving on to implementing the forward and backward passes of a neural net from scratch. We then refactored our code to show how PyTorch works beneath the hood.
+
+在本章节我们探索了深度学习的基础，从矩阵乘法开始，一直到从头开始实现一个神经网络的反向和前向传递。然后我们重构我们的代码来展示PyTorch 在后台如何处理的。
+
+Here are a few things to remember:
+
+- A neural net is basically a bunch of matrix multiplications with nonlinearities in between.
+- Python is slow, so to write fast code we have to vectorize it and take advantage of techniques such as elementwise arithmetic and broadcasting.
+- Two tensors are broadcastable if the dimensions starting from the end and going backward match (if they are the same, or one of them is 1). To make tensors broadcastable, we may need to add dimensions of size 1 with `unsqueeze` or a `None` index.
+- Properly initializing a neural net is crucial to get training started. Kaiming initialization should be used when we have ReLU nonlinearities.
+- The backward pass is the chain rule applied multiple times, computing the gradients from the output of our model and going back, one layer at a time.
+- When subclassing `nn.Module` (if not using fastai's `Module`) we have to call the superclass `__init__` method in our `__init__` method and we have to define a `forward` function that takes an input and returns the desired result.
+
+这里有一些内容需要记住：
+
+- 神经网络基本上是一堆矩阵乘法在中间带有非线性。
+- Python 运行慢，所以要写出快的代码，我们必须矢量化它并利用如元素算术和广播方法。
+- 两个张量如果从末尾开始并反向匹配（如果他们是相同，或他们其中一个是  1），可广播两个张量。
+- 合适的初始化一个神经网络对于训练的开始是至关重要的。当我们有 ReLU 非线性时，应该使用Kaiming 初始化。
+- 反向传递是多次应用链式法则，从我们模型的输出开始计算梯度并向回走，一次一层。
+- 当子类 `nn.Module`（如果不使用 fastai 的 Module）时，在我们的`__init__`方法中我们必须调用子类的`__init__`方法，并我们必须定义一个需要一个输入和返回期望结果的 `forward` 函数。
+
+## Questionnaire
+
+## 练习题
+
+1. Write the Python code to implement a single neuron.
+2. 编写 Python 代码来来实现一个单神经元。
+3. Write the Python code to implement ReLU.
+4. 编写 Python 代码来实现 ReLU。
+5. Write the Python code for a dense layer in terms of matrix multiplication.
+6. 依据矩阵乘法为稠密层编写 Python 代码。
+7. Write the Python code for a dense layer in plain Python (that is, with list comprehensions and functionality built into Python).
+8. 用纯 Python 为稠密层编写 Python 代码（即，用列表解释和内置的 Python 功能）。
+9. What is the "hidden size" of a layer?
+10. 什么是层的“隐含大小”？
+11. What does the `t` method do in PyTorch?
+12. 在 PyTorch 中 `t` 方法做了什么？
+13. Why is matrix multiplication written in plain Python very slow?
+14. 为什么用纯 Python编写的矩阵乘法非常慢？
+15. In `matmul`, why is `ac==br`?
+16. 在 `matmul` 中，为什么 `ac==br` ？
+17. In Jupyter Notebook, how do you measure the time taken for a single cell to execute?
+18. 在 Jupyter Notebook 中，我们如何测量单一单元格执行所花费的时间？
+19. What is "elementwise arithmetic"?
+20. 什么是“元素计算”？
+21. Write the PyTorch code to test whether every element of `a` is greater than the corresponding element of `b`.
+22. 编写 PyTorch 代码来测试 `a` 的每个元素是否比 `b` 相应的元素更大。
+23. What is a rank-0 tensor? How do you convert it to a plain Python data type?
+24. 什么是 0 阶 张量？你如何转换它为纯 Python 数据类型？
+25. What does this return, and why? `tensor([1,2]) + tensor([1])`
+26. 这个返回做了什么，为什么？`tensor([1,2]) + tensor([1])`
+27. What does this return, and why? `tensor([1,2]) + tensor([1,2,3])`
+28. 这个返回做了什么，为什么？`tensor([1,2]) + tensor([1,2,3])`
+29. How does elementwise arithmetic help us speed up `matmul`?
+30. 元素计算如何帮助我们加速了 `matmul` ？
+31. What are the broadcasting rules?
+32. 广播的规则是什么？
+33. What is `expand_as`? Show an example of how it can be used to match the results of broadcasting.
+34. 什么是 `expand_as`？举一个例子，它如何能够用来匹配广播的结果。
+35. How does `unsqueeze` help us to solve certain broadcasting problems?
+36. `unsqueeze`帮助我们如何解决某些广播问题？
+37. How can we use indexing to do the same operation as `unsqueeze`?
+38. 我们如何使用索引来做 `unsqueeze` 同样的操作？
+39. How do we show the actual contents of the memory used for a tensor?
+40. 我们如何展示用于一个张量的内存的准确内容？
+41. When adding a vector of size 3 to a matrix of size 3×3, are the elements of the vector added to each row or each column of the matrix? (Be sure to check your answer by running this code in a notebook.)
+42. 当把一个大小为 3 的向量加到一个大小为 3×3 的矩阵时，微量的元素是加到矩阵的每行，还是每列？（确保在 notebook 中通过运行这个代码来检查你的答案）
+43. Do broadcasting and `expand_as` result in increased memory use? Why or why not?
+44. 做广播和 `expand_as` 会导致内存使用的增加？为什么会或为什么不会？
+45. Implement `matmul` using Einstein summation.
+46. 使用爱因斯坦求和约定实现 `matmul` 。
+47. What does a repeated index letter represent on the left-hand side of einsum?
+48. 在爱因斯坦求和左侧的重复索引字母代表什么？
+49. What are the three rules of Einstein summation notation? Why?
+50. 爱因斯坦求和记法的三个规则是什么？为什么？
+51. What are the forward pass and backward pass of a neural network?
+52. 什么是神经网络的前向传递和反向传递？
+53. Why do we need to store some of the activations calculated for intermediate layers in the forward pass?
+54. 在前向传递中我们为什么需要存贮一些中间层激活计算？
+55. What is the downside of having activations with a standard deviation too far away from 1?
+56. 标准偏差距离 1 太远的的激活的缺点是什么？
+57. How can weight initialization help avoid this problem?
+58. 权重初始如何能够帮助避免这个问题？
+59. What is the formula to initialize weights such that we get a standard deviation of 1 for a plain linear layer, and for a linear layer followed by ReLU?
+60. 初始权重的公式是什么，使得我们获得普通线性层 1 的标准差，和 ReLU后 的线性层的标准差？
+61. Why do we sometimes have to use the `squeeze` method in loss functions?
+62. 在损失函数中为什么我们有时必须使用 `squeeze` 方法？
+63. What does the argument to the `squeeze` method do? Why might it be important to include this argument, even though PyTorch does not require it?
+64. 对于`squeeze`方法的论点做了什么？为什么包含这个论点是可能是重要的，即使 PyTorch 并不需要它？
+65. What is the "chain rule"? Show the equation in either of the two forms presented in this chapter.
+66. 什么是“链式法则”？展示本章节中两个展现形式中的任何一个。
+67. Show how to calculate the gradients of `mse(lin(l2, w2, b2), y)` using the chain rule.
+68. 展示使用链式法则如何计算 `mse(lin(l2, w2, b2), y)` 的梯度。
+69. What is the gradient of ReLU? Show it in math or code. (You shouldn't need to commit this to memory—try to figure it using your knowledge of the shape of the function.)
+70. ReLU 的梯度是什么？用数学或代码来展示它。（你应该不需要耗费时间来记忆，利用你的函数形状的知识尝试想出它）
+71. In what order do we need to call the `*_grad` functions in the backward pass? Why?
+72. 在反射传递中我们需要以什么样的顺序调用 `*_grad` 函数？为什么？
+73. What is `__call__`?
+74. `__call__` 是什么？
+75. What methods must we implement when writing a `torch.autograd.Function`?
+76. 当编写一个 `torch.autograd.Function` 我们必须实现什么方法？
+77. Write `nn.Linear` from scratch, and test it works.
+78. 从头开始编写 `nn.Linear`，并测试它的工作原理。
+79. What is the difference between `nn.Module` and fastai's `Module`?
+80. `nn.Module` 和 fastai 的 `Module` 之间的差异是什么？
+
+### Further Research
+
+### 深入研究
+
+1. Implement ReLU as a `torch.autograd.Function` and train a model with it.
+2. If you are mathematically inclined, find out what the gradients of a linear layer are in mathematical notation. Map that to the implementation we saw in this chapter.
+3. Learn about the `unfold` method in PyTorch, and use it along with matrix multiplication to implement your own 2D convolution function. Then train a CNN that uses it.
+4. Implement everything in this chapter using NumPy instead of PyTorch.
+
+1. 实现 ReLU 作为一个`torch.autograd.Function` 并用它训练一个模型。
+2. 如果你是数学方向的，用数学记法找出一个线性层的梯度是什么。映射到我们在本章节中看到的所实现的内容上。
+3. 学习 PyTorch 中 `unfold` 方法，且用它连同矩阵乘法一起实现你自己的 2D 卷积函数。然后用它训练一个 CNN。
+4. 使用 NumPy 而不是 PyTorch 来实现本章节中的所有内容。
