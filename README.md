@@ -41,20 +41,20 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 
 [第九章 表格模型](./smartbook/Fastai-09.md)   [（英文原本：09_tabular.ipynb）](./englishbook/09_tabular.ipynb)（未校对）
 
-[第十章 自然语言处理](./smartbook/Fastai-10.md)   [（英文原本：10_nlp.ipynb）](./englishbook/10_nlp.ipynb)（未校对）
+[第十章 自然语言处理](./smartbook/Fastai_10.md)   [（英文原本：10_nlp.ipynb）](./englishbook/10_nlp.ipynb)（未校对）
 
-[第十一章 数据处理中级API](./smartbook/Fastai-11.md)   [（英文原本：11_midlevel_data.ipynb）](./englishbook/11_midlevel_data.ipynb)（未校对）
+[第十一章 数据处理中级API](./smartbook/Fastai_11.md)   [（英文原本：11_midlevel_data.ipynb）](./englishbook/11_midlevel_data.ipynb)（未校对）
 
-[第十二章 自然语言处理深潜](./smartbook/Fastai-12.md)   [（英文原本：12_nlp_dive.ipynb）](./englishbook/12_nlp_dive.ipynb)（未校对）
+[第十二章 自然语言处理深潜](./smartbook/Fastai_12.md)   [（英文原本：12_nlp_dive.ipynb）](./englishbook/12_nlp_dive.ipynb)（未校对）
 
-[第十三章 卷积](./smartbook/Fastai-13.md)   [（英文原本：13_convolutions.ipynb）](./englishbook/13_convolutions.ipynb)（未校对）
+[第十三章 卷积](./smartbook/Fastai_13.md)   [（英文原本：13_convolutions.ipynb）](./englishbook/13_convolutions.ipynb)（未校对）
 
-[第十四章 残差网络](./smartbook/Fastai-14.md)   [（英文原本：14_resnet.ipynb）](./englishbook/14_resnet.ipynb)（未校对）
+[第十四章 残差网络](./smartbook/Fastai_14.md)   [（英文原本：14_resnet.ipynb）](./englishbook/14_resnet.ipynb)（未校对）
 
-[第十五章 应用架构深入研究](./smartbook/Fastai-15.md)   [（英文原本：15_arch_details.ipynb）](./englishbook/15_arch_details.ipynb)（未校对）
+[第十五章 应用架构深入研究](./smartbook/Fastai_15.md)   [（英文原本：15_arch_details.ipynb）](./englishbook/15_arch_details.ipynb)（未校对）
 
-[第十六章 加速随机梯度下降](./smartbook/Fastai-16.md)   [（英文原本：16_accel_sgd.ipynb）](./englishbook/16_accel_sgd.ipynb)（未校对）
+[第十六章 加速随机梯度下降](./smartbook/Fastai_16.md)   [（英文原本：16_accel_sgd.ipynb）](./englishbook/16_accel_sgd.ipynb)（未校对）
 
-[第十七章 基础神经网络](./smartbook/Fastai-17.md)   [（英文原本：17_foundations.ipynb）](./englishbook/17_foundations.ipynb)（未校对）
+[第十七章 基础神经网络](./smartbook/Fastai_17.md)   [（英文原本：17_foundations.ipynb）](./englishbook/17_foundations.ipynb)（未校对）
 
-[第十八章 类激活图](./smartbook/Fastai-18.md)   [（英文原本：18_CAM.ipynb）](./englishbook/18_CAM.ipynb)（未校对）
+[第十八章 类激活图](./smartbook/Fastai_18.md)   [（英文原本：18_CAM.ipynb）](./englishbook/18_CAM.ipynb)（未校对）
