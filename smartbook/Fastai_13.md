@@ -913,7 +913,7 @@ Out: <img src="./_v_images/bear_channel.png" alt="bear_channel" style="zoom:100%
 
 We saw what the convolution operation was for one filter on one channel of the image (our examples were done on a square). A convolutional layer will take an image with a certain number of channels (three for the first layer for regular RGB color images) and output an image with a different number of channels. Like our hidden size that represented the numbers of neurons in a linear layer, we can decide to have as many filters as we want, and each of them will be able to specialize, some to detect horizontal edges, others to detect vertical edges and so forth, to give something like we studied in <chapter_production>.
 
-我们看了卷积运算内容是对于图像一个通道上的一个过滤器（我们的例子在一个正方形上做的）。一个卷积层会取包含确定通道数的图像（对于常规的RGB彩色图像第一层是3个通道）和输出一个不同通道数的图像。像我们的隐含尺寸代表了在一个线性层中的神经元数量，我们可以决定有尽可能多的过滤器，且他们每一个会有专攻的能力，他们中的一些来探测水平边缘，另一些探测垂直边缘等等，来提供一些如我们在<章节：产品>中学习的那些内容。
+我们看了卷积运算内容是对于图像一个通道上的一个过滤器（我们的例子在一个正方形上做的）。一个卷积层会取包含确定通道数的图像（对于常规的RGB彩色图像第一层是3个通道）和输出一个不同通道数的图像。像我们的隐含大小代表了在一个线性层中的神经元数量，我们可以决定有尽可能多的过滤器，且他们每一个会有专攻的能力，他们中的一些来探测水平边缘，另一些探测垂直边缘等等，来提供一些如我们在<章节：产品>中学习的那些内容。
 
 In one sliding window, we have a certain number of channels and we need as many filters (we don't use the same kernel for all the channels). So our kernel doesn't have a size of 3 by 3, but `ch_in` (for channels in) is 3 by 3. On each channel, we multiply the elements of our window by the elements of the coresponding filter, then sum the results (as we saw before) and sum over all the filters. In the example given in <rgbconv>, the result of our conv layer on that window is red + green + blue.
 
