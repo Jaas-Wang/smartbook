@@ -10,7 +10,7 @@ Having seen what it looks like to actually train a variety of models in Chapter 
 
 To be exact, we'll discuss the roles of arrays and tensors and of broadcasting, a powerful technique for using them expressively. We'll explain stochastic gradient descent (SGD), the mechanism for learning by updating weights automatically. We'll discuss the choice of a loss function for our basic classification task, and the role of mini-batches. We'll also describe the math that a basic neural network is actually doing. Finally, we'll put all these pieces together.
 
-为了准确，我们会讨论数组、张量和传播的作用，一个强大的技术，使用他们具有深远意义。我们会解释随机剃度下降（SGD），通过自动更新权重来学习的机制。我们会讨论对于基础分类任务的损失函数选择，及最小批次的作用。我们也会描述一个基础神经网络实际在做的数学知识。最后，我们会把所有部分汇总在一起。
+为了准确，我们会讨论数组、张量和广播的作用，一个强大的技术，使用他们具有深远意义。我们会解释随机剃度下降（SGD），通过自动更新权重来学习的机制。我们会讨论对于基础分类任务的损失函数选择，及最小批次的作用。我们也会描述一个基础神经网络实际在做的数学知识。最后，我们会把所有部分汇总在一起。
 
 In future chapters we’ll do deep dives into other applications as well, and see how these concepts and tools generalize. But this chapter is about laying foundation stones. To be frank, that also makes this one of the hardest chapters, because of how these concepts all depend on each other. Like an arch, all the stones need to be in place for the structure to stay up. Also like an arch, once that happens, it's a powerful structure that can support other things. But it requires some patience to assemble.
 
@@ -699,7 +699,7 @@ Out: (tensor(0.9168), tensor(0.9854), tensor(0.9511))
 
 This looks like a pretty good start! We're getting over 90% accuracy on both 3s and 7s, and we've seen how to define a metric conveniently using broadcasting.
 
-这看起来是一个相当好的开始！我们对3和7取得了超过90%的精度，并且我们已经看到如何方便的利用传广播来定义一个指标。
+这看起来是一个相当好的开始！我们对3和7取得了超过90%的精度，并且我们已经看到如何方便的利用广播来定义一个指标。
 
 But let's be honest: 3s and 7s are very different-looking digits. And we're only classifying 2 out of the 10 possible digits so far. So we're going to need to do better!
 
@@ -918,7 +918,7 @@ yt.backward()
 
 The "backward" here refers to *backpropagation*, which is the name given to the process of calculating the derivative of each layer. We'll see how this is done exactly in chapter <chapter_foundations>, when we calculate the gradients of a deep neural net from scratch. This is called the "backward pass" of the network, as opposed to the "forward pass," which is where the activations are calculated. Life would probably be easier if `backward` was just called `calculate_grad`, but deep learning folks really do like to add jargon everywhere they can!
 
-这里的“backward”指的是*反向*，这个名字给出了每导计算导数的过程。当我们从头开始计算一个深度神经网络的梯度时，在<章节：基础>里我们会看到具体如何做的。这被称为网络的“反向传递”，与之相对的是“正向传递”，后者是计算激活的位置。如果`backward`只是被叫做`计算梯度`工作可能会更容易，但做深度学习的这些人真喜欢在任何能加的地方的增加术语！
+这里的“backward”指的是*反向*，这个名字给出了每导计算导数的过程。当我们从头开始计算一个深度神经网络的梯度时，在<章节：基础>里我们会看到具体如何做的。这被称为网络的“反向传递”，与之相对的是“前向传递”，后者是计算激活的位置。如果`backward`只是被叫做`计算梯度`工作可能会更容易，但做深度学习的这些人真喜欢在任何能加的地方的增加术语！
 
 We can now view the gradients by checking the `grad` attribute of our tensor:
 
