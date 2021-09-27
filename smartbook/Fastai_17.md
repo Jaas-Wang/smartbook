@@ -1241,15 +1241,27 @@ The chain rule tells us that we have:
 
 $$\frac{\text{d} loss}{\text{d} b_{2}} = \frac{\text{d} loss}{\text{d} out} \times \frac{\text{d} out}{\text{d} b_{2}} = \frac{\text{d}}{\text{d} out} mse(out, y) \times \frac{\text{d}}{\text{d} b_{2}} lin(l_{2}, w_{2}, b_{2})$$
 
-To compute the gradients of the loss with respect to 𝑏2b2, we first need the gradients of the loss with respect to our output 𝑜𝑢𝑡out. It's the same if we want the gradients of the loss with respect to 𝑤2w2. Then, to get the gradients of the loss with respect to 𝑏1b1 or 𝑤1w1, we will need the gradients of the loss with respect to 𝑙1l1, which in turn requires the gradients of the loss with respect to 𝑙2l2, which will need the gradients of the loss with respect to 𝑜𝑢𝑡out.
+链式法则告诉我们会有：
+
+$$\frac{\text{d} loss}{\text{d} b_{2}} = \frac{\text{d} loss}{\text{d} out} \times \frac{\text{d} out}{\text{d} b_{2}} = \frac{\text{d}}{\text{d} out} mse(out, y) \times \frac{\text{d}}{\text{d} b_{2}} lin(l_{2}, w_{2}, b_{2})$$
+
+To compute the gradients of the loss with respect to $b_{2}$, we first need the gradients of the loss with respect to our output $out$. It's the same if we want the gradients of the loss with respect to $w_{2}$. Then, to get the gradients of the loss with respect to $b_{1}$ or $w_{1}$, we will need the gradients of the loss with respect to $l_{1}$, which in turn requires the gradients of the loss with respect to $l_{2}$, which will need the gradients of the loss with respect to $out$.
+
+对计算关于 $b_{2}$ 的损失的梯度，我们首先需要计算关于我们的输出 $out$ 的损失梯度。如果我们希望计算关于 $w_{2}$ 的损失梯度也是同样的。然后，获取$b_{1}$ 或 $w_{1}$ 的损失的梯度，我们会需要关于 $l_{1}$ 的损失的梯度，依次 $l_{1}$ 需要  $l_{2}$ 的损失的梯度 ，而 $l_{2}$ 需要关于 $out$ 的损失的梯度。
 
 So to compute all the gradients we need for the update, we need to begin from the output of the model and work our way *backward*, one layer after the other—which is why this step is known as *backpropagation*. We can automate it by having each function we implemented (`relu`, `mse`, `lin`) provide its backward step: that is, how to derive the gradients of the loss with respect to the input(s) from the gradients of the loss with respect to the output.
 
+所以计算我们需要更新的所有梯度，我们需要一层接一层的从模型的输出开始并*逆向*处理，这就是为什么这一步被称为*反向传播*。我们可以通过实现的 (`relu`, `mse`, `lin`) 提供给它反向步骤的每个函数自动的实现它：即，如何驱动从关于输出的损失的梯度到输入的损失的梯度。
+
 Here we populate those gradients in an attribute of each tensor, a bit like PyTorch does with `.grad`.
 
-The first are the gradients of the loss with respect to the output of our model (which is the input of the loss function). We undo the `squeeze` we did in `mse`, then we use the formula that gives us the derivative of 𝑥2x2: 2𝑥2x. The derivative of the mean is just $1/n$ where $n$ is the number of elements in our input:
+在这里我们在每个张量的属性中填充那些梯度，这有点像PyTorch 处理`.grad`。
 
-In [ ]:
+The first are the gradients of the loss with respect to the output of our model (which is the input of the loss function). We undo the `squeeze` we did in `mse`, then we use the formula that gives us the derivative of $x^{2}$: $2x$. The derivative of the mean is just $1/n$ where $n$ is the number of elements in our input:
+
+首先是关于我们模型输出的损失的梯度（它是损失函数的输入）。我们撤销我们在 `mse`中做的 `squeeze`，然后我们使用公式提供给我们的 $x^{2}$: $2x$ 的导数。平均值的导数正好是  $1/n$ ，这里的 $n$ 是在我们输入中元素的数量：
+
+实验代码:
 
 ```
 def mse_grad(inp, targ): 
@@ -1259,7 +1271,9 @@ def mse_grad(inp, targ):
 
 For the gradients of the ReLU and our linear layer, we use the gradients of the loss with respect to the output (in `out.g`) and apply the chain rule to compute the gradients of the loss with respect to the input (in `inp.g`). The chain rule tells us that `inp.g = relu'(inp) * out.g`. The derivative of `relu` is either 0 (when inputs are negative) or 1 (when inputs are positive), so this gives us:
 
-In [ ]:
+对于 ReLU 和我们线性层的梯度，我们使用关于输出（在 `out.g`中）的损失的梯度和应用链式法则来计算关于输入（在`inp.g`中）损失的梯度。链式法则告诉了我们 `inp.g = relu'(inp) * out.g`。`relu` 的导数是 0（当输入是负数时）或 1 （当输入是正数时），所以，这提供给我们：
+
+实验代码:
 
 ```
 def relu_grad(inp, out):
@@ -1269,7 +1283,9 @@ def relu_grad(inp, out):
 
 The scheme is the same to compute the gradients of the loss with respect to the inputs, weights, and bias in the linear layer:
 
-In [ ]:
+在线性层中计算关于输入、权重和偏差的损失的梯度是同样的方案：
+
+实验代码:
 
 ```
 def lin_grad(inp, out, w, b):
@@ -1280,3 +1296,5 @@ def lin_grad(inp, out, w, b):
 ```
 
 We won't linger on the mathematical formulas that define them since they're not important for our purposes, but do check out Khan Academy's excellent calculus lessons if you're interested in this topic.
+
+我们逗留在数学公式的定义上，因为他们对于我们的学习目标是不重要的，但是如果你对这个话题有兴趣，可以访问可汗学院优秀的微积分课程。
