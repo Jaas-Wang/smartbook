@@ -57,4 +57,4 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 
 [第十七章 基础神经网络](./smartbook/Fastai-17.md)   [（英文原本：17_foundations.ipynb）](./englishbook/17_foundations.ipynb)（未校对）
 
-[第十八章 类激活图](./smartbook/Fastai-18.md)   [（英文原本：18_CAM.ipynb）](./englishbook/18_CAM.ipynb)（未校对）
+[第十八章 类激活映射](./smartbook/Fastai-18.md)   [（英文原本：18_CAM.ipynb）](./englishbook/18_CAM.ipynb)（未校对）
