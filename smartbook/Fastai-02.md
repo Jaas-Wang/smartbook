@@ -949,21 +949,17 @@ When we're doing inference, we're generally just getting predictions for one ima
 
 This has returned three things: the predicted category in the same format you originally provided (in this case that's a string), the index of the predicted category, and the probabilities of each category. The last two are based on the order of categories in the *vocab* of the `DataLoaders`; that is, the stored list of all possible categories. At inference time, you can access the `DataLoaders` as an attribute of the `Learner`:
 
-此处将返回三个结果：根据你给出的格式生成的预测类目（此处是一个字符串），预测类目的指针，以及每个类目的几率。后两者是基于类目名称在`DataLoaders`中词汇的排序；也就是说，其中包含了存储的所有可能的类目。在推算时，你能够获得一个 `DataLoaders` ，它是 `Learner`的其中一个属性：
-
-
+此处将返回三个结果：根据你给出的格式生成的预测类目（此处是一个字符串），预测类目的指针，以及每个类目的几率。后两者是基于类目名称在`DataLoaders` 的 *vocab* 中的排序；也就是说，其中包含了存储的所有可能的类目。在推算时，你能够获得一个 `DataLoaders` ，它是 `Learner`的其中一个属性：
 
 ```
 learn_inf.dls.vocab
 ```
 
-
-
 输出结果： (#3) ['black','grizzly','teddy']
 
 We can see here that if we index into the vocab with the integer returned by `predict` then we get back "grizzly," as expected. Also, note that if we index into the list of probabilities, we see a nearly 1.00 probability that this is a grizzly.
 
-由此可见如果我们指向一个词，其中包含 `predict` 函数返回的整数，我们就会如愿得到“灰熊”的结果。同时请注意如果我们指向几率列表，我们会看见结果是灰熊的几率近乎为1.00。
+由此可见如果我们指向一个词，其中包含 `predict` 函数返回的整数，我们就会如愿得到“grizzly”的结果。同时请注意如果我们指向几率列表，我们会看见结果是灰熊的几率近乎为1.00。
 
 
 
