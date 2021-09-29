@@ -79,7 +79,7 @@ Out: ['one' , '.' , 'two' , '.' , 'three' , '.' , 'four' , '.' , 'five' , '.']
 
 To numericalize, we have to create a list of all the unique tokens (our *vocab*):
 
-我们必须创建一个所有唯一标记（我们的*词汇*）的列表来数值化：
+我们必须创建一个所有唯一标记（我们的*vocab*）的列表来数值化：
 
 ```
 vocab = L(*tokens).unique()
@@ -90,7 +90,7 @@ Out[ ]: (#30) ['one' , '.' , 'two' , 'three' , 'four' , 'five' , 'six' , 'seven'
 
 Then we can convert our tokens into numbers by looking up the index of each in the vocab:
 
-然后我们能够通过查找词汇表中每个索引来转换标记为数字：
+然后我们能够通过查找 vocab 中每个索引来转换标记为数字：
 
 ```
 word2idx = {w:i for i,w in enumerate(vocab)}
