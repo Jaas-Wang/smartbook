@@ -62,7 +62,7 @@ We've already seen how categorical variables can be used as independent variable
 3. Create an embedding matrix for this containing a row for each level (i.e., for each item of the vocab).
 4. Use this embedding matrix as the first layer of a neural network. (A dedicated embedding matrix can take as inputs the raw vocab indexes created in step 2; this is equivalent to but faster and more efficient than a matrix that takes as input one-hot-encoded vectors representing the indexes.)
 
-1. 生成一个分类变量所有可能等级的列表（我们称这个列表为*词汇表*）。
+1. 生成一个分类变量所有可能等级的列表（我们称这个列示了*词汇表*（vocab））。
 2. 在词汇表中用它的索引替换每个等级。
 3. 为其创建一个嵌入矩阵，每个等级包含一行（即，对词汇表的每个项目）。
 4. 使用这个嵌入矩阵作为神经网络的第一层。（一个专用嵌入矩阵能够把在第二步所创建的原始词汇表索引当作输入。这是等价的，但它比把独热编码矢量代表的索引当做输入的矩阵更快且更有效率。）
