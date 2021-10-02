@@ -1012,7 +1012,7 @@ There are various different classes for different kinds of deep learning dataset
 
 The other important piece of information that we have to tell fastai is how to get the labels from the dataset. Computer vision datasets are normally structured in such a way that the label for an image is part of the filename, or path—most commonly the parent folder name. fastai comes with a number of standardised labeling methods, and ways to write your own. Here we're telling fastai to use the `is_cat` function we just defined.
 
-其它重点部分信息是我们要告诉 fastai 如果从数据集里获取标签。计算机视觉数据集通常用图片名部分或路径（通常大多数是父文件夹名）这种方式来结构标签。fastai 提供了许多标准化的标注方法，及编写你自己的方法。这里我们告诉 fastai 使用我们刚刚定义的`is_cat`函数。
+其它重点部分信息是我们要告诉 fastai 如果从数据集里获取标签。计算机视觉数据集通常用图片名部分或路径（通常大多数是父文件夹名）这种方式来结构标签。fastai 提供了许多归一化的标注方法，及编写你自己的方法。这里我们告诉 fastai 使用我们刚刚定义的`is_cat`函数。
 
 Finally, we define the `Transform`s that we need. A `Transform` contains code that is applied automatically during training; fastai includes many predefined `Transform`s, and adding new ones is as simple as creating a Python function. There are two kinds: `item_tfms` are applied to each item (in this case, each item is resized to a 224-pixel square), while `batch_tfms` are applied to a *batch* of items at a time using the GPU, so they're particularly fast (we'll see many examples of these throughout this book).
 
