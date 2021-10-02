@@ -540,7 +540,7 @@ In the next three chapters, we will look at the other applications directly supp
 1. What is the difference between ImageNet and Imagenette? When is it better to experiment on one versus the other?
 2. ImageNet和Imagenette之间的区别是什么？什么时候在一个数据集上做实验相比在别一个数据集上做是更好的？
 3. What is normalization?
-4. 归一化是什么？
+4. 什么是归一化？
 5. Why didn't we have to care about normalization when using a pretrained model?
 6. 当使用一个预训练模型时，为什么我们不必关注归一化？
 7. What is progressive resizing?
