@@ -168,7 +168,7 @@ For each image in our batch, and for each class, we get a 7×7 feature map that 
 
 For instance, we can find out which areas made the model decide this animal was a cat (note that we need to `decode` the input `x` since it's been normalized by the `DataLoader`, and we need to cast to `TensorImage` since at the time this book is written PyTorch does not maintain types when indexing—this may be fixed by the time you are reading this):
 
-如何，我们可以找出哪些区域使得模型决定这只动物是一只猫（注意，我们需要 `decode` 输入 `x` ，因为它已经被 `DataLoader` 标准化了，且我们需要放到 `TensorImage` ，因为这次在本书中编写的 PyTorch 当索引时不会维护类型，当你阅读本书的时候也许修复了这个问题）：
+如何，我们可以找出哪些区域使得模型决定这只动物是一只猫（注意，我们需要 `decode` 输入 `x` ，因为它已经被 `DataLoader` 归一化了，且我们需要放到 `TensorImage` ，因为这次在本书中编写的 PyTorch 当索引时不会维护类型，当你阅读本书的时候也许修复了这个问题）：
 
 实验代码:
 
@@ -258,7 +258,7 @@ class HookBwd():
 
 Then for the class index `1` (for `True`, which is "cat") we intercept the features of the last convolutional layer as before, and compute the gradients of the output activations of our class. We can't just call `output.backward()`, because gradients only make sense with respect to a scalar (which is normally our loss) and `output` is a rank-2 tensor. But if we pick a single image (we'll use `0`) and a single class (we'll use `1`), then we *can* calculate the gradients of any weight or activation we like, with respect to that single value, using `output[0,cls].backward()`. Our hook intercepts the gradients that we'll use as weights:
 
-然后，我们像以前那样拦截最后巻积层的特征，分类索引为 `1`（为`True`，那是“猫”），并计算我们分类的输出激活的梯度。我们不能只调用 `output.backward()`，因为当只有梯度是一个纯量（这是标准化我们的损失）及 `output` 是一个二阶张量才有意义。但如果我们选一个单一张图像（我们会用 `0`）和单个分类（我们会用 `1`），那么我们*能够* 计算任何权重和我们喜欢的激活的梯度，关于那个单一值使用 `output[0,cls].backward()`。我们的钩子拦截我们将用作权重的梯度：
+然后，我们像以前那样拦截最后巻积层的特征，分类索引为 `1`（为`True`，那是“猫”），并计算我们分类的输出激活的梯度。我们不能只调用 `output.backward()`，因为当只有梯度是一个纯量（这是归一化我们的损失）及 `output` 是一个二阶张量才有意义。但如果我们选一个单一张图像（我们会用 `0`）和单个分类（我们会用 `1`），那么我们*能够* 计算任何权重和我们喜欢的激活的梯度，关于那个单一值使用 `output[0,cls].backward()`。我们的钩子拦截我们将用作权重的梯度：
 
 实验代码:
 
