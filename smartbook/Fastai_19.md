@@ -137,3 +137,714 @@ v2i = lbls.val2idx(); v2i
 That's all the pieces we need to put together our `Dataset`.
 
 这就是我们需要组合 `Dataset` 的所有部分。
+
+### Dataset
+
+### Dataset
+
+### 数据集
+
+A `Dataset` in PyTorch can be anything that supports indexing (`__getitem__`) and `len`:
+
+PyTorch 中的 `数据集`（(Dataset)） 可以是任何内容，它提供了索引（`__getitem__`）和 `len`：
+
+实验代码:
+
+```
+class Dataset:
+    def __init__(self, fns): self.fns=fns
+    def __len__(self): return len(self.fns)
+    def __getitem__(self, i):
+        im = Image.open(self.fns[i]).resize((64,64)).convert('RGB')
+        y = v2i[self.fns[i].parent.name]
+        return tensor(im).float()/255, tensor(y)
+```
+
+We need a list of training and validation filenames to pass to `Dataset.__init__`:
+
+我们需要训练和验证集的文件名列表，传递给 `Dataset.__init__`：
+
+实验代码:
+
+```
+train_filt = L(o.parent.parent.name=='train' for o in files)
+train,valid = files[train_filt],files[~train_filt]
+len(train),len(valid)
+```
+
+实验输出:
+
+```
+(9469, 3925)
+```
+
+Now we can try it out:
+
+现在我们实验一下：
+
+实验代码:
+
+```
+train_ds,valid_ds = Dataset(train),Dataset(valid)
+x,y = train_ds[0]
+x.shape,y
+```
+
+实验输出:
+
+```
+(torch.Size([64, 64, 3]), tensor(0))
+```
+
+实验代码:
+
+```
+show_image(x, title=lbls[y]);
+```
+
+实验输出:
+
+ ![img](data:image/png;base64,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)
+
+As you see, our dataset is returning the independent and dependent variables as a tuple, which is just what we need. We'll need to be able to collate these into a mini-batch. Generally this is done with `torch.stack`, which is what we'll use here:
+
+正如你所看到的，我们的数据集作为一个元组返回了自变量和因变量，这正是我们需要的内容。我们将需要整理这些内容到一个小型批次。通常用 `torch.stack` 做这个操作，这是在在这里我们要使用的内容：
+
+实验代码:
+
+```
+def collate(idxs, ds): 
+    xb,yb = zip(*[ds[i] for i in idxs])
+    return torch.stack(xb),torch.stack(yb)
+```
+
+Here's a mini-batch with two items, for testing our `collate`:
+
+这个小型批次有两个数据项，用来测试我们的 `collate`：
+
+实验代码:
+
+```
+x,y = collate([1,2], train_ds)
+x.shape,y
+```
+
+实验输出:
+
+```
+(torch.Size([2, 64, 64, 3]), tensor([0, 0]))
+```
+
+Now that we have a dataset and a collation function, we're ready to create `DataLoader`. We'll add two more things here: an optional `shuffle` for the training set, and a `ProcessPoolExecutor` to do our preprocessing in parallel. A parallel data loader is very important, because opening and decoding a JPEG image is a slow process. One CPU core is not enough to decode images fast enough to keep a modern GPU busy. Here's our `DataLoader` class:
+
+现在我们有了一个数据集和 一个整理函数，我们准备创建一个 `DataLoader`。在这里我们将再增加两项内容：对训练集可选的 `shuffle` 和为我们做并行预处理的 `ProcessPoolExecutor`。一个并行数据加载器是非常重要的，因为打开并解码一张 JPEG 图像是很慢的过程。一颗 CPU 核不足以快速解码图像以满足保持一块新式 GPU 的忙碌。下面是我们的 `DataLoader` 类：
+
+实验代码:
+
+```
+class DataLoader:
+    def __init__(self, ds, bs=128, shuffle=False, n_workers=1):
+        self.ds,self.bs,self.shuffle,self.n_workers = ds,bs,shuffle,n_workers
+
+    def __len__(self): return (len(self.ds)-1)//self.bs+1
+
+    def __iter__(self):
+        idxs = L.range(self.ds)
+        if self.shuffle: idxs = idxs.shuffle()
+        chunks = [idxs[n:n+self.bs] for n in range(0, len(self.ds), self.bs)]
+        with ProcessPoolExecutor(self.n_workers) as ex:
+            yield from ex.map(collate, chunks, ds=self.ds)
+```
+
+Let's try it out with our training and validation datasets:
+
+我们用训练数据集和验证数据集实验一下：
+
+实验代码:
+
+```
+n_workers = min(16, defaults.cpus)
+train_dl = DataLoader(train_ds, bs=128, shuffle=True, n_workers=n_workers)
+valid_dl = DataLoader(valid_ds, bs=256, shuffle=False, n_workers=n_workers)
+xb,yb = first(train_dl)
+xb.shape,yb.shape,len(train_dl)
+```
+
+实验输出:
+
+```
+(torch.Size([128, 64, 64, 3]), torch.Size([128]), 74)
+```
+
+This data loader is not much slower than PyTorch's, but it's far simpler. So if you're debugging a complex data loading process, don't be afraid to try doing things manually to help you see exactly what's going on.
+
+这个数据加载器不比 PyTorch 的慢，但是它要简单的多。 所以，如果你正在调试一个复杂的数据加载过程，不要担心，尝试手动的做一些事情来帮助你准确的看到这是怎么回事。
+
+For normalization, we'll need image statistics. Generally it's fine to calculate these on a single training mini-batch, since precision isn't needed here:
+
+对于归一化，我们将需要图像统计。通常来说在单个训练小型批次上计算这些是可以的，在这次不需要精度：
+
+实验代码:
+
+```
+stats = [xb.mean((0,1,2)),xb.std((0,1,2))]
+stats
+```
+
+实验输出:
+
+```
+[tensor([0.4544, 0.4453, 0.4141]), tensor([0.2812, 0.2766, 0.2981])]
+```
+
+Our `Normalize` class just needs to store these stats and apply them (to see why the `to_device` is needed, try commenting it out, and see what happens later in this notebook):
+
+我们的 `Normalize` 类只需要存贮这些状态并应用它们（看一下为什么 `to_device` 是需要的，尝试注释掉它，看在这个实验中后面会发生什么）：
+
+实验代码:
+
+```
+class Normalize:
+    def __init__(self, stats): self.stats=stats
+    def __call__(self, x):
+        if x.device != self.stats[0].device:
+            self.stats = to_device(self.stats, x.device)
+        return (x-self.stats[0])/self.stats[1]
+```
+
+We always like to test everything we build in a notebook, as soon as we build it:
+
+只要我们构建了它，我们就喜欢在 notebook 中测试构建的所有内容：
+
+实验代码:
+
+```
+norm = Normalize(stats)
+def tfm_x(x): return norm(x).permute((0,3,1,2))
+```
+
+实验代码:
+
+```
+t = tfm_x(x)
+t.mean((0,2,3)),t.std((0,2,3))
+```
+
+实验输出:
+
+```
+(tensor([0.3732, 0.4907, 0.5633]), tensor([1.0212, 1.0311, 1.0131]))
+```
+
+Here `tfm_x` isn't just applying `Normalize`, but is also permuting the axis order from `NHWC` to `NCHW` (see <chapter_convolutions> if you need a reminder of what these acronyms refer to). PIL uses `HWC` axis order, which we can't use with PyTorch, hence the need for this `permute`.
+
+这里的 `tfm_x` 不只是应用了 `Normalize`，也从 `NHWC` 到 `NCHW` 重新排了轴的顺序（如果你需要一个这些缩写指的是什么的提示，看一下<第十三章：巻积>）。PIL 使用了 `HWC` 轴顺序，它不能用于 PyTorch，因此需要这个 `permute`。
+
+That's all we need for the data for our model. So now we need the model itself!
+
+这就是我们模型所需要的所有数据。所以现在我们需要模型它自身！
+
+## Module and Parameter
+
+## 模块和参数
+
+To create a model, we'll need `Module`. To create `Module`, we'll need `Parameter`, so let's start there. Recall that in <chapter_collab> we said that the `Parameter` class "doesn't actually add any functionality (other than automatically calling `requires_grad_` for us). It's only used as a "marker" to show what to include in `parameters`." Here's a definition which does exactly that:
+
+我们需要 `Module` 来创建一个模型，而创建 `Module` 我们就需要 `Parameter`，所以让我从这里开始。回忆一下在<第八章：协同过滤>中我们谈到的 `Parameter` 类“没有实际添加任何功能（除了为我们自动的调用 `requires_grad_`）。它只是用来做一个“标记物”来展示在 `parameters` 中包含了什么内容。” 下面定义了它到底做了哪些工作：
+
+实验代码:
+
+```
+class Parameter(Tensor):
+    def __new__(self, x): return Tensor._make_subclass(Parameter, x, True)
+    def __init__(self, *args, **kwargs): self.requires_grad_()
+```
+
+The implementation here is a bit awkward: we have to define the special `__new__` Python method and use the internal PyTorch method `_make_subclass` because, as at the time of writing, PyTorch doesn't otherwise work correctly with this kind of subclassing or provide an officially supported API to do this. This may have been fixed by the time you read this, so look on the book's website to see if there are updated details.
+
+这个实现有那么一点笨拙：在编写本书的时候，我们必须定义要 `__new__` Python 方法，因为要使用内部的 PyTorch 方法 `_make_subclass` ，否则 PyTorch 不能正确的处理这类子类，且没有提供官方支持的 API 来做这个事情。在你学习本书的时候也许这个问题已经被修复了，所以查看本书的网站看一下是否有更新的细节。
+
+Our `Parameter` now behaves just like a tensor, as we wanted:
+
+如我们所希望的那样，现在我们的 `Parameter` 的行为就像一个张量：
+
+实验代码:
+
+```
+Parameter(tensor(3.))
+```
+
+实验输出:
+
+```
+tensor(3., requires_grad=True)
+```
+
+Now that we have this, we can define `Module`:
+
+现在我们有了这项内容，就能够定义 `Module` 了：
+
+实验代码:
+
+```
+class Module:
+    def __init__(self):
+        self.hook,self.params,self.children,self._training = None,[],[],False
+        
+    def register_parameters(self, *ps): self.params += ps
+    def register_modules   (self, *ms): self.children += ms
+        
+    @property
+    def training(self): return self._training
+    @training.setter
+    def training(self,v):
+        self._training = v
+        for m in self.children: m.training=v
+            
+    def parameters(self):
+        return self.params + sum([m.parameters() for m in self.children], [])
+
+    def __setattr__(self,k,v):
+        super().__setattr__(k,v)
+        if isinstance(v,Parameter): self.register_parameters(v)
+        if isinstance(v,Module):    self.register_modules(v)
+        
+    def __call__(self, *args, **kwargs):
+        res = self.forward(*args, **kwargs)
+        if self.hook is not None: self.hook(res, args)
+        return res
+    
+    def cuda(self):
+        for p in self.parameters(): p.data = p.data.cuda()
+```
+
+The key functionality is in the definition of `parameters`:
+
+关键功能是 `Parameters` 的定义：
+
+```python
+self.params + sum([m.parameters() for m in self.children], [])
+```
+
+This means that we can ask any `Module` for its parameters, and it will return them, including for all its child modules (recursively). But how does it know what its parameters are? It's thanks to implementing Python's special `__setattr__` method, which is called for us any time Python sets an attribute on a class. Our implementation includes this line:
+
+这表示我们能够请求 `Module` 的参数，且它会返回参数，包括它的所有子模块（递归）。但它是如何知道它的参数是什么呢？这要归功于 Python 的特定方法 `__setattr__`，这个方法要求我们在任何时间 Python 在类上设置一个属性。我们的实现包含了这一行代码：
+
+```python
+if isinstance(v,Parameter): self.register_parameters(v)
+```
+
+As you see, this is where we use our new `Parameter` class as a "marker"—anything of this class is added to our `params`.
+
+正如你看到的，在这个地方我们使用新的 `Parameter` 类作为一个“标记物”，这个类的任何东西被添加到我们的 `params` 中。
+
+Python's `__call__` allows us to define what happens when our object is treated as a function; we just call `forward` (which doesn't exist here, so it'll need to be added by subclasses). Before we do, we'll call a hook, if it's defined. Now you can see that PyTorch hooks aren't doing anything fancy at all—they're just calling any hooks have been registered.
+
+当我们的目标作为函数被处理时，Python 的 `__call__` 允许我们定义发生的事情；我们只调用 `forward`（在这里它是不存在的，所以它需要以子类的方式被添加）。在我们做这个操作前，我们会调用一个钩子，如果这个金子被定义了的话。现在你能够看到 PyTorch 钩子根本不做任何花哨的事情，他们只是调用已经被注册了的钩子。
+
+Other than these pieces of functionality, our `Module` also provides `cuda` and `training` attributes, which we'll use shortly.
+
+除了这些功能部分，我们的 `Module` 也提供了 `cuda` 和 `training` 特性，我们很快会用到。
+
+Now we can create our first `Module`, which is `ConvLayer`:
+
+现在我们可以创建我们的第一个 `Module` 了，它是 `ConvLayer`：
+
+实验代码:
+
+```
+class ConvLayer(Module):
+    def __init__(self, ni, nf, stride=1, bias=True, act=True):
+        super().__init__()
+        self.w = Parameter(torch.zeros(nf,ni,3,3))
+        self.b = Parameter(torch.zeros(nf)) if bias else None
+        self.act,self.stride = act,stride
+        init = nn.init.kaiming_normal_ if act else nn.init.xavier_normal_
+        init(self.w)
+    
+    def forward(self, x):
+        x = F.conv2d(x, self.w, self.b, stride=self.stride, padding=1)
+        if self.act: x = F.relu(x)
+        return x
+```
+
+We're not implementing `F.conv2d` from scratch, since you should have already done that (using `unfold`) in the questionnaire in <chapter_foundations>. Instead, we're just creating a small class that wraps it up along with bias and weight initialization. Let's check that it works correctly with `Module.parameters`:
+
+我们没有从零开始实现 `F.conv2d`，因为我们已经在<第十七章：基础神经网络>的联系题中已经做过了（使用的 `unfold`）。相反，我们只是连同偏差和权重初始化把它打包创建为一个小的类。让我们用 `Module.parameters` 检查一下它是否正确的工作：
+
+实验代码:
+
+```
+l = ConvLayer(3, 4)
+len(l.parameters())
+```
+
+实验输出:
+
+```
+2
+```
+
+And that we can call it (which will result in `forward` being called):
+
+同样我们能够这样调用它（它会导致 `forward` 被调用）：
+
+实验代码:
+
+```
+xbt = tfm_x(xb)
+r = l(xbt)
+r.shape
+```
+
+实验输出:
+
+```
+torch.Size([128, 4, 64, 64])
+```
+
+In the same way, we can implement `Linear`:
+
+我们以同样的方法实现 `Linear`：
+
+实验代码:
+
+```
+class Linear(Module):
+    def __init__(self, ni, nf):
+        super().__init__()
+        self.w = Parameter(torch.zeros(nf,ni))
+        self.b = Parameter(torch.zeros(nf))
+        nn.init.xavier_normal_(self.w)
+    
+    def forward(self, x): return x@self.w.t() + self.b
+```
+
+and test if it works:
+
+并测试它是否工作：
+
+实验代码:
+
+```
+l = Linear(4,2)
+r = l(torch.ones(3,4))
+r.shape
+```
+
+实验输出:
+
+```
+torch.Size([3, 2])
+```
+
+Let's also create a testing module to check that if we include multiple parameters as attributes, they are all correctly registered:
+
+我们也创建一个测试模块，来检查如果我们包含了多个参数作为属性，它们都被正确的注册了：
+
+实验代码:
+
+```
+class T(Module):
+    def __init__(self):
+        super().__init__()
+        self.c,self.l = ConvLayer(3,4),Linear(4,2)
+```
+
+Since we have a conv layer and a linear layer, each of which has weights and biases, we'd expect four parameters in total:
+
+因为我们有了一个巻积层和一个线性层，它们每个都有权重和偏差，我们预计总共有四个参数：
+
+实验代码:
+
+```
+t = T()
+len(t.parameters())
+```
+
+实验输出:
+
+```
+4
+```
+
+We should also find that calling `cuda` on this class puts all these parameters on the GPU:
+
+我们应该也发现在这个类上调用了 `cuda`，会在 GPU 上放置了全部参数：
+
+实验代码:
+
+```
+t.cuda()
+t.l.w.device
+```
+
+实验输出:
+
+```
+device(type='cuda', index=5)
+```
+
+We can now use those pieces to create a CNN.
+
+现在我们能够使用那些内容来创建一个 CNN了。
+
+### Simple CNN
+
+### 简单的 CNN
+
+As we've seen, a `Sequential` class makes many architectures easier to implement, so let's make one:
+
+如你如见，一个 `Sequential` 类使得很多架构更容易的实现，所以让我们实现一个：
+
+实验代码:
+
+```
+class Sequential(Module):
+    def __init__(self, *layers):
+        super().__init__()
+        self.layers = layers
+        self.register_modules(*layers)
+
+    def forward(self, x):
+        for l in self.layers: x = l(x)
+        return x
+```
+
+The `forward` method here just calls each layer in turn. Note that we have to use the `register_modules` method we defined in `Module`, since otherwise the contents of `layers` won't appear in `parameters`.
+
+这里的 `forward` 方法只是依次调用每个层。注意在我们定义的 `Module` 中必须使用 `register_modules` 方法，因为如果不定义 `layers` 的内容将不会在 `parameters` 中显示。
+
+> important: All The Code is Here: Remember that we're not using any PyTorch functionality for modules here; we're defining everything ourselves. So if you're not sure what `register_modules` does, or why it's needed, have another look at our code for `Module` to see what we wrote!
+
+> 重要：所有的代码都在这里：记住对于这里的模块我们不会使用任何 PyTorch 功能；我们自己定义所有的内容。所以如果你不确定 `register_modules`做了什么，或为什么需要它，再看一下我们的 `Module` 代码来学习我们编写的内容！
+
+We can create a simplified `AdaptivePool` that only handles pooling to a 1×1 output, and flattens it as well, by just using `mean`:
+
+我们能够创建一个简单的  `AdaptivePool`，它只处理池化为一个  1×1 输出，并通过使用 `mean` 来扁平化它：
+
+实验代码:
+
+```
+class AdaptivePool(Module):
+    def forward(self, x): return x.mean((2,3))
+```
+
+That's enough for us to create a CNN!
+
+为我们创建一个 CNN 这足够了！
+
+实验代码:
+
+```
+def simple_cnn():
+    return Sequential(
+        ConvLayer(3 ,16 ,stride=2), #32
+        ConvLayer(16,32 ,stride=2), #16
+        ConvLayer(32,64 ,stride=2), # 8
+        ConvLayer(64,128,stride=2), # 4
+        AdaptivePool(),
+        Linear(128, 10)
+    )
+```
+
+Let's see if our parameters are all being registered correctly:
+
+让我们一下是否我们的参数都被正确的注册了：
+
+实验代码:
+
+```
+m = simple_cnn()
+len(m.parameters())
+```
+
+实验输出:
+
+```
+10
+```
+
+Now we can try adding a hook. Note that we've only left room for one hook in `Module`; you could make it a list, or use something like `Pipeline` to run a few as a single function:
+
+现在我们可以尝试添加一个钩子。注意我们在 `Module` 中只是左侧为一个钩子；你可以使它是一个列表，或使用像 `Pipeline` 一样的方法运行几个单一函数：
+
+实验代码:
+
+```
+def print_stats(outp, inp): print (outp.mean().item(),outp.std().item())
+for i in range(4): m.layers[i].hook = print_stats
+
+r = m(xbt)
+r.shape
+```
+
+实验输出:
+
+```
+torch.Size([128, 10])
+```
+
+We have data and model. Now we need a loss function.
+
+我们有了数据和模型。现在我们需要一个损失函数。
+
+## Loss
+
+## 损失函数
+
+We've already seen how to define "negative log likelihood":
+
+我们已经学习过如何定义“负对数似然”：
+
+实验代码:
+
+```
+def nll(input, target): return -input[range(target.shape[0]), target].mean()
+```
+
+Well actually, there's no log here, since we're using the same definition as PyTorch. That means we need to put the log together with softmax:
+
+实际上，在这里不会再定义，因为我们在 PyTorch 中以同样的方法来定义。这表示我们需要把 softmax 与对数组合在一起：
+
+实验代码:
+
+```
+def log_softmax(x): return (x.exp()/(x.exp().sum(-1,keepdim=True))).log()
+
+sm = log_softmax(r); sm[0][0]
+```
+
+实验输出:
+
+```
+tensor(-1.2790, grad_fn=<SelectBackward>)
+```
+
+Combining these gives us our cross-entropy loss:
+
+这些组合我们就得到了交叉熵损失：
+
+实验代码:
+
+```
+loss = nll(sm, yb)
+loss
+```
+
+实验输出:
+
+```
+tensor(2.5666, grad_fn=<NegBackward>)
+```
+
+Note that the formula:
+
+注意这个公式：
+
+$$\log \left ( \frac{a}{b} \right ) = \log(a) - \log(b)$$ 
+
+gives a simplification when we compute the log softmax, which was previously defined as `(x.exp()/(x.exp().sum(-1))).log()`:
+
+当我们计算对数 softmax 时提供了一个样例，这就是先前定义的：`(x.exp()/(x.exp().sum(-1))).log()`:
+
+实验代码:
+
+```
+def log_softmax(x): return x - x.exp().sum(-1,keepdim=True).log()
+sm = log_softmax(r); sm[0][0]
+```
+
+实验输出:
+
+```
+tensor(-1.2790, grad_fn=<SelectBackward>)
+```
+
+Then, there is a more stable way to compute the log of the sum of exponentials, called the [LogSumExp](https://en.wikipedia.org/wiki/LogSumExp) trick. The idea is to use the following formula:
+
+还有，这里有一个更稳定的方法来计算指数和的对数，被称为 [logSumExp](https://en.wikipedia.org/wiki/LogSumExp) 技巧。这一思路使用的是下面的公式：
+
+$$\log \left ( \sum_{j=1}^{n} e^{x_{j}} \right ) = \log \left ( e^{a} \sum_{j=1}^{n} e^{x_{j}-a} \right ) = a + \log \left ( \sum_{j=1}^{n} e^{x_{j}-a} \right )$$
+
+where $a$ is the maximum of $x_{j}$.
+
+公式里的 $a$ 是 $x_{j}$ 的最大值。
+
+Here's the same thing in code:
+
+下面用代码来实现这一公式：
+
+实验代码:
+
+```
+x = torch.rand(5)
+a = x.max()
+x.exp().sum().log() == a + (x-a).exp().sum().log()
+```
+
+实验输出:
+
+```
+tensor(True)
+```
+
+We'll put that into a function:
+
+我们把上面的代码用函数来实现：
+
+实验代码:
+
+```
+def logsumexp(x):
+    m = x.max(-1)[0]
+    return m + (x-m[:,None]).exp().sum(-1).log()
+
+logsumexp(r)[0]
+```
+
+实验输出:
+
+```
+tensor(3.9784, grad_fn=<SelectBackward>)
+```
+
+so we can use it for our `log_softmax` function:
+
+因此我们能够把它用于我们的 `log_softmax` 函数：
+
+实验代码:
+
+```
+def log_softmax(x): return x - x.logsumexp(-1,keepdim=True)
+```
+
+Which gives the same result as before:
+
+这个函数了返回了与之前方法相同的结果：
+
+实验代码:
+
+```
+sm = log_softmax(r); sm[0][0]
+```
+
+实验输出:
+
+```
+tensor(-1.2790, grad_fn=<SelectBackward>)
+```
+
+We can use these to create `cross_entropy`:
+
+我们能够使用这一函数来创建 `cross_entropy` 函数：
+
+实验代码:
+
+```
+def cross_entropy(preds, yb): return nll(log_softmax(preds), yb).mean()
+```
+
+Let's now combine all those pieces together to create a `Learner`.
+
+现在让我们把这些内容组合在一起来创建一个 `学习器`。
