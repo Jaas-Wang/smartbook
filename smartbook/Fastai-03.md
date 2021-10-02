@@ -786,7 +786,7 @@ As long as qualified women keep dropping out of tech, teaching more girls to cod
 
 The hiring process is particularly broken in tech. One study indicative of the disfunction comes from Triplebyte, a company that helps place software engineers in companies, conducting a standardized technical interview as part of this process. They have a fascinating dataset: the results of how over 300 engineers did on their exam, coupled with the results of how those engineers did during the interview process for a variety of companies. The number one finding from [Triplebyte’s research](https://triplebyte.com/blog/who-y-combinator-companies-want) is that “the types of programmers that each company looks for often have little to do with what the company needs or does. Rather, they reflect company culture and the backgrounds of the founders.”
 
-雇佣过程在技术领域尤为让人崩溃。一项来自三倍字节的研究指出了异常，这家公司帮助安置一些公司中的软件工程师，实施一个标准化的访谈是这一过程的一部分。他们有一个丰富的数据库：超过300名工程的测试成绩，还有在对各类公司访谈期间那些工程师的成绩。[三位字节的研究](https://triplebyte.com/blog/who-y-combinator-companies-want)发现排名第一的是“每个公司所寻找的一些类型程序员与公司需要的或所做的关系不大。从而，这反映出公司的文化和创始人的背影。”
+雇佣过程在技术领域尤为让人崩溃。一项来自三倍字节的研究指出了异常，这家公司帮助安置一些公司中的软件工程师，实施一个标准化技术的访谈是这一过程的一部分。他们有一个丰富的数据库：超过300名工程的测试成绩，还有在对各类公司访谈期间那些工程师的成绩。[三位字节的研究](https://triplebyte.com/blog/who-y-combinator-companies-want)发现排名第一的是“每个公司所寻找的一些类型程序员与公司需要的或所做的关系不大。从而，这反映出公司的文化和创始人的背影。”
 
 This is a challenge for those trying to break into the world of deep learning, since most companies' deep learning groups today were founded by academics. These groups tend to look for people "like them"—that is, people that can solve complex math problems and understand dense jargon. They don't always know how to spot people who are actually good at solving real problems using deep learning.
 
@@ -814,7 +814,7 @@ One great way to consider whether an ethical lens is complete is to try to come 
 
 > : The ethical implications of algorithmic systems have been much discussed in both HCI and the broader community of those interested in technology design, development and policy. In this paper, we explore the application of one prominent ethical framework - Fairness, Accountability, and Transparency - to a proposed algorithm that resolves various societal issues around food security and population aging. Using various standardised forms of algorithmic audit and evaluation, we drastically increase the algorithm's adherence to the FAT framework, resulting in a more ethical and beneficent system. We discuss how this might serve as a guide to other researchers or practitioners looking to ensure better ethical outcomes from algorithmic systems in their line of work.
 >
-> ：算法系统的伦理后果已经在人机交互和那些对技术设计、发展和政策感兴趣的广泛团体中非常多地被讨论。在这篇论文中，我们研究了一个著名伦理框架（公平、责任和透明）应用在一个提名算法，这个算法用于解决围绕食品安全和人口年龄的各种社会问题。利用多种标准化算法与评估形式，我们大幅增加了算法对FAT框架遵守度，从而产生了一个更有道德和更慈爱的系统。我们讨论这如何对其它研究人员或从业人员可能做为一个指引去寻找确保在他们的工作范围内来自算法系统更好道德成果。
+> ：算法系统的伦理后果已经在人机交互和那些对技术设计、发展和政策感兴趣的广泛团体中非常多地被讨论。在这篇论文中，我们研究了一个著名伦理框架（公平、责任和透明）应用在一个提名算法，这个算法用于解决围绕食品安全和人口年龄的各种社会问题。利用多种标准化算法审计与评估形式，我们大幅增加了算法对FAT框架遵守度，从而产生了一个更有道德和更慈爱的系统。我们讨论这如何对其它研究人员或从业人员可能做为一个指引去寻找确保在他们的工作范围内来自算法系统更好道德成果。
 
 In this paper, the rather controversial proposal ("Turning the Elderly into High-Nutrient Slurry") and the results ("drastically increase the algorithm's adherence to the FAT framework, resulting in a more ethical and beneficent system") are at odds... to say the least!
 
