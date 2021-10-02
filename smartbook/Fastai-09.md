@@ -1123,7 +1123,7 @@ Out: <img src="/Users/Y.H/Documents/GitHub/smartbook/smartbook/_v_images/plot_fi
 
 The way these importances are calculated is quite simple yet elegant. The feature importance algorithm loops through each tree, and then recursively explores each branch. At each branch, it looks to see what feature was used for that split, and how much the model improves as a result of that split. The improvement (weighted by the number of rows in that group) is added to the importance score for that feature. This is summed across all branches of all trees, and finally the scores are normalized such that they add to 1.
 
-计算这些重要性特征的方法还是非常简单优雅的。特征重要性算法循环遍历了每棵树，然后递归探索了每个分支。对于每个分支，它查看了那些特征被用于那个分割，且模型基于那个分割结果改善了多少。这个改善（用那个组中的行数加权）被添加到那个特征的重要性分数上。这是遍及所有树的所有分支的总和，最终这些分数被标准化，这样它们合计为1。
+计算这些重要性特征的方法还是非常简单优雅的。特征重要性算法循环遍历了每棵树，然后递归探索了每个分支。对于每个分支，它查看了那些特征被用于那个分割，且模型基于那个分割结果改善了多少。这个改善（用那个组中的行数加权）被添加到那个特征的重要性分数上。这是遍及所有树的所有分支的总和，最终这些分数被归一化，这样它们合计为1。
 
 ### Removing Low-Importance Variables
 
@@ -1824,7 +1824,7 @@ cat_nn.remove('fiModelDescriptor')
 
 We can create our `TabularPandas` object in the same way as when we created our random forest, with one very important addition: normalization. A random forest does not need any normalization—the tree building procedure cares only about the order of values in a variable, not at all about how they are scaled. But as we have seen, a neural network definitely does care about this. Therefore, we add the `Normalize` processor when we build our `TabularPandas` object:
 
-我们能够以创建随机森林时同样的方法创建我们的`TabularPandas`对象，并有一个非常重要的增加：标准化。随机森林不需要任何标准化，树创建程序只关心变量中值的顺序，一点也不关心它们是如何缩放的。但是正如我们看到过的，定义的神经网络关心这个问题。因此，当我们创建`TabularPandas`对象时，我们增加了`Normalize`处理器：
+我们能够以创建随机森林时同样的方法创建我们的`TabularPandas`对象，并有一个非常重要的增加：归一化。随机森林不需要任何归一化，树创建程序只关心变量中值的顺序，一点也不关心它们是如何缩放的。但是正如我们看到过的，定义的神经网络关心这个问题。因此，当我们创建`TabularPandas`对象时，我们增加了`Normalize`处理器：
 
 ```
 procs_nn = [Categorify, FillMissing, Normalize]
@@ -2061,7 +2061,7 @@ We have dicussed two approaches to tabular modeling: decision tree ensembles and
 
 - *随机森林* 是最容易训练的，因为它们对超参的选择有极强的知识能力且需要很少的预处理。它们训练非常快，并且如果你有足够的树应该不会过拟。但是它们精度稍微差了一点，尤其如果推断是必须的话，如预测未来一段时间。
 - *梯度提升机* 在理论上与随机森林训练速度一样快，但在实践中你不得不尝试很多不同的超参。他们能够过拟，但它们相对随机森林通常有更好的精度。
-- *神经网络* 花费最长的时候来训练，且需要额外的预处理，如归一；这个归一也需要用于推理。它们能够提供很好的结果和好的推断，但也只有你注意超参和小心规避过拟的情况。
+- *神经网络* 花费最长的时候来训练，且需要额外的预处理，如归一化；这个归一化也需要用于推理时间。它们能够提供很好的结果和好的推断，但也只有你注意超参和小心规避过拟的情况。
 
 We suggest starting your analysis with a random forest. This will give you a strong baseline, and you can be confident that it's a reasonable starting point. You can then use that model for feature selection and partial dependence analysis, to get a better understanding of your data.
 
