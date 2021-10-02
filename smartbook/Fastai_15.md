@@ -106,7 +106,7 @@ fastai有绝大多数库有点不多，默认情况下它在CNN头中添加了�
 
 > note: One Last Batchnorm?: One parameter to `create_head` that is worth looking at is `bn_final`. Setting this to `true` will cause a batchnorm layer to be added as your final layer. This can be useful in helping your model scale appropriately for your output activations. We haven't seen this approach published anywhere as yet, but we have found that it works well in practice wherever we have used it.
 
-> 注释：一个最后批次标准化？：`create_head`的一个参数，值得关注的是`bn_final`。设置它为`true`会产生一个批次标准化层，添加到模型并作为你的最后层。这能够有帮于你的模型对于输出激活做到合适的缩放。我们还没有看到这个方法在任何地方发表，但我们已经发现在实践中无论我们在哪里使用它，它都会处理的很好，
+> 注释：一个最后批次归一化？：`create_head`的一个参数，值得关注的是`bn_final`。设置它为`true`会产生一个批次归一化层，添加到模型并作为你的最后层。这能够有帮于你的模型对于输出激活做到合适的缩放。我们还没有看到这个方法在任何地方发表，但我们已经发现在实践中无论我们在哪里使用它，它都会处理的很好，
 
 Let's now take a look at what `unet_learner` did in the segmentation problem we showed in <chapter_intro>.
 
@@ -130,7 +130,7 @@ There was a lot of handwaving in that last sentence! How on earth do we create a
 
 Naturally, we do this with a neural network! So we need some kind of layer that can increase the grid size in a CNN. One very simple approach to this is to replace every pixel in the 7×7 grid with four pixels in a 2×2 square. Each of those four pixels will have the same value—this is known as *nearest neighbor interpolation*. PyTorch provides a layer that does this for us, so one option is to create a head that contains stride-1 convolutional layers (along with batchnorm and ReLU layers as usual) interspersed with 2×2 nearest neighbor interpolation layers. In fact, you can try this now! See if you can create a custom head designed like this, and try it on the CamVid segmentation task. You should find that you get some reasonable results, although they won't be as good as our <chapter_intro> results.
 
-我们自然用神经网络做这个工作！所以我们需要某种在CNN中能够增加表格尺寸的层类型。一个非常简单的方法是在 2×2 方框内用四个像素来替换 7×7 表格中的每个像素。那个四像素每个的值都会相同，这被称为*最近邻插值*。PyTorch提供了一个为了我们做这个操作的层，所以一个操作是来创建包含步进 1 卷积层（像往常一样带有批次标准化和ReLU层）穿插有 2×2 最近邻插值层的头。实际上，你现在可以尝试一下！看是否能够创建一个如此设计的自定义头，并在CamVid分割任务上运行一下。你应该可以发现我获得了一些合理的结果，虽然它们没有我们在<第一章：概述>中的结果好。
+我们自然用神经网络做这个工作！所以我们需要某种在CNN中能够增加表格尺寸的层类型。一个非常简单的方法是在 2×2 方框内用四个像素来替换 7×7 表格中的每个像素。那个四像素每个的值都会相同，这被称为*最近邻插值*。PyTorch提供了一个为了我们做这个操作的层，所以一个操作是来创建包含步进 1 卷积层（像往常一样带有批次归一化和ReLU层）穿插有 2×2 最近邻插值层的头。实际上，你现在可以尝试一下！看是否能够创建一个如此设计的自定义头，并在CamVid分割任务上运行一下。你应该可以发现我获得了一些合理的结果，虽然它们没有我们在<第一章：概述>中的结果好。
 
 Another approach is to replace the nearest neighbor and convolution combination with a *transposed convolution*, otherwise known as a *stride half convolution*. This is identical to a regular convolution, but first zero padding is inserted between all the pixels in the input. This is easiest to see with a picture—<transp_conv> shows a diagram from the excellent [convolutional arithmetic paper](https://arxiv.org/abs/1603.07285) we discussed in <chapter_convolutions>, showing a 3×3 transposed convolution applied to a 3×3 image.
 
@@ -456,7 +456,7 @@ if self.n_cont != 0:
 
 They are passed through a batchnorm layer:
 
-他们传递了一个批次标准化层：
+他们传递了一个批次归一化层：
 
 ```python
     x_cont = self.bn_cont(x_cont)
@@ -472,7 +472,7 @@ and concatenated with the embedding activations, if there were any:
 
 Finally, this is passed through the linear layers (each of which includes batchnorm, if `use_bn` is `True`, and dropout, if `ps` is set to some value or list of values):
 
-最后，传递了线性层（如果`use_bn`是`True`，每个都会包含批次标准化层，如果`ps`设置了某个值或值列表，会包含dropout层）：
+最后，传递了线性层（如果`use_bn`是`True`，每个都会包含批次归一化层，如果`ps`设置了某个值或值列表，会包含dropout层）：
 
 ```python
 return self.layers(x)
@@ -515,7 +515,7 @@ Instead, your first step should be to seek to *create more data*. That could inv
 
 Once you've got as much data as you think you can reasonably get hold of, and are using it as effectively as possible by taking advantage of all the labels that you can find and doing all the augmentation that makes sense, if you are still overfitting you should think about using more generalizable architectures. For instance, adding batch normalization may improve generalization.
 
-一旦你获取到了你能够合理掌握的一样多的数据，和通过利用你所能发现的所有标签尽可能有效的使用它，及做有意义的所有增强，如果你还是过拟，你应该思考使用更加可泛华的架构。例如，增加批次标准化可以改善泛化。
+一旦你获取到了你能够合理掌握的一样多的数据，和通过利用你所能发现的所有标签尽可能有效的使用它，及做有意义的所有增强，如果你还是过拟，你应该思考使用更加可泛华的架构。例如，增加批次归一化可以改善泛化。
 
 If you are still overfitting after doing the best you can at using your data and tuning your architecture, then you can take a look at regularization. Generally speaking, adding dropout to the last layer or two will do a good job of regularizing your model. However, as we learned from the story of the development of AWD-LSTM, it is often the case that adding dropout of different types throughout your model can help even more. Generally speaking, a larger model with more regularization is more flexible, and can therefore be more accurate than a smaller model with less regularization.
 
