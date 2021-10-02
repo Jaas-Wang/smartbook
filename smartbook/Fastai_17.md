@@ -361,7 +361,7 @@ How are we able to do this comparison? `0` is being *broadcast* to have the same
 
 This is very useful if you want to normalize your dataset by subtracting the mean (a scalar) from the entire data set (a matrix) and dividing by the standard deviation (another scalar):
 
-如果你想通过从整个数据集（一个矩阵）中减去平均值（一个标量）并除以偏差（另一个标题）来标准化是非常有用处的：
+如果你想通过从整个数据集（一个矩阵）中减去平均值（一个标量）并除以偏差（另一个标题）来归一化是非常有用处的：
 
 实验代码：
 
@@ -730,7 +730,7 @@ As an exercise, try to determine what dimensions to add (and where) when you nee
 
 Another useful way of simplifying tensor manipulations is the use of Einstein summations convention.
 
-做这样一个练习，当我们需要用三个元素（一个为平均值，一个为标准差）向量标准化一个 `64 x 3 x 256 x 256` 大小图像批次的时候，尝试确定添加的维度（和添加的位置）。
+做这样一个练习，当我们需要用三个元素（一个为平均值，一个为标准差）向量归一化一个 `64 x 3 x 256 x 256` 大小图像批次的时候，尝试确定添加的维度（和添加的位置）。
 
 别一个简化张量乘法的有用方法是使用爱因斯坦求和约定。
 
@@ -1773,4 +1773,4 @@ Here are a few things to remember:
 1. 实现 ReLU 作为一个`torch.autograd.Function` 并用它训练一个模型。
 2. 如果你是数学方向的，用数学记法找出一个线性层的梯度是什么。映射到我们在本章节中看到的所实现的内容上。
 3. 学习 PyTorch 中 `unfold` 方法，且用它连同矩阵乘法一起实现你自己的 2D 卷积函数。然后用它训练一个 CNN。
-4. 使用 NumPy 而不是 PyTorch 来实现本章节中的所有内容。
+4. 使用 NumPy 而不是 PyTorch 实现本章节中的所有内容。
