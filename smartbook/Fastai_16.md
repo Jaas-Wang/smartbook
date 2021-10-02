@@ -922,7 +922,7 @@ We also examined the powerful callback system that allows you to customize every
 
 Congratulations, you have made it to the end of the "foundations of deep learning" section of the book! You now understand how all of fastai's applications and most important architectures are built, and the recommended ways to train them—and you have all the information you need to build these from scratch. While you probably won't need to create your own training loop, or batchnorm layer, for instance, knowing what is going on behind the scenes is very helpful for debugging, profiling, and deploying your solutions.
 
-恭喜，你已经学到了本书“深度学习基础”的末尾！你现在理解了fastai所有应用和最重要架构是如何创建的，且一些推荐方法来训练它们。你拥有了需要从零开始创建这些的所有信息。在此期间你可能不需要创建你自己的训练循环或批次标准化层，例如，了解背后发生了什么是非常有帮于调试，介绍，及部署你的解决方案的。
+恭喜，你已经学到了本书“深度学习基础”的末尾！你现在理解了fastai所有应用和最重要架构是如何创建的，且一些推荐方法来训练它们。你拥有了需要从零开始创建这些的所有信息。在此期间你可能不需要创建你自己的训练循环或批次归一化层，例如，了解背后发生了什么是非常有帮于调试，介绍，及部署你的解决方案的。
 
 Since you understand the foundations of fastai's applications now, be sure to spend some time digging through the source notebooks and running and experimenting with parts of them. This will give you a better idea of how everything in fastai is developed.
 
