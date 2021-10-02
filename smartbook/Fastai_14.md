@@ -162,7 +162,7 @@ We now have all the pieces we need to build the models we have been using in our
 
 In 2015, the authors of the ResNet paper noticed something that they found curious. Even after using batchnorm, they saw that a network using more layers was doing less well than a network using fewer layers—and there were no other differences between the models. Most interestingly, the difference was observed not only in the validation set, but also in the training set; so, it wasn't just a generalization issue, but a training issue. As the paper explains:
 
-在2015年，残差网络论文的作者们注意到他们发现的一些奇怪的现象。即使使用批次标准化后，他们发现网络使用更多的层做的不如使用更少的层做的好，模型间没有其它的差异。更有趣的是，这个差异不仅仅在验证集上可观察到，而且在训练集上也能发现。所以它不仅仅是一个泛化问题，而是一个训练问题。论文解释到：
+在2015年，残差网络论文的作者们注意到他们发现的一些奇怪的现象。即使使用批次归一化后，他们发现网络使用更多的层做的不如使用更少的层做的好，模型间没有其它的差异。更有趣的是，这个差异不仅仅在验证集上可观察到，而且在训练集上也能发现。所以它不仅仅是一个泛化问题，而是一个训练问题。论文解释到：
 
 > : Unexpectedly, such degradation is not caused by overfitting, and adding more layers to a suitably deep model leads to higher training error, as [previously reported] and thoroughly verified by our experiments.
 
@@ -197,7 +197,7 @@ As this is an academic paper this process is described in a rather inaccessible 
 
 Actually, there is another way to create those extra 36 layers, which is much more interesting. What if we replaced every occurrence of `conv(x)` with `x + conv(x)`, where `conv` is the function from the previous chapter that adds a second convolution, then a batchnorm layer, then a ReLU. Furthermore, recall that batchnorm does `gamma*y + beta`. What if we initialized `gamma` to zero for every one of those final batchnorm layers? Then our `conv(x)` for those extra 36 layers will always be equal to zero, which means `x+conv(x)` will always be equal to `x`.
 
-实际上，有其它方法来创建那些额外的36层，这个方法更加有趣。如果我们用`x + conv(x)`替换每个存在的`conv(x)`，这里的`conv`是上一章节添加的第二个卷积函数，然后是一个批次标准化层，然后一个ReLU。而且回忆一下批次标准化的操作 `gamma*y + beta`。如果我们对那些批次标准化的每一个层初始化`gamma`为零呢？那么对于我们扩展的36层`conv(x)`会总是等于零，这表示 `x+conv(x)`会总是等于`x`。
+实际上，有其它方法来创建那些额外的36层，这个方法更加有趣。如果我们用`x + conv(x)`替换每个存在的`conv(x)`，这里的`conv`是上一章节添加的第二个卷积函数，然后是一个批次归一化层，然后一个ReLU。而且回忆一下批次归一化的操作 `gamma*y + beta`。如果我们对那些批次归一化的每一个层初始化`gamma`为零呢？那么对于我们扩展的36层`conv(x)`会总是等于零，这表示 `x+conv(x)`会总是等于`x`。
 
 What has that gained us? The key thing is that those 36 extra layers, as they stand, are an *identity mapping*, but they have *parameters*, which means they are *trainable*. So, we can start with our best 20-layer model, add these 36 extra layers which initially do nothing at all, and then *fine-tune the whole 56-layer model*. Those extra 36 layers can then learn the parameters that make them most useful.
 
@@ -239,11 +239,11 @@ One key concept that both of these two ways of thinking about ResNets share is t
 
 > note: True Identity Path: The original paper didn't actually do the trick of using zero for the initial value of `gamma` in the last batchnorm layer of each block; that came a couple of years later. So, the original version of ResNet didn't quite begin training with a truly identity path through the ResNet blocks, but nonetheless having the ability to "navigate through" the skip connections did indeed make it train better. Adding the batchnorm `gamma` init trick made the models train at even higher learning rates.
 
-> 注释：现实特性路径：在原始论文中对于每个块的最后批次标准化层中'gamma'的初始值实际上不会使用零化的技巧，那是几年后产生的。所以，原始的ResNet版本对于ResNet块完全不是使用一个现实特性路径开始训练的，然而虽然如此它有能力来'浏览'跳跃连接确实使得它训练更好。增加标准批次*gamma*初始化技巧，使得模型在甚至更高的学习率上训练。
+> 注释：现实特性路径：在原始论文中对于每个块的最后批次归一化层中'gamma'的初始值实际上不会使用零化的技巧，那是几年后产生的。所以，原始的ResNet版本对于ResNet块完全不是使用一个现实特性路径开始训练的，然而虽然如此它有能力来'浏览'跳跃连接确实使得它训练更好。增加标准批次*gamma*初始化技巧，使得模型在甚至更高的学习率上训练。
 
 Here's the definition of a simple ResNet block (where `norm_type=NormType.BatchZero` causes fastai to init the `gamma` weights of the last batchnorm layer to zero):
 
-下面是一个简单的ResNet块的定义（`norm_type=NormType.BatchZero`会让fastai初始化最后批次标准化层的`gamma`权重为零）：
+下面是一个简单的ResNet块的定义（`norm_type=NormType.BatchZero`会让fastai初始化最后批次归一化层的`gamma`权重为零）：
 
 ```
 class ResBlock(Module):
@@ -642,7 +642,7 @@ You have now seen how the models we have been using for computer vision since th
 7. 为什么跳跃连接允许我们训练更深的模型？
 8. 图<不同深度网络训练>显示做了什么？这是如何引出跳跃连接这个想法的？
 9. 什么是“恒等映射”？
-10. ResNet块的基础等式是什么（忽略批次标准化和ReLU层）？
+10. ResNet块的基础等式是什么（忽略批次归一化和ReLU层）？
 11. ResNet与残渣之间是什么关系？
 12. 当有一个步进2卷积时，我们如何处理跳跃连接？哪过滤器的数量改变时又如何呢？
 13. 我们如何依据一个向量点积来描述一个 1×1 卷积？
