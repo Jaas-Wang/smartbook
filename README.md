@@ -60,3 +60,5 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 [第十八章 类激活映射](./smartbook/Fastai_18.md)   [（英文原本：18_CAM.ipynb）](./englishbook/18_CAM.ipynb)（未校对）
 
 [第十九章 学习器](./smartbook/Fastai_19.md)   [（英文原本：19_learner.ipynb）](./englishbook/19_learner.ipynb)（未校对）
+
+[第二十章 总结思考](./smartbook/Fastai_20.md)   [（英文原本：20_conclusion.ipynb）](./englishbook/20_conclusion.ipynb)（未校对）
