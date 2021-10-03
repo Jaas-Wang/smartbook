@@ -278,7 +278,7 @@ Another solution is to not just center crop for validation, but instead to selec
 
 别一个解决方案是不仅仅对验证集做中心裁剪，相替代的是对原始长方形图像选择一些区域来裁剪，传递每个裁剪的区域通过我们的模型取预测的最大或平均值。事实上，我们做的这个事情不仅仅是对不同的裁剪，而且对于所有我们测试时的数据增强参数的不同值做这个操作。这被称为*测试时数据增强*（TTA）。
 
-> 术语：测试时数据增强（TTA）：推理或验证期间，利用数据增强创建每张图像的多个版本，然后对每个图像增强版本取预测的平均或最大值。
+> 术语：测试时增强（TTA）：推理或验证期间，利用数据增强创建每张图像的多个版本，然后对每个图像增强版本取预测的平均或最大值。
 
 Depending on the dataset, test time augmentation can result in dramatic improvements in accuracy. It does not change the time required to train at all, but will increase the amount of time required for validation or inference by the number of test-time-augmented images requested. By default, fastai will use the unaugmented center crop image plus four randomly augmented images.
 
