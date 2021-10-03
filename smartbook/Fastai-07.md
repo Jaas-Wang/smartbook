@@ -519,7 +519,7 @@ Like with Mixup, you won't generally see significant improvements from label smo
 
 ## Conclusion
 
-## 结尾
+## 总结
 
 You have now seen everything you need to train a state-of-the-art model in computer vision, whether from scratch or using transfer learning. Now all you have to do is experiment on your own problems! See if training longer with Mixup and/or label smoothing avoids overfitting and gives you better results. Try progressive resizing, and test time augmentation.
 

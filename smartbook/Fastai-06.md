@@ -972,7 +972,7 @@ It's quite amazing that with just a few minutes of computation we've created suc
 
 ## Conclusion
 
-## 结尾
+## 总结
 
 In problems that are at first glance completely different (single-label classification, multi-label classification, and regression), we end up using the same model with just different numbers of outputs. The loss function is the one thing that changes, which is why it's important to double-check that you are using the right loss function for your problem.
 

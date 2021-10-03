@@ -1132,7 +1132,7 @@ Now this is far better than our previous model!
 
 ## Conclusion
 
-## 结尾
+## 总结
 
 You have now seen everything that is inside the AWD-LSTM architecture we used in text classification in <chapter_nlp>. It uses dropout in a lot more places:
 

@@ -1186,7 +1186,7 @@ In this case, we're not seeing a clear win from the deeper model. This is useful
 
 ## Conclusion
 
-## 结尾
+## 总结
 
 In this chapter you learned some important practical tips, both for getting your image data ready for modeling (presizing, data block summary) and for fitting the model (learning rate finder, unfreezing, discriminative learning rates, setting the number of epochs, and using deeper architectures). Using these tools will help you to build more accurate image models, more quickly.
 

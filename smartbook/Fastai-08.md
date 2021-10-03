@@ -957,7 +957,7 @@ Although the results of `EmbeddingNN` are a bit worse than the dot product appro
 
 ## Conclusion
 
-## 结尾
+## 总结
 
 For our first non-computer vision application, we looked at recommendation systems and saw how gradient descent can learn intrinsic factors or biases about items from a history of ratings. Those can then give us information about the data.
 

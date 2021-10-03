@@ -886,7 +886,7 @@ It took consumer safety activists and advocates decades of work to even change t
 
 ## Conclusion
 
-## 结尾
+## 总结
 
 Coming from a background of working with binary logic, the lack of clear answers in ethics can be frustrating at first. Yet, the implications of how our work impacts the world, including unintended consequences and the work becoming weaponized by bad actors, are some of the most important questions we can (and should!) consider. Even though there aren't any easy answers, there are definite pitfalls to avoid and practices to follow to move toward more ethical behavior.
 

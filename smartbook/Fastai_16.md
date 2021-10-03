@@ -832,7 +832,7 @@ Sometimes, callbacks need to be called in a particular order. For example, in th
 
 ## Conclusion
 
-## 结尾
+## 总结
 
 In this chapter we took a close look at the training loop, exploring different variants of SGD and why they can be more powerful. At the time of writing, developing new optimizers is a very active area of research, so by the time you read this chapter there may be an addendum on the book's website that presents new variants. Be sure to check out how our general optimizer framework can help you implement new optimizers very quickly.
 
@@ -918,7 +918,7 @@ We also examined the powerful callback system that allows you to customize every
 
 ## Foundations of Deep Learning: Wrap up
 
-## 深度学习基础：总结
+## 深度学习基础：圆满完成
 
 Congratulations, you have made it to the end of the "foundations of deep learning" section of the book! You now understand how all of fastai's applications and most important architectures are built, and the recommended ways to train them—and you have all the information you need to build these from scratch. While you probably won't need to create your own training loop, or batchnorm layer, for instance, knowing what is going on behind the scenes is very helpful for debugging, profiling, and deploying your solutions.
 

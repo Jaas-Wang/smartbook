@@ -600,7 +600,7 @@ The bottleneck design we've shown here is typically only used in ResNet-50, -101
 
 ## Conclusion
 
-## 结尾
+## 总结
 
 You have now seen how the models we have been using for computer vision since the first chapter are built, using skip connections to allow deeper models to be trained. Even if there has been a lot of research into better architectures, they all use one version or another of this trick, to make a direct path from the input to the end of the network. When using transfer learning, the ResNet is the pretrained model. In the next chapter, we will look at the final details of how the models we actually used were built from it.
 
@@ -608,7 +608,7 @@ You have now seen how the models we have been using for computer vision since th
 
 ## Questionnaire
 
-## 联系题
+## 练习题
 
 1. How did we get to a single vector of activations in the CNNs used for MNIST in previous chapters? Why isn't that suitable for Imagenette?
 2. What do we do for Imagenette instead?

@@ -337,7 +337,7 @@ ax.imshow(cam_map.detach().cpu(), alpha=0.6, extent=(0,224,224,0),
 
 ## Conclusion
 
-## 结论
+## 总结
 
 Model interpretation is an area of active research, and we just scraped the surface of what is possible in this brief chapter. Class activation maps give us insight into why a model predicted a certain result by showing the areas of the images that were most responsible for a given prediction. This can help us analyze false positives and figure out what kind of data is missing in our training to avoid them.
 
@@ -345,7 +345,7 @@ Model interpretation is an area of active research, and we just scraped the surf
 
 ## Questionnaire
 
-## 联系题
+## 练习题
 
 1. What is a "hook" in PyTorch?
 2. Which layer does CAM use the outputs of?

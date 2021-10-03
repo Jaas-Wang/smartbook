@@ -605,7 +605,7 @@ We can now train a model using this `DataLoaders`. It will need a bit more custo
 
 ## Conclusion
 
-## 结尾
+## 总结
 
 fastai provides a layered API. It takes one line of code to grab the data when it's in one of the usual settings, making it easy for beginners to focus on training a model without spending too much time assembling the data. Then, the high-level data block API gives you more flexibility by allowing you to mix and match some building blocks. Underneath it, the mid-level API gives you greater flexibility to apply any transformations on your items. In your real-world problems, this is probably what you will need to use, and we hope it makes the step of data-munging as easy as possible.
 
@@ -658,7 +658,7 @@ fastai提供了一个分层的API。在常规设置中它需要一行代码来�
 
 ## Understanding fastai's Applications: Wrap Up
 
-## 理解fastai的应用：完成
+## 理解fastai的应用：圆满完成
 
 Congratulations—you've completed all of the chapters in this book that cover the key practical parts of training models and using deep learning! You know how to use all of fastai's built-in applications, and how to customize them using the data block API and loss functions. You even know how to create a neural network from scratch, and train it! (And hopefully you now know some of the questions to ask to make sure your creations help improve society too.)
 

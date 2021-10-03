@@ -1433,7 +1433,7 @@ At this point, I think it's fair to say we know how to recognize digits! It's ti
 
 ## Conclusions
 
-## 结尾
+## 总结
 
 We've seen that convolutions are just a type of matrix multiplication, with two constraints on the weight matrix: some elements are always zero, and some elements are tied (forced to always have the same value). In <chapter_intro> we saw the eight requirements from the 1986 book *Parallel Distributed Processing*; one of them was "A pattern of connectivity among units." That's exactly what these constraints do: they enforce a certain pattern of connectivity.
 

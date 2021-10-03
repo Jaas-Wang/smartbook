@@ -2049,7 +2049,7 @@ These embeddings need not even be necessarily learned separately for each model 
 
 ## Conclusion: Our Advice for Tabular Modeling
 
-## 结尾：我们对表格建模的建议
+## 总结：我们对表格建模的建议
 
 We have dicussed two approaches to tabular modeling: decision tree ensembles and neural networks. We've also mentioned two different decision tree ensembles: random forests, and gradient boosting machines. Each is very effective, but each also has compromises:
 

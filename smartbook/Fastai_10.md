@@ -1034,7 +1034,7 @@ Many people assume or hope that algorithms will come to our defense here—that 
 
 ## Conclusion
 
-## 结尾
+## 总结
 
 In this chapter we explored the last application covered out of the box by the fastai library: text. We saw two types of models: language models that can generate texts, and a classifier that determines if a review is positive or negative. To build a state-of-the art classifier, we used a pretrained language model, fine-tuned it to the corpus of our task, then used its body (the encoder) with a new head to do the classification.
 
