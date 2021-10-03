@@ -25,7 +25,7 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 
 [第一章 概述](./smartbook/Fastai-01.md)  [（英文原本：01_intro.ipynb）](./englishbook/01_intro.ipynb)（未校对）
 
-[第二章 产品](./smartbook/Fastai-02.md)  [（英文原本：02_production.ipynb）](./englishbook/02_production.ipynb) （小仙女翻译的，未校对）
+[第二章 产品](./smartbook/Fastai-02.md)  [（英文原本：02_production.ipynb）](./englishbook/02_production.ipynb) （未校对）
 
 [第三章 数据伦理](./smartbook/Fastai-03.md)   [（英文原本：03_ethics.ipynb）](./englishbook/03_ethics.ipynb)（未校对）
 
