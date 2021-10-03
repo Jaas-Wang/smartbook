@@ -848,3 +848,191 @@ def cross_entropy(preds, yb): return nll(log_softmax(preds), yb).mean()
 Let's now combine all those pieces together to create a `Learner`.
 
 现在让我们把这些内容组合在一起来创建一个 `学习器`。
+
+## Learner
+
+## 学习器
+
+We have data, a model, and a loss function; we only need one more thing we can fit a model, and that's an optimizer! Here's SGD:
+
+我们有了数据，模型，和损失函数；我们再需要一项内容就能够拟合模型了，这就是优化器！ 这里用的是 SGD：
+
+实验代码:
+
+```
+class SGD:
+    def __init__(self, params, lr, wd=0.): store_attr()
+    def step(self):
+        for p in self.params:
+            p.data -= (p.grad.data + p.data*self.wd) * self.lr
+            p.grad.data.zero_()
+```
+
+As we've seen in this book, life is easier with a `Learner`. The `Learner` class needs to know our training and validation sets, which means we need `DataLoaders` to store them. We don't need any other functionality, just a place to store them and access them:
+
+正如我们在本书学过的，有了 `Learner` 机器学习就容易多了。`Learner` 类需要知道我们的训练集和验证集，这意味着我们需要 `DataLoaders` 来存贮他们。我们不需要其它任何功能，只在一个地方存贮与访问它们：
+
+实验代码:
+
+```
+class DataLoaders:
+    def __init__(self, *dls): self.train,self.valid = dls
+
+dls = DataLoaders(train_dl,valid_dl)
+```
+
+Now we're ready to create our `Learner` class:
+
+现在我们准备来创建我们的 `Learner` 类了：
+
+实验代码:
+
+```
+class Learner:
+    def __init__(self, model, dls, loss_func, lr, cbs, opt_func=SGD):
+        store_attr()
+        for cb in cbs: cb.learner = self
+
+    def one_batch(self):
+        self('before_batch')
+        xb,yb = self.batch
+        self.preds = self.model(xb)
+        self.loss = self.loss_func(self.preds, yb)
+        if self.model.training:
+            self.loss.backward()
+            self.opt.step()
+        self('after_batch')
+
+    def one_epoch(self, train):
+        self.model.training = train
+        self('before_epoch')
+        dl = self.dls.train if train else self.dls.valid
+        for self.num,self.batch in enumerate(progress_bar(dl, leave=False)):
+            self.one_batch()
+        self('after_epoch')
+    
+    def fit(self, n_epochs):
+        self('before_fit')
+        self.opt = self.opt_func(self.model.parameters(), self.lr)
+        self.n_epochs = n_epochs
+        try:
+            for self.epoch in range(n_epochs):
+                self.one_epoch(True)
+                self.one_epoch(False)
+        except CancelFitException: pass
+        self('after_fit')
+        
+    def __call__(self,name):
+        for cb in self.cbs: getattr(cb,name,noop)()
+```
+
+This is the largest class we've created in the book, but each method is quite small, so by looking at each in turn you should be able to follow what's going on.
+
+这是本书中我们所编写的做大的类了，但是内部的方法是很小的，所以注意学习每个方法你应该能够知道这些方法都做了什么。
+
+The main method we'll be calling is `fit`. This loops with:
+
+我们会调用主要的方法 `fit`。它里面有这个循环：
+
+```python
+for self.epoch in range(n_epochs)
+```
+
+and at each epoch calls `self.one_epoch` for each of `train=True` and then `train=False`. Then `self.one_epoch` calls `self.one_batch` for each batch in `dls.train` or `dls.valid`, as appropriate (after wrapping the `DataLoader` in `fastprogress.progress_bar`. Finally, `self.one_batch` follows the usual set of steps to fit one mini-batch that we've seen throughout this book.
+
+每个周期调用 `self.one_epoch` 为每个 `train= True` ，然后 `train=False`。然后在 `dls.train` 或 `dls.valid` 中 `self.one_epoch` 为的每个批次调用 `self.one_batch` ，打包 `DataLoader`后在 `fastprogress.progress_bar` 上显示合适的进度。最后，`self.one_batch` 遵循了常用的优化步骤集来拟合一个最小批次，这是我们在本书中自始至终在学习的内容。
+
+Before and after each step, `Learner` calls `self`, which calls `__call__` (which is standard Python functionality). `__call__` uses `getattr(cb,name)` on each callback in `self.cbs`, which is a Python built-in function that returns the attribute (a method, in this case) with the requested name. So, for instance, `self('before_fit')` will call `cb.before_fit()` for each callback where that method is defined.
+
+在每个步骤之前和之后， `Learner` 调用 `self`，它调用 `__call__`（这是标准的 Python 功能）。`__call__` 在 `self.cbs` 中的每个回调中使用了 `getattr(cb,name)`，它是一个 Python 内置函数，它返回了带有请求名的属性（在本例中是一个方法）。因此，例如对于每次回调所定义的方法 `self('before_fit')` 会调用 `cb.before_fit()` 。
+
+As you can see, `Learner` is really just using our standard training loop, except that it's also calling callbacks at appropriate times. So let's define some callbacks!
+
+如你所见， `Learner` 事实上只是用了我们标准的训练循环，除了它在合适的时间也调用了回调。那么让我们定义一些回调吧！
+
+### Callbacks
+
+### 回调
+
+In `Learner.__init__` we have:
+
+在 `Learner.__init__` 中有这样的一段代码：
+
+```python
+for cb in cbs: cb.learner = self
+```
+
+In other words, every callback knows what learner it is used in. This is critical, since otherwise a callback can't get information from the learner, or change things in the learner. Because getting information from the learner is so common, we make that easier by defining `Callback` as a subclass of `GetAttr`, with a default attribute of `learner`:
+
+换句话说，每个回调知道它用于什么样的学习器。这是很关键的，因为否则回调不能获取来自学习器的信息，或在学习器中改变相关内容。因为从学习器中获取信息是非常普通的操作，我们把 `Callback` 定义为 `Learner` 的默认属性 `GatAttr` 的子类来简化实现：
+
+实验代码:
+
+```
+class Callback(GetAttr): _default='learner'
+```
+
+`GetAttr` is a fastai class that implements Python's standard `__getattr__` and `__dir__` methods for you, such that any time you try to access an attribute that doesn't exist, it passes the request along to whatever you have defined as `_default`.
+
+`GetAttr` 是一个 fastai 类，它为你实现 Python 标准的 `__getattr__` 和 `__dir__` 方法，因为任何时候你尝试访问一个不存在的属性，它会传递请求给你定义的 `_default` 。
+
+For instance, we want to move all model parameters to the GPU automatically at the start of `fit`. We could do this by defining `before_fit` as `self.learner.model.cuda()`; however, because `learner` is the default attribute, and we have `SetupLearnerCB` inherit from `Callback` (which inherits from `GetAttr`), we can remove the `.learner` and just call `self.model.cuda()`:
+
+例如，我们希望在开始 `fit` 的时候自动的把所有的模型参数搬运到 GPU。我们通过定义 `before_fit` 为 `self.learner.model.cuda()` 可以做这个事情；然而，因为 `learner` 是默认属性，我们 `SetupLearnerCB` 继承自 `Callback` （Callback 继承自 `GetAttr`），我们可以一处 `.learner` 只需要调用 `self.model.cuda()`：
+
+实验代码:
+
+```
+class SetupLearnerCB(Callback):
+    def before_batch(self):
+        xb,yb = to_device(self.batch)
+        self.learner.batch = tfm_x(xb),yb
+
+    def before_fit(self): self.model.cuda()
+```
+
+In `SetupLearnerCB` we also move each mini-batch to the GPU, by calling `to_device(self.batch)` (we could also have used the longer `to_device(self.learner.batch)`. Note however that in the line `self.learner.batch = tfm_x(xb),yb` we can't remove `.learner`, because here we're *setting* the attribute, not getting it.
+
+在 `SetupLearnerCB` 中，我们也要通过调用 `to_device(self.batch)` 把每个最小批次搬运到 GPU（我们也可以使用了更长的写法 `to_device(self.learner.batch)` ）。注意，无论如何在代码 `self.learner.batch = tfm_x(xb),yb` 上我们不能够移除 `.learner`，因为在这里我们是设置这个属性，而不是获取它。
+
+Before we try our `Learner` out, let's create a callback to track and print progress. Otherwise we won't really know if it's working properly:
+
+ 在我们实验 `Learner` 之前，我们来创建一个回调来跟踪并打印输出进度。否则我们真的不知道它是否在正确的工作：
+
+实验代码:
+
+```
+class TrackResults(Callback):
+    def before_epoch(self): self.accs,self.losses,self.ns = [],[],[]
+        
+    def after_epoch(self):
+        n = sum(self.ns)
+        print(self.epoch, self.model.training,
+              sum(self.losses).item()/n, sum(self.accs).item()/n)
+        
+    def after_batch(self):
+        xb,yb = self.batch
+        acc = (self.preds.argmax(dim=1)==yb).float().sum()
+        self.accs.append(acc)
+        n = len(xb)
+        self.losses.append(self.loss*n)
+        self.ns.append(n)
+```
+
+Now we're ready to use our `Learner` for the first time!
+
+现在我们准备来第一次运行我们的 `Learner`了！
+
+实验代码:
+
+```
+cbs = [SetupLearnerCB(),TrackResults()]
+learn = Learner(simple_cnn(), dls, cross_entropy, lr=0.1, cbs=cbs)
+learn.fit(1)
+0 True 2.1275552130636814 0.2314922378287042
+0 False 1.9942575636942674 0.2991082802547771
+```
+
+It's quite amazing to realize that we can implement all the key ideas from fastai's `Learner` in so little code! Let's now add some learning rate scheduling.
+
+认识到我们能够用如此少的代码实现 fastai 的 `Learner` 所有关键点是是非美妙的！现在让我们添加一些学习率计划。
