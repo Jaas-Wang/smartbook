@@ -23,42 +23,42 @@ FastAI翻译项目（共20个章节），ML快速实现教程并包含工程代�
 ## 目录
 （中英对照版本）
 
-[第一章 概述](./smartbook/Fastai-01.md)
+[第一章 概述](./smartbook/cnanden/Fastai-01.md)
 
-[第二章 产品](./smartbook/Fastai-02.md)
+[第二章 产品](./smartbook/cnanden/Fastai-02.md)
 
-[第三章 数据伦理](./smartbook/Fastai-03.md)
+[第三章 数据伦理](./smartbook/cnanden/Fastai-03.md)
 
-[第四章 mnist基础](./smartbook/Fastai-04.md)
+[第四章 mnist基础](./smartbook/cnanden/Fastai-04.md)
 
-[第五章 基于宠物品种的图像分类](./smartbook/Fastai-05.md)
+[第五章 基于宠物品种的图像分类](./smartbook/cnanden/Fastai-05.md)
 
-[第六章 多标签分类](./smartbook/Fastai-06.md)
+[第六章 多标签分类](./smartbook/cnanden/Fastai-06.md)
 
-[第七章 数据制定和测试时增强](./smartbook/Fastai-07.md)
+[第七章 数据制定和测试时增强](./smartbook/cnanden/Fastai-07.md)
 
-[第八章 协同过滤](./smartbook/Fastai-08.md)
+[第八章 协同过滤](./smartbook/cnanden/Fastai-08.md)
 
-[第九章 表格模型](./smartbook/Fastai-09.md)
+[第九章 表格模型](./smartbook/cnanden/Fastai-09.md)
 
-[第十章 自然语言处理](./smartbook/Fastai_10.md)
+[第十章 自然语言处理](./smartbook/cnanden/Fastai_10.md)
 
-[第十一章 数据处理中级API](./smartbook/Fastai_11.md)
+[第十一章 数据处理中级API](./smartbook/cnanden/Fastai_11.md)
 
-[第十二章 自然语言处理深潜](./smartbook/Fastai_12.md)
+[第十二章 自然语言处理深潜](./smartbook/cnanden/Fastai_12.md)
 
-[第十三章 卷积](./smartbook/Fastai_13.md)
+[第十三章 卷积](./smartbook/cnanden/Fastai_13.md)
 
-[第十四章 残差网络](./smartbook/Fastai_14.md)
+[第十四章 残差网络](./smartbook/cnanden/Fastai_14.md)
 
-[第十五章 应用架构深入研究](./smartbook/Fastai_15.md)
+[第十五章 应用架构深入研究](./smartbook/cnanden/Fastai_15.md)
 
-[第十六章 加速随机梯度下降](./smartbook/Fastai_16.md)
+[第十六章 加速随机梯度下降](./smartbook/cnanden/Fastai_16.md)
 
-[第十七章 基础神经网络](./smartbook/Fastai_17.md)
+[第十七章 基础神经网络](./smartbook/cnanden/Fastai_17.md)
 
-[第十八章 类激活映射](./smartbook/Fastai_18.md)
+[第十八章 类激活映射](./smartbook/cnanden/Fastai_18.md)
 
-[第十九章 学习器](./smartbook/Fastai_19.md)
+[第十九章 学习器](./smartbook/cnanden/Fastai_19.md)
 
-[第二十章 总结思考](./smartbook/Fastai_20.md)
+[第二十章 总结思考](./smartbook/cnanden/Fastai_20.md)
