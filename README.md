@@ -1,16 +1,16 @@
-# AI 智慧书
+# 面向普罗大众的人工智能
 
-[Fastbook](https://github.com/fastai/fastbook)翻译项目（共20个章节），ML快速实现教程并包含工程代码。用于帮助那些有志挑战深度学习，但苦于没有深厚的工程或数学背景，及英语阅读有困难的朋友们。
+本项目是基于 Jeremy Howard 与 Sylvain Gugger 编写的「Deep Learning for Coders with fastai & PyTorch：Al Applications Without a PhD」一书的开源版 [Fastbook](https://github.com/fastai/fastbook) 的翻译项目，本书是传授深度学习快速实现的教程并包含工程代码。用于帮助那些有志挑战深度学习，但苦于没有深厚的工程或数学背景，及英文不是非常精通的朋友们。
 
-很多人认为，你需要所有那些很难找到的东西才能在机器学习上取得很好的结果，然而在你读完本书后，你会发现那些人是不正确的。相对于世界级深度学习，有些事情你是绝对不需要做的：
+很多人以为，利用深度学习要想得到好的结果，需要各种难以获取的资源才可以。但是通过阅读本书您会发现这种想法是错误的。即便是世界级的深度学习，有些事情也是绝对不需要做的：
 
 |     神秘（不需要）     |                     真相                     |
 | :--------------------: | :------------------------------------------: |
-|   大量的数学专业知识   |         只需要高中的数学水平就可以了         |
-|       海量的数据       | 我们可以用不到50条数据就可以看到突破行的结果 |
-| 大量且昂贵的计算机算力 |        你可以免费获得最先进的工作成果        |
+|   大量专业数学专业知识   |         高中的数学水平就可以了         |
+|       海量的数据       | 我们可以用不到50条的数据就可以得到破纪录的结果 |
+| 大量且昂贵的算力 |        你可以免费获得最先进的工作成果        |
 
-**记住，要想在机器学习上取的成功，你不需要任何特定的大学背景。许多在研究与工业领域取得的重大突破都是由那些没有博士学位的人取得的，例如：[“基于深度卷积生成对抗网络的无监督表示学习”](https://arxiv.org/abs/1511.06434)，在过去的10年这篇文章是最有影响力的论文之一，有超过5000次的引用，写这篇论文的作者亚历克·雷德福当时仅仅是一名大学生。即使在特思拉，他们尝试了一个终极挑战：制造一辆自动驾驶的汽车。首席执行管[伊隆·马斯克说到](https://twitter.com/elonmusk/status/1224089444963311616)：**
+**记住，要想在机器学习上取的成功，你不需要任何特定的大学学习背景。许多在研究与工业领域取得的重大突破都是由那些没有博士学位的人取得的，例如：[“基于深度卷积生成对抗网络的无监督表示学习”](https://arxiv.org/abs/1511.06434)，在过去的10年这篇文章是最有影响力的论文之一，有超过5000次的引用，写这篇论文的作者亚历克·雷德福当时仅仅是一名大学生。即使在特思拉，他们尝试了一个终极挑战：制造一辆自动驾驶的汽车。首席执行管[伊隆·马斯克说到](https://twitter.com/elonmusk/status/1224089444963311616)：**
 
 **> 伊：明确的说博士学位是不需要的。在某种程度上，所有的事情是对人工智能的深度理解，以及具备实施神经网络的能力，这是非常有用的（后者真的很难）。如果你只有本科学历所以请不要在意。**
 >
@@ -21,44 +21,43 @@
 
 -Mark 也许[Fairness and Machine Learning: Limitations and Opportunities](https://fairmlbook.org/#course-materials)是下一本翻译的著作。愿望也许会实现吧！！！Bless me!
 ## 目录
-（中英对照版本）
 
-[第一章 概述](./smartbook/cnanden/Fastai-01.md)  [（英文原本：01_intro.ipynb）](./englishbook/01_intro.ipynb)（未校对）
+[第一章 概述](./smartbook-01.md)  
 
-[第二章 产品](./smartbook/cnanden/Fastai-02.md)  [（英文原本：02_production.ipynb）](./englishbook/02_production.ipynb) （未校对）
+[第二章 产品]()（未完成）
 
-[第三章 数据伦理](./smartbook/cnanden/Fastai-03.md)   [（英文原本：03_ethics.ipynb）](./englishbook/03_ethics.ipynb)（未校对）
+[第三章 数据伦理]()（未完成）
 
-[第四章 mnist基础](./smartbook/cnanden/Fastai-04.md)   [（英文原本：04_mnist_basics.ipynb）](./englishbook/04_mnist_basics.ipynb)（未校对）
+[第四章 mnist基础]()（未完成）
 
-[第五章 基于宠物品种的图像分类](./smartbook/cnanden/Fastai-05.md)   [（英文原本：05_pet_breeds.ipynb）](./englishbook/05_pet_breeds.ipynb)（未校对）
+[第五章 基于宠物品种的图像分类]()（未完成）
 
-[第六章 多标签分类](./smartbook/cnanden/Fastai-06.md)   [（英文原本：06_multicat.ipynb）](./englishbook/06_multicat.ipynb)（未校对）
+[第六章 多标签分类]()（未完成）
 
-[第七章 数据尺寸和测试数据增强](./smartbook/cnanden/Fastai-07.md)   [（英文原本：07_sizing_and_tta.ipynb）](./englishbook/07_sizing_and_tta.ipynb)（未校对）
+[第七章 数据尺寸和测试数据增强]()（未完成）
 
-[第八章 协同过滤](./smartbook/cnanden/Fastai-08.md)   [（英文原本：08_collab.ipynb）](./englishbook/08_collab.ipynb)（未校对）
+[第八章 协同过滤]()（未完成）
 
-[第九章 表格模型](./smartbook/cnanden/Fastai-09.md)   [（英文原本：09_tabular.ipynb）](./englishbook/09_tabular.ipynb)（未校对）
+[第九章 表格模型]()（未完成）
 
-[第十章 自然语言处理](./smartbook/cnanden/Fastai_10.md)   [（英文原本：10_nlp.ipynb）](./englishbook/10_nlp.ipynb)（未校对）
+[第十章 自然语言处理]()（未完成）
 
-[第十一章 数据处理中级API](./smartbook/cnanden/Fastai_11.md)   [（英文原本：11_midlevel_data.ipynb）](./englishbook/11_midlevel_data.ipynb)（未校对）
+[第十一章 数据处理中级API]()（未完成）
 
-[第十二章 自然语言处理深潜](./smartbook/cnanden/Fastai_12.md)   [（英文原本：12_nlp_dive.ipynb）](./englishbook/12_nlp_dive.ipynb)（未校对）
+[第十二章 自然语言处理深潜]()（未完成）
 
-[第十三章 卷积](./smartbook/cnanden/Fastai_13.md)   [（英文原本：13_convolutions.ipynb）](./englishbook/13_convolutions.ipynb)（未校对）
+[第十三章 卷积]()（未完成）
 
-[第十四章 残差网络](./smartbook/cnanden/Fastai_14.md)   [（英文原本：14_resnet.ipynb）](./englishbook/14_resnet.ipynb)（未校对）
+[第十四章 残差网络]()（未完成）
 
-[第十五章 应用架构深入研究](./smartbook/cnanden/Fastai_15.md)   [（英文原本：15_arch_details.ipynb）](./englishbook/15_arch_details.ipynb)（未校对）
+[第十五章 应用架构深入研究]()（未完成）
 
-[第十六章 加速随机梯度下降](./smartbook/cnanden/Fastai_16.md)   [（英文原本：16_accel_sgd.ipynb）](./englishbook/16_accel_sgd.ipynb)（未校对）
+[第十六章 加速随机梯度下降]()（未完成）
 
-[第十七章 基础神经网络](./smartbook/cnanden/Fastai_17.md)   [（英文原本：17_foundations.ipynb）](./englishbook/17_foundations.ipynb)（未校对）
+[第十七章 基础神经网络]()（未完成）
 
-[第十八章 类激活映射](./smartbook/cnanden/Fastai_18.md)   [（英文原本：18_CAM.ipynb）](./englishbook/18_CAM.ipynb)（未校对）
+[第十八章 类激活映射]()（未完成）
 
-[第十九章 学习器](./smartbook/cnanden/Fastai_19.md)   [（英文原本：19_learner.ipynb）](./englishbook/19_learner.ipynb)（未校对）
+[第十九章 学习器]()（未完成）
 
-[第二十章 总结思考](./smartbook/cnanden/Fastai_20.md)   [（英文原本：20_conclusion.ipynb）](./englishbook/20_conclusion.ipynb)（未校对）
+[第二十章 总结思考]()（未完成）
