@@ -1,16 +1,17 @@
 # 人人可学的深度学习
 
-本项目是基于 Jeremy Howard 与 Sylvain Gugger 编写的「Deep Learning for Coders with fastai & PyTorch：Al Applications Without a PhD」一书的开源版 [Fastbook](https://github.com/fastai/fastbook) 的翻译项目，**感谢 [Jeremy Howard](https://jeremy.fast.ai) 对项目的授权与支持。**
+本项目是基于 Jeremy Howard 与 Sylvain Gugger 所著的「Deep Learning for Coders with fastai & PyTorch：Al Applications Without a PhD」的开源版 [Fastbook](https://github.com/fastai/fastbook)，**感谢 [Jeremy Howard](https://jeremy.fast.ai) 对项目的授权与支持。**
+
 <img alt="show_batch with spectrograms of sounds" width="400" caption="show_batch with spectrograms of sounds" id="img_spect" src="./images/Authorization_email.png">
 
 - 感谢 **单博士**（ Helen Shan）对本项目的贡献，她承担了与 Jeremy Howard 的对接及主要翻译工作。
 - 我本人负责代码技术与翻译内容优化及校对工作。
 
-本书是传授深度学习快速实现的教程并包含工程代码。用于帮助那些有志挑战深度学习，但苦于没有深厚的工程或数学背景，及英文不是非常精通的朋友们。
+本项目是传授深度学习快速实现的教程，并包含工程代码。用于帮助那些有志挑战深度学习，但苦于没有深厚的工程或数学背景，及英文不是非常精通的朋友们。
 
 很多人认为，想要利用深度学习取得很好的结果需要各种难以获取的资源，但是通过这本书您会发现这种想法是错误的。下表所列举的几项误解，即便是世界级的深度学习工作也是完全不需要的：
 
-|     误解（很神秘但不需要）     |                     真相                     |
+|     误解（不需要）     |                     真相                     |
 | :--------------------: | :------------------------------------------: |
 |   大量专业数学知识   |         高中数学就足够了         |
 |       海量数据       | 我们曾见过用不到50条的数据取得破纪录结果 |
@@ -22,7 +23,7 @@
 >
 如果您希望在深度学习上取得成功，需要做的事情是：把您在这本书里所学到的东西应用到项目中去，并坚持不懈！
 
-**目录**
+## 目录
 
 [第一章 开启深度学习之旅](./Smartbook_01_intro.ipynb)  (翻译并整理中)
 
