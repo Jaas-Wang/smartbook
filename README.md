@@ -32,7 +32,7 @@
    ```
    conda create -n 环境名 python=版本号
    ```
-   如:
+   如，定义环境名为**smartbook**，使用python的版本为3.10.6:
    ```
    conda create -n smartbook python=3.10.6
    ```
@@ -40,7 +40,7 @@
    ```
    conda activate 环境名
    ```
-   如：
+   如，激活命名为**smartbook**的环境：
    ```
    conda activate smartbook
    ```
