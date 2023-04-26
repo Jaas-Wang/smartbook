@@ -2,7 +2,7 @@
 
 本项目是基于 Jeremy Howard 与 Sylvain Gugger 所著的「Deep Learning for Coders with fastai & PyTorch：Al Applications Without a PhD」的开源版 [Fastbook](https://github.com/fastai/fastbook)，**感谢 [Jeremy Howard](https://jeremy.fast.ai) 对项目的授权与支持。**
 
-<img alt="" width="400" caption="" id="img_spect" src="./images/Authorization_email.jpg">
+<img alt="" width="500" caption="" id="img_spect" src="https://user-images.githubusercontent.com/10573092/234517915-a592b706-a6bb-4778-87e5-48944715cf33.jpg">
 
 本项目由**单博士**与**程序猿王**共同创建并维护
 -  **单博士**（ Helen Shan）承担了同 Jeremy Howard 对接，及翻译工作。
@@ -112,4 +112,4 @@
 ## 共同成长
 如您希望与更多的伙伴交流切磋，可扫描下方二维码申请加群。
 
-<img alt="" width="300" caption="" id="img_spect" src="./images/QR.jpg">
+<img alt="" width="300" caption="" id="img_spect" src="https://user-images.githubusercontent.com/10573092/234518086-63731a4e-b31a-40f9-901b-8e3c3727e518.jpg">
