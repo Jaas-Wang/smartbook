@@ -150,4 +150,6 @@ end
 ## 共同成长
 如您希望与更多的伙伴交流切磋，可扫描下方二维码申请加群。
 
+**ps：务必扫码添加备注【人工智能学习交流】**
+
 <img alt="" width="300" caption="" id="img_spect" src="https://user-images.githubusercontent.com/10573092/234518086-63731a4e-b31a-40f9-901b-8e3c3727e518.jpg">
