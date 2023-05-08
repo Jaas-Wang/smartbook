@@ -107,9 +107,9 @@ end
   
 ## 目录
 
-[第一章 开启深度学习之旅](./Smartbook_01_intro.ipynb)  (翻译并整理中)
+[第一章 开启深度学习之旅](./Smartbook_01_intro.ipynb)
 
-[第二章 产品]()（未开始）
+[第二章 产品](./Smartbook_02_production.ipynb)（校对中）
 
 [第三章 数据伦理]()（未开始）
 
