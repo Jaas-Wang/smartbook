@@ -31,8 +31,8 @@
 graph LR
 Helen[单博士翻译]
 YHWang[王程序评审]
-Disc[评审问题]
-Conf[达成一致]
+Disc[遗留问题]
+Conf[共同评审]
 ReQ[合并主线]
 subgraph 翻译工作
 Helen -->|提交| YHWang -.->|反馈| Helen
