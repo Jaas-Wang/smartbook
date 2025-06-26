@@ -55,7 +55,10 @@
    ```
 
 4. 安装所需的依赖包。
-    ```pip install -r requirements.txt```
+
+    ```sh
+    pip install -r requirements.txt
+    ```
     如果感觉安装速度慢，可以使用国内源，如下所示
 
     ```sh
@@ -65,23 +68,43 @@
     在运行本项目实践代码时，如提示依赖包缺失的问题，可以单独安装。
 
     ```sh
-    pip install 依赖包名
+    pip install 依赖包名 -i https://pypi.tuna.tsinghua.edu.cn/simple
     ```
+    以安装fastbook依赖包为例，如下所示：
+   ```shell
+    pip install fastbook -i https://pypi.tuna.tsinghua.edu.cn/simple
+   ```
 
 5. 安装Jupyter Notebook命令。
 
    ```sh
-   pip install notebook
+   pip install jupyter -i https://pypi.tuna.tsinghua.edu.cn/simple
    ```
 
-6. 现在可以启动您的Jupyter来运行本项目了，命令如下：
+6. 进入项目文件夹。
+   ```sh
+   cd 项目文件夹
+   ```
+   **下面是进入项目文件夹的命令，具体命令根据您的系统不同而不同。**
+
+   **Windows系统：**
+   如项目文件目录在：D:\Projects\Smartbook，命令如下：
+   ```sh
+     cd D:\Projects\Smartbook
+     ```
+   **MacOS、Linux、Ubuntu系统：**
+   如项目文件目录在：/Users/用户名/Projects/Smartbook，命令如下：
+   ```sh
+     cd /Users/用户名/Projects/Smartbook
+   ```
+7. 现在可以启动您的Jupyter来运行本项目了，命令如下：
 
    ```sh
-   jupyter notebook
+   jupyter lab
    ```
 
-   > **注意：务必进入本项目文件夹后运行Jupyter，否则您会找不到运行文件。**
-7. 截至第6步您可以在本地环境运行本项目了。因本项目需要运行模型训练实践代码，对机器性能有一定的要求，如果您有自己的GPU服务器，并在上面配置运行环境，需要远程登陆Jupyter Notebook服务来运行本项目，可以参见[机器学习环境配置系列六之jupyter notebook远程访问](https://www.cnblogs.com/jaww/p/9846491.html)配置教程。
+   > **⚠️注意：务必进入本项目文件夹后运行Jupyter，否则您会找不到运行文件。**
+8. 截至第7步您可以在本地环境运行本项目了。因本项目需要运行模型训练实践代码，对机器性能有一定的要求，如果您有自己的GPU服务器，并在上面配置运行环境，需要远程登陆Jupyter服务来运行本项目，可以参见[机器学习环境配置系列六之jupyter notebook远程访问](https://www.cnblogs.com/jaww/p/9846491.html)配置教程。
   
 ## 目录
 
