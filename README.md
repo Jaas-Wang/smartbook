@@ -59,7 +59,7 @@
     如果感觉安装速度慢，可以使用国内源，如下所示
 
     ```sh
-    pip install -r requirements.txt  -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+    pip install -r requirements.txt  -i https://pypi.tuna.tsinghua.edu.cn/simple
     ```
 
     在运行本项目实践代码时，如提示依赖包缺失的问题，可以单独安装。
