@@ -154,3 +154,5 @@
 **PS：务必扫码添加备注：【人工智能学习交流】**
 
 <img alt="" width="300" caption="" id="img_spect" src="https://user-images.githubusercontent.com/10573092/234518086-63731a4e-b31a-40f9-901b-8e3c3727e518.jpg">
+
+**也可关注公众号，获取更多学习咨询**
