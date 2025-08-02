@@ -74,7 +74,7 @@
    ```shell
     pip install fastbook -i https://pypi.tuna.tsinghua.edu.cn/simple
    ```
-
+   > ⚠️ fastbook依赖包必须单独安装，这是与本教程搭配的程序，如果不安装，运行代码时会提示缺少依赖包。
 5. 安装Jupyter Notebook命令。
 
    ```sh
