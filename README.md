@@ -110,7 +110,7 @@
 
 [第一章 开启深度学习之旅](./Smartbook_01_intro.ipynb)（完成）
 
-[第二章 产品](./Smartbook_02_production.ipynb)（校对中）
+[第二章 产品](./Smartbook_02_production.ipynb)（完成）
 
 [第三章 数据伦理]()（未开始）
 
